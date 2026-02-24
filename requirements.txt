@@ -1,0 +1,24 @@
+# ExplorerPro - Requirements
+# Phase 1 + Phase 2
+
+# GUI Framework
+PyQt6>=6.4.0
+PyQt6-QScintilla>=2.13.0
+
+# PDF-Verarbeitung
+PyMuPDF>=1.21.0
+# Alternative: PyPDF2>=3.0.0
+
+# Datei-Überwachung (Phase 2)
+watchdog>=3.0.0
+
+# Tabellen-Import für Blacklist
+pandas>=2.0.0
+openpyxl>=3.1.0
+
+# Syntax Highlighting
+Pygments>=2.14.0
+
+# Optional: OCR
+# pytesseract>=0.3.10
+# Pillow>=9.4.0
