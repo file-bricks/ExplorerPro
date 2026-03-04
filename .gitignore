@@ -26,7 +26,9 @@ TEST.txt
 TESTS.txt
 TESTERGEBNISSE.txt
 BUGREPORT.md
+BUGREPORT_*.md
 DIAGNOSE_REPORT.md
+ANALYSE_*.md
 
 # ---- Persoenliche / Sensible Daten ----
 _USER/
@@ -67,8 +69,17 @@ _archive/
 _private/
 *.log
 
-# ---- Projektspezifisch (hier eigene Eintraege anfuegen) ----
+# ---- Entwicklungs- und Backup-Ordner ----
 _BACKUP/
+_DEV/
+_WARTUNG/
+_alt/
 _archiv/
+
+# ---- Projektspezifisch ----
 DIAGNOSE_REPORT.json
 TESTBERICHT.txt
+
+# Test-Dateien im Root (src/tests sind getrackt)
+/test*.py
+/test*.bat
