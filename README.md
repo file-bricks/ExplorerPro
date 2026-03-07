@@ -1,44 +1,44 @@
 # ExplorerPro Suite
 
-Erweiterter Datei-Explorer mit Datenschutz-Monitor, Vorschau-Panel, Sync-Manager und integriertem Code-Editor.
+An advanced file explorer with privacy monitor, preview panel, sync manager, and integrated code editor.
 
 ## Features
 
-- **Datei-Browser** mit Multi-Tab-Support und Breadcrumb-Navigation
-- **Vorschau-Panel** fuer PDF, Bilder, Code und Text
-- **Datenschutz-Monitor** - Erkennung und Verwaltung sensibler Dateien
-- **Erweiterte Suche** mit Filtern (Typ, Groesse, Datum)
-- **Duplikat-Finder** ueber Datei-Hashes
-- **Quick-Editor** mit Syntax-Highlighting (QScintilla + Pygments)
-- **Prompt-Launcher** fuer KI-Prompts
-- **Sync-Manager** fuer Ordner-Synchronisation
-- **App-Launcher** fuer Schnellzugriff
-- **Statusleiste** mit Datei-Statistiken und Datenschutz-Status
+- **File Browser** with multi-tab support and breadcrumb navigation
+- **Preview Panel** for PDF, images, code, and text
+- **Privacy Monitor** -- detection and management of sensitive files
+- **Advanced Search** with filters (type, size, date)
+- **Duplicate Finder** via file hashes
+- **Quick Editor** with syntax highlighting (QScintilla + Pygments)
+- **Prompt Launcher** for AI prompts
+- **Sync Manager** for folder synchronization
+- **App Launcher** for quick access
+- **Status Bar** with file statistics and privacy status
 
-## Architektur
+## Architecture
 
 ```
 ExplorerPro Suite v1.0
 ├── src/
-│   ├── core/           Event-Bus, Datei-Index, Settings
+│   ├── core/           Event bus, file index, settings
 │   ├── gui/
-│   │   ├── browser/    Datei-Browser mit Tabellen-Ansicht
-│   │   ├── preview/    Vorschau-Panel (PDF, Bilder, Code)
-│   │   └── sidebar/    Seitenleiste mit Suche und Navigation
+│   │   ├── browser/    File browser with table view
+│   │   ├── preview/    Preview panel (PDF, images, code)
+│   │   └── sidebar/    Sidebar with search and navigation
 │   └── modules/
-│       ├── editor/     Quick-Editor mit Syntax-Highlighting
-│       ├── indexer/    Duplikat-Finder
-│       ├── launcher/   App-Launcher
-│       ├── privacy/    Datenschutz-Monitor und Blacklist
-│       ├── prompts/    Prompt-Verwaltung
-│       └── sync/       Sync-Manager
+│       ├── editor/     Quick editor with syntax highlighting
+│       ├── indexer/    Duplicate finder
+│       ├── launcher/   App launcher
+│       ├── privacy/    Privacy monitor and blacklist
+│       ├── prompts/    Prompt management
+│       └── sync/       Sync manager
 ```
 
-Vollstaendige Architektur: [ARCHITEKTUR.md](ARCHITEKTUR.md)
+Full architecture: [ARCHITEKTUR.md](ARCHITEKTUR.md)
 
 ## Installation
 
-### Voraussetzungen
+### Prerequisites
 
 - Python >= 3.8
 - PyQt6
@@ -49,34 +49,34 @@ Vollstaendige Architektur: [ARCHITEKTUR.md](ARCHITEKTUR.md)
 pip install -r requirements.txt
 ```
 
-## Verwendung
+## Usage
 
 ```bash
 python src/main.py
 ```
 
-Oder ueber die Batch-Datei:
+Or via the batch file:
 
 ```bash
 START_ExplorerPro.bat
 ```
 
-## Abhaengigkeiten
+## Dependencies
 
-| Paket | Zweck |
-|-------|-------|
-| PyQt6 | GUI-Framework |
-| PyQt6-QScintilla | Code-Editor |
-| PyMuPDF | PDF-Vorschau |
-| watchdog | Datei-Ueberwachung |
-| Pygments | Syntax-Highlighting |
-| pandas | Tabellen-Import |
+| Package | Purpose |
+|---------|---------|
+| PyQt6 | GUI framework |
+| PyQt6-QScintilla | Code editor |
+| PyMuPDF | PDF preview |
+| watchdog | File monitoring |
+| Pygments | Syntax highlighting |
+| pandas | Table import |
 
-## Lizenz
+## License
 
-AGPL v3 - Siehe [LICENSE](LICENSE)
+AGPL v3 - See [LICENSE](LICENSE)
 
-Dieses Projekt verwendet PyQt6 (GPL) und PyMuPDF (AGPL).
+This project uses PyQt6 (GPL) and PyMuPDF (AGPL).
 
 ---
 
