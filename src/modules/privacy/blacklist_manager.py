@@ -52,14 +52,14 @@ class BlacklistManager(QObject):
             try:
                 with open(self.blacklist_path, 'r', encoding='utf-8') as f:
                     self._blacklist = set(json.load(f))
-            except:
+            except (OSError, json.JSONDecodeError):
                 pass
-        
+
         if self.whitelist_path.exists():
             try:
                 with open(self.whitelist_path, 'r', encoding='utf-8') as f:
                     self._whitelist = set(json.load(f))
-            except:
+            except (OSError, json.JSONDecodeError):
                 pass
     
     def _save(self):

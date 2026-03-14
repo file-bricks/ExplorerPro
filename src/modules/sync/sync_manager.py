@@ -213,7 +213,7 @@ class SyncWorker(QThread):
                         'size': stat.st_size,
                         'mtime': stat.st_mtime
                     }
-                except:
+                except (OSError, PermissionError):
                     pass
         
         return files
@@ -484,7 +484,7 @@ class SyncPanel(QWidget):
                 with open(self.config_path, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     self.sync_pairs = [SyncPair(**p) for p in data]
-            except:
+            except (OSError, json.JSONDecodeError, TypeError):
                 self.sync_pairs = []
         
         self._refresh_list()

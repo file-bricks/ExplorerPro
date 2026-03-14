@@ -104,7 +104,7 @@ class DuplicateScanWorker(QThread):
                     size = os.path.getsize(path)
                     if size >= self.min_size:
                         all_files.append((path, size))
-                except:
+                except (OSError, IOError):
                     pass
             
             if self._cancelled:
@@ -132,7 +132,7 @@ class DuplicateScanWorker(QThread):
             try:
                 file_hash = self._compute_hash(path)
                 duplicates[file_hash].append(path)
-            except:
+            except (OSError, IOError):
                 pass
         
         return dict(duplicates)
@@ -459,7 +459,7 @@ class DuplicateFinderDialog(QDialog):
         """Gibt Dateigröße zurück"""
         try:
             return os.path.getsize(path)
-        except:
+        except (OSError, IOError):
             return 0
     
     def _format_size(self, size: int) -> str:
@@ -529,10 +529,10 @@ class DuplicateFinderDialog(QDialog):
                 path = child.data(0, Qt.ItemDataRole.UserRole)
                 try:
                     mtime = os.path.getmtime(path)
-                except:
+                except (OSError, IOError):
                     mtime = 0
                 files_with_dates.append((j, mtime))
-            
+
             # Neueste finden
             files_with_dates.sort(key=lambda x: -x[1])
             newest_idx = files_with_dates[0][0] if files_with_dates else 0
@@ -555,7 +555,7 @@ class DuplicateFinderDialog(QDialog):
                 path = child.data(0, Qt.ItemDataRole.UserRole)
                 try:
                     mtime = os.path.getmtime(path)
-                except:
+                except (OSError, IOError):
                     mtime = float('inf')
                 files_with_dates.append((j, mtime))
             

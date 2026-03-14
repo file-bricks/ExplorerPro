@@ -269,7 +269,7 @@ class AppsPanel(QWidget):
             try:
                 with open(self.config_path, 'r', encoding='utf-8') as f:
                     self.apps = [AppEntry(**a) for a in json.load(f)]
-            except:
+            except (OSError, FileNotFoundError, json.JSONDecodeError, TypeError):
                 self.apps = []
         
         if not self.apps:
@@ -371,7 +371,7 @@ class AppsPanel(QWidget):
         try:
             if os.name == 'nt':
                 if app.arguments:
-                    subprocess.Popen([app.path] + app.arguments.split(), shell=True)
+                    subprocess.Popen([app.path] + app.arguments.split())
                 else:
                     os.startfile(app.path)
             else:

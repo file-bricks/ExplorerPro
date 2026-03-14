@@ -332,7 +332,7 @@ class FileIndex:
                 if result.get('modified'):
                     try:
                         result['modified'] = datetime.fromisoformat(str(result['modified']))
-                    except:
+                    except (ValueError, TypeError):
                         result['modified'] = None
                 results.append(result)
         except sqlite3.OperationalError:

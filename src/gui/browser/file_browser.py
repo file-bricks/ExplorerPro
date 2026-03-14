@@ -126,7 +126,7 @@ class FileBrowser(QWidget):
             try:
                 entries = list(Path(self._current_path).iterdir())
                 self._file_count = len(entries)
-            except:
+            except (OSError, PermissionError):
                 self._file_count = 0
     
     def _on_selection_changed(self):

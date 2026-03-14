@@ -150,7 +150,7 @@ class PrivacyMonitor(QObject):
         if self.clipboard:
             try:
                 self.clipboard.dataChanged.disconnect(self._on_clipboard_change)
-            except:
+            except (RuntimeError, TypeError):
                 pass
         self._enabled = False
         self._current_status = PrivacyStatus.GRAY
