@@ -11,7 +11,7 @@ import hashlib
 from datetime import datetime
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
-from PyQt6.QtCore import QThread, pyqtSignal
+from PySide6.QtCore import QThread, Signal
 
 # Optionale Imports
 try:
@@ -516,10 +516,10 @@ class FileIndex:
 class IndexWorker(QThread):
     """Worker-Thread für Hintergrund-Indizierung"""
     
-    progress = pyqtSignal(int, int)  # current, total
-    file_indexed = pyqtSignal(str)
-    finished_indexing = pyqtSignal(int)  # total indexed
-    error = pyqtSignal(str)
+    progress = Signal(int, int)  # current, total
+    file_indexed = Signal(str)
+    finished_indexing = Signal(int)  # total indexed
+    error = Signal(str)
     
     def __init__(self, index: FileIndex, folder: str, recursive: bool = True):
         super().__init__()

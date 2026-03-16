@@ -4,11 +4,11 @@
 StatusBar - Statusleiste mit Datenschutz-Ampel
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QStatusBar, QLabel, QFrame
 )
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QColor
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QColor
 
 
 class PrivacyIndicator(QLabel):
@@ -17,7 +17,7 @@ class PrivacyIndicator(QLabel):
     Basiert auf AmpelTool
     """
     
-    clicked = pyqtSignal()
+    clicked = Signal()
     
     # Status-Farben
     COLORS = {

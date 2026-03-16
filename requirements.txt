@@ -2,8 +2,8 @@
 # Phase 1 + Phase 2
 
 # GUI Framework
-PyQt6>=6.4.0
-PyQt6-QScintilla>=2.13.0
+PySide6>=6.5.0
+QScintilla>=2.13.0
 
 # PDF-Verarbeitung
 PyMuPDF>=1.21.0

@@ -5,14 +5,14 @@ PromptsPanel - Prompt-Bibliothek im Sidebar (ProfiPrompt-Integration)
 Phase 5: Extras
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem,
     QPushButton, QLabel, QLineEdit, QTextEdit, QDialog, QFormLayout,
     QComboBox, QDialogButtonBox, QMenu, QToolButton, QSplitter,
     QMessageBox, QInputDialog, QApplication, QTabWidget
 )
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QCursor
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QCursor
 from pathlib import Path
 from typing import List
 from dataclasses import dataclass, field
@@ -173,7 +173,7 @@ class PromptsPanel(QWidget):
     - Nutzungsstatistik
     """
     
-    prompt_copied = pyqtSignal(str)  # Kopierter Prompt-Text
+    prompt_copied = Signal(str)  # Kopierter Prompt-Text
     
     DEFAULT_CATEGORIES = ["Allgemein", "Code", "Text", "Analyse", "Kreativ", "System"]
     

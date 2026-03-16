@@ -5,14 +5,14 @@ SyncManager - Datei-Synchronisation (ProSync-Integration)
 Phase 5: Extras
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem,
     QPushButton, QLabel, QLineEdit, QDialog, QFormLayout, QComboBox,
     QDialogButtonBox, QFileDialog, QMessageBox, QToolButton, QProgressBar,
     QCheckBox, QTableWidget, QTableWidgetItem, QHeaderView, QMenu
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QThread, pyqtSlot
-from PyQt6.QtGui import QCursor
+from PySide6.QtCore import Qt, Signal, QThread, Slot
+from PySide6.QtGui import QCursor
 from pathlib import Path
 from typing import List, Dict
 from dataclasses import dataclass, field
@@ -74,11 +74,11 @@ class SyncAction:
 class SyncWorker(QThread):
     """Background-Thread für Synchronisation"""
     
-    progress = pyqtSignal(int, int, str)  # current, total, current_file
-    action_found = pyqtSignal(object)      # SyncAction
-    finished_scan = pyqtSignal(list)       # List[SyncAction]
-    finished_sync = pyqtSignal(int, int)   # synced, errors
-    error = pyqtSignal(str)
+    progress = Signal(int, int, str)  # current, total, current_file
+    action_found = Signal(object)      # SyncAction
+    finished_scan = Signal(list)       # List[SyncAction]
+    finished_sync = Signal(int, int)   # synced, errors
+    error = Signal(str)
     
     def __init__(self, sync_pair: SyncPair, dry_run: bool = True):
         super().__init__()
@@ -415,8 +415,8 @@ class SyncPanel(QWidget):
     Basiert auf ProSync
     """
     
-    sync_started = pyqtSignal(str)   # Sync-Pair Name
-    sync_finished = pyqtSignal(int)  # Anzahl synchronisierter Dateien
+    sync_started = Signal(str)   # Sync-Pair Name
+    sync_finished = Signal(int)  # Anzahl synchronisierter Dateien
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -607,7 +607,7 @@ class SyncPanel(QWidget):
         self.sync_worker.error.connect(self._on_error)
         self.sync_worker.start()
     
-    @pyqtSlot(int, int, str)
+    @Slot(int, int, str)
     def _on_progress(self, current: int, total: int, filename: str):
         if total > 0:
             self.progress_bar.setValue(int(current / total * 100))

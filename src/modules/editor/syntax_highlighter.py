@@ -6,7 +6,7 @@ Basiert auf PythonBox
 """
 
 import re
-from PyQt6.QtGui import (
+from PySide6.QtGui import (
     QSyntaxHighlighter, QTextCharFormat, QColor, QFont
 )
 

@@ -5,13 +5,13 @@ Sidebar - Seitenleiste mit Ordnerbaum, Favoriten, Suche, Apps, Prompts, Sync
 Phase 5: Vollständige Integration
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget,
     QTreeWidget, QTreeWidgetItem, QListWidget, QListWidgetItem,
     QPushButton, QLabel, QFrame, QToolButton, QButtonGroup
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QDir, QStandardPaths, QFileInfo
-from PyQt6.QtWidgets import QFileIconProvider
+from PySide6.QtCore import Qt, Signal, QDir, QStandardPaths, QFileInfo
+from PySide6.QtWidgets import QFileIconProvider
 import os
 
 # Module importieren - absolute Imports
@@ -24,7 +24,7 @@ from modules.sync import SyncPanel
 class TreePanel(QWidget):
     """Ordnerbaum-Panel"""
     
-    folder_selected = pyqtSignal(str)
+    folder_selected = Signal(str)
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -117,7 +117,7 @@ class TreePanel(QWidget):
 class FavoritesPanel(QWidget):
     """Favoriten-Panel"""
     
-    favorite_selected = pyqtSignal(str)
+    favorite_selected = Signal(str)
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -167,11 +167,11 @@ class Sidebar(QWidget):
     - 🔄 Sync
     """
     
-    folder_selected = pyqtSignal(str)
-    favorite_selected = pyqtSignal(str)
-    app_launched = pyqtSignal(str)
-    prompt_copied = pyqtSignal(str)
-    sync_finished = pyqtSignal(int)
+    folder_selected = Signal(str)
+    favorite_selected = Signal(str)
+    app_launched = Signal(str)
+    prompt_copied = Signal(str)
+    sync_finished = Signal(int)
     
     def __init__(self, parent=None):
         super().__init__(parent)

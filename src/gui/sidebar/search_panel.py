@@ -5,13 +5,13 @@ SearchPanel - Erweiterte Suche im Sidebar
 Phase 2: Index & Suche
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton,
     QListWidget, QListWidgetItem, QLabel, QComboBox, QMenu,
     QToolButton, QProgressBar, QCheckBox
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QThread, pyqtSlot
-from PyQt6.QtGui import QAction, QCursor
+from PySide6.QtCore import Qt, Signal, QTimer, QThread, Slot
+from PySide6.QtGui import QAction, QCursor
 from pathlib import Path
 from dataclasses import dataclass
 from datetime import datetime
@@ -80,9 +80,9 @@ class SearchResultItem(QListWidgetItem):
 class SearchWorker(QThread):
     """Background-Thread für Suche"""
     
-    results_ready = pyqtSignal(list)
-    progress = pyqtSignal(int)
-    error = pyqtSignal(str)
+    results_ready = Signal(list)
+    progress = Signal(int)
+    error = Signal(str)
     
     def __init__(self, index, query: str, filters: dict):
         super().__init__()
@@ -122,10 +122,10 @@ class SearchPanel(QWidget):
     """
     
     # Signale
-    result_selected = pyqtSignal(str)       # Pfad der ausgewählten Datei
-    result_activated = pyqtSignal(str)      # Doppelklick auf Ergebnis
-    search_started = pyqtSignal()
-    search_finished = pyqtSignal(int)       # Anzahl Ergebnisse
+    result_selected = Signal(str)       # Pfad der ausgewählten Datei
+    result_activated = Signal(str)      # Doppelklick auf Ergebnis
+    search_started = Signal()
+    search_finished = Signal(int)       # Anzahl Ergebnisse
     
     # Kategorien
     CATEGORIES = [
@@ -279,7 +279,7 @@ class SearchPanel(QWidget):
         self.search_worker.error.connect(self._on_search_error)
         self.search_worker.start()
     
-    @pyqtSlot(list)
+    @Slot(list)
     def _on_results_ready(self, results: list):
         """Verarbeitet Suchergebnisse"""
         self.progress_bar.hide()
@@ -306,7 +306,7 @@ class SearchPanel(QWidget):
         self.clear_btn.setVisible(count > 0)
         self.search_finished.emit(count)
     
-    @pyqtSlot(str)
+    @Slot(str)
     def _on_search_error(self, error: str):
         """Fehler bei Suche"""
         self.progress_bar.hide()
@@ -357,7 +357,7 @@ class SearchPanel(QWidget):
     
     def _copy_path(self, path: str):
         """Kopiert Pfad in Zwischenablage"""
-        from PyQt6.QtWidgets import QApplication
+        from PySide6.QtWidgets import QApplication
         clipboard = QApplication.clipboard()
         clipboard.setText(path)
     

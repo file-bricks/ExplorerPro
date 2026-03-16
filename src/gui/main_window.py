@@ -5,15 +5,15 @@ MainWindow - Hauptfenster für ExplorerPro
 Mit vollständiger Menü-Integration
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QSplitter,
     QLabel, QToolBar, QLineEdit, QPushButton, QMessageBox,
     QToolButton, QDialog, QFormLayout, QCheckBox, QGroupBox,
     QVBoxLayout as QVBox, QDialogButtonBox, QFileDialog,
     QInputDialog
 )
-from PyQt6.QtCore import Qt, QSize, pyqtSignal, QStandardPaths
-from PyQt6.QtGui import QAction, QKeySequence
+from PySide6.QtCore import Qt, QSize, Signal, QStandardPaths
+from PySide6.QtGui import QAction, QKeySequence
 import os
 
 from .sidebar import Sidebar
@@ -25,7 +25,7 @@ from .status_bar import StatusBarWidget
 class SearchToolBar(QToolBar):
     """Toolbar mit Such-Funktionalität"""
     
-    search_requested = pyqtSignal(str)
+    search_requested = Signal(str)
     
     def __init__(self, parent=None):
         super().__init__("Toolbar", parent)

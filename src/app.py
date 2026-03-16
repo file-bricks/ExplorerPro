@@ -8,8 +8,8 @@ Phase 5: Vollständige Integration aller Module
 import logging
 from pathlib import Path
 
-from PyQt6.QtWidgets import QMessageBox
-from PyQt6.QtCore import QSettings
+from PySide6.QtWidgets import QMessageBox
+from PySide6.QtCore import QSettings
 
 from gui.main_window import MainWindow
 from modules.privacy.privacy_monitor import PrivacyMonitor

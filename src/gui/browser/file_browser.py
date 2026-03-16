@@ -4,17 +4,15 @@
 FileBrowser - Dateilisten-Ansicht mit QuickEditor-Integration
 """
 
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QTableView, QHeaderView, 
-    QMenu, QAbstractItemView, QMessageBox
+from PySide6.QtWidgets import (
+    QWidget, QVBoxLayout, QTableView, QHeaderView,
+    QMenu, QAbstractItemView, QMessageBox, QFileSystemModel
 )
-from PyQt6.QtCore import (
-    Qt, pyqtSignal, QDir, QModelIndex, QSortFilterProxyModel,
+from PySide6.QtCore import (
+    Qt, Signal, QDir, QModelIndex, QSortFilterProxyModel,
     QStandardPaths
 )
-from PyQt6.QtGui import (
-    QFileSystemModel, QAction, QCursor
-)
+from PySide6.QtGui import QAction, QCursor
 import os
 from pathlib import Path
 
@@ -37,12 +35,12 @@ class FileBrowser(QWidget):
     """
     
     # Signale
-    file_selected = pyqtSignal(str)
-    folder_changed = pyqtSignal(str)
-    path_changed = pyqtSignal(str)          # Für Toolbar & StatusBar
-    selection_changed = pyqtSignal(int)     # Anzahl ausgewählter Dateien
-    file_double_clicked = pyqtSignal(str)
-    edit_requested = pyqtSignal(str)        # Datei im Editor öffnen
+    file_selected = Signal(str)
+    folder_changed = Signal(str)
+    path_changed = Signal(str)          # Für Toolbar & StatusBar
+    selection_changed = Signal(int)     # Anzahl ausgewählter Dateien
+    file_double_clicked = Signal(str)
+    edit_requested = Signal(str)        # Datei im Editor öffnen
     
     def __init__(self, parent=None):
         super().__init__(parent)

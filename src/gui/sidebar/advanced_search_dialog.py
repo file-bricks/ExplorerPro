@@ -5,22 +5,22 @@ AdvancedSearchDialog - Erweiterte Suche mit Filtern
 Phase 2: Index & Suche
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QLineEdit,
     QPushButton, QComboBox, QDateEdit, QSpinBox, QCheckBox,
     QGroupBox, QTableWidget, QTableWidgetItem, QHeaderView,
     QLabel, QProgressBar, QDialogButtonBox, QAbstractItemView, QMessageBox
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QDate, QThread, pyqtSlot
+from PySide6.QtCore import Qt, Signal, QDate, QThread, Slot
 from pathlib import Path
 
 
 class AdvancedSearchWorker(QThread):
     """Background-Thread für erweiterte Suche"""
     
-    results_ready = pyqtSignal(list)
-    progress = pyqtSignal(int, int)  # current, total
-    error = pyqtSignal(str)
+    results_ready = Signal(list)
+    progress = Signal(int, int)  # current, total
+    error = Signal(str)
     
     def __init__(self, index, criteria: dict):
         super().__init__()
@@ -52,7 +52,7 @@ class AdvancedSearchDialog(QDialog):
     - Regex-Unterstützung
     """
     
-    result_selected = pyqtSignal(str)
+    result_selected = Signal(str)
     
     # Dateityp-Presets
     FILE_TYPES = [
@@ -374,7 +374,7 @@ class AdvancedSearchDialog(QDialog):
         self.search_worker.error.connect(self._on_search_error)
         self.search_worker.start()
     
-    @pyqtSlot(list)
+    @Slot(list)
     def _on_results_ready(self, results: list):
         """Verarbeitet Suchergebnisse"""
         self.search_btn.setEnabled(True)
@@ -418,7 +418,7 @@ class AdvancedSearchDialog(QDialog):
         count = len(results)
         self.status_label.setText(f"✅ {count} Ergebnis{'se' if count != 1 else ''} gefunden")
     
-    @pyqtSlot(str)
+    @Slot(str)
     def _on_search_error(self, error: str):
         """Fehler bei Suche"""
         self.search_btn.setEnabled(True)

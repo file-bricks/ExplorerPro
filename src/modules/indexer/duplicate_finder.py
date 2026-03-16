@@ -5,14 +5,14 @@ DuplicateFinder - Findet Datei-Duplikate basierend auf Hash
 Phase 2: Index & Suche
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QTreeWidget, QTreeWidgetItem,
     QPushButton, QLabel, QProgressBar, QGroupBox, QSpinBox,
     QComboBox, QFileDialog, QMessageBox, QHeaderView, QDialogButtonBox,
     QMenu, QAbstractItemView
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QThread, pyqtSlot
-from PyQt6.QtGui import QAction, QCursor
+from PySide6.QtCore import Qt, Signal, QThread, Slot
+from PySide6.QtGui import QAction, QCursor
 from pathlib import Path
 from typing import List, Dict
 from collections import defaultdict
@@ -23,10 +23,10 @@ import hashlib
 class DuplicateScanWorker(QThread):
     """Background-Thread für Duplikate-Scan"""
     
-    progress = pyqtSignal(int, int, str)   # current, total, current_file
-    duplicates_found = pyqtSignal(dict)     # {hash: [paths]}
-    error = pyqtSignal(str)
-    finished_scan = pyqtSignal(int, int)    # total_files, duplicate_groups
+    progress = Signal(int, int, str)   # current, total, current_file
+    duplicates_found = Signal(dict)     # {hash: [paths]}
+    error = Signal(str)
+    finished_scan = Signal(int, int)    # total_files, duplicate_groups
     
     def __init__(self, index=None, scan_path: str = None, min_size: int = 0):
         super().__init__()
@@ -375,7 +375,7 @@ class DuplicateFinderDialog(QDialog):
         
         self._reset_ui()
     
-    @pyqtSlot(int, int, str)
+    @Slot(int, int, str)
     def _on_progress(self, current: int, total: int, filename: str):
         """Progress-Update"""
         if total > 0:
@@ -383,13 +383,13 @@ class DuplicateFinderDialog(QDialog):
             self.progress_bar.setValue(percent)
         self.progress_label.setText(f"Prüfe: {filename[:50]}...")
     
-    @pyqtSlot(dict)
+    @Slot(dict)
     def _on_duplicates_found(self, duplicates: dict):
         """Duplikate gefunden"""
         self.duplicate_groups = duplicates
         self._populate_tree(duplicates)
     
-    @pyqtSlot(int, int)
+    @Slot(int, int)
     def _on_scan_finished(self, total_files: int, groups: int):
         """Scan abgeschlossen"""
         self._reset_ui()
@@ -404,7 +404,7 @@ class DuplicateFinderDialog(QDialog):
             self._update_space_info()
             self._update_buttons(True)
     
-    @pyqtSlot(str)
+    @Slot(str)
     def _on_scan_error(self, error: str):
         """Fehler beim Scan"""
         self._reset_ui()
@@ -671,5 +671,5 @@ class DuplicateFinderDialog(QDialog):
     
     def _copy_path(self, path: str):
         """Kopiert Pfad"""
-        from PyQt6.QtWidgets import QApplication
+        from PySide6.QtWidgets import QApplication
         QApplication.clipboard().setText(path)

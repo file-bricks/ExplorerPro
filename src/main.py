@@ -20,8 +20,8 @@ if sys.platform == 'win32':
 # Pfad hinzufügen
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import Qt
+from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import Qt
 
 from app import ExplorerProApp
 

@@ -5,14 +5,14 @@ AppsPanel - App-Launcher im Sidebar (SoftwareCenter-Integration)
 Phase 5: Extras
 """
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QScrollArea,
     QPushButton, QLabel, QLineEdit, QTabWidget, QMenu, QDialog,
     QFormLayout, QComboBox, QDialogButtonBox, QFileDialog,
     QMessageBox, QToolButton
 )
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QPixmap, QCursor
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPixmap, QCursor
 from pathlib import Path
 from typing import List
 from dataclasses import dataclass
@@ -37,9 +37,9 @@ class AppEntry:
 class AppButton(QPushButton):
     """Button für eine App mit Icon und Name"""
     
-    app_clicked = pyqtSignal(object)
-    edit_requested = pyqtSignal(object)
-    delete_requested = pyqtSignal(object)
+    app_clicked = Signal(object)
+    edit_requested = Signal(object)
+    delete_requested = Signal(object)
     
     def __init__(self, app: AppEntry, parent=None):
         super().__init__(parent)
@@ -203,7 +203,7 @@ class AppEditDialog(QDialog):
 class AppsPanel(QWidget):
     """App-Launcher Panel mit Kategorien-Tabs"""
     
-    app_launched = pyqtSignal(str)
+    app_launched = Signal(str)
     
     DEFAULT_CATEGORIES = ["Favoriten", "Entwicklung", "Office", "System", "Allgemein"]
     

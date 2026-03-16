@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import List, Set, Optional
 import pandas as pd
 
-from PyQt6.QtCore import QObject, pyqtSignal
+from PySide6.QtCore import QObject, Signal
 
 
 class BlacklistManager(QObject):
@@ -18,7 +18,7 @@ class BlacklistManager(QObject):
     Unterstützt Import aus Excel und TXT-Dateien.
     """
     
-    list_updated = pyqtSignal()
+    list_updated = Signal()
     
     def __init__(self, config_dir: Optional[Path] = None):
         super().__init__()

@@ -41,7 +41,7 @@ Full architecture: [ARCHITEKTUR.md](ARCHITEKTUR.md)
 ### Prerequisites
 
 - Python >= 3.8
-- PyQt6
+- PySide6
 
 ### Setup
 
@@ -65,8 +65,8 @@ START_ExplorerPro.bat
 
 | Package | Purpose |
 |---------|---------|
-| PyQt6 | GUI framework |
-| PyQt6-QScintilla | Code editor |
+| PySide6 | GUI framework |
+| QScintilla | Code editor |
 | PyMuPDF | PDF preview |
 | watchdog | File monitoring |
 | Pygments | Syntax highlighting |
@@ -76,7 +76,7 @@ START_ExplorerPro.bat
 
 AGPL v3 - See [LICENSE](LICENSE)
 
-This project uses PyQt6 (GPL) and PyMuPDF (AGPL).
+This project uses PySide6 (LGPL) and PyMuPDF (AGPL).
 
 ---
 
@@ -107,7 +107,7 @@ An advanced file explorer with privacy monitor, preview panel, sync manager, and
 ### Requirements
 
 - Python 3.8+
-- PyQt6, PyQt6-QScintilla, PyMuPDF, watchdog, Pygments
+- PySide6, QScintilla, PyMuPDF, watchdog, Pygments
 
 ### Installation
 

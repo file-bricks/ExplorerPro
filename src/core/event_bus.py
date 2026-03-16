@@ -5,7 +5,7 @@ EventBus - Zentrale Event-Verteilung für ExplorerPro
 Ermöglicht lose Kopplung zwischen Komponenten
 """
 
-from PyQt6.QtCore import QObject, pyqtSignal
+from PySide6.QtCore import QObject, Signal
 from typing import Dict, List, Callable
 
 
@@ -19,15 +19,15 @@ class EventBus(QObject):
     _instance = None
     
     # Standard-Events
-    file_selected = pyqtSignal(str)           # Datei ausgewählt
-    folder_changed = pyqtSignal(str)          # Ordner gewechselt
-    search_requested = pyqtSignal(str)        # Suche angefordert
-    search_results = pyqtSignal(list)         # Suchergebnisse
-    index_updated = pyqtSignal()              # Index aktualisiert
-    privacy_status_changed = pyqtSignal(str)  # Ampel-Status (green/yellow/red)
-    file_indexed = pyqtSignal(str)            # Einzelne Datei indiziert
-    error_occurred = pyqtSignal(str)          # Fehler aufgetreten
-    status_message = pyqtSignal(str, int)     # Statusnachricht (text, timeout_ms)
+    file_selected = Signal(str)           # Datei ausgewählt
+    folder_changed = Signal(str)          # Ordner gewechselt
+    search_requested = Signal(str)        # Suche angefordert
+    search_results = Signal(list)         # Suchergebnisse
+    index_updated = Signal()              # Index aktualisiert
+    privacy_status_changed = Signal(str)  # Ampel-Status (green/yellow/red)
+    file_indexed = Signal(str)            # Einzelne Datei indiziert
+    error_occurred = Signal(str)          # Fehler aufgetreten
+    status_message = Signal(str, int)     # Statusnachricht (text, timeout_ms)
     
     def __new__(cls):
         if cls._instance is None:

@@ -15,8 +15,8 @@ from typing import List, Dict, Set, Optional
 from dataclasses import dataclass
 from enum import Enum
 
-from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QObject, Signal
+from PySide6.QtWidgets import QApplication
 
 logging.basicConfig(level=logging.INFO)
 
@@ -93,10 +93,10 @@ class PrivacyMonitor(QObject):
     """
     
     # Signale
-    status_changed = pyqtSignal(str)        # 'green', 'yellow', 'red', 'gray'
-    warning = pyqtSignal(str)               # Warnmeldung
-    alert = pyqtSignal(object)              # PrivacyAlert Objekt
-    clipboard_processed = pyqtSignal(str, str)  # original, anonymized
+    status_changed = Signal(str)        # 'green', 'yellow', 'red', 'gray'
+    warning = Signal(str)               # Warnmeldung
+    alert = Signal(object)              # PrivacyAlert Objekt
+    clipboard_processed = Signal(str, str)  # original, anonymized
     
     def __init__(self, config_dir: Optional[Path] = None):
         super().__init__()

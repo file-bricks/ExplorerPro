@@ -9,13 +9,13 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from PyQt6.QtWidgets import (
+from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QPlainTextEdit,
     QPushButton, QLabel, QSplitter, QTextEdit, QFileDialog,
     QMessageBox, QShortcut
 )
-from PyQt6.QtCore import Qt, QProcess, pyqtSignal
-from PyQt6.QtGui import (
+from PySide6.QtCore import Qt, QProcess, Signal
+from PySide6.QtGui import (
     QFont, QTextCursor, QKeySequence, QTextOption,
     QPainter, QColor
 )
@@ -123,7 +123,7 @@ class LineNumberArea(QPlainTextEdit):
 
 
 # Importiere QTextFormat für FullWidthSelection
-from PyQt6.QtGui import QTextFormat
+from PySide6.QtGui import QTextFormat
 
 
 class LineNumberWidget(QWidget):
@@ -140,8 +140,8 @@ class LineNumberWidget(QWidget):
         self.editor.line_number_area_paint_event(event)
 
 
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtCore import QSize
+from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import QSize
 
 
 class CodeEditor(QPlainTextEdit):
@@ -214,7 +214,7 @@ class QuickEditorDialog(QDialog):
     Basiert auf PythonBox-Funktionalität.
     """
     
-    file_saved = pyqtSignal(str)
+    file_saved = Signal(str)
     
     def __init__(self, filepath: Optional[str] = None, parent=None):
         super().__init__(parent)
@@ -479,7 +479,7 @@ class QuickEditorDialog(QDialog):
     
     def _goto_line(self):
         """Springt zu einer bestimmten Zeile"""
-        from PyQt6.QtWidgets import QInputDialog
+        from PySide6.QtWidgets import QInputDialog
         
         line, ok = QInputDialog.getInt(
             self, "Gehe zu Zeile",
@@ -500,7 +500,7 @@ class QuickEditorDialog(QDialog):
     
     def _find_text(self):
         """Öffnet Such-Dialog"""
-        from PyQt6.QtWidgets import QInputDialog
+        from PySide6.QtWidgets import QInputDialog
         
         text, ok = QInputDialog.getText(
             self, "Suchen", "Suchbegriff:"
