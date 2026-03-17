@@ -1,0 +1,111 @@
+AUFGABEN - ExplorerPro Suite
+============================
+Stand: 13.03.2026
+
+## API/CLI-STEUERBARKEIT (2026-03-15)
+
+[ ] REST-API Einstellungsseite: API aktivieren/deaktivieren, Port, Auth-Token
+[ ] REST-API Server: Dateien browsen, Metadaten lesen/schreiben, Suche, Privacy-Scan
+[ ] CLI-Interface: explorerpro --open <path>, --search <query>, --meta <file>, --sync
+[ ] Fernsteuerbarkeit durch Claude/LLM-Agenten (JSON-RPC oder REST)
+[ ] API-Dokumentation (OpenAPI/Swagger)
+
+## BUGFIXES (Session 2026-03-13, Claude Opus)
+
+[x] HOCH: QMenu Import fehlte in sync_manager.py -- NameError bei Kontextmenue
+[x] HOCH: SQLite Connection Leak in file_index.py -- conn.close() in finally-Block verschoben
+[x] MITTEL: BM25 Sort Order korrigiert -- ORDER BY rank (FTS5 negativ = relevanter)
+[x] MITTEL: has_high Logic in privacy_monitor.py -- defekte Generator-Expression durch Flag ersetzt
+[x] NIEDRIG: min_size Check -- `if min_size:` zu `if min_size is not None:` (0 ist falsy)
+
+## OFFENE BUGS
+
+[x] HOCH: Import-Crash bei "In Editor oeffnen" -- QWidget/QSize/QTextFormat nach
+    Klassendefinition importiert, QShortcut in falschem Modul (QtWidgets statt QtGui)
+    -> Gefixt 2026-03-17 (quick_editor.py)
+[x] NIEDRIG: Operator-Prioritaet in preview_panel.py Typ-Label (ext or "Ordner" if...)
+    -> Gefixt 2026-03-17
+[x] NIEDRIG: HAS_PIL immer True (fehlender PIL-Import im try-Block)
+    -> Gefixt 2026-03-17
+
+## FEATURE-REQUESTS
+
+[ ] PreviewPanel: .txt und .log Dateien als Textvorschau unterstuetzen
+[ ] PreviewPanel: Moeglichst viele Dateiformate unterstuetzen (Office, Audio, etc.)
+[ ] PreviewPanel: Video-Vorschau -- Frame aus den ersten 10 Minuten als Bildvorschau extrahieren
+    (z.B. via ffmpeg/opencv, Thumbnail aus Minute 1-2 fuer repraesentatives Standbild)
+
+## FRUEHERE ANALYSEN
+
+✅ CODE-ANALYSE (12.01.2026)
+c_method_analyzer auf test_app.py: 1 ungenutzter Import (ExplorerProApp)
+→ Beabsichtigt (Import-Test-Datei). Keine Aktion noetig.
+
+⚠️ CODE-ANALYSE app.py (26.01.2026)
+c_method_analyzer auf src/app.py - KRITISCHE BEFUNDE:
+- 8x Signal-Callbacks fehlen (file_browser, preview_panel, status_widget, toolbar)
+- 10x Attribute vor Definition verwendet (status_widget, sidebar, etc.)
+- 17x ungenutzte Imports (QAction, QHBoxLayout, QIcon, etc.)
+- 12x ungenutzte Definitionen
+- 15x fehlende Definitionen
+→ Vermutlich: Methoden sind in Basisklassen oder externen Modulen definiert
+→ TODO: Signal-Verbindungen prüfen, Imports aufräumen
+
+🧨 5. Verbesserungspotenzial (klein, aber wertvoll)
+5.1 MetaStore könnte erweitert werden
+Aktuell speichert er:
+• 	Tags
+• 	Notes
+• 	Kategorien
+Du könntest:
+• 	Custom Metadata
+• 	AI‑Tags (Auto‑Kategorisierung)
+• 	File‑History
+• 	Related Files
+einführen.
+5.2 PreviewPanel könnte Plugins unterstützen
+Damit wäre möglich:
+• 	Markdown Preview
+• 	Audio/Video Preview
+• 	Office Preview (DOCX, XLSX)
+• 	Hex Viewer
+5.3 PrivacyMonitor könnte erweitert werden
+• 	Live‑Maskierung
+• 	Clipboard‑History
+• 	Sensitive‑File‑Scanner
+5.4 SyncManager könnte Versionierung bekommen
+• 	Snapshots
+• 	Diff‑Ansicht
+• 	Konflikt‑U
+
+## ATI-TASKS (Sonnet-Worker 2026-03-14)
+
+[x] ATI-5137: Ungenutzte Imports entfernen -- BEREITS ERLEDIGT 2026-03-14
+    - Alle __init__.py Re-Exports haben bereits __all__ definiert
+    - AST-Analyse: Keine echten ungenutzten Imports in Non-__init__ Dateien
+    - Kein Handlungsbedarf
+
+[x] ATI-5135: Fehlende Signal-Callbacks -- BEREITS ERLEDIGT 2026-03-14
+    - app.py._setup_connections() verbindet alle Signale korrekt
+    - file_browser.file_selected -> preview_panel.show_preview ✓
+    - file_browser.path_changed -> status_widget.update_path ✓
+    - toolbar.back/forward/up_action -> file_browser.go_* ✓
+
+[x] ATI-5139: Fehlende Definitionen -- BEREITS ERLEDIGT 2026-03-14
+    - Alle aufgerufenen Methoden existieren
+    - sidebar.switch_to_search/apps/prompts/sync implementiert ✓
+    - search_panel.show_results implementiert ✓
+    - center_on_screen implementiert ✓
+
+## GITHUB-POLICY Compliance (Stand: 05.03.2026)
+Referenz: .SOFTWARE/GITHUB-POLICY.md
+
+[x] README.md zweisprachig (EN-Abschnitt fehlt) -- DONE 2026-03-08 (Sonnet-Session, EN-Abschnitt erweitert)
+[x] CHANGELOG.md -- BEREITS VORHANDEN (geprueft 2026-03-08)
+[x] CODE_OF_CONDUCT.md -- BEREITS VORHANDEN (geprueft 2026-03-08)
+[x] CONTRIBUTING.md -- BEREITS VORHANDEN (geprueft 2026-03-08)
+
+## MIGRATION PyQt6 -> PySide6 (2026-03-15, Claude Opus)
+
+[x] PyQt6 -> PySide6: 20 Dateien, pyqtSignal->Signal, pyqtSlot->Slot
+[x] Syntax-Check: OK
