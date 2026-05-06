@@ -1,20 +1,23 @@
-# Changelog / Aenderungsprotokoll
+# Changelog / Änderungsprotokoll
 
-Alle wesentlichen Aenderungen an diesem Projekt werden hier dokumentiert.
+Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
-### Hinzugefuegt / Added
--
+### Hinzugefügt / Added
+- GitHub Actions Smoke-Test-Workflow für Python 3.10, 3.11 und 3.12.
+- Repository-Privacy-Policy.
 
-### Geaendert / Changed
--
+### Geändert / Changed
+- README, Contributing Guide und Code of Conduct auf das aktuelle Repository `file-bricks/ExplorerPro` aktualisiert.
+- Öffentliche private Kontaktadresse aus dem Code of Conduct entfernt.
+- `.gitignore` um Test-, Coverage- und Cache-Artefakte erweitert.
 
 ### Behoben / Fixed
--
+- Mojibake in README- und Workflow-Texten bereinigt.
 
-## [1.0.0] - YYYY-MM-DD
+## [1.0.0] - 2026-03-05
 
-### Hinzugefuegt / Added
-- Erstveroeffentlichung / Initial release
+### Hinzugefügt / Added
+- Erstveröffentlichung / Initial release

@@ -325,7 +325,7 @@ Clipboard-Änderung → Pattern-Check (Blacklist) → Ampel-Update
 
 ```bash
 # Ordner öffnen
-cd "C:\Users\User\OneDrive\.SOFTWARE\SUITEN\ExplorerPro"
+cd "<ExplorerPro repository path>"
 
 # Abhängigkeiten installieren
 pip install -r requirements.txt

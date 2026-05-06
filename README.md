@@ -1,52 +1,40 @@
 # ExplorerPro Suite
 
-An advanced file explorer with privacy monitor, preview panel, sync manager, and integrated code editor.
+ExplorerPro is a desktop file explorer for power users. It combines a multi-tab browser, preview panel, privacy monitor, duplicate finder, sync tools, and a lightweight code editor in one PySide6 application.
 
 ## Features
 
-- **File Browser** with multi-tab support and breadcrumb navigation
-- **Preview Panel** for PDF, images, code, and text
-- **Privacy Monitor** -- detection and management of sensitive files
-- **Advanced Search** with filters (type, size, date)
-- **Duplicate Finder** via file hashes
-- **Quick Editor** with syntax highlighting (QScintilla + Pygments)
-- **Prompt Launcher** for AI prompts
-- **Sync Manager** for folder synchronization
-- **App Launcher** for quick access
-- **Status Bar** with file statistics and privacy status
+- **File browser:** multi-tab browsing with breadcrumb navigation and context menus
+- **Preview panel:** PDF, image, source-code, and text preview inside the app
+- **Privacy monitor:** detection and review of sensitive filenames or file contents
+- **Advanced search:** filters for type, size, date, and search text
+- **Duplicate finder:** hash-based duplicate detection
+- **Quick editor:** integrated code editor with QScintilla and Pygments
+- **Sync manager:** folder synchronization with pattern-based exclusions
+- **App launcher:** quick access to configured tools
+- **Prompt launcher:** local prompt collection for AI-assisted workflows
 
-## Architecture
-
-```
-ExplorerPro Suite v1.0
-├── src/
-│   ├── core/           Event bus, file index, settings
-│   ├── gui/
-│   │   ├── browser/    File browser with table view
-│   │   ├── preview/    Preview panel (PDF, images, code)
-│   │   └── sidebar/    Sidebar with search and navigation
-│   └── modules/
-│       ├── editor/     Quick editor with syntax highlighting
-│       ├── indexer/    Duplicate finder
-│       ├── launcher/   App launcher
-│       ├── privacy/    Privacy monitor and blacklist
-│       ├── prompts/    Prompt management
-│       └── sync/       Sync manager
-```
-
-Full architecture: [ARCHITEKTUR.md](ARCHITEKTUR.md)
-
-## Installation
-
-### Prerequisites
-
-- Python >= 3.8
-- PySide6
-
-### Setup
+## Repository
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/file-bricks/ExplorerPro.git
+cd ExplorerPro
+```
+
+## Requirements
+
+- Python 3.8+
+- PySide6
+- QScintilla
+- PyMuPDF
+- watchdog
+- Pygments
+- pandas and openpyxl for blacklist table imports
+
+Install the runtime dependencies:
+
+```bash
+python -m pip install -r requirements.txt
 ```
 
 ## Usage
@@ -55,89 +43,69 @@ pip install -r requirements.txt
 python src/main.py
 ```
 
-Or via the batch file:
+On Windows, the included launcher can be started from the project root:
 
-```bash
+```bat
 START_ExplorerPro.bat
 ```
 
+## Architecture
+
+```text
+ExplorerPro Suite
+|-- src/
+|   |-- core/           Event bus, file index, settings
+|   |-- gui/
+|   |   |-- browser/    File browser with table view
+|   |   |-- preview/    Preview panel for files
+|   |   `-- sidebar/    Search and navigation panels
+|   `-- modules/
+|       |-- editor/     Quick editor and syntax highlighting
+|       |-- indexer/    Duplicate finder
+|       |-- launcher/   App launcher
+|       |-- privacy/    Privacy monitor and blacklist
+|       |-- prompts/    Prompt management
+|       `-- sync/       Sync manager
+`-- tests/              Import and bootstrap smoke tests
+```
+
+Full architecture notes are in [ARCHITEKTUR.md](ARCHITEKTUR.md).
+
 ## Tests
 
-Der aktuelle lokale Smoke-Check deckt Import- und Bootstrap-Pfade über
-`test_imports.py`, `test_app.py` und `tests/` ab.
+Run the local smoke suite:
+
+```bash
+python -m pytest -q
+python -m compileall -q src tests manage_translations.py translator.py
+```
+
+The GitHub Actions workflow runs the same import-focused smoke tests on Python 3.10, 3.11, and 3.12.
+
+## Privacy
+
+ExplorerPro works on local files selected by the user. The application does not require a cloud backend or external account for its core features. Do not commit local scan results, private folder listings, logs, build outputs, or test lock files; the project `.gitignore` excludes the known local artifacts.
+
+See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for the repository privacy posture.
 
 ## Screenshot
 
 ![ExplorerPro Main Window](README/screenshots/main.png)
 
-## Dependencies
-
-| Package | Purpose |
-|---------|---------|
-| PySide6 | GUI framework |
-| QScintilla | Code editor |
-| PyMuPDF | PDF preview |
-| watchdog | File monitoring |
-| Pygments | Syntax highlighting |
-| pandas | Table import |
-
 ## License
 
-AGPL v3 - See [LICENSE](LICENSE)
+ExplorerPro is licensed under AGPL v3. See [LICENSE](LICENSE).
 
-This project uses PySide6 (LGPL) and PyMuPDF (AGPL).
+This project uses PySide6 under LGPL-compatible terms and PyMuPDF under AGPL terms.
 
----
+## Status
 
-**Version:** 1.0.0
-**Autor:** Lukas Geiger
-**Letzte Aktualisierung:** Maerz 2026
-
----
-
-## English
-
-### ExplorerPro Suite
-
-An advanced file explorer with privacy monitor, preview panel, sync manager, and integrated code editor. Designed as a power-user replacement for standard OS file explorers.
-
-### Features
-
-- **File Browser:** Multi-tab browsing with breadcrumb navigation and context menus
-- **Preview Panel:** In-app preview for PDF, images, code (syntax-highlighted), and text files
-- **Privacy Monitor:** Automatic detection and management of sensitive/private files
-- **Advanced Search:** Filter by type, size, and date
-- **Duplicate Finder:** Hash-based duplicate detection across folders
-- **Quick Editor:** Built-in code editor with syntax highlighting (QScintilla + Pygments)
-- **Sync Manager:** Folder synchronization with pattern-based exclusions
-- **App Launcher:** Quick access to configured applications
-- **Prompt Launcher:** Integrated AI prompt management
-
-### Requirements
-
-- Python 3.8+
-- PySide6, QScintilla, PyMuPDF, watchdog, Pygments
-
-### Installation
-
-```bash
-git clone https://github.com/lukisch/REL-PUB_ExplorerPro_SUITE.git
-cd REL-PUB_ExplorerPro_SUITE
-pip install -r requirements.txt
-python src/main.py
-```
-
-### License
-
-AGPL v3 — See [LICENSE](LICENSE) for details.
-
----
+- Version: 1.0.0
+- Maintainer: Lukas Geiger
+- Last repository maintenance: 2026-05-07
 
 ## Haftung / Liability
 
-Dieses Projekt ist eine **unentgeltliche Open-Source-Schenkung** im Sinne der §§ 516 ff. BGB. Die Haftung des Urhebers ist gemäß **§ 521 BGB** auf **Vorsatz und grobe Fahrlässigkeit** beschränkt. Ergänzend gelten die Haftungsausschlüsse aus GPL-3.0 / MIT / Apache-2.0 §§ 15–16 (je nach gewählter Lizenz).
+Dieses Projekt wird unentgeltlich als Open-Source-Software bereitgestellt. Nutzung auf eigenes Risiko. Es gibt keine Wartungszusage, Verfügbarkeitsgarantie, Gewähr für Fehlerfreiheit oder Eignung für einen bestimmten Zweck.
 
-Nutzung auf eigenes Risiko. Keine Wartungszusage, keine Verfügbarkeitsgarantie, keine Gewähr für Fehlerfreiheit oder Eignung für einen bestimmten Zweck.
-
-This project is an unpaid open-source donation. Liability is limited to intent and gross negligence (§ 521 German Civil Code). Use at your own risk. No warranty, no maintenance guarantee, no fitness-for-purpose assumed.
-
+This project is provided as unpaid open-source software. Use it at your own risk. No warranty, maintenance promise, availability guarantee, or fitness for a particular purpose is assumed.

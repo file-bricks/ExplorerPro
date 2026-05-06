@@ -511,7 +511,7 @@ class MainWindow(QMainWindow):
             self,
             "Über ExplorerPro",
             """<h2>ExplorerPro</h2>
-            <p>Version 0.1.0</p>
+            <p>Version 1.0.0</p>
             <p>Ein intelligenter Datei-Explorer mit:</p>
             <ul>
                 <li>Datenbank-gestützter Volltextsuche</li>

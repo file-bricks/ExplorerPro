@@ -13,6 +13,12 @@ __pycache__/
 .eggs/
 dist/
 build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
 
 # ---- Virtuelle Umgebungen ----
 venv/
@@ -69,6 +75,8 @@ PLAN.txt
 _archive/
 _private/
 *.log
+*.tmp
+*.bak
 
 # ---- Entwicklungs- und Backup-Ordner ----
 _BACKUP/
