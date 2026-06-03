@@ -654,20 +654,28 @@ class DuplicateFinderDialog(QDialog):
     
     def _open_file(self, path: str):
         """Öffnet Datei"""
-        import subprocess
-        if os.name == 'nt':
-            os.startfile(path)
-        else:
-            subprocess.run(['xdg-open', path])
-    
+        self._open_path_with_system(path, "Datei öffnen")
+
     def _open_folder(self, path: str):
         """Öffnet Ordner"""
         folder = str(Path(path).parent)
+        self._open_path_with_system(folder, "Ordner öffnen")
+
+    def _open_path_with_system(self, path: str, title: str):
+        """Öffnet einen Pfad mit dem System-Handler und zeigt UI-Fehler sauber an."""
         import subprocess
-        if os.name == 'nt':
-            os.startfile(folder)
-        else:
-            subprocess.run(['xdg-open', folder])
+
+        try:
+            if os.name == 'nt':
+                os.startfile(path)
+            else:
+                subprocess.run(['xdg-open', path], check=True)
+        except (OSError, subprocess.CalledProcessError) as exc:
+            QMessageBox.warning(
+                self,
+                title,
+                f"Der Pfad konnte nicht geöffnet werden:\n{path}\n\n{exc}"
+            )
     
     def _copy_path(self, path: str):
         """Kopiert Pfad"""

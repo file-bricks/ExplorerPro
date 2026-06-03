@@ -1,7 +1,7 @@
 # =============================================================================
-# .gitignore Template fuer Software Entwicklung Projekte
+# .gitignore Template für Software-Entwicklungsprojekte
 # Kopieren und als .gitignore im Projektroot ablegen
-# Projektspezifische Eintraege am Ende anfuegen
+# Projektspezifische Einträge am Ende anfügen
 # =============================================================================
 
 # ---- Python ----
@@ -37,7 +37,7 @@ BUGREPORT_*.md
 DIAGNOSE_REPORT.md
 ANALYSE_*.md
 
-# ---- Persoenliche / Sensible Daten ----
+# ---- Persönliche / Sensible Daten ----
 _USER/
 .env
 .env.*
@@ -55,6 +55,7 @@ releases/
 *.msix
 *.appx
 *.spec
+!ExplorerPro.spec
 
 # ---- IDE & Editoren ----
 .claude/
@@ -92,3 +93,6 @@ TESTBERICHT.txt
 # Test-Dateien im Root (src/tests sind getrackt)
 /test*.py
 /test*.bat
+DECISIONS.md
+TODO.md
+DONE.md

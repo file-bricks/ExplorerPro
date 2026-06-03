@@ -1,5 +1,7 @@
 # ExplorerPro Suite
 
+[Deutsch](README_de.md) | [Machine-readable context](llms.txt)
+
 ExplorerPro is a desktop file explorer for power users. It combines a multi-tab browser, preview panel, privacy monitor, duplicate finder, sync tools, and a lightweight code editor in one PySide6 application.
 
 ## Features
@@ -21,9 +23,15 @@ git clone https://github.com/file-bricks/ExplorerPro.git
 cd ExplorerPro
 ```
 
+## Platform Plan
+
+ExplorerPro remains a desktop-first application. Windows is the primary release target; macOS and Linux are source/build smoke targets. A future web or mobile companion is limited to redacted review exports and is not intended to replace the local file manager.
+
+The planned exchange format is documented in [EXPORTFORMAT.md](EXPORTFORMAT.md). The platform and store-readiness plan is documented in [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md).
+
 ## Requirements
 
-- Python 3.8+
+- Python 3.10+
 - PySide6
 - QScintilla
 - PyMuPDF
@@ -80,7 +88,7 @@ python -m pytest -q
 python -m compileall -q src tests manage_translations.py translator.py
 ```
 
-The GitHub Actions workflow runs the same import-focused smoke tests on Python 3.10, 3.11, and 3.12.
+The current smoke suite covers import bootstrapping, search-filter forwarding, duplicate-finder open-path error handling, and file-browser open-path error handling. The GitHub Actions workflow runs the same smoke tests on Python 3.10, 3.11, and 3.12.
 
 ## Privacy
 
@@ -102,7 +110,7 @@ This project uses PySide6 under LGPL-compatible terms and PyMuPDF under AGPL ter
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Last repository maintenance: 2026-05-07
+- Last repository maintenance: 2026-06-04
 
 ## Haftung / Liability
 

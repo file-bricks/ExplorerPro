@@ -14,6 +14,7 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import QAction, QCursor
 import os
+import subprocess
 from pathlib import Path
 
 # Editor-Extensions
@@ -313,12 +314,19 @@ class FileBrowser(QWidget):
         """Öffnet eine Datei/Ordner mit System-Standard"""
         if os.path.isdir(path):
             self.navigate_to(path)
-        else:
-            import subprocess
+            return
+
+        try:
             if os.name == 'nt':
                 os.startfile(path)
             else:
-                subprocess.run(['xdg-open', path])
+                subprocess.run(['xdg-open', path], check=True)
+        except (OSError, subprocess.CalledProcessError) as exc:
+            QMessageBox.warning(
+                self,
+                "Datei öffnen",
+                f"Die Datei konnte nicht geöffnet werden:\n{path}\n\n{exc}"
+            )
     
     def _edit_file(self, path: str):
         """Öffnet Datei im QuickEditor"""

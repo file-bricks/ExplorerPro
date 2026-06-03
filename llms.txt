@@ -1,0 +1,41 @@
+# ExplorerPro Suite
+
+Canonical repository: https://github.com/file-bricks/ExplorerPro
+Owner: file-bricks
+Primary language: Python
+Primary UI stack: PySide6
+License: AGPL-3.0
+
+## Summary
+
+ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, file preview, privacy checks, duplicate detection, folder sync, app launching, prompt management, and a lightweight code editor.
+
+## Current Scope
+
+- Primary platform: Windows desktop.
+- Source/build smoke targets: macOS and Linux.
+- Future companion scope: local display of redacted `explorerpro-workspace-v1.json` exports only.
+- Non-goals: cloud sync, web upload service, mobile file-manager clone, or automatic export of private file contents.
+
+## Important Files
+
+- `README.md`: English GitHub entry point.
+- `README_de.md`: German entry point.
+- `PORTIERUNGSPLAN.md`: Platform, store-readiness, and companion plan.
+- `EXPORTFORMAT.md`: Planned redacted workspace exchange format.
+- `PRIVACY_POLICY.md`: Repository privacy posture.
+- `src/main.py`: Application entry point.
+- `src/gui/`: Main UI components.
+- `src/modules/indexer/duplicate_finder.py`: Duplicate-finder UI and actions.
+- `tests/`: Smoke and regression tests.
+
+## Verification
+
+Use these local checks before publishing changes:
+
+```bash
+python -m pytest -q
+python -m compileall -q src tests manage_translations.py translator.py
+```
+
+The GitHub workflow `ExplorerPro Smoke Tests` runs the smoke suite on Python 3.10, 3.11, and 3.12.

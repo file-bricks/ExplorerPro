@@ -99,6 +99,7 @@ class SearchWorker(QThread):
                 category=self.filters.get('category'),
                 min_size=self.filters.get('min_size'),
                 max_size=self.filters.get('max_size'),
+                content_only=self.filters.get('content_only', False),
                 limit=self.filters.get('limit', 100)
             )
             

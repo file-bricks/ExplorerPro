@@ -7,6 +7,19 @@ echo   ExplorerPro - Usertest
 echo ============================================================
 echo.
 
+cd /d "%~dp0"
+
+echo [INFO] Starte ExplorerPro...
+echo.
+
+set "EXE_PATH=%~dp0dist\ExplorerPro\ExplorerPro.exe"
+if exist "%EXE_PATH%" (
+    echo [INFO] Starte EXE: %EXE_PATH%
+    "%EXE_PATH%"
+    set EXIT_CODE=%ERRORLEVEL%
+    goto after_start
+)
+
 REM Ins src-Verzeichnis wechseln (relativ zur BAT-Datei)
 cd /d "%~dp0src"
 if %ERRORLEVEL% NEQ 0 (
@@ -16,14 +29,14 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-echo [INFO] Starte ExplorerPro...
+echo [INFO] Keine EXE gefunden, starte Python-Fallback.
 echo [INFO] Pfad: %CD%
 echo.
 
-REM App starten und Exit-Code speichern
 python main.py
 set EXIT_CODE=%ERRORLEVEL%
 
+:after_start
 echo.
 if %EXIT_CODE% EQU 0 (
     echo [OK] ExplorerPro normal beendet.
@@ -34,7 +47,7 @@ if %EXIT_CODE% EQU 0 (
     echo.
     if %EXIT_CODE% EQU 3221225725 (
         echo [!] Access Violation 0xC0000005 - PyQt6/DLL Problem
-        echo [!] Siehe BUGREPORT_StartupCrash.md fuer Details
+        echo [!] Siehe BUGREPORT_StartupCrash.md für Details
     )
     if %EXIT_CODE% EQU 1 (
         echo [!] Python-Fehler - siehe Ausgabe oben
