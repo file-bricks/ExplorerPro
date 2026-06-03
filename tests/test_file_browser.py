@@ -33,7 +33,7 @@ def test_open_file_shows_warning_when_windows_has_no_association(tmp_path, monke
 
     warning = Mock()
     monkeypatch.setattr(QMessageBox, "warning", warning)
-    monkeypatch.setattr(file_browser_module.os, "name", "nt", raising=False)
+    monkeypatch.setattr(file_browser_module.sys, "platform", "win32", raising=False)
     monkeypatch.setattr(
         file_browser_module.os,
         "startfile",

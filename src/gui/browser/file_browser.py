@@ -15,6 +15,7 @@ from PySide6.QtCore import (
 from PySide6.QtGui import QAction, QCursor
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 # Editor-Extensions
@@ -317,7 +318,7 @@ class FileBrowser(QWidget):
             return
 
         try:
-            if os.name == 'nt':
+            if sys.platform.startswith('win'):
                 os.startfile(path)
             else:
                 subprocess.run(['xdg-open', path], check=True)

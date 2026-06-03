@@ -18,6 +18,7 @@ from typing import List, Dict
 from collections import defaultdict
 import os
 import hashlib
+import sys
 
 
 class DuplicateScanWorker(QThread):
@@ -666,7 +667,7 @@ class DuplicateFinderDialog(QDialog):
         import subprocess
 
         try:
-            if os.name == 'nt':
+            if sys.platform.startswith('win'):
                 os.startfile(path)
             else:
                 subprocess.run(['xdg-open', path], check=True)

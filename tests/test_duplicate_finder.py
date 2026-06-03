@@ -35,7 +35,7 @@ def test_duplicate_finder_open_file_shows_warning_when_windows_has_no_associatio
 
     warning = Mock()
     monkeypatch.setattr(QMessageBox, "warning", warning)
-    monkeypatch.setattr(duplicate_finder_module.os, "name", "nt", raising=False)
+    monkeypatch.setattr(duplicate_finder_module.sys, "platform", "win32", raising=False)
     monkeypatch.setattr(
         duplicate_finder_module.os,
         "startfile",
@@ -65,7 +65,7 @@ def test_duplicate_finder_open_folder_shows_warning_when_windows_has_no_associat
 
     warning = Mock()
     monkeypatch.setattr(QMessageBox, "warning", warning)
-    monkeypatch.setattr(duplicate_finder_module.os, "name", "nt", raising=False)
+    monkeypatch.setattr(duplicate_finder_module.sys, "platform", "win32", raising=False)
     monkeypatch.setattr(
         duplicate_finder_module.os,
         "startfile",
