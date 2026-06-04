@@ -42,6 +42,17 @@ ExplorerPro bleibt zuerst eine Desktop-App. Windows ist die Hauptplattform und S
 
 Das geplante Austauschformat ist in [EXPORTFORMAT.md](EXPORTFORMAT.md) dokumentiert. Der Plattform- und Store-Plan steht in [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md).
 
+## Windows Store
+
+Die lokale Windows-Store-Basis liegt jetzt in
+[store_package.json](store_package.json), [STORE_LISTING.md](STORE_LISTING.md),
+[SUPPORT.md](SUPPORT.md) und [WINDOWS_STORE_PREP.md](WINDOWS_STORE_PREP.md).
+Der aktuelle Basisscreenshot liegt unter
+[`README/screenshots/main.png`](README/screenshots/main.png); das geplante
+Store-Screenshot-Set ist in
+[`README/screenshots/store/README.md`](README/screenshots/store/README.md)
+dokumentiert.
+
 ## Tests
 
 ```bash
@@ -56,6 +67,7 @@ Die Tests decken Import-Smokes, Weitergabe des Suchfilters "Im Inhalt", Fehlerbe
 ExplorerPro arbeitet mit lokal gewählten Dateien. Für die Kernfunktionen sind kein Cloud-Backend und kein externes Konto nötig. Lokale Scan-Ergebnisse, private Dateilisten, Logs, Build-Ausgaben und Test-Artefakte gehören nicht ins Repository.
 
 Siehe [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
+Store-bezogene Supporthinweise stehen in [SUPPORT.md](SUPPORT.md).
 
 ## Screenshot
 

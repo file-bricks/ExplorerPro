@@ -86,9 +86,8 @@ Für Plattformwechsel und einen späteren Companion ist ausschließlich ein bewu
 | Priorität | Schritt | Ergebnis |
 |---|---|---|
 | P0 | Drittanbieter-Lizenzen und bestehende Security-Notizen abschließen | `THIRD_PARTY_LICENSES.txt` vorhanden; QScintilla/PyMuPDF/Pygments/PySide6 sauber dokumentiert. |
-| P0 | Windows-Store-Basis vorbereiten | `store_package.json`, Privacy-/Support-URL, Store-Listing, Store-Screenshots und Pretest-Plan stehen. |
+| P0 | Windows-Store-Basis vorbereiten | DONE 2026-06-04: `store_package.json`, Privacy-/Support-URL, `STORE_LISTING.md`, Screenshot-Inventar und `WINDOWS_STORE_PREP.md` angelegt. |
 | P1 | macOS-/Linux-Smokes definieren | Minimaler Start-, Such-, Preview- und Duplicate-Finder-Smoke auf beiden Plattformen. |
 | P1 | Exportformat implementierbar machen | Read-only Export `explorerpro-workspace-v1.json` für Einstellungen, redigierte Reports und Referenzen ohne Dateiinhalt. |
 | P2 | Web/PWA-Companion entscheiden | Nur starten, wenn der Export real existiert und ein redigierter Review-Workflow belegbar ist. |
 | P3 | Mobile erneut bewerten | Android/iOS erst prüfen, wenn ein eigenständiger mobiler Usecase dokumentiert ist. |
-

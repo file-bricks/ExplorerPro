@@ -10,6 +10,8 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Repository-Privacy-Policy.
 - `README_de.md` und `llms.txt` als deutschsprachige und maschinenlesbare Projektkontexte.
 - PyInstaller-Spec und Build-Launcher für reproduzierbarere Windows-Builds.
+- Windows-Store-Basis mit `store_package.json`, `STORE_LISTING.md`, `SUPPORT.md`,
+  `WINDOWS_STORE_PREP.md`, Screenshot-Inventar und Store-Material-Test.
 
 ### Geändert / Changed
 - README, Contributing Guide und Code of Conduct auf das aktuelle Repository `file-bricks/ExplorerPro` aktualisiert.
@@ -17,6 +19,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - `.gitignore` um Test-, Coverage- und Cache-Artefakte erweitert.
 - Community-Workflows und Testworkflow auf aktuelle GitHub-Actions-Major-Versionen aktualisiert.
 - README mit Plattformplan, Exportformat und aktuellem Wartungsstand abgeglichen.
+- Portierungsplan markiert die Windows-Store-Basis jetzt als erledigten P0-Schritt.
 
 ### Behoben / Fixed
 - Die Such-Checkbox "Im Inhalt" wird jetzt an den Index-Worker weitergereicht.

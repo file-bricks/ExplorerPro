@@ -29,6 +29,16 @@ ExplorerPro remains a desktop-first application. Windows is the primary release 
 
 The planned exchange format is documented in [EXPORTFORMAT.md](EXPORTFORMAT.md). The platform and store-readiness plan is documented in [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md).
 
+## Windows Store
+
+The Windows Store base artifacts are now tracked locally in
+[store_package.json](store_package.json), [STORE_LISTING.md](STORE_LISTING.md),
+[SUPPORT.md](SUPPORT.md), and [WINDOWS_STORE_PREP.md](WINDOWS_STORE_PREP.md).
+The current baseline screenshot lives in
+[`README/screenshots/main.png`](README/screenshots/main.png); the planned store
+shot set is documented in
+[`README/screenshots/store/README.md`](README/screenshots/store/README.md).
+
 ## Requirements
 
 - Python 3.10+
@@ -95,6 +105,7 @@ The current smoke suite covers import bootstrapping, search-filter forwarding, d
 ExplorerPro works on local files selected by the user. The application does not require a cloud backend or external account for its core features. Do not commit local scan results, private folder listings, logs, build outputs, or test lock files; the project `.gitignore` excludes the known local artifacts.
 
 See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for the repository privacy posture.
+Store-facing support details live in [SUPPORT.md](SUPPORT.md).
 
 ## Screenshot
 
