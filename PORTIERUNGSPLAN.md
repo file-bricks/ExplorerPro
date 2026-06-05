@@ -87,7 +87,14 @@ Für Plattformwechsel und einen späteren Companion ist ausschließlich ein bewu
 |---|---|---|
 | P0 | Drittanbieter-Lizenzen und bestehende Security-Notizen abschließen | `THIRD_PARTY_LICENSES.txt` vorhanden; QScintilla/PyMuPDF/Pygments/PySide6 sauber dokumentiert. |
 | P0 | Windows-Store-Basis vorbereiten | DONE 2026-06-04: `store_package.json`, Privacy-/Support-URL, `STORE_LISTING.md`, Screenshot-Inventar und `WINDOWS_STORE_PREP.md` angelegt. |
-| P1 | macOS-/Linux-Smokes definieren | Minimaler Start-, Such-, Preview- und Duplicate-Finder-Smoke auf beiden Plattformen. |
+| P1 | macOS-/Linux-Smokes definieren | DONE 2026-06-05: `tests/source_platform_smoke.py` prüft Offscreen-Start, Suche, Vorschau, Duplikat-Scan und Konfigurationspfade; CI läuft auf `ubuntu-latest` und `macos-latest`. |
 | P1 | Exportformat implementierbar machen | Read-only Export `explorerpro-workspace-v1.json` für Einstellungen, redigierte Reports und Referenzen ohne Dateiinhalt. |
 | P2 | Web/PWA-Companion entscheiden | Nur starten, wenn der Export real existiert und ein redigierter Review-Workflow belegbar ist. |
 | P3 | Mobile erneut bewerten | Android/iOS erst prüfen, wenn ein eigenständiger mobiler Usecase dokumentiert ist. |
+
+## Erledigter Plattformschritt 2026-06-05
+
+- `src/core/platform_utils.py` bündelt das Desktop-Öffnen jetzt plattformgerecht:
+  Windows via `os.startfile`, macOS via `open`, Linux via `xdg-open`.
+- `file_browser.py`, `duplicate_finder.py` und `apps_panel.py` nutzen denselben Pfad, damit Dateifenster und Ordner-Launcher auf macOS nicht mehr am Linux-Handler hängen.
+- `tests/source_platform_smoke.py` deckt auf echter Desktop-Codebasis den Start, Textvorschau mit echten Umlauten, Suchergebnis-Anzeige, Duplikat-Scan und den Konfigurationspfad ab.

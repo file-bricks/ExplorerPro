@@ -13,7 +13,6 @@ if str(SRC_DIR) not in sys.path:
 
 from PySide6.QtWidgets import QApplication, QMessageBox
 
-from modules.indexer import duplicate_finder as duplicate_finder_module
 from modules.indexer.duplicate_finder import DuplicateFinderDialog
 
 
@@ -35,12 +34,9 @@ def test_duplicate_finder_open_file_shows_warning_when_windows_has_no_associatio
 
     warning = Mock()
     monkeypatch.setattr(QMessageBox, "warning", warning)
-    monkeypatch.setattr(duplicate_finder_module.sys, "platform", "win32", raising=False)
     monkeypatch.setattr(
-        duplicate_finder_module.os,
-        "startfile",
+        "modules.indexer.duplicate_finder.open_path_with_system",
         Mock(side_effect=OSError(1155, "no application associated")),
-        raising=False,
     )
 
     dialog._open_file(str(file_path))
@@ -65,12 +61,9 @@ def test_duplicate_finder_open_folder_shows_warning_when_windows_has_no_associat
 
     warning = Mock()
     monkeypatch.setattr(QMessageBox, "warning", warning)
-    monkeypatch.setattr(duplicate_finder_module.sys, "platform", "win32", raising=False)
     monkeypatch.setattr(
-        duplicate_finder_module.os,
-        "startfile",
+        "modules.indexer.duplicate_finder.open_path_with_system",
         Mock(side_effect=OSError(1155, "no application associated")),
-        raising=False,
     )
 
     dialog._open_folder(str(file_path))

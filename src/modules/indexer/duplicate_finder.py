@@ -18,7 +18,9 @@ from typing import List, Dict
 from collections import defaultdict
 import os
 import hashlib
-import sys
+import subprocess
+
+from core.platform_utils import open_path_with_system
 
 
 class DuplicateScanWorker(QThread):
@@ -664,13 +666,8 @@ class DuplicateFinderDialog(QDialog):
 
     def _open_path_with_system(self, path: str, title: str):
         """Öffnet einen Pfad mit dem System-Handler und zeigt UI-Fehler sauber an."""
-        import subprocess
-
         try:
-            if sys.platform.startswith('win'):
-                os.startfile(path)
-            else:
-                subprocess.run(['xdg-open', path], check=True)
+            open_path_with_system(path)
         except (OSError, subprocess.CalledProcessError) as exc:
             QMessageBox.warning(
                 self,

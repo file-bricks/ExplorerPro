@@ -13,7 +13,6 @@ if str(SRC_DIR) not in sys.path:
 
 from PySide6.QtWidgets import QApplication, QMessageBox
 
-from gui.browser import file_browser as file_browser_module
 from gui.browser.file_browser import FileBrowser
 
 
@@ -33,12 +32,9 @@ def test_open_file_shows_warning_when_windows_has_no_association(tmp_path, monke
 
     warning = Mock()
     monkeypatch.setattr(QMessageBox, "warning", warning)
-    monkeypatch.setattr(file_browser_module.sys, "platform", "win32", raising=False)
     monkeypatch.setattr(
-        file_browser_module.os,
-        "startfile",
+        "gui.browser.file_browser.open_path_with_system",
         Mock(side_effect=OSError(1155, "no application associated")),
-        raising=False,
     )
 
     browser._open_file(str(file_path))

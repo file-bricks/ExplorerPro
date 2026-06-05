@@ -15,8 +15,9 @@ from PySide6.QtCore import (
 from PySide6.QtGui import QAction, QCursor
 import os
 import subprocess
-import sys
 from pathlib import Path
+
+from core.platform_utils import open_path_with_system
 
 # Editor-Extensions
 EDITOR_EXTENSIONS = {
@@ -318,10 +319,7 @@ class FileBrowser(QWidget):
             return
 
         try:
-            if sys.platform.startswith('win'):
-                os.startfile(path)
-            else:
-                subprocess.run(['xdg-open', path], check=True)
+            open_path_with_system(path)
         except (OSError, subprocess.CalledProcessError) as exc:
             QMessageBox.warning(
                 self,

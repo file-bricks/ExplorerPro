@@ -20,6 +20,8 @@ import json
 import os
 import subprocess
 
+from core.platform_utils import open_path_with_system
+
 
 @dataclass
 class AppEntry:
@@ -106,10 +108,10 @@ class AppButton(QPushButton):
     
     def _open_folder(self):
         folder = str(Path(self.app.path).parent)
-        if os.name == 'nt':
-            os.startfile(folder)
-        else:
-            subprocess.run(['xdg-open', folder])
+        try:
+            open_path_with_system(folder)
+        except (OSError, subprocess.CalledProcessError) as exc:
+            QMessageBox.warning(self, "Ordner öffnen", f"Der Ordner konnte nicht geöffnet werden:\n{folder}\n\n{exc}")
 
 
 class AppEditDialog(QDialog):

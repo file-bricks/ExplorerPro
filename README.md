@@ -98,7 +98,7 @@ python -m pytest -q
 python -m compileall -q src tests manage_translations.py translator.py
 ```
 
-The current smoke suite covers import bootstrapping, search-filter forwarding, duplicate-finder open-path error handling, and file-browser open-path error handling. The GitHub Actions workflow runs the same smoke tests on Python 3.10, 3.11, and 3.12.
+The current smoke suite covers import bootstrapping, search-filter forwarding, duplicate-finder open-path error handling, and file-browser open-path error handling. An additional desktop source smoke lives in `tests/source_platform_smoke.py` and exercises startup, search, preview, duplicate scanning, and config-path creation on Linux and macOS runners. GitHub Actions runs the pytest smoke suite on Python 3.10, 3.11, and 3.12 plus the dedicated desktop-platform smoke on `ubuntu-latest` and `macos-latest`.
 
 ## Privacy
 
