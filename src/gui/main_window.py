@@ -406,7 +406,7 @@ class MainWindow(QMainWindow):
         try:
             from core.settings_manager import SettingsManager
             from core.export_service import WorkspaceExporter
-            settings = SettingsManager.instance()._settings if SettingsManager.instance() else {}
+            settings = SettingsManager.instance()._settings
             exporter = WorkspaceExporter(settings=settings)
             exporter.save_export(Path(output_path))
             self.statusBar().showMessage(f"✅ Exportiert: {output_path}", 5000)
