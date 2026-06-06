@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QSize, Signal, QStandardPaths
 from PySide6.QtGui import QAction, QKeySequence
 import os
+from pathlib import Path
 
 from .sidebar import Sidebar
 from .browser.file_browser import FileBrowser
@@ -216,7 +217,14 @@ class MainWindow(QMainWindow):
         file_menu.addAction(open_folder_action)
         
         file_menu.addSeparator()
-        
+
+        export_workspace_action = QAction("Arbeitsbereich exportieren...", self)
+        export_workspace_action.setShortcut(QKeySequence("Ctrl+E"))
+        export_workspace_action.triggered.connect(self._export_workspace)
+        file_menu.addAction(export_workspace_action)
+
+        file_menu.addSeparator()
+
         exit_action = QAction("Beenden", self)
         exit_action.setShortcut(QKeySequence("Alt+F4"))
         exit_action.triggered.connect(self.close)
@@ -385,6 +393,26 @@ class MainWindow(QMainWindow):
     
     # ===== Menü-Aktionen =====
     
+    def _export_workspace(self):
+        """Exportiert den Arbeitsbereich als explorerpro-workspace-v1.json."""
+        output_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Arbeitsbereich exportieren",
+            str(Path.home() / "explorerpro-workspace.json"),
+            "JSON-Dateien (*.json)",
+        )
+        if not output_path:
+            return
+        try:
+            from core.settings_manager import SettingsManager
+            from core.export_service import WorkspaceExporter
+            settings = SettingsManager.instance()._settings if SettingsManager.instance() else {}
+            exporter = WorkspaceExporter(settings=settings)
+            exporter.save_export(Path(output_path))
+            self.statusBar().showMessage(f"✅ Exportiert: {output_path}", 5000)
+        except Exception as e:
+            QMessageBox.warning(self, "Export fehlgeschlagen", str(e))
+
     def _open_folder(self):
         """Öffnet einen Ordner-Dialog"""
         folder = QFileDialog.getExistingDirectory(
