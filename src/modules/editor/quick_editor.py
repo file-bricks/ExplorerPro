@@ -522,7 +522,11 @@ class QuickEditorDialog(QDialog):
 
             if reply == QMessageBox.StandardButton.Save:
                 self._save_file()
-                event.accept()
+                if not self._modified:
+                    event.accept()
+                else:
+                    event.ignore()
+                    return
             elif reply == QMessageBox.StandardButton.Discard:
                 event.accept()
             else:

@@ -1,6 +1,8 @@
 """
 Bugfix-Test: quick_editor.py QuickEditorDialog.closeEvent() –
-Bei Klick auf 'Abbrechen' darf ein laufender Prozess NICHT gekillt werden.
+(1) Bei Klick auf 'Abbrechen' darf ein laufender Prozess NICHT gekillt werden.
+(2) Bei Klick auf 'Speichern' + fehlschlagendem _save_file() darf der Dialog
+    NICHT geschlossen werden (event.accept() darf nicht feuern).
 """
 from __future__ import annotations
 
@@ -95,3 +97,53 @@ class TestCloseEventCancelFix:
 
         mock_process.kill.assert_called_once()
         assert event.isAccepted() is True
+
+
+class TestCloseEventSaveFailure:
+    """closeEvent darf Dialog nicht schließen wenn _save_file() fehlschlägt."""
+
+    def test_dialog_stays_open_on_save_failure(self, monkeypatch):
+        """Wenn _save_file() scheitert (_modified bleibt True), darf event.accept() nicht feuern."""
+        editor = QuickEditorDialog.__new__(QuickEditorDialog)
+        editor._modified = True
+        editor._process = None
+
+        monkeypatch.setattr(
+            "modules.editor.quick_editor.QMessageBox.question",
+            lambda *a, **kw: QMessageBox.StandardButton.Save
+        )
+
+        def failing_save():
+            pass  # _modified bleibt True — simuliert fehlgeschlagenes Speichern
+
+        editor._save_file = failing_save
+
+        event = FakeCloseEvent()
+        editor.closeEvent(event)
+
+        assert event.isAccepted() is False, (
+            "Dialog wurde trotz fehlgeschlagenem Speichern geschlossen"
+        )
+
+    def test_dialog_closes_on_save_success(self, monkeypatch):
+        """Wenn _save_file() erfolgreich (_modified = False), soll event.accept() feuern."""
+        editor = QuickEditorDialog.__new__(QuickEditorDialog)
+        editor._modified = True
+        editor._process = None
+
+        monkeypatch.setattr(
+            "modules.editor.quick_editor.QMessageBox.question",
+            lambda *a, **kw: QMessageBox.StandardButton.Save
+        )
+
+        def successful_save():
+            editor._modified = False  # simuliert erfolgreiches Speichern
+
+        editor._save_file = successful_save
+
+        event = FakeCloseEvent()
+        editor.closeEvent(event)
+
+        assert event.isAccepted() is True, (
+            "Dialog wurde nach erfolgreichem Speichern nicht geschlossen"
+        )
