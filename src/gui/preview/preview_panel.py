@@ -168,25 +168,26 @@ class PdfPreview(QScrollArea):
         
         try:
             doc = fitz.open(path)
-            if len(doc) > 0:
-                page = doc[0]
-                mat = fitz.Matrix(1.5, 1.5)  # Zoom
-                pix = page.get_pixmap(matrix=mat)
-                
-                img = QImage(
-                    pix.samples,
-                    pix.width,
-                    pix.height,
-                    pix.stride,
-                    QImage.Format.Format_RGB888
-                )
-                
-                pixmap = QPixmap.fromImage(img)
-                self.content.setPixmap(pixmap)
-            else:
-                self.content.setText("Leeres PDF")
-            
-            doc.close()
+            try:
+                if len(doc) > 0:
+                    page = doc[0]
+                    mat = fitz.Matrix(1.5, 1.5)  # Zoom
+                    pix = page.get_pixmap(matrix=mat)
+
+                    img = QImage(
+                        pix.samples,
+                        pix.width,
+                        pix.height,
+                        pix.stride,
+                        QImage.Format.Format_RGB888
+                    )
+
+                    pixmap = QPixmap.fromImage(img)
+                    self.content.setPixmap(pixmap)
+                else:
+                    self.content.setText("Leeres PDF")
+            finally:
+                doc.close()
         except Exception as e:
             self.content.setText(f"Fehler beim Laden: {e}")
 
