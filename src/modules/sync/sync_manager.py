@@ -614,17 +614,19 @@ class SyncPanel(QWidget):
         self.status_label.setText(f"Prüfe: {Path(filename).name}")
     
     def _on_scan_finished(self, actions: list, dry_run: bool, pair: SyncPair):
-        self.progress_bar.hide()
-        self.sync_btn.setEnabled(True)
-        
         if not actions:
+            self.progress_bar.hide()
+            self.sync_btn.setEnabled(True)
             self.status_label.setText("✅ Alles synchron!")
             return
-        
+
         if dry_run:
-            # Vorschau anzeigen
+            self.progress_bar.hide()
+            self.sync_btn.setEnabled(True)
             self._show_preview_dialog(actions, pair)
         else:
+            # _execute() läuft noch im selben Thread — Button und Fortschrittsbalken
+            # erst in _on_sync_finished freigeben.
             pair.last_sync = datetime.now().isoformat()
             self._save_config()
     
