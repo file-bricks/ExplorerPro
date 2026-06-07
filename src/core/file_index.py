@@ -291,12 +291,13 @@ class FileIndex:
             fts_query = f'text_content:{query}'
         else:
             fts_query = query
-        
+
+        # files_fts muss primäre FROM-Tabelle sein damit rank und bm25() verfügbar sind
         sql = '''
             SELECT f.*, bm25(files_fts) as score,
                    snippet(files_fts, 2, '>>>', '<<<', '...', 32) as snippet
-            FROM files f
-            JOIN files_fts fts ON f.id = fts.rowid
+            FROM files_fts
+            JOIN files f ON f.id = files_fts.rowid
             WHERE files_fts MATCH ?
         '''
         params = [fts_query]
