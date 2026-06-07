@@ -18,6 +18,7 @@ from typing import List
 from dataclasses import dataclass
 import json
 import os
+import shlex
 import subprocess
 
 from core.platform_utils import open_path_with_system
@@ -371,13 +372,14 @@ class AppsPanel(QWidget):
     
     def _launch_app(self, app: AppEntry):
         try:
+            arg_list = shlex.split(app.arguments) if app.arguments else []
             if os.name == 'nt':
-                if app.arguments:
-                    subprocess.Popen([app.path] + app.arguments.split())
+                if arg_list:
+                    subprocess.Popen([app.path] + arg_list)
                 else:
                     os.startfile(app.path)
             else:
-                subprocess.Popen([app.path] + (app.arguments.split() if app.arguments else []))
+                subprocess.Popen([app.path] + arg_list)
             self.app_launched.emit(app.path)
         except Exception as e:
             QMessageBox.warning(self, "Fehler", f"Konnte nicht starten:\n{e}")

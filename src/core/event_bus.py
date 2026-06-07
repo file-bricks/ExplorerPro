@@ -67,7 +67,10 @@ class EventBus(QObject):
     def unregister_handler(self, event_name: str, handler: Callable):
         """Entfernt einen Handler"""
         if event_name in self._custom_handlers:
-            self._custom_handlers[event_name].remove(handler)
+            try:
+                self._custom_handlers[event_name].remove(handler)
+            except ValueError:
+                pass
     
     def emit_custom(self, event_name: str, *args, **kwargs):
         """Sendet ein benutzerdefiniertes Event"""
