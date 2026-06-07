@@ -519,7 +519,7 @@ class QuickEditorDialog(QDialog):
                 QMessageBox.StandardButton.Discard |
                 QMessageBox.StandardButton.Cancel
             )
-            
+
             if reply == QMessageBox.StandardButton.Save:
                 self._save_file()
                 event.accept()
@@ -527,9 +527,10 @@ class QuickEditorDialog(QDialog):
                 event.accept()
             else:
                 event.ignore()
+                return  # Abbrechen: Editor bleibt offen, Prozess nicht killen
         else:
             event.accept()
-        
-        # Prozess beenden
+
+        # Prozess beenden (nur wenn Dialog wirklich geschlossen wird)
         if self._process:
             self._process.kill()
