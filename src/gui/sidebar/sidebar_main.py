@@ -110,7 +110,7 @@ class TreePanel(QWidget):
                     child.setIcon(0, self._icon_provider.icon(QFileInfo(full_path)))
                     child.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
                     item.addChild(child)
-        except PermissionError:
+        except OSError:
             pass
 
 
