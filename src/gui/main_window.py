@@ -514,13 +514,13 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage("Keine Datei ausgewählt", 3000)
     
     def show_apps_panel(self):
-        pass  # TODO: implement - switch sidebar to apps panel
+        self.sidebar.switch_to_apps()
 
     def show_prompts_panel(self):
-        pass  # TODO: implement - switch sidebar to prompts panel
+        self.sidebar.switch_to_prompts()
 
     def show_sync_panel(self):
-        pass  # TODO: implement - switch sidebar to sync panel
+        self.sidebar.switch_to_sync()
 
     def _show_privacy_settings(self):
         """Zeigt Datenschutz-Einstellungen"""
