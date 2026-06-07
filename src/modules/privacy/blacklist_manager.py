@@ -52,14 +52,14 @@ class BlacklistManager(QObject):
             try:
                 with open(self.blacklist_path, 'r', encoding='utf-8') as f:
                     self._blacklist = set(json.load(f))
-            except (OSError, json.JSONDecodeError):
+            except (OSError, json.JSONDecodeError, TypeError, ValueError):
                 pass
 
         if self.whitelist_path.exists():
             try:
                 with open(self.whitelist_path, 'r', encoding='utf-8') as f:
                     self._whitelist = set(json.load(f))
-            except (OSError, json.JSONDecodeError):
+            except (OSError, json.JSONDecodeError, TypeError, ValueError):
                 pass
     
     def _save(self):
@@ -162,7 +162,7 @@ class BlacklistManager(QObject):
         
         for term in terms:
             term = str(term).strip()
-            if term:
+            if term and term.lower() != 'nan':
                 target_set.add(term)
         
         count_added = len(target_set) - count_before
