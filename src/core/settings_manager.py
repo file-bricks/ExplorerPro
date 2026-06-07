@@ -143,6 +143,3 @@ class SettingsManager:
             cls._instance = cls()
         return cls._instance
 
-
-# Globale Instanz
-settings = SettingsManager.instance()

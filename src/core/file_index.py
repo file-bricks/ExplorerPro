@@ -197,10 +197,12 @@ class FileIndex:
             
             elif ext == '.pdf' and HAS_FITZ:
                 doc = fitz.open(filepath)
-                text_parts = []
-                for page in doc:
-                    text_parts.append(page.get_text())
-                doc.close()
+                try:
+                    text_parts = []
+                    for page in doc:
+                        text_parts.append(page.get_text())
+                finally:
+                    doc.close()
                 return '\n'.join(text_parts)[:50000]
             
             elif ext == '.pdf' and HAS_PDF:
