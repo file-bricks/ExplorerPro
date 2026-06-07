@@ -1,118 +1,234 @@
 {
   "0 Dateien": {
     "de": "0 Dateien",
-    "en": "0 Files"
+    "en": "0 Files",
+    "es": "0 archivos",
+    "zh": "0 个文件",
+    "ja": "0 個のファイル",
+    "ru": "0 файлов"
   },
   "Abbrechen": {
     "de": "Abbrechen",
-    "en": "Cancel"
+    "en": "Cancel",
+    "es": "Cancelar",
+    "zh": "取消",
+    "ja": "キャンセル",
+    "ru": "Отмена"
   },
   "Alle auswählen": {
     "de": "Alle auswählen",
-    "en": "Select All"
+    "en": "Select All",
+    "es": "Seleccionar todo",
+    "zh": "全选",
+    "ja": "すべて選択",
+    "ru": "Выбрать все"
   },
   "Ansicht": {
     "de": "Ansicht",
-    "en": "View"
+    "en": "View",
+    "es": "Vista",
+    "zh": "视图",
+    "ja": "表示",
+    "ru": "Вид"
   },
   "Bild konnte nicht geladen werden": {
     "de": "Bild konnte nicht geladen werden",
-    "en": "Image could not be loaded"
+    "en": "Image could not be loaded",
+    "es": "No se pudo cargar la imagen",
+    "zh": "无法加载图片",
+    "ja": "画像を読み込めませんでした",
+    "ru": "Не удалось загрузить изображение"
   },
   "Datenschutz-Einstellungen": {
     "de": "Datenschutz-Einstellungen",
-    "en": "Privacy Settings"
+    "en": "Privacy Settings",
+    "es": "Configuración de privacidad",
+    "zh": "隐私设置",
+    "ja": "プライバシー設定",
+    "ru": "Настройки конфиденциальности"
   },
   "Keine Datei ausgewählt": {
     "de": "Keine Datei ausgewählt",
-    "en": "No File Selected"
+    "en": "No File Selected",
+    "es": "Ningún archivo seleccionado",
+    "zh": "未选择文件",
+    "ja": "ファイルが選択されていません",
+    "ru": "Файл не выбран"
   },
   "Löschen": {
     "de": "Löschen",
-    "en": "Delete"
+    "en": "Delete",
+    "es": "Eliminar",
+    "zh": "删除",
+    "ja": "削除",
+    "ru": "Удалить"
   },
   "Min. Größe:": {
     "de": "Min. Größe:",
-    "en": "Min. Size:"
+    "en": "Min. Size:",
+    "es": "Tamaño mín.:",
+    "zh": "最小大小:",
+    "ja": "最小サイズ:",
+    "ru": "Мин. размер:"
   },
   "Neue Datei": {
     "de": "Neue Datei",
-    "en": "New File"
+    "en": "New File",
+    "es": "Nuevo archivo",
+    "zh": "新建文件",
+    "ja": "新規ファイル",
+    "ru": "Новый файл"
   },
   "Ordner öffnen": {
     "de": "Ordner öffnen",
-    "en": "Open Folder"
+    "en": "Open Folder",
+    "es": "Abrir carpeta",
+    "zh": "打开文件夹",
+    "ja": "フォルダを開く",
+    "ru": "Открыть папку"
   },
   "Prompt auswählen...": {
     "de": "Prompt auswählen...",
-    "en": "Select Prompt..."
+    "en": "Select Prompt...",
+    "es": "Seleccionar prompt...",
+    "zh": "选择提示词...",
+    "ja": "プロンプトを選択...",
+    "ru": "Выбрать промпт..."
   },
   "PyMuPDF nicht installiert.\\nPDF-Vorschau nicht verfügbar.": {
     "de": "PyMuPDF nicht installiert.\\nPDF-Vorschau nicht verfügbar.",
-    "en": "PyMuPDF not installed.\\nPDF preview not available."
+    "en": "PyMuPDF not installed.\\nPDF preview not available.",
+    "es": "PyMuPDF no está instalado.\\nVista previa de PDF no disponible.",
+    "zh": "未安装 PyMuPDF。\\nPDF 预览不可用。",
+    "ja": "PyMuPDF がインストールされていません。\\nPDF プレビューは利用できません。",
+    "ru": "PyMuPDF не установлен.\\nПредварительный просмотр PDF недоступен."
   },
   "Scan läuft...": {
     "de": "Scan läuft...",
-    "en": "Scanning..."
+    "en": "Scanning...",
+    "es": "Escaneo en curso...",
+    "zh": "正在扫描...",
+    "ja": "スキャン中...",
+    "ru": "Идет сканирование..."
   },
   "Schließen": {
     "de": "Schließen",
-    "en": "Close"
+    "en": "Close",
+    "es": "Cerrar",
+    "zh": "关闭",
+    "ja": "閉じる",
+    "ru": "Закрыть"
   },
   "Suche läuft...": {
     "de": "Suche läuft...",
-    "en": "Searching..."
+    "en": "Searching...",
+    "es": "Búsqueda en curso...",
+    "zh": "正在搜索...",
+    "ja": "検索中...",
+    "ru": "Идет поиск..."
   },
   "Vorschau nicht verfügbar\\nfür diesen Dateityp": {
     "de": "Vorschau nicht verfügbar\\nfür diesen Dateityp",
-    "en": "Preview not available\\nfor this file type"
+    "en": "Preview not available\\nfor this file type",
+    "es": "Vista previa no disponible\\npara este tipo de archivo",
+    "zh": "此文件类型不支持预览",
+    "ja": "このファイル形式のプレビューは\\n利用できません",
+    "ru": "Предварительный просмотр недоступен\\nдля этого типа файла"
   },
   "Zurücksetzen": {
     "de": "Zurücksetzen",
-    "en": "Reset"
+    "en": "Reset",
+    "es": "Restablecer",
+    "zh": "重置",
+    "ja": "リセット",
+    "ru": "Сбросить"
   },
   "Älteste behalten": {
     "de": "Älteste behalten",
-    "en": "Keep Oldest"
+    "en": "Keep Oldest",
+    "es": "Conservar más antiguo",
+    "zh": "保留最早的",
+    "ja": "最も古いものを保持",
+    "ru": "Сохранить самые старые"
   },
   "Öffnen": {
     "de": "Öffnen",
-    "en": "Open"
+    "en": "Open",
+    "es": "Abrir",
+    "zh": "打开",
+    "ja": "開く",
+    "ru": "Открыть"
   },
   "▶ Ausführen": {
     "de": "▶ Ausführen",
-    "en": "▶ Execute"
+    "en": "▶ Execute",
+    "es": "▶ Ejecutar",
+    "zh": "▶ 执行",
+    "ja": "▶ 実行",
+    "ru": "▶ Выполнить"
   },
   "⚠️ Kein Index verfügbar": {
     "de": "⚠️ Kein Index verfügbar",
-    "en": "⚠️ No Index Available"
+    "en": "⚠️ No Index Available",
+    "es": "⚠️ No hay índice disponible",
+    "zh": "⚠️ 无可用索引",
+    "ja": "⚠️ インデックスが利用できません",
+    "ru": "⚠️ Индекс недоступен"
   },
   "✏️ Bearbeiten": {
     "de": "✏️ Bearbeiten",
-    "en": "✏️ Edit"
+    "en": "✏️ Edit",
+    "es": "✏️ Editar",
+    "zh": "✏️ 编辑",
+    "ja": "✏️ 編集",
+    "ru": "✏️ Редактировать"
   },
   "💡 Tipp: Verwende {{name}} für Variablen, die beim Einfügen abgefragt werden": {
     "de": "💡 Tipp: Verwende {{name}} für Variablen, die beim Einfügen abgefragt werden",
-    "en": "💡 Tip: Use {{name}} for variables that will be prompted when inserting"
+    "en": "💡 Tip: Use {{name}} for variables that will be prompted when inserting",
+    "es": "💡 Consejo: Usa {{name}} para variables que se solicitarán al insertar",
+    "zh": "💡 提示：使用 {{name}} 作为插入时需要确认的变量",
+    "ja": "💡 ヒント: 挿入時にプロンプトが表示される変数には {{name}} を使用します",
+    "ru": "💡 Совет: используйте {{name}} для переменных, запрашиваемых при вставке"
   },
   "💾 Speichern": {
     "de": "💾 Speichern",
-    "en": "💾 Save"
+    "en": "💾 Save",
+    "es": "💾 Guardar",
+    "zh": "💾 保存",
+    "ja": "💾 保存",
+    "ru": "💾 Сохранить"
   },
   "📁 Ordner wählen...": {
     "de": "📁 Ordner wählen...",
-    "en": "📁 Select Folder..."
+    "en": "📁 Select Folder...",
+    "es": "📁 Seleccionar carpeta...",
+    "zh": "📁 选择文件夹...",
+    "ja": "📁 フォルダを選択...",
+    "ru": "📁 Wyбрать папку..."
   },
   "🔄 Sync starten": {
     "de": "🔄 Sync starten",
-    "en": "🔄 Start Sync"
+    "en": "🔄 Start Sync",
+    "es": "🔄 Iniciar sincronización",
+    "zh": "🔄 开始同步",
+    "ja": "🔄 同期を開始",
+    "ru": "🔄 Начать синхронизацию"
   },
   "🔍 Scan starten": {
     "de": "🔍 Scan starten",
-    "en": "🔍 Start Scan"
+    "en": "🔍 Start Scan",
+    "es": "🔍 Iniciar escaneo",
+    "zh": "🔍 开始扫描",
+    "ja": "🔍 スキャンを開始",
+    "ru": "🔍 Начать сканирование"
   },
   "🗑️ Ausgewählte löschen": {
     "de": "🗑️ Ausgewählte löschen",
-    "en": "🗑️ Delete Selected"
+    "en": "🗑️ Delete Selected",
+    "es": "🗑️ Eliminar seleccionados",
+    "zh": "🗑️ 删除选中项",
+    "ja": "🗑️ 選択した項目を削除",
+    "ru": "🗑️ Удалить выбранные"
   }
 }
