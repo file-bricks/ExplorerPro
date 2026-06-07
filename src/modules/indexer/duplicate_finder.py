@@ -303,6 +303,7 @@ class DuplicateFinderDialog(QDialog):
         
         # Verbindungen
         self.tree.itemSelectionChanged.connect(self._on_selection_changed)
+        self.tree.itemChanged.connect(self._on_item_changed)
     
     def set_index(self, file_index):
         """Setzt den Datei-Index"""
@@ -507,6 +508,11 @@ class DuplicateFinderDialog(QDialog):
     def _on_selection_changed(self):
         """Auswahl geändert"""
         self.delete_btn.setEnabled(self._has_checked_items())
+
+    def _on_item_changed(self, item, column):
+        """Checkbox-Änderung im Baum — Delete-Button aktualisieren."""
+        if column == 0:
+            self.delete_btn.setEnabled(self._has_checked_items())
     
     def _select_all_duplicates(self):
         """Wählt alle Duplikate (außer erste pro Gruppe)"""
