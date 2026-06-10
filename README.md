@@ -4,6 +4,18 @@
 
 ExplorerPro is a desktop file explorer for power users. It combines a multi-tab browser, preview panel, privacy monitor, duplicate finder, sync tools, and a lightweight code editor in one PySide6 application.
 
+**Search phrases:** file explorer Python, PySide6 file manager, local-first file browser, privacy-aware file explorer, desktop duplicate finder, Qt file explorer Windows
+
+> **Not:** a cloud storage client, web-based file manager, or replacement for Windows Explorer system integration.
+
+| What | Where |
+|---|---|
+| Start the app | `python src/main.py` or `START_ExplorerPro.bat` |
+| Install deps | `pip install -r requirements.txt` |
+| Run tests | `python -m pytest -q` |
+| Docs | [ARCHITEKTUR.md](ARCHITEKTUR.md) · [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md) · [PRIVACY_POLICY.md](PRIVACY_POLICY.md) |
+| Changelog | [CHANGELOG.md](CHANGELOG.md) |
+
 ## Features
 
 - **File browser:** multi-tab browsing with breadcrumb navigation and context menus
@@ -121,7 +133,7 @@ This project uses PySide6 under LGPL-compatible terms and PyMuPDF under AGPL ter
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Last repository maintenance: 2026-06-04
+- Last repository maintenance: 2026-06-10
 
 ## Haftung / Liability
 

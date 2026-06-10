@@ -6,6 +6,30 @@ Primary language: Python
 Primary UI stack: PySide6
 License: AGPL-3.0
 
+Last-checked: 2026-06-10
+
+## Search Phrases
+
+- file explorer Python
+- PySide6 file manager
+- local-first file browser desktop
+- privacy-aware file explorer Windows
+- desktop duplicate finder Python
+- Qt file browser multi-tab
+- file explorer PySide6 AGPL
+
+## Audience
+
+Power users and developers who want a local-first, privacy-aware desktop file explorer. Useful for anyone managing large file collections, scanning for duplicates, or integrating AI prompt workflows into their local file management.
+
+## Disambiguation
+
+ExplorerPro is a local desktop application (PySide6/Python). It is not:
+- A cloud storage client or web file manager
+- A replacement for Windows Explorer (no shell integration)
+- A mobile app
+- Related to Internet Explorer or any browser product
+
 ## Summary
 
 ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, file preview, privacy checks, duplicate detection, folder sync, app launching, prompt management, and a lightweight code editor.
