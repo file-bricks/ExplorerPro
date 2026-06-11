@@ -128,6 +128,8 @@ Store-facing support details live in [SUPPORT.md](SUPPORT.md).
 ExplorerPro is licensed under AGPL v3. See [LICENSE](LICENSE).
 
 This project uses PySide6 under LGPL-compatible terms and PyMuPDF under AGPL terms.
+A complete list of third-party dependencies and their licenses can be found in
+[THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt).
 
 ## Status
 
