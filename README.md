@@ -47,9 +47,9 @@ The Windows Store base artifacts are now tracked locally in
 [store_package.json](store_package.json), [STORE_LISTING.md](STORE_LISTING.md),
 [SUPPORT.md](SUPPORT.md), and [WINDOWS_STORE_PREP.md](WINDOWS_STORE_PREP.md).
 The current baseline screenshot lives in
-[`README/screenshots/main.png`](README/screenshots/main.png); the planned store
-shot set is documented in
-[`README/screenshots/store/README.md`](README/screenshots/store/README.md).
+[`README/screenshots/main.png`](README/screenshots/main.png); the dedicated
+store shot set now lives in [`README/screenshots/store/`](README/screenshots/store)
+and is regenerated via `python generate_store_screenshots.py`.
 
 ## Requirements
 
@@ -111,6 +111,9 @@ python -m compileall -q src tests manage_translations.py translator.py
 ```
 
 The current smoke suite covers import bootstrapping, search-filter forwarding, duplicate-finder open-path error handling, and file-browser open-path error handling. An additional desktop source smoke lives in `tests/source_platform_smoke.py` and exercises startup, search, preview, duplicate scanning, and config-path creation on Linux and macOS runners. GitHub Actions runs the pytest smoke suite on Python 3.10, 3.11, and 3.12 plus the dedicated desktop-platform smoke on `ubuntu-latest` and `macos-latest`.
+
+The Store screenshot generator is covered by `tests/test_store_screenshots.py`
+and writes four redacted screenshots for the Windows Store flow.
 
 ## Privacy
 

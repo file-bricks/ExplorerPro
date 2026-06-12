@@ -1,18 +1,23 @@
 # Store-Screenshots
 
-Stand: 2026-06-04
+Stand: 2026-06-12
 
-## Vorhandene Basis
+## Reproduzierbare Erzeugung
 
-- `../main.png` zeigt bereits das Hauptfenster und kann als erste Referenz für
-  das Store-Set dienen.
+```powershell
+python generate_store_screenshots.py
+```
 
-## Geplantes Screenshot-Set
+Der Generator verwendet bewusst redigierte Demo-Daten in einem temporären
+Arbeitsbereich. So bleiben private Dateinamen, echte Pfade und lokale Inhalte
+aus dem finalen Store-Set heraus.
 
-1. Hauptfenster mit Mehrtab-Dateibrowser, Breadcrumbs und Vorschau
-2. Erweiterte Suche mit aktiven Filtern
-3. Duplikatsuche mit Ergebnisliste
-4. Datenschutzprüfung oder Launcher-/Sync-Ansicht
+## Enthaltenes Screenshot-Set
+
+1. `main-window.png` - Hauptfenster mit Dateibrowser, Breadcrumbs und Vorschau
+2. `search.png` - Suchansicht mit aktiven Ergebnissen
+3. `duplicates.png` - Duplikatsuche mit gefundener Gruppe
+4. `sync.png` - Sync-Ansicht mit vorbereiteten Paaren
 
 ## Qualitätsregeln
 

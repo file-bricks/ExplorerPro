@@ -41,9 +41,21 @@ def test_store_documents_exist_and_reference_public_paths() -> None:
     assert "https://github.com/file-bricks/ExplorerPro/blob/main/SUPPORT.md" in listing
     assert "https://github.com/file-bricks/ExplorerPro/issues" in support
     assert "dist/ExplorerPro/ExplorerPro.exe" in prep
-    assert "main.png" in screenshot_note
+    assert "python generate_store_screenshots.py" in screenshot_note
+    assert "main-window.png" in screenshot_note
+    assert "search.png" in screenshot_note
+    assert "duplicates.png" in screenshot_note
+    assert "sync.png" in screenshot_note
+    assert "THIRD_PARTY_LICENSES.txt" in prep
+    assert "Dediziertes Store-Screenshot-Set fehlt noch." not in prep
 
 
 def test_existing_main_screenshot_is_present() -> None:
     main_screenshot = PROJECT_ROOT / "README" / "screenshots" / "main.png"
     assert main_screenshot.exists()
+
+
+def test_store_screenshot_set_is_present() -> None:
+    store_dir = PROJECT_ROOT / "README" / "screenshots" / "store"
+    for filename in ("main-window.png", "search.png", "duplicates.png", "sync.png"):
+        assert (store_dir / filename).exists()
