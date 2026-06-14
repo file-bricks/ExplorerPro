@@ -5,6 +5,7 @@ QuickEditorDialog - Schneller Code-Editor
 Basiert auf PythonBox
 """
 
+import json
 import sys
 from pathlib import Path
 from typing import Optional
@@ -21,6 +22,31 @@ from PySide6.QtGui import (
 )
 
 from .syntax_highlighter import get_lexer_for_extension
+
+
+def _validate_json(text: str) -> tuple:
+    """Validiert JSON-Text. Gibt (ok: bool, nachricht: str) zurück."""
+    try:
+        json.loads(text)
+        return True, "✓ Gültiges JSON"
+    except json.JSONDecodeError as e:
+        return False, f"✗ Ungültiges JSON: {e}"
+
+
+def _validate_toml(text: str) -> tuple:
+    """Validiert TOML-Text. Gibt (ok: bool, nachricht: str) zurück."""
+    try:
+        import tomllib
+    except ImportError:
+        try:
+            import tomli as tomllib  # type: ignore[no-redef]
+        except ImportError:
+            return False, "✗ TOML-Validierung erfordert Python 3.11+ oder das Paket tomli"
+    try:
+        tomllib.loads(text)
+        return True, "✓ Gültiges TOML"
+    except Exception as e:
+        return False, f"✗ Ungültiges TOML: {e}"
 
 
 class LineNumberArea(QPlainTextEdit):
@@ -265,7 +291,12 @@ class QuickEditorDialog(QDialog):
         self.btn_save.setShortcut(QKeySequence.StandardKey.Save)
         self.btn_save.clicked.connect(self._save_file)
         toolbar.addWidget(self.btn_save)
-        
+
+        self.btn_validate = QPushButton("✔ Validieren")
+        self.btn_validate.setShortcut(QKeySequence("F6"))
+        self.btn_validate.clicked.connect(self._validate_file)
+        toolbar.addWidget(self.btn_validate)
+
         self.btn_run = QPushButton("▶ Ausführen")
         self.btn_run.setShortcut(QKeySequence("F5"))
         self.btn_run.clicked.connect(self._run_code)
@@ -384,6 +415,28 @@ class QuickEditorDialog(QDialog):
         except Exception as e:
             QMessageBox.critical(self, "Fehler", f"Fehler beim Speichern:\n{e}")
     
+    def _validate_file(self):
+        """Validiert den Editor-Inhalt als JSON oder TOML"""
+        text = self.editor.toPlainText()
+        ext = Path(self.filepath).suffix.lower() if self.filepath else ""
+
+        self.output.clear()
+        self._add_output("✔ Validierung\n", "#569CD6")
+        self._add_output("-" * 40 + "\n", "#3C3C3C")
+
+        if ext == '.json':
+            ok, msg = _validate_json(text)
+        elif ext == '.toml':
+            ok, msg = _validate_toml(text)
+        else:
+            self._add_output(
+                "Validierung nur für .json und .toml verfügbar\n", "#858585"
+            )
+            return
+
+        color = "#4EC9B0" if ok else "#F14C4C"
+        self._add_output(msg + "\n", color)
+
     def _on_text_changed(self):
         """Handler für Textänderungen"""
         if not self._modified:

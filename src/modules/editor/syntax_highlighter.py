@@ -229,6 +229,34 @@ class JSONHighlighter(BaseHighlighter):
         self.rules.append((r'\b(true|false|null)\b', self.keyword_format))
 
 
+class TOMLHighlighter(BaseHighlighter):
+    """Syntax-Highlighting für TOML"""
+
+    def _setup_rules(self):
+        # Sections: [table] und [[array of tables]]
+        section_format = QTextCharFormat()
+        section_format.setForeground(QColor("#C586C0"))
+        self.rules.append((r'^\s*\[+[^\]]*\]+', section_format))
+
+        # Keys (linke Seite von =)
+        key_format = QTextCharFormat()
+        key_format.setForeground(QColor("#9CDCFE"))
+        self.rules.append((r'^[A-Za-z_][A-Za-z0-9_.\-]*\s*(?==)', key_format))
+
+        # Strings (einfach- und doppelt gequotet)
+        self.rules.append((r'"[^"]*"', self.string_format))
+        self.rules.append((r"'[^']*'", self.string_format))
+
+        # Zahlen (inkl. Exponent)
+        self.rules.append((r'\b-?\d+\.?\d*(?:[eE][+-]?\d+)?\b', self.number_format))
+
+        # Booleans
+        self.rules.append((r'\b(true|false)\b', self.keyword_format))
+
+        # Kommentare
+        self.rules.append((r'#[^\n]*', self.comment_format))
+
+
 class SQLHighlighter(BaseHighlighter):
     """Syntax-Highlighting für SQL"""
     
@@ -274,6 +302,7 @@ HIGHLIGHTERS = {
     '.scss': CSSHighlighter,
     '.less': CSSHighlighter,
     '.json': JSONHighlighter,
+    '.toml': TOMLHighlighter,
     '.sql': SQLHighlighter,
 }
 

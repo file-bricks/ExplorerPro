@@ -6,6 +6,9 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [Unreleased]
 
 ### Hinzugefügt / Added
+- `TOMLHighlighter` in `src/modules/editor/syntax_highlighter.py`: Syntax-Highlighting für TOML-Dateien (Sections `[table]`/`[[array]]`, Keys, Strings, Zahlen, Booleans, Kommentare). `.toml` ist jetzt in `HIGHLIGHTERS` registriert.
+- Schaltfläche „✔ Validieren" (F6) im Quick Editor: validiert JSON- und TOML-Dateien direkt aus dem Editor-Buffer (unsaved) und zeigt das Ergebnis im Output-Panel. Validierungslogik als testbare Pure Functions `_validate_json` / `_validate_toml` ohne Qt-Abhängigkeit.
+- `tests/test_syntax_highlighter.py`: 15 Unit-Tests für TOMLHighlighter, JSON-Validierung und TOML-Validierung (inklusive graceful Fallback für Python <3.11 ohne tomli).
 - `generate_store_screenshots.py` erzeugt reproduzierbar ein redigiertes Windows-Store-Screenshot-Set (`main-window.png`, `search.png`, `duplicates.png`, `sync.png`) aus Demo-Daten in temporären Verzeichnissen.
 - `tests/test_store_screenshots.py` prüft den Screenshot-Generator als echten PNG-Smoke.
 - `src/core/export_service.py`: `WorkspaceExporter`-Klasse exportiert den Arbeitsbereich als `explorerpro-workspace-v1.json`; absolute Pfade werden standardmäßig durch Referenz-IDs (`path_refs`) ersetzt; Settings werden aus dem GUI injiziert, nicht von der Festplatte gelesen.
