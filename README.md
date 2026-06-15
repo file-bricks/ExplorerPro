@@ -1,4 +1,4 @@
-<img src="assets/banner.svg" width="100%" alt="ExplorerPro Banner">
+<img src="assets/banner_v2.svg" width="100%" alt="ExplorerPro Banner">
 
 # ExplorerPro Suite
 
