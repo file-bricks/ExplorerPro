@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="100%" height="100%">
+  <defs>
+    <!-- Fonts -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&amp;display=swap');
+      .wordmark {
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 76px;
+        font-weight: 800;
+        fill: #ffffff;
+      }
+      .wordmark-pro {
+        fill: url(#pro-grad);
+      }
+      .tagline {
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 24px;
+        font-weight: 500;
+        fill: #94a3b8;
+        letter-spacing: 1.5px;
+      }
+      .folder-glow {
+        filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.4));
+      }
+      .leg-joint {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+
+    <!-- Gradients -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b081e" />
+      <stop offset="50%" stop-color="#070714" />
+      <stop offset="100%" stop-color="#030308" />
+    </linearGradient>
+    
+    <linearGradient id="pro-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#4facfe" />
+    </linearGradient>
+
+    <linearGradient id="folder-front" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+    <linearGradient id="folder-back" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+
+    <linearGradient id="folder-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <linearGradient id="glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#7928ca" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="340" fill="url(#bg-grad)" />
+  <rect width="1200" height="340" fill="url(#grid)" />
+  
+  <!-- Glowing background blobs -->
+  <circle cx="240" cy="170" r="160" fill="url(#glow-grad)" filter="blur(40px)" />
+  <circle cx="700" cy="170" r="220" fill="url(#glow-grad)" filter="blur(60px)" />
+
+  <!-- Foreground Group (Strictly in x:80..1120 y:60..300) -->
+  <g id="foreground">
+    
+    <!-- Cartoon Folder with legs -->
+    <g id="folder-character" class="folder-glow">
+      <!-- Back Flap -->
+      <path d="M 140 110 L 190 110 L 210 125 L 300 125 A 8 8 0 0 1 308 133 L 308 210 A 8 8 0 0 1 300 218 L 140 218 A 8 8 0 0 1 132 210 L 132 118 A 8 8 0 0 1 140 110 Z" fill="url(#folder-back)" />
+      
+      <!-- Sticking out files / contents -->
+      <!-- Document 1 -->
+      <rect x="160" y="90" width="100" height="90" rx="4" fill="#ffffff" transform="rotate(-6 210 135)" />
+      <line x1="170" y1="105" x2="230" y2="99" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" transform="rotate(-6 210 135)" />
+      <line x1="170" y1="120" x2="240" y2="113" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" transform="rotate(-6 210 135)" />
+      <line x1="170" y1="135" x2="210" y2="131" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" transform="rotate(-6 210 135)" />
+
+      <!-- Document 2 -->
+      <rect x="185" y="85" width="90" height="90" rx="4" fill="#f8fafc" transform="rotate(8 230 130)" stroke="#e2e8f0" stroke-width="1" />
+      <circle cx="205" cy="105" r="8" fill="#f43f5e" transform="rotate(8 230 130)" />
+      <line x1="220" y1="105" x2="260" y2="105" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" transform="rotate(8 230 130)" />
+      <line x1="200" y1="125" x2="260" y2="125" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" transform="rotate(8 230 130)" />
+      <line x1="200" y1="138" x2="245" y2="138" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" transform="rotate(8 230 130)" />
+
+      <!-- Front Flap (Glassmorphic) -->
+      <path d="M 130 135 A 8 8 0 0 1 138 127 L 290 127 A 8 8 0 0 1 298 135 L 298 222 A 8 8 0 0 1 290 230 L 138 230 A 8 8 0 0 1 130 222 Z" fill="url(#folder-accent)" fill-opacity="0.85" />
+      <!-- Front Flap Details -->
+      <path d="M 130 160 Q 214 185 298 160 L 298 222 A 8 8 0 0 1 290 230 L 138 230 A 8 8 0 0 1 130 222 Z" fill="url(#folder-front)" fill-opacity="0.9" />
+      
+      <!-- Logo Accent Mark on Front Flap -->
+      <polygon points="175,175 195,175 205,190 185,190" fill="#00f2fe" opacity="0.9" />
+      <polygon points="200,175 210,175 220,190 210,190" fill="#ffffff" opacity="0.7" />
+
+      <!-- Cute Cartoon Eyes on Folder -->
+      <circle cx="195" cy="155" r="7" fill="#ffffff" />
+      <circle cx="196" cy="155" r="3.5" fill="#0f172a" />
+      <circle cx="194" cy="153" r="1.5" fill="#ffffff" />
+
+      <circle cx="225" cy="155" r="7" fill="#ffffff" />
+      <circle cx="224" cy="155" r="3.5" fill="#0f172a" />
+      <circle cx="222" cy="153" r="1.5" fill="#ffffff" />
+
+      <!-- Blush -->
+      <ellipse cx="185" cy="162" rx="5" ry="2.5" fill="#f43f5e" opacity="0.6" />
+      <ellipse cx="235" cy="162" rx="5" ry="2.5" fill="#f43f5e" opacity="0.6" />
+      
+      <!-- Smile -->
+      <path d="M 206 163 Q 210 167 214 163" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none" />
+
+      <!-- Cartoon Legs (Wobbly) -->
+      <!-- Left Leg -->
+      <path class="leg-joint" d="M 185 228 Q 170 252 180 272" fill="none" stroke="#ffffff" stroke-width="7" />
+      <!-- Left Shoe -->
+      <path d="M 170 270 C 170 266 182 266 190 270 L 195 275 C 197 277 190 282 182 282 C 174 282 170 276 170 270 Z" fill="#ef4444" />
+      <ellipse cx="182" cy="272" rx="4" ry="2.5" fill="#ffffff" />
+      <path d="M 183 270 L 179 274" stroke="#ffffff" stroke-width="1.5" />
+
+      <!-- Right Leg -->
+      <path class="leg-joint" d="M 240 228 Q 255 248 238 270" fill="none" stroke="#ffffff" stroke-width="7" />
+      <!-- Right Shoe -->
+      <path d="M 228 268 C 228 264 240 264 248 268 L 253 273 C 255 275 248 280 240 280 C 232 280 228 274 228 268 Z" fill="#ef4444" />
+      <ellipse cx="240" cy="270" rx="4" ry="2.5" fill="#ffffff" />
+      <path d="M 241 268 L 237 272" stroke="#ffffff" stroke-width="1.5" />
+
+      <!-- Sweat drops -->
+      <path d="M 262 125 Q 268 120 265 115 Q 260 120 262 125 Z" fill="#38bdf8" />
+      <path d="M 120 145 Q 114 140 117 135 Q 122 140 120 145 Z" fill="#38bdf8" />
+      
+      <!-- Shadows -->
+      <ellipse cx="182" cy="281" rx="18" ry="3.5" fill="rgba(0, 0, 0, 0.4)" />
+      <ellipse cx="240" cy="279" rx="15" ry="3" fill="rgba(0, 0, 0, 0.4)" />
+      
+      <!-- Motion lines -->
+      <path d="M 155 278 Q 162 276 160 282" fill="none" stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" stroke-linecap="round" />
+      <path d="M 260 274 Q 252 276 256 280" fill="none" stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" stroke-linecap="round" />
+    </g>
+
+    <!-- Typography -->
+    <text x="360" y="170" class="wordmark">Explorer<tspan class="wordmark-pro">Pro</tspan></text>
+    <text x="364" y="218" class="tagline">The Power User File Explorer</text>
+
+    <!-- Visual Divider -->
+    <line x1="364" y1="240" x2="680" y2="240" stroke="url(#pro-grad)" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+    
+    <!-- Subtle features list -->
+    <g transform="translate(364, 255)" opacity="0.8">
+      <circle cx="10" cy="10" r="3" fill="#00f2fe" />
+      <text x="20" y="14" font-family="'Outfit', sans-serif" font-size="12" font-weight="600" fill="#94a3b8" letter-spacing="1">LIGHTWEIGHT</text>
+      
+      <circle cx="160" cy="10" r="3" fill="#38bdf8" />
+      <text x="170" y="14" font-family="'Outfit', sans-serif" font-size="12" font-weight="600" fill="#94a3b8" letter-spacing="1">POWERFUL</text>
+
+      <circle cx="290" cy="10" r="3" fill="#7928ca" />
+      <text x="300" y="14" font-family="'Outfit', sans-serif" font-size="12" font-weight="600" fill="#94a3b8" letter-spacing="1">MODERN</text>
+    </g>
+  </g>
+</svg>

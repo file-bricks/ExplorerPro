@@ -1,6 +1,16 @@
+<img src="assets/banner.svg" width="100%" alt="ExplorerPro Banner">
+
 # ExplorerPro Suite
 
-[Deutsch](README_de.md) | [Machine-readable context](llms.txt)
+**[Deutsch](README_de.md)** | [English](README.md) | [Machine-readable context](llms.txt)
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-lightgrey.svg)]()
+
+> Power-user desktop file explorer — multi-tab, preview panel, privacy monitor, duplicate finder, sync tools & code editor in one PySide6 app.
+
+
 
 ExplorerPro is a desktop file explorer for power users. It combines a multi-tab browser, preview panel, privacy monitor, duplicate finder, sync tools, and a lightweight code editor in one PySide6 application.
 
