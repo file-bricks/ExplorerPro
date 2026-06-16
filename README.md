@@ -33,7 +33,7 @@ ExplorerPro is a desktop file explorer for power users. It combines a multi-tab 
 - **Privacy monitor:** detection and review of sensitive filenames or file contents
 - **Advanced search:** filters for type, size, date, and search text
 - **Duplicate finder:** hash-based duplicate detection
-- **Quick editor:** integrated code editor with QScintilla and Pygments
+- **Quick editor:** integrated code editor with syntax highlighting (Python, JSON, TOML, ...)
 - **Sync manager:** folder synchronization with pattern-based exclusions
 - **App launcher:** quick access to configured tools
 - **Prompt launcher:** local prompt collection for AI-assisted workflows
@@ -65,10 +65,8 @@ and is regenerated via `python generate_store_screenshots.py`.
 
 - Python 3.10+
 - PySide6
-- QScintilla
 - PyMuPDF
 - watchdog
-- Pygments
 - pandas and openpyxl for blacklist table imports
 
 Install the runtime dependencies:

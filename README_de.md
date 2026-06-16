@@ -21,7 +21,7 @@ ExplorerPro ist ein lokaler Desktop-Dateimanager für Power User. Die App bünde
 - **Datenschutzprüfung:** Hinweise auf sensible Dateinamen oder Inhalte.
 - **Erweiterte Suche:** Filter nach Typ, Größe, Datum und Suchtext.
 - **Duplikatsuche:** Hash-basierte Duplikaterkennung.
-- **Schnell-Editor:** Integrierter Editor mit QScintilla und Pygments.
+- **Schnell-Editor:** Integrierter Editor mit Syntax-Highlighting (u. a. Python, JSON, TOML).
 - **Synchronisation:** Lokale Ordner-Synchronisation mit Ausschlussmustern.
 - **Launcher:** Schnellzugriff auf konfigurierte Apps und Prompts.
 
