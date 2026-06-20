@@ -222,12 +222,24 @@ class ExplorerProApp(MainWindow):
         """Einstellungen beim Schließen speichern"""
         # Privacy Monitor stoppen
         self.privacy_monitor.stop()
-        
+
+        # IndexWorker stoppen (override run(), kein exec() → cancel() statt quit())
+        if hasattr(self, "index_worker") and self.index_worker and self.index_worker.isRunning():
+            self.index_worker.cancel()
+            self.index_worker.wait(3000)
+
+        # SearchPanel-Worker stoppen (Child-Widget bekommt kein closeEvent → explizit stoppen)
+        if hasattr(self, "sidebar") and self.sidebar:
+            sp = self.sidebar.search_panel
+            if sp.search_worker and sp.search_worker.isRunning():
+                sp.search_worker.cancel()
+                sp.search_worker.wait(3000)
+
         # Einstellungen speichern
         settings = QSettings()
         settings.setValue("window/geometry", self.saveGeometry())
         settings.setValue("splitter/main", self.main_splitter.sizes())
         settings.setValue("splitter/right", self.right_splitter.sizes())
-        
+
         logging.info("ExplorerPro beendet")
         super().closeEvent(event)

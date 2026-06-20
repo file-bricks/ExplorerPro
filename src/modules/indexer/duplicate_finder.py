@@ -305,6 +305,12 @@ class DuplicateFinderDialog(QDialog):
         self.tree.itemSelectionChanged.connect(self._on_selection_changed)
         self.tree.itemChanged.connect(self._on_item_changed)
     
+    def closeEvent(self, event):
+        if self.scan_worker and self.scan_worker.isRunning():
+            self.scan_worker.cancel()
+            self.scan_worker.wait(3000)
+        super().closeEvent(event)
+
     def set_index(self, file_index):
         """Setzt den Datei-Index"""
         self.file_index = file_index

@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import sys
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -74,3 +74,37 @@ def test_duplicate_finder_open_folder_shows_warning_when_windows_has_no_associat
     assert args[1] == "Ordner öffnen"
     assert folder_path in args[2]
     assert kwargs == {}
+
+
+def test_close_event_cancels_running_scan_worker():
+    """closeEvent muss einen laufenden scan_worker stoppen (Bug #8-1 Regression)."""
+    from PySide6.QtGui import QCloseEvent
+
+    _ensure_app()
+    dialog = DuplicateFinderDialog()
+
+    mock_worker = MagicMock()
+    mock_worker.isRunning.return_value = True
+    dialog.scan_worker = mock_worker
+
+    dialog.closeEvent(QCloseEvent())
+
+    mock_worker.cancel.assert_called_once()
+    mock_worker.wait.assert_called_once()
+
+
+def test_close_event_skips_stopped_scan_worker():
+    """closeEvent darf cancel/wait nicht aufrufen wenn der Worker bereits fertig ist."""
+    from PySide6.QtGui import QCloseEvent
+
+    _ensure_app()
+    dialog = DuplicateFinderDialog()
+
+    mock_worker = MagicMock()
+    mock_worker.isRunning.return_value = False
+    dialog.scan_worker = mock_worker
+
+    dialog.closeEvent(QCloseEvent())
+
+    mock_worker.cancel.assert_not_called()
+    mock_worker.wait.assert_not_called()

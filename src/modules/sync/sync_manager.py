@@ -499,8 +499,11 @@ class SyncPanel(QWidget):
             'enabled': p.enabled, 'last_sync': p.last_sync
         } for p in self.sync_pairs]
         
-        with open(self.config_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        try:
+            with open(self.config_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except OSError as e:
+            print(f"Fehler beim Speichern der Sync-Konfiguration: {e}")
     
     def _refresh_list(self):
         self.pair_list.clear()

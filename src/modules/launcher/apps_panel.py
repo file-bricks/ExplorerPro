@@ -306,9 +306,11 @@ class AppsPanel(QWidget):
             'arguments': a.arguments, 'working_dir': a.working_dir,
             'favorite': a.favorite
         } for a in self.apps]
-        
-        with open(self.config_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        try:
+            with open(self.config_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except OSError as e:
+            print(f"Fehler beim Speichern der Apps: {e}")
     
     def _refresh_display(self):
         for cat_data in self.category_widgets.values():

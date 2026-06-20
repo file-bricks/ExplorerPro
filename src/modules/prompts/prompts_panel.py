@@ -328,7 +328,7 @@ class PromptsPanel(QWidget):
     def _save_prompts(self):
         """Speichert Prompts nach JSON"""
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         data = []
         for p in self.prompts:
             data.append({
@@ -337,9 +337,12 @@ class PromptsPanel(QWidget):
                 'created': p.created, 'modified': p.modified,
                 'favorite': p.favorite, 'use_count': p.use_count
             })
-        
-        with open(self.config_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        try:
+            with open(self.config_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except OSError as e:
+            print(f"Fehler beim Speichern der Prompts: {e}")
     
     def _refresh_list(self, filter_text: str = "", category: str = None):
         """Aktualisiert die Prompt-Liste"""

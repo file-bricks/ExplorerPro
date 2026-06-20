@@ -74,94 +74,96 @@ class FileIndex:
     def _init_database(self):
         """Initialisiert die Datenbankstruktur"""
         conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        
-        # Haupttabelle für Dateien
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS files (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                path TEXT UNIQUE NOT NULL,
-                filename TEXT NOT NULL,
-                extension TEXT,
-                size INTEGER,
-                modified TIMESTAMP,
-                created TIMESTAMP,
-                hash TEXT,
-                category TEXT,
-                text_content TEXT,
-                indexed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        
-        # Tags-Tabelle (Many-to-Many)
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS tags (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT UNIQUE NOT NULL
-            )
-        ''')
-        
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS file_tags (
-                file_id INTEGER,
-                tag_id INTEGER,
-                PRIMARY KEY (file_id, tag_id),
-                FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
-            )
-        ''')
-        
-        # Notizen-Tabelle
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS notes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                file_id INTEGER UNIQUE,
-                content TEXT,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE
-            )
-        ''')
-        
-        # FTS5 für Volltextsuche
-        cursor.execute('''
-            CREATE VIRTUAL TABLE IF NOT EXISTS files_fts USING fts5(
-                path, filename, text_content,
-                content='files',
-                content_rowid='id'
-            )
-        ''')
-        
-        # Trigger für FTS-Synchronisation
-        cursor.execute('''
-            CREATE TRIGGER IF NOT EXISTS files_ai AFTER INSERT ON files BEGIN
-                INSERT INTO files_fts(rowid, path, filename, text_content)
-                VALUES (new.id, new.path, new.filename, new.text_content);
-            END
-        ''')
-        
-        cursor.execute('''
-            CREATE TRIGGER IF NOT EXISTS files_ad AFTER DELETE ON files BEGIN
-                INSERT INTO files_fts(files_fts, rowid, path, filename, text_content)
-                VALUES ('delete', old.id, old.path, old.filename, old.text_content);
-            END
-        ''')
-        
-        cursor.execute('''
-            CREATE TRIGGER IF NOT EXISTS files_au AFTER UPDATE ON files BEGIN
-                INSERT INTO files_fts(files_fts, rowid, path, filename, text_content)
-                VALUES ('delete', old.id, old.path, old.filename, old.text_content);
-                INSERT INTO files_fts(rowid, path, filename, text_content)
-                VALUES (new.id, new.path, new.filename, new.text_content);
-            END
-        ''')
-        
-        # Indizes
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_hash ON files(hash)')
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_category ON files(category)')
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_extension ON files(extension)')
-        
-        conn.commit()
-        conn.close()
+        try:
+            cursor = conn.cursor()
+
+            # Haupttabelle für Dateien
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS files (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    path TEXT UNIQUE NOT NULL,
+                    filename TEXT NOT NULL,
+                    extension TEXT,
+                    size INTEGER,
+                    modified TIMESTAMP,
+                    created TIMESTAMP,
+                    hash TEXT,
+                    category TEXT,
+                    text_content TEXT,
+                    indexed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+
+            # Tags-Tabelle (Many-to-Many)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS tags (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE NOT NULL
+                )
+            ''')
+
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS file_tags (
+                    file_id INTEGER,
+                    tag_id INTEGER,
+                    PRIMARY KEY (file_id, tag_id),
+                    FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
+                    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+                )
+            ''')
+
+            # Notizen-Tabelle
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS notes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    file_id INTEGER UNIQUE,
+                    content TEXT,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE
+                )
+            ''')
+
+            # FTS5 für Volltextsuche
+            cursor.execute('''
+                CREATE VIRTUAL TABLE IF NOT EXISTS files_fts USING fts5(
+                    path, filename, text_content,
+                    content='files',
+                    content_rowid='id'
+                )
+            ''')
+
+            # Trigger für FTS-Synchronisation
+            cursor.execute('''
+                CREATE TRIGGER IF NOT EXISTS files_ai AFTER INSERT ON files BEGIN
+                    INSERT INTO files_fts(rowid, path, filename, text_content)
+                    VALUES (new.id, new.path, new.filename, new.text_content);
+                END
+            ''')
+
+            cursor.execute('''
+                CREATE TRIGGER IF NOT EXISTS files_ad AFTER DELETE ON files BEGIN
+                    INSERT INTO files_fts(files_fts, rowid, path, filename, text_content)
+                    VALUES ('delete', old.id, old.path, old.filename, old.text_content);
+                END
+            ''')
+
+            cursor.execute('''
+                CREATE TRIGGER IF NOT EXISTS files_au AFTER UPDATE ON files BEGIN
+                    INSERT INTO files_fts(files_fts, rowid, path, filename, text_content)
+                    VALUES ('delete', old.id, old.path, old.filename, old.text_content);
+                    INSERT INTO files_fts(rowid, path, filename, text_content)
+                    VALUES (new.id, new.path, new.filename, new.text_content);
+                END
+            ''')
+
+            # Indizes
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_hash ON files(hash)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_category ON files(category)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_extension ON files(extension)')
+
+            conn.commit()
+        finally:
+            conn.close()
     
     def get_category(self, filename: str) -> str:
         """Bestimmt die Kategorie einer Datei"""

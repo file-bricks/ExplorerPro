@@ -269,6 +269,12 @@ class AdvancedSearchDialog(QDialog):
         # Verbindungen
         self.results_table.itemSelectionChanged.connect(self._on_selection_changed)
     
+    def closeEvent(self, event):
+        if self.search_worker and self.search_worker.isRunning():
+            self.search_worker.cancel()
+            self.search_worker.wait(3000)
+        super().closeEvent(event)
+
     def set_index(self, file_index):
         """Setzt den Datei-Index"""
         self.file_index = file_index
@@ -383,8 +389,8 @@ class AdvancedSearchDialog(QDialog):
         self.results_table.setRowCount(len(results))
         
         for row, result in enumerate(results):
-            # Name
-            name_item = QTableWidgetItem(result.get('name', ''))
+            # Name (DB-Spalte heißt 'filename', nicht 'name')
+            name_item = QTableWidgetItem(result.get('filename', ''))
             name_item.setData(Qt.ItemDataRole.UserRole, result.get('path', ''))
             self.results_table.setItem(row, 0, name_item)
             

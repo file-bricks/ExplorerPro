@@ -290,7 +290,7 @@ class SearchPanel(QWidget):
             # Dict zu SearchResult konvertieren
             result = SearchResult(
                 path=result_dict.get('path', ''),
-                name=result_dict.get('name', ''),
+                name=result_dict.get('filename', ''),  # DB-Spalte heißt 'filename', nicht 'name'
                 extension=result_dict.get('extension', ''),
                 size=result_dict.get('size', 0),
                 modified=result_dict.get('modified'),

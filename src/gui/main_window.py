@@ -40,16 +40,31 @@ class SearchToolBar(QToolBar):
         self.back_action.setToolTip("Zurück (Alt+Left)")
         self.back_action.setShortcut(QKeySequence("Alt+Left"))
         self.addAction(self.back_action)
+        self._set_action_accessibility(
+            self.back_action,
+            "Zurück",
+            "Zum vorherigen Ordner wechseln.",
+        )
         
         self.forward_action = QAction("→", self)
         self.forward_action.setToolTip("Vorwärts (Alt+Right)")
         self.forward_action.setShortcut(QKeySequence("Alt+Right"))
         self.addAction(self.forward_action)
+        self._set_action_accessibility(
+            self.forward_action,
+            "Vorwärts",
+            "Zum nächsten Ordner in der Navigation wechseln.",
+        )
         
         self.up_action = QAction("↑", self)
         self.up_action.setToolTip("Übergeordneter Ordner (Alt+Up)")
         self.up_action.setShortcut(QKeySequence("Alt+Up"))
         self.addAction(self.up_action)
+        self._set_action_accessibility(
+            self.up_action,
+            "Übergeordneter Ordner",
+            "Eine Ebene nach oben im aktuellen Ordnerpfad wechseln.",
+        )
         
         self.addSeparator()
         
@@ -57,6 +72,11 @@ class SearchToolBar(QToolBar):
         self.path_edit = QLineEdit()
         self.path_edit.setPlaceholderText("Pfad eingeben...")
         self.path_edit.setMinimumWidth(300)
+        self.path_edit.setToolTip("Aktuellen Ordnerpfad anzeigen oder direkt eingeben.")
+        self.path_edit.setAccessibleName("Ordnerpfad")
+        self.path_edit.setAccessibleDescription(
+            "Zeigt den aktuellen Ordnerpfad und erlaubt direkte Navigation per Enter."
+        )
         self.addWidget(self.path_edit)
         
         self.addSeparator()
@@ -66,13 +86,24 @@ class SearchToolBar(QToolBar):
         self.search_edit.setPlaceholderText("🔍 Suchen...")
         self.search_edit.setMinimumWidth(200)
         self.search_edit.setMaximumWidth(300)
+        self.search_edit.setClearButtonEnabled(True)
+        self.search_edit.setToolTip("Dateien im Index suchen. Enter startet die Suche.")
+        self.search_edit.setAccessibleName("Dateisuche")
+        self.search_edit.setAccessibleDescription(
+            "Suchbegriff eingeben und mit Enter oder der Schaltfläche Suchen starten."
+        )
         self.search_edit.returnPressed.connect(self._on_search)
         self.addWidget(self.search_edit)
         
         # Suche-Button
-        search_btn = QPushButton("Suchen")
-        search_btn.clicked.connect(self._on_search)
-        self.addWidget(search_btn)
+        self.search_btn = QPushButton("Suchen")
+        self.search_btn.setToolTip("Suche mit dem eingegebenen Begriff starten.")
+        self.search_btn.setAccessibleName("Suche starten")
+        self.search_btn.setAccessibleDescription(
+            "Startet die Dateisuche mit dem aktuellen Suchbegriff."
+        )
+        self.search_btn.clicked.connect(self._on_search)
+        self.addWidget(self.search_btn)
         
         self.addSeparator()
         
@@ -80,7 +111,21 @@ class SearchToolBar(QToolBar):
         self.view_btn = QToolButton()
         self.view_btn.setText("Ansicht")
         self.view_btn.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.view_btn.setToolTip("Ansichten und Seitenleisten-Bereiche umschalten.")
+        self.view_btn.setAccessibleName("Ansicht umschalten")
+        self.view_btn.setAccessibleDescription(
+            "Öffnet das Menü für Ansichtsoptionen sowie App-, Prompt- und Sync-Bereiche."
+        )
         self.addWidget(self.view_btn)
+
+    def _set_action_accessibility(self, action: QAction, name: str, description: str) -> None:
+        widget = self.widgetForAction(action)
+        if widget is None:
+            return
+        widget.setAccessibleName(name)
+        widget.setAccessibleDescription(description)
+        widget.setToolTip(action.toolTip())
+        widget.setWhatsThis(description)
     
     def _on_search(self):
         query = self.search_edit.text()
