@@ -20,4 +20,5 @@ def open_path_with_system(path: str) -> None:
     if command is None:
         os.startfile(path)
         return
-    subprocess.run(command, check=True)
+    # D4: timeout verhindert, dass ein haengender Shell-Opener den Prozess blockiert.
+    subprocess.run(command, check=True, timeout=10)

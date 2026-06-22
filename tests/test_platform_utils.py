@@ -49,4 +49,6 @@ def test_open_path_with_system_uses_platform_command_on_unix(monkeypatch) -> Non
 
     platform_utils.open_path_with_system("/tmp/datei.txt")
 
-    run.assert_called_once_with(["open", "/tmp/datei.txt"], check=True)
+    # D4: timeout muss übergeben werden, damit ein hängender Shell-Opener
+    # den Prozess nicht unbegrenzt blockiert.
+    run.assert_called_once_with(["open", "/tmp/datei.txt"], check=True, timeout=10)
