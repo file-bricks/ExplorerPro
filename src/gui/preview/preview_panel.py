@@ -13,6 +13,9 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QImage, QFont, QSyntaxHighlighter, QTextCharFormat, QColor
 import os
 from datetime import datetime
+from pathlib import Path
+
+from core.shortcut_utils import build_shortcut_preview_target, is_windows_shortcut
 
 # Optionale Imports
 try:
@@ -147,6 +150,40 @@ class TextPreview(QPlainTextEdit):
                 
         except Exception as e:
             self.setPlainText(f"Fehler beim Laden: {e}")
+
+
+class DirectoryPreview(QPlainTextEdit):
+    """Read-only preview for folders and resolved shortcut targets."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setReadOnly(True)
+        self.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
+        self.setFont(QFont("Consolas", 10))
+
+    def load_directory(self, path: str, heading: str | None = None):
+        folder = Path(path)
+        lines = [heading or f"Ordner: {folder}", ""]
+
+        try:
+            entries = sorted(
+                folder.iterdir(),
+                key=lambda item: (not item.is_dir(), item.name.lower()),
+            )
+        except OSError as exc:
+            self.setPlainText(f"Ordner konnte nicht gelesen werden:\n{folder}\n\n{exc}")
+            return
+
+        if not entries:
+            lines.append("(leer)")
+        else:
+            for entry in entries[:200]:
+                marker = "[DIR]" if entry.is_dir() else "     "
+                lines.append(f"{marker} {entry.name}")
+            if len(entries) > 200:
+                lines.append(f"... {len(entries) - 200} weitere Einträge")
+
+        self.setPlainText("\n".join(lines))
 
 
 class PdfPreview(QScrollArea):
@@ -316,11 +353,15 @@ class PreviewPanel(QWidget):
         # PDF-Vorschau
         self.pdf_preview = PdfPreview()
         self.preview_stack.addWidget(self.pdf_preview)
+
+        # Ordner-Vorschau
+        self.directory_preview = DirectoryPreview()
+        self.preview_stack.addWidget(self.directory_preview)
         
         # Nicht unterstützt
-        unsupported = QLabel("Vorschau nicht verfügbar\nfür diesen Dateityp")
-        unsupported.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.preview_stack.addWidget(unsupported)
+        self.unsupported_label = QLabel("Vorschau nicht verfügbar\nfür diesen Dateityp")
+        self.unsupported_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.preview_stack.addWidget(self.unsupported_label)
         
         layout.addWidget(self.preview_stack, 2)
         
@@ -341,7 +382,37 @@ class PreviewPanel(QWidget):
             return
         
         self._current_path = path
+        preview_path = path
+        heading = None
+
+        if is_windows_shortcut(path):
+            shortcut_target = build_shortcut_preview_target(path)
+            if shortcut_target is None:
+                self.unsupported_label.setText(
+                    "Verknüpfung konnte nicht aufgelöst werden\noder das Ziel existiert nicht."
+                )
+                self.preview_stack.setCurrentIndex(5)
+                self.metadata_panel.show_metadata(path)
+                return
+
+            preview_path = shortcut_target.preview_path
+            heading = (
+                f"Verknüpfung: {os.path.basename(path)}\n"
+                f"Ziel: {shortcut_target.target_path}\n"
+                f"Vorschau: {shortcut_target.preview_path}"
+            )
+
+        self._show_preview_for_path(preview_path, heading)
+        self.metadata_panel.show_metadata(preview_path)
+
+    def _show_preview_for_path(self, path: str, heading: str | None = None):
         ext = os.path.splitext(path)[1].lower()
+        self.unsupported_label.setText("Vorschau nicht verfügbar\nfür diesen Dateityp")
+
+        if os.path.isdir(path):
+            self.directory_preview.load_directory(path, heading)
+            self.preview_stack.setCurrentIndex(4)
+            return
         
         # Bild-Vorschau
         if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']:
@@ -365,7 +436,4 @@ class PreviewPanel(QWidget):
         
         # Nicht unterstützt
         else:
-            self.preview_stack.setCurrentIndex(4)
-        
-        # Metadaten aktualisieren
-        self.metadata_panel.show_metadata(path)
+            self.preview_stack.setCurrentIndex(5)

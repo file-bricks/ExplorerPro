@@ -17,7 +17,7 @@ ExplorerPro ist ein lokaler Desktop-Dateimanager für Power User. Die App bünde
 ## Funktionen
 
 - **Dateibrowser:** Mehrtab-Navigation mit Breadcrumbs und Kontextmenüs.
-- **Vorschau:** PDF-, Bild-, Quellcode- und Textvorschau direkt in der App.
+- **Vorschau:** PDF-, Bild-, Quellcode-, Text-, Ordner- und Windows-Verknüpfungsvorschau direkt in der App.
 - **Datenschutzprüfung:** Hinweise auf sensible Dateinamen oder Inhalte.
 - **Erweiterte Suche:** Filter nach Typ, Größe, Datum und Suchtext.
 - **Duplikatsuche:** Hash-basierte Duplikaterkennung.
@@ -70,7 +70,7 @@ python -m pytest -q
 python -m compileall -q src tests manage_translations.py translator.py
 ```
 
-Die Tests decken Import-Smokes, Weitergabe des Suchfilters "Im Inhalt", Fehlerbehandlung beim Datei-/Ordner-Öffnen und Basis-Bootstrapping ab.
+Die Tests decken Import-Smokes, Weitergabe des Suchfilters "Im Inhalt", Fehlerbehandlung beim Datei-/Ordner-Öffnen, aufgelöste `.lnk`-Vorschauziele und Basis-Bootstrapping ab.
 
 ## Datenschutz
 

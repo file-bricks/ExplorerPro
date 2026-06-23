@@ -29,7 +29,7 @@ ExplorerPro is a desktop file explorer for power users. It combines a multi-tab 
 ## Features
 
 - **File browser:** multi-tab browsing with breadcrumb navigation and context menus
-- **Preview panel:** PDF, image, source-code, and text preview inside the app
+- **Preview panel:** PDF, image, source-code, text, folder, and Windows shortcut preview inside the app
 - **Privacy monitor:** detection and review of sensitive filenames or file contents
 - **Advanced search:** filters for type, size, date, and search text
 - **Duplicate finder:** hash-based duplicate detection
@@ -118,7 +118,7 @@ python -m pytest -q
 python -m compileall -q src tests manage_translations.py translator.py
 ```
 
-The current smoke suite covers import bootstrapping, search-filter forwarding, duplicate-finder open-path error handling, and file-browser open-path error handling. An additional desktop source smoke lives in `tests/source_platform_smoke.py` and exercises startup, search, preview, duplicate scanning, and config-path creation on Linux and macOS runners. GitHub Actions runs the pytest smoke suite on Python 3.10, 3.11, and 3.12 plus the dedicated desktop-platform smoke on `ubuntu-latest` and `macos-latest`.
+The current smoke suite covers import bootstrapping, search-filter forwarding, duplicate-finder open-path error handling, file-browser open-path error handling, and resolved `.lnk` shortcut preview targets. An additional desktop source smoke lives in `tests/source_platform_smoke.py` and exercises startup, search, preview, duplicate scanning, and config-path creation on Linux and macOS runners. GitHub Actions runs the pytest smoke suite on Python 3.10, 3.11, and 3.12 plus the dedicated desktop-platform smoke on `ubuntu-latest` and `macos-latest`.
 
 The Store screenshot generator is covered by `tests/test_store_screenshots.py`
 and writes four redacted screenshots for the Windows Store flow.
