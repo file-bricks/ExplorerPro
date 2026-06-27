@@ -1,5 +1,5 @@
 """
-Tests für TOMLHighlighter und JSON/TOML-Validierungsfunktionen.
+Tests für Syntax-Highlighter und JSON/TOML-Validierungsfunktionen.
 """
 from __future__ import annotations
 
@@ -19,10 +19,21 @@ _app = QApplication.instance() or QApplication([])
 
 from modules.editor.syntax_highlighter import (
     TOMLHighlighter,
+    YAMLHighlighter,
+    ShellHighlighter,
+    CHighlighter,
+    IniHighlighter,
+    MarkdownHighlighter,
     HIGHLIGHTERS,
     get_lexer_for_extension,
 )
 from modules.editor.quick_editor import _validate_json, _validate_toml
+
+
+def _make_highlighter(cls):
+    """Hilfsfunktion: Highlighter-Instanz mit frischem QTextDocument."""
+    from PySide6.QtGui import QTextDocument
+    return cls(QTextDocument())
 
 
 class TestTOMLHighlighter:
@@ -120,3 +131,120 @@ class TestValidateTOML:
         ok, msg = _validate_toml("key = 1")
         assert ok is False
         assert "erfordert Python" in msg
+
+
+# ===== Neue Highlighter (2026-06-27) =====
+
+
+class TestYAMLHighlighter:
+    def test_yaml_extensions_in_highlighters(self):
+        assert ".yaml" in HIGHLIGHTERS
+        assert ".yml" in HIGHLIGHTERS
+        assert HIGHLIGHTERS[".yaml"] is YAMLHighlighter
+        assert HIGHLIGHTERS[".yml"] is YAMLHighlighter
+
+    def test_get_lexer_returns_yaml(self):
+        assert get_lexer_for_extension(".yaml") is YAMLHighlighter
+        assert get_lexer_for_extension(".yml") is YAMLHighlighter
+
+    def test_get_lexer_case_insensitive(self):
+        assert get_lexer_for_extension(".YAML") is YAMLHighlighter
+        assert get_lexer_for_extension(".YML") is YAMLHighlighter
+
+    def test_yaml_highlighter_instantiates(self):
+        h = _make_highlighter(YAMLHighlighter)
+        assert h is not None
+
+    def test_yaml_highlighter_has_rules(self):
+        h = _make_highlighter(YAMLHighlighter)
+        assert len(h.rules) > 0
+
+
+class TestShellHighlighter:
+    def test_shell_extensions_in_highlighters(self):
+        for ext in ('.sh', '.bash', '.zsh', '.fish'):
+            assert ext in HIGHLIGHTERS
+            assert HIGHLIGHTERS[ext] is ShellHighlighter
+
+    def test_get_lexer_returns_shell(self):
+        assert get_lexer_for_extension(".sh") is ShellHighlighter
+        assert get_lexer_for_extension(".bash") is ShellHighlighter
+
+    def test_get_lexer_case_insensitive(self):
+        assert get_lexer_for_extension(".SH") is ShellHighlighter
+
+    def test_shell_highlighter_instantiates(self):
+        h = _make_highlighter(ShellHighlighter)
+        assert h is not None
+
+    def test_shell_highlighter_has_rules(self):
+        h = _make_highlighter(ShellHighlighter)
+        assert len(h.rules) > 0
+
+
+class TestCHighlighter:
+    def test_c_extensions_in_highlighters(self):
+        for ext in ('.c', '.cpp', '.cc', '.cxx', '.h', '.hpp', '.hh'):
+            assert ext in HIGHLIGHTERS
+            assert HIGHLIGHTERS[ext] is CHighlighter
+
+    def test_get_lexer_returns_c(self):
+        assert get_lexer_for_extension(".c") is CHighlighter
+        assert get_lexer_for_extension(".cpp") is CHighlighter
+        assert get_lexer_for_extension(".h") is CHighlighter
+
+    def test_get_lexer_case_insensitive(self):
+        assert get_lexer_for_extension(".CPP") is CHighlighter
+
+    def test_c_highlighter_instantiates(self):
+        h = _make_highlighter(CHighlighter)
+        assert h is not None
+
+    def test_c_highlighter_has_rules(self):
+        h = _make_highlighter(CHighlighter)
+        assert len(h.rules) > 0
+
+
+class TestIniHighlighter:
+    def test_ini_extensions_in_highlighters(self):
+        for ext in ('.ini', '.cfg', '.conf', '.env'):
+            assert ext in HIGHLIGHTERS
+            assert HIGHLIGHTERS[ext] is IniHighlighter
+
+    def test_get_lexer_returns_ini(self):
+        assert get_lexer_for_extension(".ini") is IniHighlighter
+        assert get_lexer_for_extension(".env") is IniHighlighter
+
+    def test_get_lexer_case_insensitive(self):
+        assert get_lexer_for_extension(".INI") is IniHighlighter
+
+    def test_ini_highlighter_instantiates(self):
+        h = _make_highlighter(IniHighlighter)
+        assert h is not None
+
+    def test_ini_highlighter_has_rules(self):
+        h = _make_highlighter(IniHighlighter)
+        assert len(h.rules) > 0
+
+
+class TestMarkdownHighlighter:
+    def test_markdown_extensions_in_highlighters(self):
+        assert ".md" in HIGHLIGHTERS
+        assert ".markdown" in HIGHLIGHTERS
+        assert HIGHLIGHTERS[".md"] is MarkdownHighlighter
+        assert HIGHLIGHTERS[".markdown"] is MarkdownHighlighter
+
+    def test_get_lexer_returns_markdown(self):
+        assert get_lexer_for_extension(".md") is MarkdownHighlighter
+        assert get_lexer_for_extension(".markdown") is MarkdownHighlighter
+
+    def test_get_lexer_case_insensitive(self):
+        assert get_lexer_for_extension(".MD") is MarkdownHighlighter
+
+    def test_markdown_highlighter_instantiates(self):
+        h = _make_highlighter(MarkdownHighlighter)
+        assert h is not None
+
+    def test_markdown_highlighter_has_rules(self):
+        h = _make_highlighter(MarkdownHighlighter)
+        assert len(h.rules) > 0

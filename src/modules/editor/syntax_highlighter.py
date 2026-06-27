@@ -259,7 +259,7 @@ class TOMLHighlighter(BaseHighlighter):
 
 class SQLHighlighter(BaseHighlighter):
     """Syntax-Highlighting für SQL"""
-    
+
     KEYWORDS = [
         'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'NOT', 'IN', 'LIKE',
         'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
@@ -269,41 +269,277 @@ class SQLHighlighter(BaseHighlighter):
         'LIMIT', 'OFFSET', 'UNION', 'ALL', 'DISTINCT',
         'AS', 'NULL', 'IS', 'BETWEEN', 'EXISTS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END'
     ]
-    
+
     def _setup_rules(self):
         # Keywords (case-insensitive)
         keyword_pattern = r'\b(' + '|'.join(self.KEYWORDS) + r')\b'
         self.rules.append((keyword_pattern, self.keyword_format))
-        
+
         # Strings
         self.rules.append((r"'[^']*'", self.string_format))
-        
+
         # Numbers
         self.rules.append((r'\b\d+\.?\d*\b', self.number_format))
-        
+
         # Comments
         self.rules.append((r'--.*$', self.comment_format))
         self.rules.append((r'/\*.*?\*/', self.comment_format))
 
 
+class YAMLHighlighter(BaseHighlighter):
+    """Syntax-Highlighting für YAML"""
+
+    def _setup_rules(self):
+        # Dokument-Marker (--- / ...)
+        doc_format = QTextCharFormat()
+        doc_format.setForeground(QColor("#C586C0"))
+        self.rules.append((r'^---', doc_format))
+        self.rules.append((r'^\.\.\.$', doc_format))
+
+        # Keys (vor dem ':')
+        key_format = QTextCharFormat()
+        key_format.setForeground(QColor("#9CDCFE"))
+        self.rules.append((r'^[ \t]*[\w.\-]+[ \t]*(?=\s*:)', key_format))
+
+        # Anchors & Aliases (&name / *name)
+        anchor_format = QTextCharFormat()
+        anchor_format.setForeground(QColor("#D7BA7D"))
+        self.rules.append((r'[&*][\w\-]+', anchor_format))
+
+        # Strings (gequotet)
+        self.rules.append((r'"[^"]*"', self.string_format))
+        self.rules.append((r"'[^']*'", self.string_format))
+
+        # Zahlen
+        self.rules.append((r'\b-?\d+\.?\d*\b', self.number_format))
+
+        # Booleans / null (YAML-Konventionen)
+        self.rules.append((r'\b(true|false|yes|no|on|off|null|~)\b', self.keyword_format))
+
+        # Tags (!tag)
+        tag_format = QTextCharFormat()
+        tag_format.setForeground(QColor("#4EC9B0"))
+        self.rules.append((r'![\w/]+', tag_format))
+
+        # Kommentare
+        self.rules.append((r'#.*$', self.comment_format))
+
+
+class ShellHighlighter(BaseHighlighter):
+    """Syntax-Highlighting für Shell/Bash-Skripte"""
+
+    KEYWORDS = [
+        'if', 'then', 'else', 'elif', 'fi', 'for', 'while', 'do', 'done',
+        'case', 'esac', 'in', 'function', 'return', 'exit', 'export',
+        'local', 'declare', 'readonly', 'unset', 'shift', 'source',
+        'echo', 'printf', 'read', 'test', 'true', 'false', 'break', 'continue',
+        'select', 'until', 'trap', 'exec', 'eval'
+    ]
+
+    def _setup_rules(self):
+        # Shebang-Zeile
+        shebang_format = QTextCharFormat()
+        shebang_format.setForeground(QColor("#C586C0"))
+        shebang_format.setFontWeight(QFont.Weight.Bold)
+        self.rules.append((r'^#!.*$', shebang_format))
+
+        # Keywords
+        keyword_pattern = r'\b(' + '|'.join(self.KEYWORDS) + r')\b'
+        self.rules.append((keyword_pattern, self.keyword_format))
+
+        # Variablen ($VAR und ${VAR})
+        var_format = QTextCharFormat()
+        var_format.setForeground(QColor("#9CDCFE"))
+        self.rules.append((r'\$\{?[\w@#?$!0-9*\-]+\}?', var_format))
+
+        # Strings
+        self.rules.append((r'"[^"]*"', self.string_format))
+        self.rules.append((r"'[^']*'", self.string_format))
+
+        # Zahlen
+        self.rules.append((r'\b\d+\b', self.number_format))
+
+        # Kommentare (nach Shebang-Regel, damit diese Vorrang hat)
+        self.rules.append((r'#.*$', self.comment_format))
+
+
+class CHighlighter(BaseHighlighter):
+    """Syntax-Highlighting für C/C++"""
+
+    KEYWORDS = [
+        'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do',
+        'double', 'else', 'enum', 'extern', 'float', 'for', 'goto', 'if',
+        'int', 'long', 'register', 'return', 'short', 'signed', 'sizeof',
+        'static', 'struct', 'switch', 'typedef', 'union', 'unsigned', 'void',
+        'volatile', 'while',
+        # C++-Erweiterungen
+        'bool', 'class', 'catch', 'delete', 'explicit', 'false', 'friend',
+        'inline', 'namespace', 'new', 'nullptr', 'operator', 'private',
+        'protected', 'public', 'template', 'this', 'throw', 'true', 'try',
+        'typename', 'using', 'virtual', 'override', 'final'
+    ]
+
+    def _setup_rules(self):
+        # Präprozessor-Direktiven (#include, #define, ...)
+        preproc_format = QTextCharFormat()
+        preproc_format.setForeground(QColor("#C586C0"))
+        self.rules.append((r'^\s*#\s*\w+', preproc_format))
+
+        # Keywords
+        keyword_pattern = r'\b(' + '|'.join(self.KEYWORDS) + r')\b'
+        self.rules.append((keyword_pattern, self.keyword_format))
+
+        # Strings
+        self.rules.append((r'"[^"\\]*(\\.[^"\\]*)*"', self.string_format))
+        self.rules.append((r"'[^'\\]*(\\.[^'\\]*)*'", self.string_format))
+
+        # Zahlen (dezimal, hex, oktal mit optionalen Suffixen)
+        self.rules.append((r'\b(0x[\da-fA-F]+|\d+\.?\d*[uUlLfF]*)\b', self.number_format))
+
+        # Funktionsaufrufe
+        self.rules.append((r'\b(\w+)\s*(?=\()', self.function_format))
+
+        # Typnamen (PascalCase-Konvention)
+        type_format = QTextCharFormat()
+        type_format.setForeground(QColor("#4EC9B0"))
+        self.rules.append((r'\b[A-Z][A-Za-z0-9_]*\b', type_format))
+
+        # Kommentare
+        self.rules.append((r'//.*$', self.comment_format))
+        self.rules.append((r'/\*.*?\*/', self.comment_format))
+
+
+class IniHighlighter(BaseHighlighter):
+    """Syntax-Highlighting für INI/Config/.env-Dateien"""
+
+    def _setup_rules(self):
+        # Sektionen [section]
+        section_format = QTextCharFormat()
+        section_format.setForeground(QColor("#C586C0"))
+        section_format.setFontWeight(QFont.Weight.Bold)
+        self.rules.append((r'^\s*\[.*\]', section_format))
+
+        # Keys (vor '=' oder ':')
+        key_format = QTextCharFormat()
+        key_format.setForeground(QColor("#9CDCFE"))
+        self.rules.append((r'^[ \t]*[\w.\-]+[ \t]*(?=[=:])', key_format))
+
+        # Werte (nach '=' oder ':')
+        self.rules.append((r'(?<=[=:])[ \t]*.*$', self.string_format))
+
+        # Zahlen
+        self.rules.append((r'\b\d+\.?\d*\b', self.number_format))
+
+        # Booleans
+        self.rules.append((r'\b(true|false|yes|no|on|off)\b', self.keyword_format))
+
+        # Kommentare (# und ;)
+        self.rules.append((r'[#;].*$', self.comment_format))
+
+
+class MarkdownHighlighter(BaseHighlighter):
+    """Syntax-Highlighting für Markdown"""
+
+    def _setup_rules(self):
+        # Überschriften (# bis ######)
+        heading_format = QTextCharFormat()
+        heading_format.setForeground(QColor("#569CD6"))
+        heading_format.setFontWeight(QFont.Weight.Bold)
+        self.rules.append((r'^#{1,6}\s.*$', heading_format))
+
+        # Fett (**text** / __text__)
+        bold_format = QTextCharFormat()
+        bold_format.setFontWeight(QFont.Weight.Bold)
+        bold_format.setForeground(QColor("#D4D4D4"))
+        self.rules.append((r'\*\*[^*]+\*\*', bold_format))
+        self.rules.append((r'__[^_]+__', bold_format))
+
+        # Kursiv (*text* / _text_)
+        italic_format = QTextCharFormat()
+        italic_format.setFontItalic(True)
+        italic_format.setForeground(QColor("#D4D4D4"))
+        self.rules.append((r'\*[^*\s][^*]*\*', italic_format))
+        self.rules.append((r'_[^_\s][^_]*_', italic_format))
+
+        # Inline-Code (`code`)
+        code_format = QTextCharFormat()
+        code_format.setForeground(QColor("#CE9178"))
+        code_format.setBackground(QColor("#2D2D30"))
+        self.rules.append((r'`[^`]+`', code_format))
+
+        # Code-Block-Anfang (```)
+        self.rules.append((r'^```.*$', code_format))
+
+        # Links und Bilder ([text](url) / ![alt](url))
+        link_format = QTextCharFormat()
+        link_format.setForeground(QColor("#4EC9B0"))
+        self.rules.append((r'!?\[[^\]]*\]\([^)]*\)', link_format))
+
+        # Blockquotes (> ...)
+        quote_format = QTextCharFormat()
+        quote_format.setForeground(QColor("#6A9955"))
+        quote_format.setFontItalic(True)
+        self.rules.append((r'^>.*$', quote_format))
+
+        # Trennlinien (---, ***, ___)
+        hr_format = QTextCharFormat()
+        hr_format.setForeground(QColor("#858585"))
+        self.rules.append((r'^[-*_]{3,}$', hr_format))
+
+        # Listen-Marker (-, *, +, 1.)
+        list_format = QTextCharFormat()
+        list_format.setForeground(QColor("#D7BA7D"))
+        self.rules.append((r'^[ \t]*[-*+][ \t]', list_format))
+        self.rules.append((r'^[ \t]*\d+\.[ \t]', list_format))
+
+
 # ===== Highlighter-Factory =====
 
 HIGHLIGHTERS = {
+    # Python
     '.py': PythonHighlighter,
     '.pyw': PythonHighlighter,
+    # JavaScript / TypeScript
     '.js': JavaScriptHighlighter,
     '.jsx': JavaScriptHighlighter,
     '.ts': JavaScriptHighlighter,
     '.tsx': JavaScriptHighlighter,
+    # HTML / XML
     '.html': HTMLHighlighter,
     '.htm': HTMLHighlighter,
     '.xml': HTMLHighlighter,
+    '.svg': HTMLHighlighter,
+    # CSS
     '.css': CSSHighlighter,
     '.scss': CSSHighlighter,
     '.less': CSSHighlighter,
+    # Daten-/Konfigurationsformate
     '.json': JSONHighlighter,
     '.toml': TOMLHighlighter,
+    '.yaml': YAMLHighlighter,
+    '.yml': YAMLHighlighter,
+    '.ini': IniHighlighter,
+    '.cfg': IniHighlighter,
+    '.conf': IniHighlighter,
+    '.env': IniHighlighter,
+    # Datenbanken
     '.sql': SQLHighlighter,
+    # Shell / Skripte
+    '.sh': ShellHighlighter,
+    '.bash': ShellHighlighter,
+    '.zsh': ShellHighlighter,
+    '.fish': ShellHighlighter,
+    # C / C++
+    '.c': CHighlighter,
+    '.cpp': CHighlighter,
+    '.cc': CHighlighter,
+    '.cxx': CHighlighter,
+    '.h': CHighlighter,
+    '.hpp': CHighlighter,
+    '.hh': CHighlighter,
+    # Dokumentation
+    '.md': MarkdownHighlighter,
+    '.markdown': MarkdownHighlighter,
 }
 
 

@@ -6,6 +6,21 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [Unreleased]
 
 ### Hinzugefügt / Added
+- **Erweitertes Syntax-Highlighting** (`src/modules/editor/syntax_highlighter.py`): 5 neue Highlighter-Klassen für bisher nicht unterstützte Coding-Dateitypen.
+  - `YAMLHighlighter` für `.yaml` / `.yml` (Dokument-Marker, Keys, Anchors/Aliases, Strings, Zahlen, Booleans, Tags, Kommentare)
+  - `ShellHighlighter` für `.sh` / `.bash` / `.zsh` / `.fish` (Shebang, Keywords, Variablen, Strings, Kommentare)
+  - `CHighlighter` für `.c` / `.cpp` / `.cc` / `.cxx` / `.h` / `.hpp` / `.hh` (Präprozessor-Direktiven, C/C++-Keywords, Strings, Zahlen, Funktionsaufrufe, PascalCase-Typen, Kommentare)
+  - `IniHighlighter` für `.ini` / `.cfg` / `.conf` / `.env` (Sektionen, Keys, Werte, Booleans, # und ; Kommentare)
+  - `MarkdownHighlighter` für `.md` / `.markdown` (Überschriften, Fett/Kursiv, Inline-Code, Code-Blöcke, Links/Bilder, Blockquotes, Trennlinien, Listen)
+  - Alle neuen Formate im `HIGHLIGHTERS`-Dict registriert; zusätzlich `.svg` zu HTMLHighlighter ergänzt.
+- `tests/test_syntax_highlighter.py`: 25 neue Unit-Tests (je 5 pro Highlighter: Registrierung, Lexer-Lookup, Groß-/Kleinschreibungs-Toleranz, Instanziierung, Regelprüfung); Gesamtsuite 130/130 grün.
+- **Drag-and-Drop in `FileBrowser`** (`src/gui/browser/file_browser.py`):
+  - *Drag OUT*: Ausgewählte Dateien können per Maus in externe Programme (Windows-Explorer, Webmail-Anhang-Upload usw.) gezogen werden. `_DnDTableView.startDrag` → `FileBrowser._start_drag_files` baut `QMimeData` mit `QUrl`-Liste und startet `QDrag` mit Copy- und Move-Action.
+  - *Drop IN*: Dateien aus Windows-Explorer oder anderen Apps landen im aktuell angezeigten Ordner. Shift-Drop = Move, normaler Drop = Copy. Kollisionsbehandlung via `_copy`-Suffix; gleicher Ordner wird übersprungen.
+  - `_DnDTableView(QTableView)` als minimale Unterklasse für C++-virtuelle `startDrag`/`dropEvent`-Overrides; die gesamte Logik liegt in `FileBrowser`.
+  - Neue interne Methoden: `_handle_url_drop`, `_start_drag_files`, `_do_file_drop`.
+  - Neue Imports: `QUrl`, `QMimeData`, `QDrag`, `shutil`.
+- `tests/test_file_browser.py`: 3 neue DnD-Tests — alle 4 Tests grün.
 - `TOMLHighlighter` in `src/modules/editor/syntax_highlighter.py`: Syntax-Highlighting für TOML-Dateien (Sections `[table]`/`[[array]]`, Keys, Strings, Zahlen, Booleans, Kommentare). `.toml` ist jetzt in `HIGHLIGHTERS` registriert.
 - Schaltfläche „✔ Validieren" (F6) im Quick Editor: validiert JSON- und TOML-Dateien direkt aus dem Editor-Buffer (unsaved) und zeigt das Ergebnis im Output-Panel. Validierungslogik als testbare Pure Functions `_validate_json` / `_validate_toml` ohne Qt-Abhängigkeit.
 - `tests/test_syntax_highlighter.py`: 15 Unit-Tests für TOMLHighlighter, JSON-Validierung und TOML-Validierung (inklusive graceful Fallback für Python <3.11 ohne tomli).
@@ -40,6 +55,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Windows-Verknüpfungsziele mit Umgebungsvariablen wie `%SystemRoot%` werden vor der Vorschau aufgelöst.
 - Mojibake in README- und Workflow-Texten bereinigt.
 - Die kompakte Haupt-Toolbar exponiert Navigation, Pfadfeld, Suche und Ansichtsmenü jetzt mit klaren Accessible Names, Descriptions und Tooltips statt nur über Pfeilsymbole und Placeholder.
+- Das kompakte Sidebar-Suchpanel exponiert Volltextfeld, Filter, Ergebnisliste, Löschen und den `⚙️`-Dialogpfad jetzt mit klaren Accessible Names, Descriptions und Tooltips statt sich überwiegend auf Placeholder und Symbol-UI zu verlassen.
 
 ## [1.0.0] - 2026-03-05
 
