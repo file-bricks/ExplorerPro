@@ -5,9 +5,10 @@ PreviewPanel - Vorschau-Panel für Dateien
 """
 
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QStackedWidget,
+    QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget,
     QLabel, QScrollArea, QGroupBox, QFormLayout, QLineEdit,
-    QPlainTextEdit, QFrame
+    QPlainTextEdit, QFrame,
+    QComboBox, QPushButton, QTableWidget, QTableWidgetItem,
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QImage, QFont, QSyntaxHighlighter, QTextCharFormat, QColor
@@ -316,6 +317,134 @@ class MetadataPanel(QWidget):
         self.created_label.setText(created.strftime("%d.%m.%Y %H:%M"))
 
 
+class ExcelPreview(QWidget):
+    """Read-only-Vorschau für .xlsx- und .xls-Dateien.
+
+    Zeigt eine Arbeitsblatt-Auswahl (Dropdown) und die ersten Zeilen/Spalten
+    in einer Tabelle. Bei fehlender Bibliothek oder Lesefehler erscheint
+    ein klar beschrifteter Fallback mit „Extern öffnen"-Schaltfläche.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._path: str | None = None
+        self._setup_ui()
+
+    def _setup_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(4, 4, 4, 4)
+
+        # Kopfzeile: Arbeitsblatt-Auswahl
+        header = QHBoxLayout()
+        header.addWidget(QLabel("Arbeitsblatt:"))
+
+        self.sheet_combo = QComboBox()
+        self.sheet_combo.setMinimumWidth(120)
+        self.sheet_combo.currentTextChanged.connect(self._on_sheet_changed)
+        header.addWidget(self.sheet_combo, 1)
+
+        self.open_extern_btn = QPushButton("Extern öffnen")
+        self.open_extern_btn.setVisible(False)
+        self.open_extern_btn.clicked.connect(self._open_extern)
+        header.addWidget(self.open_extern_btn)
+
+        layout.addLayout(header)
+
+        # Statuszeile (Fehler / Fallback-Hinweis)
+        self.status_label = QLabel()
+        self.status_label.setWordWrap(True)
+        self.status_label.setVisible(False)
+        layout.addWidget(self.status_label)
+
+        # Datentabelle
+        self.table = QTableWidget()
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.table.setAlternatingRowColors(True)
+        layout.addWidget(self.table, 1)
+
+    def load_file(self, path: str):
+        """Lädt eine Excel-Datei und zeigt das erste Arbeitsblatt an."""
+        from core.xlsx_reader import read_workbook_meta
+
+        self._path = path
+        self.sheet_combo.blockSignals(True)
+        self.sheet_combo.clear()
+
+        meta = read_workbook_meta(path)
+        if meta.error:
+            self._show_fallback(meta.error)
+            self.sheet_combo.blockSignals(False)
+            return
+
+        self.sheet_combo.addItems(meta.sheets)
+        self.sheet_combo.blockSignals(False)
+        self.status_label.setVisible(False)
+        self.open_extern_btn.setVisible(False)
+
+        if meta.active_sheet:
+            self._load_sheet(meta.active_sheet)
+
+    def _on_sheet_changed(self, sheet_name: str):
+        if sheet_name:
+            self._load_sheet(sheet_name)
+
+    def _load_sheet(self, sheet_name: str):
+        """Füllt die Tabelle mit den Zellinhalten des gewählten Arbeitsblatts."""
+        from core.xlsx_reader import read_workbook_sheet, XlsxReadError
+
+        if not self._path:
+            return
+
+        try:
+            rows = read_workbook_sheet(self._path, sheet_name)
+        except XlsxReadError as exc:
+            self._show_fallback(str(exc))
+            return
+
+        if not rows:
+            self.table.setRowCount(0)
+            self.table.setColumnCount(0)
+            return
+
+        col_count = max(len(r) for r in rows)
+        self.table.setRowCount(len(rows))
+        self.table.setColumnCount(col_count)
+
+        # Erste Zeile als Spaltenköpfe
+        header_row = rows[0]
+        self.table.setHorizontalHeaderLabels(
+            [str(v) if v is not None else "" for v in header_row]
+        )
+
+        for r_idx, row in enumerate(rows):
+            for c_idx, val in enumerate(row):
+                item = QTableWidgetItem(str(val) if val is not None else "")
+                self.table.setItem(r_idx, c_idx, item)
+
+    def _show_fallback(self, reason: str):
+        self.table.setRowCount(0)
+        self.table.setColumnCount(0)
+        self.status_label.setText(
+            f"Vorschau nicht verfügbar: {reason}\n→ Datei extern öffnen"
+        )
+        self.status_label.setVisible(True)
+        self.open_extern_btn.setVisible(True)
+
+    def _open_extern(self):
+        """Öffnet die Datei mit der systemseitig zugeordneten Anwendung."""
+        if not self._path:
+            return
+        import subprocess
+        import sys as _sys
+
+        if _sys.platform == "win32":
+            os.startfile(self._path)  # type: ignore[attr-defined]
+        elif _sys.platform == "darwin":
+            subprocess.Popen(["open", self._path])
+        else:
+            subprocess.Popen(["xdg-open", self._path])
+
+
 class PreviewPanel(QWidget):
     """
     Haupt-Vorschau-Panel mit:
@@ -362,6 +491,10 @@ class PreviewPanel(QWidget):
         self.unsupported_label = QLabel("Vorschau nicht verfügbar\nfür diesen Dateityp")
         self.unsupported_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.preview_stack.addWidget(self.unsupported_label)
+
+        # Excel-Vorschau (.xlsx / .xls) — Index 6
+        self.excel_preview = ExcelPreview()
+        self.preview_stack.addWidget(self.excel_preview)
         
         layout.addWidget(self.preview_stack, 2)
         
@@ -433,7 +566,12 @@ class PreviewPanel(QWidget):
         elif ext == '.pdf':
             self.pdf_preview.load_pdf(path)
             self.preview_stack.setCurrentIndex(3)
-        
+
+        # Excel-Vorschau
+        elif ext in ['.xlsx', '.xls']:
+            self.excel_preview.load_file(path)
+            self.preview_stack.setCurrentIndex(6)
+
         # Nicht unterstützt
         else:
             self.preview_stack.setCurrentIndex(5)

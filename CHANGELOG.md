@@ -6,6 +6,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [Unreleased]
 
 ### Hinzugefügt / Added
+- **Excel-Vorschau** (`.xlsx` / `.xls`, read-only) im Vorschau-Panel:
+  - `src/core/xlsx_reader.py`: Qt-freier Pure-Logic-Reader mit `read_workbook_meta` (Blattnamen) und `read_workbook_sheet` (erste ≤ 100 Zeilen × 50 Spalten). openpyxl via Import-Guard; fehlende Lib oder Lesefehler → typisierte Fehlerobjekte, kein Crash. `.xls` via xlrd-Guard (optional).
+  - `ExcelPreview`-Widget in `src/gui/preview/preview_panel.py`: Arbeitsblatt-Dropdown (QComboBox), Datentabelle (QTableWidget, read-only), Statuszeile + „Extern öffnen"-Schaltfläche als Fallback.
+  - `PreviewPanel._show_preview_for_path` leitet `.xlsx`/`.xls` jetzt an `ExcelPreview` weiter (Stack-Index 6).
+  - `tests/test_xlsx_preview.py`: 15 neue Tests — Blattnamen (Single/Multi), erste Zeilen/Spalten, leeres Blatt, Zeilen-Limit, Fallback bei korrupter Datei und fehlendem openpyxl, GUI-Integration. Gesamtsuite 145/145 grün.
 - **Erweitertes Syntax-Highlighting** (`src/modules/editor/syntax_highlighter.py`): 5 neue Highlighter-Klassen für bisher nicht unterstützte Coding-Dateitypen.
   - `YAMLHighlighter` für `.yaml` / `.yml` (Dokument-Marker, Keys, Anchors/Aliases, Strings, Zahlen, Booleans, Tags, Kommentare)
   - `ShellHighlighter` für `.sh` / `.bash` / `.zsh` / `.fish` (Shebang, Keywords, Variablen, Strings, Kommentare)
