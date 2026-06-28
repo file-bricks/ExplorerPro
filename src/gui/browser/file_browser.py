@@ -10,11 +10,12 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import (
     Qt, Signal, QDir, QModelIndex, QSortFilterProxyModel,
-    QStandardPaths
+    QStandardPaths, QUrl, QMimeData, QSize
 )
-from PySide6.QtGui import QAction, QCursor
+from PySide6.QtGui import QAction, QCursor, QDrag
 import os
 import subprocess
+import shutil
 from pathlib import Path
 
 from core.platform_utils import open_path_with_system
@@ -29,6 +30,40 @@ EDITOR_EXTENSIONS = {
     '.c', '.cpp', '.h', '.hpp', '.java',
     '.rb', '.php', '.go', '.rs', '.swift'
 }
+
+
+class _DnDTableView(QTableView):
+    """QTableView-Unterklasse: delegiert DnD-Events an den FileBrowser.
+
+    Notwendig, weil QAbstractItemView.startDrag() eine C++-virtuelle
+    Methode ist, die sich nur durch Subclassing überschreiben lässt.
+    Alle Drag-Logik liegt in FileBrowser (_start_drag_files, _handle_url_drop).
+    """
+
+    def __init__(self, file_browser, parent=None):
+        super().__init__(parent)
+        self._fb = file_browser
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+        else:
+            super().dragEnterEvent(event)
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+        else:
+            super().dragMoveEvent(event)
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            self._fb._handle_url_drop(event)
+        else:
+            super().dropEvent(event)
+
+    def startDrag(self, supported_actions):
+        self._fb._start_drag_files(supported_actions)
 
 
 class FileBrowser(QWidget):
@@ -77,8 +112,8 @@ class FileBrowser(QWidget):
         self.proxy.setSourceModel(self.model)
         self.proxy.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         
-        # Tabellen-View
-        self.table = QTableView()
+        # Tabellen-View (DnD-fähige Unterklasse für startDrag-Override)
+        self.table = _DnDTableView(self)
         self.table.setModel(self.proxy)
         self.table.setRootIndex(self.proxy.mapFromSource(
             self.model.index(QDir.rootPath())
@@ -95,6 +130,9 @@ class FileBrowser(QWidget):
         self.table.setAlternatingRowColors(True)
         self.table.setShowGrid(False)
         self.table.verticalHeader().setVisible(False)
+        # System-Icons: explizite Größe damit die Icons in Spalte 0 sichtbar
+        # dargestellt werden (QFileSystemModel liefert sie über QFileIconProvider).
+        self.table.setIconSize(QSize(16, 16))
         
         # Header
         header = self.table.horizontalHeader()
@@ -113,7 +151,14 @@ class FileBrowser(QWidget):
         self.table.selectionModel().selectionChanged.connect(
             self._on_selection_changed
         )
-        
+
+        # Drag-and-Drop aktivieren
+        self.table.setDragEnabled(True)
+        self.table.setAcceptDrops(True)
+        self.table.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
+        self.table.setDropIndicatorShown(True)
+        self.setAcceptDrops(True)   # Widget-Level als Fallback für Randbereich
+
         layout.addWidget(self.table)
     
     def _on_directory_loaded(self, path: str):
@@ -392,3 +437,114 @@ class FileBrowser(QWidget):
                 path = self.model.filePath(source_index)
                 selected.append(path)
         return selected
+
+    # ------------------------------------------------------------------ #
+    # Drag-and-Drop                                                        #
+    # ------------------------------------------------------------------ #
+
+    def dragEnterEvent(self, event):
+        """Akzeptiert externe URL-Drops auf dem Widget-Randbereich."""
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        """Hält den Drop-Vorgang aktiv solange URLs erkannt werden."""
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        """Verarbeitet eingehende Drops auf dem Widget-Randbereich."""
+        self._handle_url_drop(event)
+
+    def _handle_url_drop(self, event):
+        """Gemeinsamer Handler für URL-Drops (Tabelle und Widget-Rand).
+
+        Wird von _DnDTableView.dropEvent und FileBrowser.dropEvent aufgerufen.
+        """
+        if not event.mimeData().hasUrls():
+            event.ignore()
+            return
+        if not self._current_path:
+            event.ignore()
+            return
+
+        src_paths = [
+            url.toLocalFile()
+            for url in event.mimeData().urls()
+            if url.isLocalFile()
+        ]
+        if not src_paths:
+            event.ignore()
+            return
+
+        move = (event.proposedAction() == Qt.DropAction.MoveAction)
+        self._do_file_drop(src_paths, self._current_path, move=move)
+        event.acceptProposedAction()
+
+    def _start_drag_files(self, supported_actions):
+        """Initiiert einen Drag-out mit den aktuell ausgewählten Dateien.
+
+        Wird von _DnDTableView.startDrag aufgerufen.
+        """
+        paths = self.get_selected_files()
+        if not paths:
+            return
+
+        mime_data = QMimeData()
+        mime_data.setUrls([QUrl.fromLocalFile(p) for p in paths])
+
+        drag = QDrag(self)
+        drag.setMimeData(mime_data)
+        drag.exec(Qt.DropAction.CopyAction | Qt.DropAction.MoveAction)
+
+    def _do_file_drop(self, src_paths: list, target_dir: str, move: bool = False):
+        """Kopiert oder verschiebt Dateien in den Zielordner.
+
+        - Überspringt Dateien, bei denen Quelle == Zielordner.
+        - Kollision: fügt ``_copy``-Suffix vor der Erweiterung ein.
+        - Ruft self.refresh() nach der Operation auf.
+        - Zeigt bei Fehlern eine QMessageBox-Warnung.
+        """
+        errors = []
+        for src in src_paths:
+            src = os.path.normpath(src)
+            if not os.path.exists(src):
+                errors.append(f"Quelle nicht gefunden: {src}")
+                continue
+
+            # Gleiches Verzeichnis abfangen (Copy auf sich selbst)
+            src_parent = os.path.dirname(src) if os.path.isfile(src) else src
+            if os.path.normpath(src_parent) == os.path.normpath(target_dir):
+                continue
+
+            name = os.path.basename(src)
+            dest = os.path.join(target_dir, name)
+
+            # Kollision abfangen → _copy-Suffix
+            if os.path.exists(dest):
+                base, ext = os.path.splitext(name)
+                dest = os.path.join(target_dir, f"{base}_copy{ext}")
+
+            try:
+                if move:
+                    shutil.move(src, dest)
+                elif os.path.isdir(src):
+                    shutil.copytree(src, dest)
+                else:
+                    shutil.copy2(src, dest)
+            except (OSError, shutil.Error) as exc:
+                errors.append(f"{name}: {exc}")
+
+        self.refresh()
+
+        if errors:
+            QMessageBox.warning(
+                self,
+                "Drag & Drop",
+                "Einige Dateien konnten nicht übertragen werden:\n\n"
+                + "\n".join(errors),
+            )

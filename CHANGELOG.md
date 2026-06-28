@@ -6,6 +6,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [Unreleased]
 
 ### Hinzugefügt / Added
+- **Software-Originalicons in Dateiliste und Sidebar** (`src/core/file_icon_helper.py`):
+  - Neue Hilfsfunktion `get_file_icon(path: str) -> QIcon` mit dreistufiger Fallback-Kette: (1) echtes Shell-/Typ-Icon via `QFileIconProvider`, (2) generisches Ordner-Icon, (3) generisches Datei-Icon — liefert nie `QIcon.isNull()`.
+  - Auf Windows werden über `QFileIconProvider` die echten Shell-Icons geliefert (Programm-Icons für `.exe`, zugewiesene Programm-Icons für `.docx`, `.psd` usw.).
+  - `src/gui/sidebar/sidebar_main.py` (`TreePanel`): refactored auf `get_file_icon()` — direkter `QFileIconProvider`-Zustand (`_icon_provider`-Attribut) entfernt, zentraler Helper mit Fallback genutzt.
+  - `src/gui/browser/file_browser.py`: explizites `setIconSize(QSize(16, 16))` gesetzt — `QFileSystemModel` liefert System-Icons über seinen eingebauten Provider, die sichtbare Größe ist jetzt explizit konfiguriert.
+  - `tests/test_file_icon_helper.py`: 8 neue Tests — leerer Pfad, nicht-existierender Pfad, existierende Datei, Ordner, Windows-Systemordner, unbekannte Erweiterung, Rückgabetyp-Prüfung; headless unter `QT_QPA_PLATFORM=offscreen`. Gesamtsuite 153/153 grün.
 - **Excel-Vorschau** (`.xlsx` / `.xls`, read-only) im Vorschau-Panel:
   - `src/core/xlsx_reader.py`: Qt-freier Pure-Logic-Reader mit `read_workbook_meta` (Blattnamen) und `read_workbook_sheet` (erste ≤ 100 Zeilen × 50 Spalten). openpyxl via Import-Guard; fehlende Lib oder Lesefehler → typisierte Fehlerobjekte, kein Crash. `.xls` via xlrd-Guard (optional).
   - `ExcelPreview`-Widget in `src/gui/preview/preview_panel.py`: Arbeitsblatt-Dropdown (QComboBox), Datentabelle (QTableWidget, read-only), Statuszeile + „Extern öffnen"-Schaltfläche als Fallback.

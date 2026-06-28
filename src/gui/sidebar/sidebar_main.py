@@ -10,11 +10,11 @@ from PySide6.QtWidgets import (
     QTreeWidget, QTreeWidgetItem, QListWidget, QListWidgetItem,
     QPushButton, QLabel, QFrame, QToolButton, QButtonGroup
 )
-from PySide6.QtCore import Qt, Signal, QDir, QStandardPaths, QFileInfo
-from PySide6.QtWidgets import QFileIconProvider
+from PySide6.QtCore import Qt, Signal, QDir, QStandardPaths
 import os
 
 # Module importieren - absolute Imports
+from core.file_icon_helper import get_file_icon
 from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
 from modules.prompts import PromptsPanel
@@ -28,7 +28,6 @@ class TreePanel(QWidget):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._icon_provider = QFileIconProvider()
         self._setup_ui()
         self._populate()
     
@@ -64,7 +63,7 @@ class TreePanel(QWidget):
             if path and os.path.exists(path):
                 child = QTreeWidgetItem([name])
                 child.setData(0, Qt.ItemDataRole.UserRole, path)
-                child.setIcon(0, self._icon_provider.icon(QFileInfo(path)))
+                child.setIcon(0, get_file_icon(path))
                 quick_access.addChild(child)
         
         self.tree.addTopLevelItem(quick_access)
@@ -78,7 +77,7 @@ class TreePanel(QWidget):
             path = drive.absolutePath()
             item = QTreeWidgetItem([path])
             item.setData(0, Qt.ItemDataRole.UserRole, path)
-            item.setIcon(0, self._icon_provider.icon(QFileInfo(path)))
+            item.setIcon(0, get_file_icon(path))
             item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
             drives_item.addChild(item)
         
@@ -107,7 +106,7 @@ class TreePanel(QWidget):
                 if os.path.isdir(full_path) and not name.startswith('.'):
                     child = QTreeWidgetItem([name])
                     child.setData(0, Qt.ItemDataRole.UserRole, full_path)
-                    child.setIcon(0, self._icon_provider.icon(QFileInfo(full_path)))
+                    child.setIcon(0, get_file_icon(full_path))
                     child.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
                     item.addChild(child)
         except OSError:
