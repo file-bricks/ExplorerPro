@@ -192,18 +192,22 @@ class Sidebar(QWidget):
         self.btn_group.buttonClicked.connect(self._on_tab_clicked)
         
         tabs = [
-            ("📁", "Ordner", 0),
-            ("⭐", "Favoriten", 1),
-            ("🔍", "Suche", 2),
-            ("🚀", "Apps", 3),
-            ("📋", "Prompts", 4),
-            ("🔄", "Sync", 5),
+            ("📁", "Ordner", "Ordner", "Wechselt zur Seitenleiste mit Laufwerken und Schnellzugriff.", 0),
+            ("⭐", "Favoriten", "Favoriten", "Wechselt zur Seitenleiste mit gespeicherten Favoritenordnern.", 1),
+            ("🔍", "Suche", "Suche", "Wechselt zur Seitenleiste für die Volltext- und Dateisuche.", 2),
+            ("🚀", "Apps", "Apps", "Wechselt zur Seitenleiste mit häufig genutzten Programmen.", 3),
+            ("📋", "Prompts", "Prompts", "Wechselt zur Seitenleiste mit lokalen Prompt-Vorlagen.", 4),
+            ("🔄", "Sync", "Sync", "Wechselt zur Seitenleiste für den Ordnerabgleich.", 5),
         ]
-        
-        for icon, tooltip, idx in tabs:
+
+        for icon, tooltip, accessible_name, accessible_description, idx in tabs:
             btn = QToolButton()
             btn.setText(icon)
             btn.setToolTip(tooltip)
+            btn.setStatusTip(accessible_description)
+            btn.setAccessibleName(accessible_name)
+            btn.setAccessibleDescription(accessible_description)
+            btn.setObjectName(f"sidebar_tab_{idx}")
             btn.setCheckable(True)
             btn.setFixedSize(36, 36)
             self.btn_group.addButton(btn, idx)

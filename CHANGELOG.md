@@ -63,6 +63,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Desktop-Öffnen nutzt jetzt plattformgerecht `open` auf macOS und `xdg-open` auf Linux.
 
 ### Behoben / Fixed
+- Die kompakten Seitenleisten-Tabs `📁`, `⭐`, `🔍`, `🚀`, `📋` und `🔄` exponieren jetzt sprechende Accessible Names, Descriptions und Status-Hinweise statt nur Symbol plus Tooltip; `tests/test_sidebar_accessibility.py` sichert den Kontext regressionsfest.
 - Die Such-Checkbox "Im Inhalt" wird jetzt an den Index-Worker weitergereicht.
 - Datei-/Ordner-Öffnen zeigt bei fehlender Systemzuordnung eine UI-Warnung statt still zu scheitern.
 - macOS hing beim Datei-/Ordner-Öffnen nicht mehr fälschlich am Linux-Handler `xdg-open`.
