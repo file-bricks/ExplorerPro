@@ -53,6 +53,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Das Vorschaufenster löst Windows-Verknüpfungen (`.lnk`) auf: Ordner-Links zeigen den Zielordnerinhalt, EXE-Links zeigen den Zielordner der Anwendung.
 
 ### Geändert / Changed
+- `ROADMAP.md` ist seit 2026-07-19 eine versionierte, kanonische
+  Planungsübersicht statt einer untracked Arbeitsnotiz. Erledigte Punkte zu
+  Release-Start-Smoke, Drag-and-drop, Excel-Vorschau, Syntaxformaten und
+  Originalicons sind als historisch abgeschlossen markiert; offen bleiben nur
+  die in `AUFGABEN.txt` und `PORTIERUNGSPLAN.md` geführten MSIX-/WACK-,
+  Lizenzprovenienz-, Release-Hygiene- und Export-/Privacy-/Viewer-Gates.
 - README, Contributing Guide und Code of Conduct auf das aktuelle Repository `file-bricks/ExplorerPro` aktualisiert.
 - Öffentliche private Kontaktadresse aus dem Code of Conduct entfernt.
 - `.gitignore` um Test-, Coverage- und Cache-Artefakte erweitert.
