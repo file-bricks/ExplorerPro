@@ -1,25 +1,19 @@
 Third-Party Licenses — ExplorerPro
 ===================================
-Stand: 2026-06-11. Lizenzangaben gegen lokale Paket-Metadaten bzw. die
-offiziellen Projektseiten geprüft.
+Stand: 2026-07-22. Lizenzangaben gegen den aktuellen Runtime-Vertrag,
+Source-Importscan und Paketmetadaten abgeglichen.
 
+Runtime-Abhängigkeiten
+----------------------
 PySide6
 License: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only (genutzt unter LGPL-3.0)
 URL: https://pypi.org/project/PySide6/
 
-QScintilla (PyQt-Binding, Riverbank Computing)
-License: GPL-3.0 (oder kommerzielle Lizenz von Riverbank)
-URL: https://pypi.org/project/QScintilla/
-ACHTUNG: GPL-3.0 ist Copyleft — bei Distribution des Gesamtwerks beachten.
-
 PyMuPDF
 License: Dual: AGPL-3.0 oder Artifex Commercial License
 URL: https://pypi.org/project/PyMuPDF/
-ACHTUNG: AGPL-3.0 ist starkes Copyleft — bei Distribution/Netzdiensten beachten.
-
-watchdog
-License: Apache-2.0
-URL: https://pypi.org/project/watchdog/
+ACHTUNG: AGPL-3.0 ist starkes Copyleft. Distribution und gegebenenfalls
+Netzdienste müssen mit der Projekt-LICENSE abgeglichen werden.
 
 pandas
 License: BSD-3-Clause
@@ -29,15 +23,30 @@ openpyxl
 License: MIT
 URL: https://pypi.org/project/openpyxl/
 
-Pygments
-License: BSD-2-Clause
-URL: https://pypi.org/project/Pygments/
+Optionale Extras
+----------------
+PyInstaller (Build)
+License: GPL-2.0-or-later mit Ausnahme für die Distribution gebündelter Anwendungen
+URL: https://pypi.org/project/pyinstaller/
+
+PyPDF2 (Legacy-PDF-Fallback)
+License: BSD License
+URL: https://pypi.org/project/PyPDF2/
+
+xlrd (Legacy-.xls-Vorschau)
+License: BSD License
+URL: https://pypi.org/project/xlrd/
+
+pywin32 (Windows-Verknüpfungen)
+License: Python Software Foundation License; enthält gemischt lizenzierte Bestandteile,
+deren Quellen-Lizenzdateien bei einer Bündelung maßgeblich sind.
+URL: https://pypi.org/project/pywin32/
 
 Hinweise
 --------
-- QScintilla (GPL-3.0) und PyMuPDF (AGPL-3.0) setzen der Lizenzwahl des
-  Gesamtprojekts Grenzen: Eine Distribution des gebündelten Produkts muss
-  GPL-/AGPL-kompatibel erfolgen, solange keine kommerziellen Lizenzen
-  erworben werden. Vor einem Release-Build mit der Projekt-LICENSE abgleichen.
-- PySide6 wird unter der LGPL-3.0 verwendet; die Qt-Bibliotheken werden
-  nicht statisch gelinkt und nicht modifiziert.
+- QScintilla, Pygments und watchdog sind keine Runtime- oder optionalen
+  Release-Abhängigkeiten des aktuellen Source-Vertrags und werden nicht gebündelt.
+- PySide6 wird unter LGPL-3.0 verwendet; die Qt-Bibliotheken werden nicht
+  statisch gelinkt und nicht modifiziert.
+- Vor einem Release-Build muss die tatsächlich gebündelte Paketliste gegen diese
+  Datei und die Projekt-LICENSE abgeglichen werden.

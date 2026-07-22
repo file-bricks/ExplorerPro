@@ -47,9 +47,9 @@ cd ExplorerPro
 
 ## Platform Plan
 
-ExplorerPro remains a desktop-first application. Windows is the primary release target; macOS and Linux are source/build smoke targets. A future web or mobile companion is limited to redacted review exports and is not intended to replace the local file manager.
+ExplorerPro remains a desktop application. Windows is the primary release target; macOS and Linux are source/build smoke targets. A separate web or mobile companion is currently a no-go because no independent use case is evidenced.
 
-The planned exchange format is documented in [EXPORTFORMAT.md](EXPORTFORMAT.md). The platform and store-readiness plan is documented in [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md).
+The versioned exchange contract is implemented and documented in [EXPORTFORMAT.md](EXPORTFORMAT.md). Its default omits absolute paths, app arguments, and prompt content. A separate Web/PWA viewer is currently a documented no-go. The platform and store-readiness plan is documented in [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md).
 
 ## Windows Store
 
@@ -66,7 +66,6 @@ and is regenerated via `python generate_store_screenshots.py`.
 - Python 3.10+
 - PySide6
 - PyMuPDF
-- watchdog
 - pandas and openpyxl for blacklist table imports
 
 Install the runtime dependencies:
@@ -146,7 +145,7 @@ A complete list of third-party dependencies and their licenses can be found in
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Last repository maintenance: 2026-06-10
+- Last repository maintenance: 2026-07-22
 
 ## Haftung / Liability
 

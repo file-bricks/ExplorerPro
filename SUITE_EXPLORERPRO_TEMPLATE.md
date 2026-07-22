@@ -11,7 +11,7 @@ ExplorerPro ist ein intelligenter Datei-Explorer mit Datenbankindizierung, integ
 | **Stand** | 2026-01-09 |
 | **Status** | Fertiggestellt (100%) |
 | **Sprache** | Python 3.10+ |
-| **Framework** | PyQt6 + QScintilla |
+| **Framework** | PySide6 + eigener QSyntaxHighlighter |
 | **Codebase** | ~7.500 Zeilen / 25+ Dateien |
 
 ---
@@ -57,7 +57,7 @@ Die Suite vereint Datei-Navigation, Volltextsuche, Code-Bearbeitung, Datenschutz
 | Bereich | Icon | Features |
 |---------|------|----------|
 | **File Browser** | 📁 | Navigation, Kontextmenü, Multi-Select |
-| **File Index** | 🔍 | SQLite+FTS5, Hash-Index, OCR-Text |
+| **File Index** | 🔍 | SQLite+FTS5, Hash-Index, PDF-/Text-Extraktion |
 | **Preview** | 👁️ | PDF, Bilder, Code, Metadaten |
 | **Quick Editor** | 📝 | Multi-Tab, Syntax-Highlighting |
 | **Privacy Monitor** | 🔒 | Clipboard-Überwachung, Ampel |
@@ -134,7 +134,7 @@ Die Suite vereint Datei-Navigation, Volltextsuche, Code-Bearbeitung, Datenschutz
 │                       Data Layer                                 │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
 │  │fileindex.db  │  │  apps.json   │  │   File System        │  │
-│  │  (Index)     │  │prompts.json  │  │   (watched dirs)     │  │
+│  │  (Index)     │  │prompts.json  │  │ (gewählte Ordner)    │  │
 │  │              │  │  sync.json   │  │                      │  │
 │  └──────────────┘  └──────────────┘  └──────────────────────┘  │
 └─────────────────────────────────────────────────────────────────┘
@@ -339,12 +339,16 @@ START_ExplorerPro.bat
 ### 8.3 Abhängigkeiten
 
 ```
-PyQt6>=6.4.0
-QScintilla>=2.13.0
-PyMuPDF>=1.23.0
-Pillow>=10.0.0
-watchdog>=3.0.0
-pygments>=2.15.0
+PySide6>=6.5.0,<7.0.0
+PyMuPDF>=1.21.0,<2.0.0
+pandas>=2.0.0,<4.0.0
+openpyxl>=3.1.0,<4.0.0
+
+Optionale Extras:
+pip install ".[build]"             # PyInstaller
+pip install ".[legacy-pdf]"        # PyPDF2-Fallback
+pip install ".[legacy-excel]"      # xlrd für .xls
+pip install ".[windows-shortcuts]" # pywin32 für Windows-Verknüpfungen
 ```
 
 ---
@@ -354,20 +358,21 @@ pygments>=2.15.0
 ### 9.1 PyInstaller
 
 ```bash
-pyinstaller --onefile --windowed --icon=resources/icons/explorer.ico src/main.py
+pip install ".[build]"
+build_exe.bat
 ```
 
 ---
 
 ## 10. Tests
 
-```bash
-# Import-Test
-python test_imports.py
-
+~~~bash
 # Vollständiger Test
-python -m pytest tests/ -v
-```
+python -m pytest -q
+
+# Syntax- und Bytecode-Check
+python -m compileall -q src tests generate_store_screenshots.py
+~~~
 
 ---
 
@@ -403,15 +408,15 @@ python -m pytest tests/ -v
 
 ### 🔮 Zukunft
 
-- [ ] Cloud-Integration
+- [x] Separate Cloud-/Web-Integration bleibt Nicht-Ziel
 - [ ] Tabs für mehrere Ordner
-- [ ] Erweiterte OCR-Integration
+- [ ] ExplorerPro-MSIX bauen und WACK-Readback ablegen
 
 ---
 
 ## 13. Lizenz
 
-**MIT License**
+**GNU Affero General Public License v3.0 (AGPL-3.0)**
 
 ---
 

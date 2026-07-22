@@ -1,6 +1,6 @@
 # Windows Store Prep - ExplorerPro
 
-Stand: 2026-06-04
+Stand: 2026-07-18
 
 ## Ziel dieses Dokuments
 
@@ -26,7 +26,7 @@ die für den nächsten Store-Schritt bereitstehen oder noch offen sind.
 1. `build_exe.bat` ausführen und prüfen, dass `dist/ExplorerPro/ExplorerPro.exe` entsteht.
 2. `python generate_store_screenshots.py` ausführen und das Store-Screenshot-Set gemäß `README/screenshots/store/README.md` prüfen.
 3. `THIRD_PARTY_LICENSES.txt` kurz gegen die aktuelle Runtime-Liste gegenlesen, damit Store- und Lizenzartefakte vollständig bleiben.
-4. `_STORE/msstore_pretest.ps1` mit ExplorerPro-Pfaden laufen lassen.
+4. Den vorgesehenen Store-Pretest gegen ExplorerPro-Pfade laufen lassen; der historische Pfad `_STORE/msstore_pretest.ps1` ist im aktuellen Checkout noch nicht vorhanden und muss vor Ausführung geklärt oder angelegt werden.
 5. MSIX bauen.
 6. WACK als Administrator gegen das MSIX ausführen.
 7. Partner-Center-Eintrag mit den Texten aus `STORE_LISTING.md` befüllen.
@@ -35,6 +35,8 @@ die für den nächsten Store-Schritt bereitstehen oder noch offen sind.
 
 - MSIX wurde für ExplorerPro noch nicht gebaut.
 - WACK-Protokoll fehlt noch.
+- Der im Ablauf genannte `_STORE/msstore_pretest.ps1`-Pfad fehlt im aktuellen Checkout.
+- Windows SDK/App Certification Kit sowie `makeappx.exe`, `signtool.exe` und `appcert.exe` wurden am 2026-07-22 weder im `PATH` noch unter dem üblichen Windows-Kits-Pfad gefunden. Installation und ein signierter MSIX-/WACK-Lauf bleiben externe Gates.
 
 ## Hinweise zu Store-Claims
 

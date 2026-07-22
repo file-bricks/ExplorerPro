@@ -1,6 +1,6 @@
 # ExplorerPro Roadmap
 
-Stand: 2026-07-19
+Stand: 2026-07-22
 Status: versionierte, kanonische Planungsübersicht
 
 Diese Roadmap zeigt nur den aktuellen Planungskorridor. Verbindliche
@@ -37,10 +37,15 @@ Diese Punkte sind kein offener Arbeitsvorrat mehr.
 
 | Priorität | Gate | Kanonischer Detailstand |
 |---|---|---|
-| P0 | ExplorerPro-MSIX, lokaler Start-Smoke und WACK-Readback | [AUFGABEN.txt](AUFGABEN.txt), [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md) und [WINDOWS_STORE_PREP.md](WINDOWS_STORE_PREP.md); externe Partner-Center-Freigabe folgt erst nach den lokalen Gates |
-| P0 | Dependency- und Lizenzprovenienz für das tatsächliche Release-Bundle | [AUFGABEN.txt](AUFGABEN.txt) und `THIRD_PARTY_LICENSES.txt`; QScintilla/Pygments-Status bleibt vor Release zu klären |
-| P0 | Release-Hygiene: Dirty-/Untracked-Baseline, Launcher-Meldungen und Build-Provenienz | TASKPLAN TW-EP-05; dieser Roadmap-Sync verändert keine Asset-, Backup-, Launcher-, Build- oder Produktdateien |
-| P2 | Export-/Privacy-Vertrag vollständig rücklesen und begrenzten lokalen Web/PWA-Viewer entscheiden | [AUFGABEN.txt](AUFGABEN.txt), [EXPORTFORMAT.md](EXPORTFORMAT.md) und [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md); keine Upload-Webapp und keine Cloud-Synchronisierung |
+| P0 extern | ExplorerPro-MSIX und WACK-Readback | [AUFGABEN.txt](AUFGABEN.txt), [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md) und [WINDOWS_STORE_PREP.md](WINDOWS_STORE_PREP.md); Windows SDK/App Certification Kit fehlen lokal, Partner Center folgt erst nach diesen Gates |
+| P0 je Release | Tatsächlichen EXE-/MSIX-Bundle-Inhalt gegen den Dependency- und Lizenzvertrag rücklesen | `pyproject.toml`, `requirements.txt`, `THIRD_PARTY_LICENSES.txt` und `_sources/CROSSCHECK.md` sind seit 2026-07-22 synchron; ein frischer Bundle-Readback darf nicht durch Doku ersetzt werden |
+
+## Am 2026-07-22 geschlossen
+
+- Release-Hygiene und Fremdänderungen sind klassifiziert; Backups, Lock und unreferenzierte Mobile/PWA-Assets bleiben außerhalb von Git und Release.
+- Der Standardexport ist privacy-sicher; App-Argumente und Prompt-Inhalte benötigen ein separates Opt-in.
+- Ein separater Web/PWA-Viewer ist mangels eigenständigem Usecase No-Go.
+- DnD-Kollisionen und Ordner-Nachfahren-Drops sind fail-closed regressionsgesichert.
 
 ## Nicht-Ziele dieser Roadmap
 

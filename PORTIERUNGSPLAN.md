@@ -1,10 +1,10 @@
 # Portierungsplan ExplorerPro Suite
 
-Stand: 2026-05-29
+Stand: 2026-07-22
 
 ## Ergebnis der Bedingungsprüfung
 
-Ein eigener Portierungsplan war nicht vorhanden. Dieser Lauf folgt daher Pfad B und legt den ersten usecase-basierten Plan an. Es wurden keine Codeänderungen vorgenommen.
+Der Plan wurde aus dem damaligen Bestandscheck abgeleitet. Die folgenden Roadmap-Zeilen sind durch die aktuellen Status- und Changelog-Einträge zu lesen; offene Release-Gates bleiben ausdrücklich offen.
 
 ## Features der besten Version
 
@@ -45,7 +45,7 @@ Usecases:
 - Prompts, App-Listen oder Sync-Profile ansehen.
 - Kleine Planungsnotizen zu einem Export ergänzen.
 
-Dieses Setting erfüllt nur einen Teil des Haupt-Usecases. Mobile und Web sind daher kein Ersatz für ExplorerPro als Dateimanager, sondern höchstens ein Companion für redigierte Berichte und Einstellungen.
+Dieses Setting erfüllt nur einen Teil des Haupt-Usecases. Mobile und Web sind kein Ersatz für ExplorerPro als Dateimanager; ohne eigenständigen belegten Workflow bleibt eine separate Companion-Anwendung No-Go.
 
 ### Usecase-Setting 3: Release und Store-Vertrieb
 
@@ -62,17 +62,21 @@ Usecases:
 | Plattform | Entscheidung | Begründung |
 |---|---|---|
 | Windows | Hauptplattform und Store-Kandidat | Beste Passung für Explorer-, Clipboard-, App-Launcher- und lokale Sync-Workflows. Windows Store bleibt sinnvoll, aber erst nach Store-Artefakten, Drittanbieter-Lizenzdatei und AGPL-/PyMuPDF-Transparenz. |
-| macOS | P1 Source-/Build-Smoke | Der Desktop-Usecase ist ähnlich, aber Packaging, Dateidialoge, QScintilla, PyMuPDF und App-Startpfade müssen separat geprüft werden. |
-| Linux | P1 Source-/Build-Smoke | Der Desktop-Usecase ist ähnlich; AppImage oder Tarball erst nach sauberem PySide6-/QScintilla-/PyMuPDF-Smoke. |
-| Web/PWA | P2 Companion, kein Dateimanager-Klon | Browser-Sandbox verhindert den Kernnutzen. Sinnvoll ist nur ein redigierter Report-/Profil-Viewer für `explorerpro-workspace-v1.json`. |
-| Android | P3 über Web/PWA-Companion, keine native Voll-App | Lokale Dateimanager-, Clipboard- und App-Launcher-Usecases passen nicht ausreichend. Native App nur bei neuem, belegtem Mobile-Usecase. |
-| iOS | P3 über Web/PWA-Companion, keine native Voll-App | iOS-Sandbox und App-Store-Regeln passen schlecht zu ExplorerPro als lokaler Datei- und Launcher-Suite. |
+| macOS | P1 Source-/Build-Smoke | Der Desktop-Usecase ist ähnlich, aber Packaging, Dateidialoge, PySide6, PyMuPDF und App-Startpfade müssen separat geprüft werden. |
+| Linux | P1 Source-/Build-Smoke | Der Desktop-Usecase ist ähnlich; AppImage oder Tarball erst nach sauberem PySide6-/PyMuPDF-Smoke. |
+| Web/PWA | No-Go 2026-07-22 | Browser-Sandbox verhindert den Kernnutzen; ohne eigenständigen belegten Review-Usecase wird kein separater Viewer gebaut. Der lokale JSON-Vertrag bleibt offen für spätere Neubewertung. |
+| Android | Keine native Voll-App | Lokale Dateimanager-, Clipboard- und App-Launcher-Usecases passen nicht ausreichend; Neubewertung nur bei neuem, belegtem Mobile-Usecase. |
+| iOS | Keine native Voll-App | iOS-Sandbox und App-Store-Regeln passen schlecht zu ExplorerPro als lokaler Datei- und Launcher-Suite. |
 
 ## Synchronisationsentscheidung
 
 Die bestehende Ordner-Synchronisation bleibt ein Desktop-Feature für lokal gewählte Quell- und Zielordner. Eine direkte Cloud- oder Server-Synchronisierung ist aktuell kein Ziel, weil ExplorerPro private Dateipfade, Dateinamen, Indizes, Prompts und Datenschutzmuster berührt.
 
-Für Plattformwechsel und einen späteren Companion ist ausschließlich ein bewusst ausgelöster, dateibasierter Export geplant. Das vorgesehene Format steht in `EXPORTFORMAT.md`.
+Für Plattformwechsel existiert ein bewusst ausgelöster, dateibasierter Export. Das implementierte Format und seine Datenschutzgrenze stehen in `EXPORTFORMAT.md`.
+
+## Companion-Entscheidung 2026-07-22
+
+Für eine separate Web/PWA-Anwendung gilt **No-Go**. Ein eigenständiger mobiler oder browserbasierter Review-Usecase ist nicht belegt; eine zusätzliche Anwendung würde den Wartungs- und Privacy-Scope ohne ausreichenden Nutzen vergrößern. Der lokale JSON-Vertrag bleibt als offener Austauschpunkt erhalten. Eine Neubewertung braucht einen konkreten Nutzerworkflow und bleibt auf lokalen Import ohne Upload, Server, Dateisystemaktion oder Cloud-Synchronisierung begrenzt.
 
 ## Nicht-Ziele
 
@@ -85,13 +89,14 @@ Für Plattformwechsel und einen späteren Companion ist ausschließlich ein bewu
 
 | Priorität | Schritt | Ergebnis |
 |---|---|---|
-| P0 | Drittanbieter-Lizenzen und bestehende Security-Notizen abschließen | `THIRD_PARTY_LICENSES.txt` vorhanden; QScintilla/PyMuPDF/Pygments/PySide6 sauber dokumentiert. |
+| P0 | Drittanbieter-Lizenzen und bestehende Security-Notizen abschließen | DONE 2026-07-22: Runtime, optionale Extras und Build-Abhängigkeit sind in `pyproject.toml`, `requirements.txt`, `THIRD_PARTY_LICENSES.txt` und `_sources/CROSSCHECK.md` konsistent; der tatsächliche Bundle-Readback bleibt Teil jedes Release-Builds. |
 | P0 | Windows-Store-Basis vorbereiten | DONE 2026-06-04: `store_package.json`, Privacy-/Support-URL, `STORE_LISTING.md`, Screenshot-Inventar und `WINDOWS_STORE_PREP.md` angelegt. |
 | P0 | Dediziertes Store-Screenshot-Set erzeugen | DONE 2026-06-12: `generate_store_screenshots.py` erzeugt reproduzierbar `README/screenshots/store/main-window.png`, `search.png`, `duplicates.png` und `sync.png` aus redigierten Demo-Daten. |
+| P0 | Eigenes ExplorerPro-MSIX bauen und WACK-Protokoll ablegen | Offen: lokale Build-/MSIX-Prüfung, WACK-Readback und danach externe Store-Freigabe. |
 | P1 | macOS-/Linux-Smokes definieren | DONE 2026-06-05: `tests/source_platform_smoke.py` prüft Offscreen-Start, Suche, Vorschau, Duplikat-Scan und Konfigurationspfade; CI läuft auf `ubuntu-latest` und `macos-latest`. |
 | P1 | Exportformat implementierbar machen | DONE 2026-06-07: `src/core/export_service.py` mit `WorkspaceExporter`; Datei-Menü-Aktion Ctrl+E; 11 Unit-Tests grün. |
-| P2 | Web/PWA-Companion entscheiden | Nur starten, wenn der Export real existiert und ein redigierter Review-Workflow belegbar ist. |
-| P3 | Mobile erneut bewerten | Android/iOS erst prüfen, wenn ein eigenständiger mobiler Usecase dokumentiert ist. |
+| P2 | Redigierten Web/PWA-Companion bewerten | DONE 2026-07-22, No-Go: kein eigenständiger belegter Usecase; der sichere JSON-Vertrag bleibt für lokalen manuellen Austausch erhalten. |
+| P3 | Mobile erneut bewerten | Native Android-/iOS-Vollapps bleiben bestätigt Nicht-Ziel; nur ein separat belegter redigierter Export-Viewer wäre prüfbar. |
 
 ## Erledigter Plattformschritt 2026-06-05
 

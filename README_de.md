@@ -48,9 +48,9 @@ START_ExplorerPro.bat
 
 ## Plattformplan
 
-ExplorerPro bleibt zuerst eine Desktop-App. Windows ist die Hauptplattform und Store-Kandidat. macOS und Linux sind P1-Ziele für Source- und Build-Smokes. Web, Android und iOS sind nur als mögliche Companion-Oberflächen für redigierte Exporte vorgesehen, nicht als Ersatz für den lokalen Dateimanager.
+ExplorerPro bleibt eine Desktop-App. Windows ist die Hauptplattform und Store-Kandidat. macOS und Linux sind Source- und Build-Smoke-Ziele. Eine separate Web-, Android- oder iOS-Oberfläche ist derzeit mangels eigenständigem Usecase No-Go.
 
-Das geplante Austauschformat ist in [EXPORTFORMAT.md](EXPORTFORMAT.md) dokumentiert. Der Plattform- und Store-Plan steht in [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md).
+Der implementierte, versionierte Austauschvertrag ist in [EXPORTFORMAT.md](EXPORTFORMAT.md) dokumentiert. Sein Standard lässt absolute Pfade, App-Argumente und Prompt-Inhalte aus; ein separater Web/PWA-Viewer ist derzeit begründet No-Go. Der Plattform- und Store-Plan steht in [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md).
 
 ## Windows Store
 
@@ -58,10 +58,10 @@ Die lokale Windows-Store-Basis liegt jetzt in
 [store_package.json](store_package.json), [STORE_LISTING.md](STORE_LISTING.md),
 [SUPPORT.md](SUPPORT.md) und [WINDOWS_STORE_PREP.md](WINDOWS_STORE_PREP.md).
 Der aktuelle Basisscreenshot liegt unter
-[`README/screenshots/main.png`](README/screenshots/main.png); das geplante
-Store-Screenshot-Set ist in
-[`README/screenshots/store/README.md`](README/screenshots/store/README.md)
-dokumentiert.
+[`README/screenshots/main.png`](README/screenshots/main.png); das redigierte
+Store-Screenshot-Set mit `main-window.png`, `search.png`, `duplicates.png`
+und `sync.png` liegt unter [`README/screenshots/store/`](README/screenshots/store)
+und wird über `python generate_store_screenshots.py` reproduziert.
 
 ## Tests
 
@@ -95,7 +95,7 @@ Eine vollständige Liste der Drittanbieter-Abhängigkeiten und ihrer Lizenzen st
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Letzte Repository-Wartung: 2026-06-04
+- Letzte Dokumentationsprüfung: 2026-07-22
 
 ## Haftung
 

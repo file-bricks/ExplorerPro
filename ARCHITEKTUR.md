@@ -7,7 +7,7 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                            ExplOrer Pro v1.0                                │
-│                         (PyQt6 Desktop App)                                │
+│                         (PySide6 Desktop App)                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌───────────────────────────────────────────────────────────────────────┐ │
@@ -135,7 +135,7 @@ GESAMT: ~7.500 Zeilen Python-Code
 │  │                ├── FileBrowser ─── QTableView + FileModel       │   │
 │  │                │                                                 │   │
 │  │                └── PreviewPanel ─┬── PDFPreview (PyMuPDF)       │   │
-│  │                                  ├── ImagePreview (Pillow)      │   │
+│  │                                  ├── ImagePreview (Qt QPixmap)  │   │
 │  │                                  ├── CodePreview (PythonBox)    │   │
 │  │                                  └── MetadataPanel              │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
@@ -149,7 +149,7 @@ GESAMT: ~7.500 Zeilen Python-Code
 │  │  │               │  │   Notes)      │  │                   │    │   │
 │  │  │ • SQLite+FTS5 │  │               │  │ • Clipboard Watch │    │   │
 │  │  │ • Hash Index  │  │ • JSON Store  │  │ • Blacklist       │    │   │
-│  │  │ • OCR Text    │  │ • Categories  │  │ • Ampel-Status    │    │   │
+│  │  │ • Text-Extraktion│ │ • Categories  │  │ • Ampel-Status    │    │   │
 │  │  └───────────────┘  └───────────────┘  └───────────────────┘    │   │
 │  │                                                                  │   │
 │  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────────┐    │   │
@@ -261,15 +261,15 @@ GESAMT: ~7.500 Zeilen Python-Code
 │                    TECHNOLOGIE-STACK                                    │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  GUI:        PyQt6 (QMainWindow, QSplitter, QTableView, QTreeWidget)   │
+│  GUI:        PySide6 (QMainWindow, QSplitter, QTableView, QTreeWidget) │
 │                                                                         │
-│  Editor:     QScintilla (Syntax-Highlighting, Line Numbers)            │
+│  Editor:     Eigener QSyntaxHighlighter (Syntax-Highlighting)           │
 │                                                                         │
-│  Preview:    PyMuPDF (PDF), Pillow (Images), Pygments (Code)           │
+│  Preview:    PyMuPDF (PDF), Qt QPixmap (Bilder), eigener Highlighter    │
 │                                                                         │
 │  Datenbank:  SQLite3 + FTS5 (Volltext-Suche)                           │
 │                                                                         │
-│  Watcher:    watchdog (Dateisystem-Überwachung)                        │
+│  Dateizugriff: Qt- und Standardbibliotheks-APIs für lokale Dateien       │
 │                                                                         │
 │  Sync:       shutil, hashlib (SHA-256), filecmp                        │
 │                                                                         │
@@ -279,6 +279,15 @@ GESAMT: ~7.500 Zeilen Python-Code
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
+
+## Build und Tests
+
+- Runtime installieren: python -m pip install -r requirements.txt
+- Windows-EXE bauen: python -m pip install ".[build]" und anschließend build_exe.bat.
+- Regressionen: python -m pytest -q
+- Syntax- und Bytecode-Check: python -m compileall -q src tests generate_store_screenshots.py
+
+
 
 ## Phasen-Übersicht
 

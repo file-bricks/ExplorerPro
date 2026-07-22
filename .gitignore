@@ -96,3 +96,15 @@ TESTBERICHT.txt
 DECISIONS.md
 TODO.md
 DONE.md
+
+# ---- Lokale Workflow- und nicht verwendete Web-Assets ----
+LOCK*.txt
+_backups/
+assets/_agy_instructions.txt
+assets/android-icon-background.png
+assets/android-icon-foreground.png
+assets/android-icon-monochrome.png
+assets/favicon.png
+assets/icon.png
+assets/splash-icon.png
+

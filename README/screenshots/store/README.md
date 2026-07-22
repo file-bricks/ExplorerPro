@@ -1,6 +1,6 @@
 # Store-Screenshots
 
-Stand: 2026-06-12
+Stand: 2026-07-18
 
 ## Reproduzierbare Erzeugung
 

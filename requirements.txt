@@ -1,20 +1,13 @@
-# ExplorerPro - Requirements
-# Phase 1 + Phase 2
+# ExplorerPro - Runtime-Abhängigkeiten
+# Mit denselben Grenzen wie pyproject.toml.
 
-# GUI Framework
-PySide6>=6.5.0
+PySide6>=6.5.0,<7.0.0
+PyMuPDF>=1.21.0,<2.0.0
+pandas>=2.0.0,<4.0.0
+openpyxl>=3.1.0,<4.0.0
 
-# PDF-Verarbeitung
-PyMuPDF>=1.21.0
-# Alternative: PyPDF2>=3.0.0
-
-# Datei-Überwachung (Phase 2)
-watchdog>=3.0.0
-
-# Tabellen-Import für Blacklist
-pandas>=2.0.0
-openpyxl>=3.1.0
-
-# Optional: OCR
-# pytesseract>=0.3.10
-# Pillow>=9.4.0
+# Optionale Extras werden bewusst nicht mitinstalliert:
+# pip install ".[build]"             # PyInstaller
+# pip install ".[legacy-pdf]"        # PyPDF2-Fallback
+# pip install ".[legacy-excel]"      # xlrd für .xls
+# pip install ".[windows-shortcuts]" # pywin32 für Windows-Verknüpfungen

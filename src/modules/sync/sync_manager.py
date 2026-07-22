@@ -259,7 +259,7 @@ class SyncWorker(QThread):
                               else action.source_path)
                     synced += 1
             
-            except Exception as e:
+            except Exception:
                 errors += 1
         
         self.finished_sync.emit(synced, errors)

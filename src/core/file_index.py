@@ -342,25 +342,31 @@ class FileIndex:
                 results.append(result)
         except sqlite3.OperationalError:
             # Falls FTS-Query ungültig, Fallback auf LIKE
-            results = self._search_fallback(query, extension, category, min_size, max_size, limit)
+            results = self._search_fallback(
+                query, extension, category, min_size, max_size, limit, content_only
+            )
         finally:
             conn.close()
         return results
-    
     def _search_fallback(self, query: str, extension: str = None, category: str = None,
-                         min_size: int = None, max_size: int = None, limit: int = 100) -> List[Dict]:
+                         min_size: int = None, max_size: int = None, limit: int = 100,
+                         content_only: bool = False) -> List[Dict]:
         """Fallback-Suche mit LIKE wenn FTS fehlschlägt"""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         try:
             cursor = conn.cursor()
 
-            sql = '''
-                SELECT * FROM files
-                WHERE (filename LIKE ? OR text_content LIKE ?)
-            '''
             like_pattern = f'%{query}%'
-            params = [like_pattern, like_pattern]
+            if content_only:
+                sql = 'SELECT * FROM files WHERE text_content LIKE ?'
+                params = [like_pattern]
+            else:
+                sql = '''
+                    SELECT * FROM files
+                    WHERE (filename LIKE ? OR text_content LIKE ?)
+                '''
+                params = [like_pattern, like_pattern]
 
             if extension:
                 sql += ' AND extension = ?'

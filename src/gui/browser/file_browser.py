@@ -502,32 +502,41 @@ class FileBrowser(QWidget):
         drag.exec(Qt.DropAction.CopyAction | Qt.DropAction.MoveAction)
 
     def _do_file_drop(self, src_paths: list, target_dir: str, move: bool = False):
-        """Kopiert oder verschiebt Dateien in den Zielordner.
-
-        - Überspringt Dateien, bei denen Quelle == Zielordner.
-        - Kollision: fügt ``_copy``-Suffix vor der Erweiterung ein.
-        - Ruft self.refresh() nach der Operation auf.
-        - Zeigt bei Fehlern eine QMessageBox-Warnung.
-        """
+        """Kopiert oder verschiebt Dateien in den Zielordner ohne Überschreiben."""
         errors = []
+        target_real = os.path.normcase(os.path.realpath(target_dir))
+
         for src in src_paths:
             src = os.path.normpath(src)
             if not os.path.exists(src):
                 errors.append(f"Quelle nicht gefunden: {src}")
                 continue
 
-            # Gleiches Verzeichnis abfangen (Copy auf sich selbst)
-            src_parent = os.path.dirname(src) if os.path.isfile(src) else src
-            if os.path.normpath(src_parent) == os.path.normpath(target_dir):
+            src_real = os.path.normcase(os.path.realpath(src))
+            if os.path.isdir(src):
+                try:
+                    target_is_within_source = (
+                        os.path.commonpath([src_real, target_real]) == src_real
+                    )
+                except ValueError:
+                    target_is_within_source = False
+                if target_is_within_source:
+                    errors.append(
+                        f"{os.path.basename(src)}: Ordner kann nicht in seinen "
+                        "eigenen Unterordner kopiert oder verschoben werden."
+                    )
+                    continue
+            elif os.path.normcase(os.path.realpath(os.path.dirname(src))) == target_real:
                 continue
 
             name = os.path.basename(src)
+            base, ext = os.path.splitext(name)
             dest = os.path.join(target_dir, name)
-
-            # Kollision abfangen → _copy-Suffix
-            if os.path.exists(dest):
-                base, ext = os.path.splitext(name)
-                dest = os.path.join(target_dir, f"{base}_copy{ext}")
+            collision_index = 0
+            while os.path.exists(dest):
+                collision_index += 1
+                suffix = "_copy" if collision_index == 1 else f"_copy_{collision_index}"
+                dest = os.path.join(target_dir, f"{base}{suffix}{ext}")
 
             try:
                 if move:

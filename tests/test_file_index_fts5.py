@@ -91,6 +91,17 @@ class TestFileIndexFTS5:
         finally:
             os.unlink(db)
 
+
+    def test_content_only_survives_invalid_fts_query_fallback(self):
+        """Der LIKE-Fallback darf bei content_only keine Dateinamen durchsuchen."""
+        idx, db = self._make_index()
+        try:
+            self._insert_file(idx, "/fake/OR.txt", "OR.txt", "kein passender Inhalt")
+            results = idx.search("OR", content_only=True)
+            assert results == []
+        finally:
+            os.unlink(db)
+
     def test_init_database_closes_connection_on_error(self, monkeypatch):
         """_init_database() muss die DB-Connection schließen, auch wenn ein DDL-Statement wirft (Bug #8-3)."""
         import sqlite3 as _sqlite3

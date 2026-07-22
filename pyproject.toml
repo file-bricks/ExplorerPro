@@ -10,13 +10,16 @@ readme = "README.md"
 dependencies = [
     "PySide6>=6.5.0,<7.0.0",
     "PyMuPDF>=1.21.0,<2.0.0",
-    "watchdog>=3.0.0,<5.0.0",
-    "pandas>=2.0.0,<3.0.0",
+    "pandas>=2.0.0,<4.0.0",
     "openpyxl>=3.1.0,<4.0.0",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.5"]
+build = ["PyInstaller>=6.0.0,<7.0.0"]
+legacy-pdf = ["PyPDF2>=3.0.0,<4.0.0"]
+legacy-excel = ["xlrd>=2.0.0,<3.0.0"]
+windows-shortcuts = ["pywin32>=306; platform_system == 'Windows'"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

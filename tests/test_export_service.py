@@ -25,7 +25,7 @@ def empty_dir(tmp_path):
 def populated_dir(tmp_path):
     """Config-Verzeichnis mit apps, prompts, sync, blacklist."""
     apps = [
-        {"name": "VS Code", "path": "/usr/bin/code", "category": "Dev", "arguments": ""},
+        {"name": "VS Code", "path": "/usr/bin/code", "category": "Dev", "arguments": "--token top-secret"},
         {"name": "Browser", "path": "/usr/bin/firefox", "category": "Web", "arguments": ""},
     ]
     prompts = [
@@ -125,17 +125,27 @@ def test_watched_folders_not_exported(populated_dir):
     assert data["settings"]["index"]["max_file_size"] == 10
 
 
-def test_prompts_exported(populated_dir):
-    """Prompts werden vollständig exportiert."""
+def test_sensitive_content_is_omitted_by_default(populated_dir):
+    """Standardexport darf keine App-Argumente oder Prompt-Inhalte enthalten."""
     exp = WorkspaceExporter(config_dir=populated_dir)
     data = exp.build_export()
-    assert len(data["prompts"]) == 1
-    p = data["prompts"][0]
-    assert p["title"] == "Refactor"
-    assert p["content"] == "Refactoriere den Code"
-    assert p["favorite"] is True
-    # use_count ist kein exportiertes Feld
-    assert "use_count" not in p
+    app = data["apps"][0]
+    prompt = data["prompts"][0]
+
+    assert app["name"] == "VS Code"
+    assert "arguments" not in app
+    assert prompt["title"] == "Refactor"
+    assert "content" not in prompt
+    assert data["export_options"]["include_sensitive_content"] is False
+
+
+def test_sensitive_content_requires_explicit_opt_in(populated_dir):
+    exp = WorkspaceExporter(config_dir=populated_dir)
+    data = exp.build_export(include_sensitive_content=True)
+
+    assert data["apps"][0]["arguments"] == "--token top-secret"
+    assert data["prompts"][0]["content"] == "Refactoriere den Code"
+    assert data["export_options"]["include_sensitive_content"] is True
 
 
 def test_save_export_writes_valid_json(populated_dir, tmp_path):
@@ -170,6 +180,25 @@ def test_blacklist_count_only(populated_dir):
     assert privacy["custom_terms_count"] == 2
     assert privacy["custom_terms_exported"] is False
     assert "custom_terms" not in privacy
+
+
+def test_privacy_patterns_follow_valid_config_and_ignore_unknown_keys(populated_dir):
+    (populated_dir / "privacy_config.json").write_text(
+        json.dumps({"patterns": {"email": False, "creditcard": True, "unknown": True}}),
+        encoding="utf-8",
+    )
+
+    data = WorkspaceExporter(config_dir=populated_dir).build_export()
+
+    assert data["privacy"]["enabled_patterns"] == ["creditcard"]
+
+
+def test_invalid_privacy_config_uses_defaults(populated_dir):
+    (populated_dir / "privacy_config.json").write_text("{ungültig", encoding="utf-8")
+
+    data = WorkspaceExporter(config_dir=populated_dir).build_export()
+
+    assert data["privacy"]["enabled_patterns"] == BUILTIN_DEFAULT_PATTERNS
 
 
 def test_builtin_default_patterns():

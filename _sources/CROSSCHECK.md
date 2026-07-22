@@ -1,22 +1,30 @@
 # CROSSCHECK — Externe Dependencies
 
-> Vorlage: `_TEMPLATES/CROSSCHECK_TEMPLATE.md` | Konvention: GUIDE.md §Toolchain-Standards
-> Pfad: `_sources/CROSSCHECK.md` im jeweiligen Projektordner
-> Stand: 2026-06-07
+> Quelle: aktueller pyproject.toml-Vertrag und Source-Importscan
+> Pfad: _sources/CROSSCHECK.md
+> Stand: 2026-07-22
 
-## Verwendete Pakete mit Major-Version-Pinning
+## Runtime-Abhängigkeiten mit Major-Version-Pinning
 
-| Paket | Gepinnte Version | Aktuelle Version | Letzte Prüfung |
+| Paket | Gepinnte Version | Lokal geprüft | Letzte Prüfung |
 |---|---|---|---|
-| PySide6 | `>=6.5.0,<7.0.0` | 6.10.1 | 2026-06-07 |
-| QScintilla | `>=2.13.0,<3.0.0` | nicht lokal installiert | 2026-06-07 |
-| PyMuPDF | `>=1.21.0,<2.0.0` | 1.26.4 | 2026-06-07 |
-| watchdog | `>=3.0.0,<5.0.0` | 6.0.0 | 2026-06-07 |
-| pandas | `>=2.0.0,<3.0.0` | 2.3.1 | 2026-06-07 |
-| openpyxl | `>=3.1.0,<4.0.0` | 3.1.5 | 2026-06-07 |
-| Pygments | `>=2.20.0,<3.0.0` | 2.20.0 | 2026-06-07 |
+| PySide6 | >=6.5.0,<7.0.0 | 6.11.1 | 2026-07-22 |
+| PyMuPDF | >=1.21.0,<2.0.0 | 1.27.2.3 | 2026-07-22 |
+| pandas | >=2.0.0,<4.0.0 | 3.0.3 | 2026-07-22 |
+| openpyxl | >=3.1.0,<4.0.0 | 3.1.5 | 2026-07-22 |
 
-Aktuelle Version prüfen: `python -m uv pip list --outdated` oder `pip list --outdated`
+## Optionale Extras
+
+| Extra | Paket | Gepinnte Version | Zweck |
+|---|---|---|---|
+| build | PyInstaller | >=6.0.0,<7.0.0 | Windows-EXE-Build |
+| legacy-pdf | PyPDF2 | >=3.0.0,<4.0.0 | PDF-Fallback, wenn PyMuPDF fehlt |
+| legacy-excel | xlrd | >=2.0.0,<3.0.0 | Vorschau historischer .xls-Dateien |
+| windows-shortcuts | pywin32 | >=306 (Windows) | Auflösung von Windows-Verknüpfungen |
+
+Nicht Teil des Release-Vertrags: QScintilla, Pygments und watchdog.
+
+Aktuelle Versionen prüfen: python -m pip list --outdated
 
 ---
 
@@ -26,7 +34,7 @@ Aktuelle Version prüfen: `python -m uv pip list --outdated` oder `pip list --ou
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-Quellen: [PyPI Safety DB](https://pypi.org/), [CVE MITRE](https://cve.mitre.org/), `safety check`
+Quellen: PyPI, CVE MITRE und aktuelle Paketmetadaten.
 
 ---
 
@@ -42,7 +50,7 @@ Quellen: [PyPI Safety DB](https://pypi.org/), [CVE MITRE](https://cve.mitre.org/
 
 | # | Paket | Warnung | Deadline | Maßnahme |
 |---|---|---|---|---|
-| — | — | — | — | — |
+| 1 | PyPDF2 | Projekt ist bei 3.0.x eingefroren; Nachfolger ist pypdf | Vor Aktivierung des Extras | Fallback bewusst testen oder auf pypdf migrieren |
 
 ---
 
@@ -56,6 +64,9 @@ Quellen: [PyPI Safety DB](https://pypi.org/), [CVE MITRE](https://cve.mitre.org/
 
 ## Workflow
 
-1. **Vor jedem Release:** Alle P0-Einträge abarbeiten; P1 dokumentiert und im CHANGELOG vermerkt.
-2. **Quartalsmäßig:** `uv pip list --outdated` laufen lassen, Tabelle aktualisieren.
-3. **Neue Deps:** Direkt beim Hinzufügen einen P2/P3-Eintrag anlegen, falls relevante Breaking-Change-Noten im Changelog.
+1. Vor jedem Release: Runtime- und tatsächlich gewählte Extras gegen
+   THIRD_PARTY_LICENSES.txt und die Projekt-LICENSE abgleichen.
+2. Quartalsmäßig: python -m pip list --outdated laufen lassen und die
+   Tabelle aktualisieren.
+3. Neue Deps: Runtime oder Extra im pyproject.toml deklarieren, Lizenz- und
+   CVE-Status hier dokumentieren und den Build/Smoke passend erweitern.

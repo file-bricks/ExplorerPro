@@ -6,7 +6,7 @@ Primary language: Python
 Primary UI stack: PySide6
 License: AGPL-3.0
 
-Last-checked: 2026-06-10
+Last-checked: 2026-07-22
 
 ## Search Phrases
 
@@ -38,15 +38,16 @@ ExplorerPro is a local-first desktop file explorer suite for power users. It com
 
 - Primary platform: Windows desktop.
 - Source/build smoke targets: macOS and Linux.
-- Future companion scope: local display of redacted `explorerpro-workspace-v1.json` exports only.
-- Non-goals: cloud sync, web upload service, mobile file-manager clone, or automatic export of private file contents.
+- Companion decision: no separate Web/PWA viewer without a new, evidenced usecase; the local redacted JSON contract remains available.
+- Non-goals: cloud sync, web upload service, and native mobile file-manager clone; any future companion is limited to local redacted exports.
+- Current release gates: ExplorerPro MSIX and WACK remain open because the Windows SDK/App Certification Kit is unavailable locally; the four redacted store screenshots already exist.
 
 ## Important Files
 
 - `README.md`: English GitHub entry point.
 - `README_de.md`: German entry point.
 - `PORTIERUNGSPLAN.md`: Platform, store-readiness, and companion plan.
-- `EXPORTFORMAT.md`: Planned redacted workspace exchange format.
+- `EXPORTFORMAT.md`: Implemented `explorerpro-workspace-v1` redacted workspace exchange contract.
 - `PRIVACY_POLICY.md`: Repository privacy posture.
 - `src/main.py`: Application entry point.
 - `src/gui/`: Main UI components.

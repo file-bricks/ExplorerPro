@@ -9,6 +9,15 @@ SCHEMA = "explorerpro-workspace-v1"
 
 # Nur Muster die standardmäßig aktiv sind (default=True in privacy_monitor.py)
 BUILTIN_DEFAULT_PATTERNS = ["iban", "email"]
+PRIVACY_PATTERN_KEYS = (
+    "iban",
+    "email",
+    "phone_de",
+    "creditcard",
+    "ssn_de",
+    "password_hint",
+)
+
 
 
 class WorkspaceExporter:
@@ -22,9 +31,15 @@ class WorkspaceExporter:
         # weil settings.json an einem anderen Ort liegt als ~/.explorerpro/
         self._settings = settings or {}
 
-    def build_export(self, include_absolute_paths: bool = False) -> dict:
+    def build_export(
+        self,
+        include_absolute_paths: bool = False,
+        include_sensitive_content: bool = False,
+    ) -> dict:
         path_refs: list[dict] = []
-        apps = self._read_apps(path_refs, include_absolute_paths)
+        apps = self._read_apps(
+            path_refs, include_absolute_paths, include_sensitive_content
+        )
         sync_profiles = self._read_sync_profiles(path_refs, include_absolute_paths)
         return {
             "schema": SCHEMA,
@@ -36,21 +51,30 @@ class WorkspaceExporter:
             },
             "export_options": {
                 "include_absolute_paths": include_absolute_paths,
+                "include_sensitive_content": include_sensitive_content,
                 "include_hashes": False,
                 "include_reports": False,
                 "redaction": "default",
             },
             "settings": self._extract_safe_settings(),
             "apps": apps,
-            "prompts": self._read_prompts(),
+            "prompts": self._read_prompts(include_sensitive_content),
             "sync_profiles": sync_profiles,
             "privacy": self._read_privacy(),
             "reports": {"searches": [], "duplicates": [], "privacy_alerts": []},
             "path_refs": path_refs,
         }
 
-    def save_export(self, output_path: Path, include_absolute_paths: bool = False) -> None:
-        data = self.build_export(include_absolute_paths=include_absolute_paths)
+    def save_export(
+        self,
+        output_path: Path,
+        include_absolute_paths: bool = False,
+        include_sensitive_content: bool = False,
+    ) -> None:
+        data = self.build_export(
+            include_absolute_paths=include_absolute_paths,
+            include_sensitive_content=include_sensitive_content,
+        )
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, "w", encoding="utf-8") as fh:
             json.dump(data, fh, indent=2, ensure_ascii=False)
@@ -89,47 +113,57 @@ class WorkspaceExporter:
             },
         }
 
-    def _read_apps(self, path_refs: list, include_absolute_paths: bool) -> list:
+    def _read_apps(
+        self,
+        path_refs: list,
+        include_absolute_paths: bool,
+        include_sensitive_content: bool,
+    ) -> list:
         raw = self._load_json("apps.json")
         if not isinstance(raw, list):
             return []
+
         result = []
-        for a in raw:
-            if not isinstance(a, dict):
+        for app in raw:
+            if not isinstance(app, dict):
                 continue
-            name = a.get("name", "")
-            path_str = a.get("path", "")
+            name = app.get("name", "")
+            path_str = app.get("path", "")
             entry: dict = {
                 "name": name,
-                "category": a.get("category", ""),
-                "arguments": a.get("arguments", ""),
+                "category": app.get("category", ""),
             }
+            if include_sensitive_content:
+                entry["arguments"] = app.get("arguments", "")
             if include_absolute_paths:
                 entry["path"] = path_str
-            else:
-                if path_str:
-                    entry["path_ref"] = self._make_ref(
-                        path_refs, path_str, "app", name or Path(path_str).name
-                    )
+            elif path_str:
+                entry["path_ref"] = self._make_ref(
+                    path_refs, path_str, "app", name or Path(path_str).name
+                )
             result.append(entry)
         return result
 
-    def _read_prompts(self) -> list:
+    def _read_prompts(self, include_sensitive_content: bool) -> list:
         raw = self._load_json("prompts.json")
         if not isinstance(raw, list):
             return []
-        return [
-            {
-                "id": p.get("id", ""),
-                "title": p.get("title", ""),
-                "content": p.get("content", ""),
-                "category": p.get("category", ""),
-                "tags": p.get("tags", []),
-                "favorite": p.get("favorite", False),
+
+        result = []
+        for prompt in raw:
+            if not isinstance(prompt, dict):
+                continue
+            entry = {
+                "id": prompt.get("id", ""),
+                "title": prompt.get("title", ""),
+                "category": prompt.get("category", ""),
+                "tags": prompt.get("tags", []),
+                "favorite": prompt.get("favorite", False),
             }
-            for p in raw
-            if isinstance(p, dict)
-        ]
+            if include_sensitive_content:
+                entry["content"] = prompt.get("content", "")
+            result.append(entry)
+        return result
 
     def _read_sync_profiles(self, path_refs: list, include_absolute_paths: bool) -> list:
         raw = self._load_json("sync.json")
@@ -175,8 +209,20 @@ class WorkspaceExporter:
                     custom_count = len(bl.get("blacklist", []))
             except (OSError, json.JSONDecodeError):
                 custom_count = 0
+
+        enabled_patterns = BUILTIN_DEFAULT_PATTERNS
+        privacy_config = self._load_json("privacy_config.json")
+        if isinstance(privacy_config, dict):
+            patterns = privacy_config.get("patterns")
+            if isinstance(patterns, dict):
+                enabled_patterns = [
+                    key
+                    for key in PRIVACY_PATTERN_KEYS
+                    if patterns.get(key) is True
+                ]
+
         return {
-            "enabled_patterns": BUILTIN_DEFAULT_PATTERNS,
+            "enabled_patterns": enabled_patterns,
             "custom_terms_count": custom_count,
             "custom_terms_exported": False,
         }

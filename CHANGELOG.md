@@ -69,6 +69,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Desktop-Öffnen nutzt jetzt plattformgerecht `open` auf macOS und `xdg-open` auf Linux.
 
 ### Behoben / Fixed
+- Drag-and-drop überschreibt bei Namenskollisionen keine vorhandenen Dateien mehr und blockiert Ordner-Drops in sich selbst oder eigene Nachfahren.
+- Der Standardexport lässt App-Argumente und Prompt-Inhalte aus; sensitive Inhalte benötigen ein separates Opt-in. Aktive Privacy-Muster folgen der gültigen lokalen Konfiguration.
+- Der LIKE-Fallback der Volltextsuche respektiert weiterhin den Filter „Nur im Inhalt suchen“.
+- Runtime-, optionale Extra-, Build- und Lizenzverträge sind synchron; veraltete PyQt6-/QScintilla-/Pygments-/watchdog-Behauptungen wurden entfernt.
+- Locks, lokale Backups und unreferenzierte Mobile/PWA-Assets sind explizit vom Git-/Release-Scope ausgeschlossen.
 - Die kompakten Seitenleisten-Tabs `📁`, `⭐`, `🔍`, `🚀`, `📋` und `🔄` exponieren jetzt sprechende Accessible Names, Descriptions und Status-Hinweise statt nur Symbol plus Tooltip; `tests/test_sidebar_accessibility.py` sichert den Kontext regressionsfest.
 - Die Such-Checkbox "Im Inhalt" wird jetzt an den Index-Worker weitergereicht.
 - Datei-/Ordner-Öffnen zeigt bei fehlender Systemzuordnung eine UI-Warnung statt still zu scheitern.

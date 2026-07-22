@@ -25,12 +25,6 @@ try:
 except ImportError:
     HAS_FITZ = False
 
-try:
-    from PIL import Image
-    HAS_PIL = True
-except ImportError:
-    HAS_PIL = False
-
 
 class PythonHighlighter(QSyntaxHighlighter):
     """Einfacher Python Syntax-Highlighter"""

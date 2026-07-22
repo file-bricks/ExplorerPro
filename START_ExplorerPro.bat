@@ -46,7 +46,7 @@ if %EXIT_CODE% EQU 0 (
     echo ============================================================
     echo.
     if %EXIT_CODE% EQU 3221225725 (
-        echo [!] Access Violation 0xC0000005 - PyQt6/DLL Problem
+        echo [!] Access Violation 0xC0000005 - PySide6/Qt-DLL-Problem
         echo [!] Siehe BUGREPORT_StartupCrash.md für Details
     )
     if %EXIT_CODE% EQU 1 (

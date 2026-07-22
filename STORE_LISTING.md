@@ -64,8 +64,11 @@ Vor der Einreichung sollten mindestens vier Store-Screenshots vorliegen:
 3. Duplikatsuche mit Ergebnisliste
 4. Datenschutzprüfung oder Launcher-/Sync-Ansicht
 
-Aktuell vorhanden ist `README/screenshots/main.png` als Basisscreenshot.
-Die geplante Store-Auswahl ist in `README/screenshots/store/README.md` dokumentiert.
+Vorhanden sind der Basisscreenshot `README/screenshots/main.png` und das
+redigierte Store-Set unter `README/screenshots/store/`:
+`main-window.png`, `search.png`, `duplicates.png` und `sync.png`. Das Set ist
+mit `python generate_store_screenshots.py` reproduzierbar und in
+`README/screenshots/store/README.md` dokumentiert.
 
 ---
 

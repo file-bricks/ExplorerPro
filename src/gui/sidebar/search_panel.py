@@ -164,6 +164,11 @@ class SearchPanel(QWidget):
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("🔍 Volltextsuche...")
         self.search_input.setClearButtonEnabled(True)
+        self.search_input.setToolTip("Volltextsuche im Index. Mindestens zwei Zeichen eingeben.")
+        self.search_input.setAccessibleName("Volltextsuche")
+        self.search_input.setAccessibleDescription(
+            "Suchbegriff für die Volltextsuche im Dateiindex eingeben. Mindestens zwei Zeichen starten die Suche."
+        )
         self.search_input.textChanged.connect(self._on_text_changed)
         self.search_input.returnPressed.connect(self._execute_search)
         search_layout.addWidget(self.search_input)
@@ -172,6 +177,10 @@ class SearchPanel(QWidget):
         self.advanced_btn = QToolButton()
         self.advanced_btn.setText("⚙️")
         self.advanced_btn.setToolTip("Erweiterte Suche")
+        self.advanced_btn.setAccessibleName("Erweiterte Suche öffnen")
+        self.advanced_btn.setAccessibleDescription(
+            "Öffnet den Dialog mit erweiterten Suchfiltern wie Größe, Datum und regulären Ausdrücken."
+        )
         self.advanced_btn.clicked.connect(self._show_advanced_search)
         search_layout.addWidget(self.advanced_btn)
         
@@ -183,6 +192,11 @@ class SearchPanel(QWidget):
         self.type_combo = QComboBox()
         for name, _ in self.CATEGORIES:
             self.type_combo.addItem(name)
+        self.type_combo.setToolTip("Dateikategorie für die Suche einschränken.")
+        self.type_combo.setAccessibleName("Dateityp-Filter")
+        self.type_combo.setAccessibleDescription(
+            "Legt fest, ob alle Dateien oder nur ausgewählte Kategorien in den Suchergebnissen erscheinen."
+        )
         self.type_combo.currentIndexChanged.connect(self._on_filter_changed)
         filter_layout.addWidget(QLabel("Typ:"))
         filter_layout.addWidget(self.type_combo, 1)
@@ -190,6 +204,10 @@ class SearchPanel(QWidget):
         # Content-Only Checkbox
         self.content_only_cb = QCheckBox("Im Inhalt")
         self.content_only_cb.setToolTip("Nur im Dateiinhalt suchen (nicht im Namen)")
+        self.content_only_cb.setAccessibleName("Nur im Inhalt suchen")
+        self.content_only_cb.setAccessibleDescription(
+            "Wenn aktiviert, sucht ExplorerPro nur im Dateiinhalt und nicht im Dateinamen."
+        )
         self.content_only_cb.stateChanged.connect(self._on_filter_changed)
         filter_layout.addWidget(self.content_only_cb)
         
@@ -205,6 +223,10 @@ class SearchPanel(QWidget):
         # ===== Ergebnis-Liste =====
         self.results_list = QListWidget()
         self.results_list.setAlternatingRowColors(True)
+        self.results_list.setAccessibleName("Suchergebnisse")
+        self.results_list.setAccessibleDescription(
+            "Liste der gefundenen Dateien. Mit den Pfeiltasten auswählen und mit Enter oder Doppelklick öffnen."
+        )
         self.results_list.itemClicked.connect(self._on_item_clicked)
         self.results_list.itemDoubleClicked.connect(self._on_item_double_clicked)
         self.results_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -220,6 +242,11 @@ class SearchPanel(QWidget):
         
         self.clear_btn = QPushButton("Löschen")
         self.clear_btn.setMaximumWidth(60)
+        self.clear_btn.setToolTip("Suchbegriff und Suchergebnisse löschen.")
+        self.clear_btn.setAccessibleName("Suche löschen")
+        self.clear_btn.setAccessibleDescription(
+            "Leert das Suchfeld und entfernt die aktuellen Suchergebnisse."
+        )
         self.clear_btn.clicked.connect(self._clear_results)
         self.clear_btn.hide()
         status_layout.addWidget(self.clear_btn)

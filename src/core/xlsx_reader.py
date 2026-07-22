@@ -9,7 +9,7 @@ Gibt bei Leseproblemen klar typisierte Fehlerobjekte zurück (kein Crash).
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 # Optionale Imports — fehlendes Paket führt zum Fallback, nicht zum Abbruch
