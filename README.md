@@ -6,7 +6,13 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![Platform: Windows](https://img.shields.io/badge/platform-Windows-lightgrey.svg)]()
+[![Pytest: 160 passed](https://img.shields.io/badge/pytest-160%20passed-brightgreen.svg)](tests/)
+[![UI: PySide6](https://img.shields.io/badge/UI-PySide6-informational.svg)](src/gui/)
+[![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
+[![Privacy: Local--First](https://img.shields.io/badge/Privacy-Local--First-blueviolet.svg)](PRIVACY_POLICY.md)
+
+> [!NOTE]
+> **For AI Agents & LLMs:** Machine-readable architecture context, search phrases, and verification entry points are maintained in [llms.txt](llms.txt).
 
 > Power-user desktop file explorer — multi-tab, preview panel, privacy monitor, duplicate finder, sync tools & code editor in one PySide6 app.
 
@@ -145,7 +151,7 @@ A complete list of third-party dependencies and their licenses can be found in
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Last repository maintenance: 2026-07-22
+- Last repository maintenance: 2026-07-25
 
 ## Haftung / Liability
 

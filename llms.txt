@@ -6,7 +6,7 @@ Primary language: Python
 Primary UI stack: PySide6
 License: AGPL-3.0
 
-Last-checked: 2026-07-22
+Last-checked: 2026-07-25
 
 ## Search Phrases
 

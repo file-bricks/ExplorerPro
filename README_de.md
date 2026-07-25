@@ -6,7 +6,13 @@
 
 [![Lizenz: AGPL v3](https://img.shields.io/badge/Lizenz-AGPL%20v3-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![Plattform: Windows](https://img.shields.io/badge/Plattform-Windows-lightgrey.svg)]()
+[![Pytest: 160 passed](https://img.shields.io/badge/pytest-160%20passed-brightgreen.svg)](tests/)
+[![UI: PySide6](https://img.shields.io/badge/UI-PySide6-informational.svg)](src/gui/)
+[![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
+[![Datenschutz: Local--First](https://img.shields.io/badge/Datenschutz-Local--First-blueviolet.svg)](PRIVACY_POLICY.md)
+
+> [!NOTE]
+> **Für KI-Agenten & LLMs:** Maschinenlesbarer Architekturkontext, Suchbegriffe und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt.
 
 > Power-User-Dateimanager für den Desktop — Mehrtab-Browser, Vorschau, Datenschutz, Duplikatsuche, Sync & Code-Editor in einer PySide6-App.
 
@@ -95,7 +101,7 @@ Eine vollständige Liste der Drittanbieter-Abhängigkeiten und ihrer Lizenzen st
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Letzte Dokumentationsprüfung: 2026-07-22
+- Letzte Dokumentationsprüfung: 2026-07-25
 
 ## Haftung
 

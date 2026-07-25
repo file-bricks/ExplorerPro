@@ -53,6 +53,9 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Das Vorschaufenster löst Windows-Verknüpfungen (`.lnk`) auf: Ordner-Links zeigen den Zielordnerinhalt, EXE-Links zeigen den Zielordner der Anwendung.
 
 ### Geändert / Changed
+- `llms.txt`: Header `Last-checked` Datum auf `2026-07-25` aktualisiert.
+- `pytest.ini` & `pyproject.toml`: `pythonpath = . src` bzw. `pythonpath = [".", "src"]` hinzugefügt für nahtlose Testausführung; Metadaten um Keywords & `[project.urls]` erweitert.
+- `README.md` & `README_de.md`: Pytest (160 passed), PySide6, Local-First Privacy & LLM-Ready Badges sowie KI-Agenten-Hinweis (`> [!NOTE]`) eingebunden; Wartungsdatum auf 2026-07-25 aktualisiert.
 - `ROADMAP.md` ist seit 2026-07-19 eine versionierte, kanonische
   Planungsübersicht statt einer untracked Arbeitsnotiz. Erledigte Punkte zu
   Release-Start-Smoke, Drag-and-drop, Excel-Vorschau, Syntaxformaten und

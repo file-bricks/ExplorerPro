@@ -14,6 +14,14 @@ dependencies = [
     "openpyxl>=3.1.0,<4.0.0",
 ]
 
+keywords = ["file-explorer", "pyside6", "file-manager", "privacy", "duplicate-finder", "local-first"]
+
+[project.urls]
+Homepage = "https://github.com/file-bricks/ExplorerPro"
+Repository = "https://github.com/file-bricks/ExplorerPro.git"
+"Bug Tracker" = "https://github.com/file-bricks/ExplorerPro/issues"
+Documentation = "https://github.com/file-bricks/ExplorerPro#readme"
+
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.5"]
 build = ["PyInstaller>=6.0.0,<7.0.0"]
@@ -23,6 +31,7 @@ windows-shortcuts = ["pywin32>=306; platform_system == 'Windows'"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = [".", "src"]
 
 [tool.ruff]
 target-version = "py310"
