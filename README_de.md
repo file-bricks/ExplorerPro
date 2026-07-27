@@ -101,7 +101,7 @@ Eine vollständige Liste der Drittanbieter-Abhängigkeiten und ihrer Lizenzen st
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Letzte Dokumentationsprüfung: 2026-07-25
+- Letzte Dokumentationsprüfung: 2026-07-27
 
 ## Haftung
 

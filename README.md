@@ -151,7 +151,7 @@ A complete list of third-party dependencies and their licenses can be found in
 
 - Version: 1.0.0
 - Maintainer: Lukas Geiger
-- Last repository maintenance: 2026-07-25
+- Last repository maintenance: 2026-07-27
 
 ## Haftung / Liability
 

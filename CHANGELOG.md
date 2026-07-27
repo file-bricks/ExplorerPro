@@ -5,6 +5,13 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-07-27
+
+### Gewartet / Maintenance
+- **Technische Hygiene & Doku-Wartung (Pfad A)**:
+  - Datum der letzten Wartungs- und Dokumentationsprüfung in `llms.txt`, `README.md` und `README_de.md` auf 2026-07-27 aktualisiert.
+  - Testsuite verifiziert (160 passed, 1 skipped) und Quelltext-Kompilierung (`compileall`) erfolgreich ausgeführt.
+
 ### Hinzugefügt / Added
 - **Software-Originalicons in Dateiliste und Sidebar** (`src/core/file_icon_helper.py`):
   - Neue Hilfsfunktion `get_file_icon(path: str) -> QIcon` mit dreistufiger Fallback-Kette: (1) echtes Shell-/Typ-Icon via `QFileIconProvider`, (2) generisches Ordner-Icon, (3) generisches Datei-Icon — liefert nie `QIcon.isNull()`.
