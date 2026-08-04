@@ -96,6 +96,7 @@ TESTBERICHT.txt
 DECISIONS.md
 TODO.md
 DONE.md
+pytest_res.txt
 
 # ---- Lokale Workflow- und nicht verwendete Web-Assets ----
 LOCK*.txt
