@@ -36,6 +36,7 @@ class TestFileIndexFTS5:
         conn = sqlite3.connect(idx.db_path)
         try:
             cursor = conn.cursor()
+            now_iso = datetime.now().isoformat()
             cursor.execute('''
                 INSERT OR REPLACE INTO files
                 (path, filename, extension, size, modified, created,
@@ -44,8 +45,8 @@ class TestFileIndexFTS5:
             ''', (
                 path, filename,
                 Path(filename).suffix.lower(),
-                len(content), datetime.now(), datetime.now(),
-                None, "Dokumente", content, datetime.now()
+                len(content), now_iso, now_iso,
+                None, "Dokumente", content, now_iso
             ))
             conn.commit()
         finally:

@@ -7,7 +7,7 @@ FileBrowser - Dateilisten-Ansicht mit QuickEditor-Integration
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableView, QHeaderView,
     QMenu, QAbstractItemView, QMessageBox, QFileSystemModel,
-    QApplication
+    QApplication, QInputDialog
 )
 from PySide6.QtCore import (
     Qt, Signal, QDir, QModelIndex, QSortFilterProxyModel,
@@ -343,15 +343,18 @@ class FileBrowser(QWidget):
             
             delete_action = QAction("Löschen", self)
             delete_action.setShortcut("Delete")
+            delete_action.triggered.connect(self.delete_selection)
             menu.addAction(delete_action)
             
             rename_action = QAction("Umbenennen", self)
             rename_action.setShortcut("F2")
+            rename_action.triggered.connect(self.rename_selection)
             menu.addAction(rename_action)
         
         else:
             # Leer-Bereich-Menü
             new_folder = QAction("📁 Neuer Ordner", self)
+            new_folder.triggered.connect(self.create_new_folder)
             menu.addAction(new_folder)
             
             paste_action = QAction("Einfügen", self)
@@ -535,6 +538,90 @@ class FileBrowser(QWidget):
 
         self._do_file_drop(paths, self._current_path, move=False)
         return True
+
+    def delete_selection(self) -> bool:
+        """Löscht die aktuell ausgewählten Dateien/Ordner nach Bestätigung."""
+        paths = self.get_selected_files()
+        if not paths:
+            return False
+
+        reply = QMessageBox.question(
+            self,
+            "Löschen bestätigen",
+            f"Möchten Sie die ausgewählten {len(paths)} Element(e) wirklich löschen?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return False
+
+        errors = []
+        for p in paths:
+            try:
+                if os.path.isdir(p):
+                    shutil.rmtree(p)
+                elif os.path.exists(p):
+                    os.remove(p)
+            except Exception as exc:
+                errors.append(f"{os.path.basename(p)}: {exc}")
+
+        self.refresh()
+        if errors:
+            QMessageBox.warning(
+                self, "Löschen",
+                "Einige Elemente konnten nicht gelöscht werden:\n\n" + "\n".join(errors)
+            )
+            return False
+        return True
+
+    def rename_selection(self) -> bool:
+        """Benennt die aktuell ausgewählte Datei oder den Ordner um."""
+        paths = self.get_selected_files()
+        if not paths:
+            return False
+
+        src_path = paths[0]
+        old_name = os.path.basename(src_path)
+        new_name, ok = QInputDialog.getText(
+            self, "Umbenennen", "Neuer Name:", text=old_name
+        )
+        if not ok or not new_name.strip() or new_name.strip() == old_name:
+            return False
+
+        dest_path = os.path.join(os.path.dirname(src_path), new_name.strip())
+        try:
+            os.rename(src_path, dest_path)
+            self.refresh()
+            return True
+        except Exception as exc:
+            QMessageBox.warning(
+                self, "Umbenennen",
+                f"Konnte '{old_name}' nicht umbenennen:\n{exc}"
+            )
+            return False
+
+    def create_new_folder(self) -> bool:
+        """Erstellt einen neuen Ordner im aktuellen Verzeichnis."""
+        if not self._current_path or not os.path.exists(self._current_path):
+            return False
+
+        name, ok = QInputDialog.getText(
+            self, "Neuer Ordner", "Ordnername:"
+        )
+        if not ok or not name.strip():
+            return False
+
+        folder_path = os.path.join(self._current_path, name.strip())
+        try:
+            os.makedirs(folder_path, exist_ok=True)
+            self.refresh()
+            return True
+        except Exception as exc:
+            QMessageBox.warning(
+                self, "Neuer Ordner",
+                f"Konnte Ordner '{name}' nicht erstellen:\n{exc}"
+            )
+            return False
 
     def _do_file_drop(self, src_paths: list, target_dir: str, move: bool = False):
         """Kopiert oder verschiebt Dateien in den Zielordner ohne Überschreiben."""

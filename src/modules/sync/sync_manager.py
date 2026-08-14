@@ -198,15 +198,16 @@ class SyncWorker(QThread):
         
         for path in folder.rglob('*'):
             if path.is_file():
+                rel_path = path.relative_to(folder)
+
                 # Exclude-Patterns prüfen
                 if self._should_exclude(path.name):
                     continue
                 
-                # Hidden-Files prüfen
-                if not self.sync_pair.include_hidden and path.name.startswith('.'):
+                # Hidden-Files/-Folders prüfen
+                if not self.sync_pair.include_hidden and any(part.startswith('.') for part in rel_path.parts):
                     continue
                 
-                rel_path = path.relative_to(folder)
                 try:
                     stat = path.stat()
                     files[rel_path] = {

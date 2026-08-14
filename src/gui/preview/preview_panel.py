@@ -136,12 +136,21 @@ class TextPreview(QPlainTextEdit):
             
             self.setPlainText(content)
             
-            # Syntax-Highlighting für Python
-            ext = os.path.splitext(path)[1].lower()
-            if ext == '.py':
-                self._highlighter = PythonHighlighter(self.document())
-            else:
+            # Altes Highlighting sicher lösen
+            if self._highlighter is not None:
+                self._highlighter.setDocument(None)
                 self._highlighter = None
+
+            # Syntax-Highlighting
+            ext = os.path.splitext(path)[1].lower()
+            try:
+                from modules.editor.syntax_highlighter import get_lexer_for_extension
+                self._highlighter = get_lexer_for_extension(ext, self.document())
+            except Exception:
+                if ext == '.py':
+                    self._highlighter = PythonHighlighter(self.document())
+                else:
+                    self._highlighter = None
                 
         except Exception as e:
             self.setPlainText(f"Fehler beim Laden: {e}")

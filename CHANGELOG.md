@@ -6,6 +6,16 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [Unreleased]
 
 ### Behoben / Fixed
+- **Kontextmenü-Aktionen im Dateibrowser verdrahtet** (`src/gui/browser/file_browser.py`):
+  Die Kontextmenü-Aktionen „Löschen", „Umbenennen" und „Neuer Ordner" waren im Kontextmenü vorhanden, aber nicht mit Aktionen verbunden. Die Methoden `delete_selection()`, `rename_selection()` und `create_new_folder()` wurden implementiert und mit Sicherheitsabfragen/Dialogen versehen.
+- **Index-Synchronisation & Verbindungs-Handling im DuplicateFinder** (`src/modules/indexer/duplicate_finder.py`):
+  `DuplicateScanWorker` nutzt nun eine saubere, per-Thread SQLite-Verbindung über `file_index.db_path` statt eines potenziell verwaisten `conn`-Objekts. Beim Löschen gefundener Duplikate wird der `FileIndex` via `file_index.remove_file()` synchronisiert.
+- **Python 3.12+ SQLite Datetime Adapter & Index-Methoden** (`src/core/file_index.py`):
+  Explizite Registrierung von `sqlite3.register_adapter(datetime, ...)` verhindert DeprecationWarnings in Python 3.12+. `FileIndex` um `remove_file()` und `get_file()` ergänzt.
+- **Erkennung versteckter Verzeichnisse im SyncManager** (`src/modules/sync/sync_manager.py`):
+  `SyncWorker._get_files` prüft nun alle Pfadsegmente des relativen Pfads, sodass Dateien innerhalb versteckter Unterverzeichnisse bei `include_hidden=False` zuverlässig ignoriert werden.
+- **SyntaxHighlighter Lifecycle in TextPreview** (`src/gui/preview/preview_panel.py`):
+  Bestehende `QSyntaxHighlighter`-Instanzen werden vor dem Erzeugen eines neuen Highlighters per `setDocument(None)` explizit getrennt, um Überlappungen und Leaks zu verhindern.
 - **Menuepunkt „Einstellungen…" oeffnete kein Fenster** (Usertest Welle 1, 2026-08-14):
   Die QAction in `src/gui/main_window.py` war dem Tools-Menue hinzugefuegt, aber nie
   mit `triggered.connect` verbunden; als lokale Variable konnte die Verbindung auch

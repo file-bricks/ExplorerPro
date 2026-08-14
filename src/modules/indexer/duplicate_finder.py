@@ -18,6 +18,7 @@ from typing import List, Dict
 from collections import defaultdict
 import os
 import hashlib
+import sqlite3
 import subprocess
 
 from core.platform_utils import open_path_with_system
@@ -28,23 +29,24 @@ class DuplicateScanWorker(QThread):
     
     progress = Signal(int, int, str)   # current, total, current_file
     duplicates_found = Signal(dict)     # {hash: [paths]}
+    finished_scan = Signal(int, int)    # total_scanned, duplicates_count
     error = Signal(str)
-    finished_scan = Signal(int, int)    # total_files, duplicate_groups
     
-    def __init__(self, index=None, scan_path: str = None, min_size: int = 0):
+    def __init__(self, file_index=None, scan_path: str = None, 
+                 min_size: int = 1024, use_index: bool = True, index=None):
         super().__init__()
-        self.index = index
+        self.index = file_index if file_index is not None else index
         self.scan_path = scan_path
         self.min_size = min_size
+        self.use_index = use_index
         self._cancelled = False
     
     def run(self):
+        """Führt den Scan aus"""
         try:
-            if self.index:
-                # Aus Index laden
+            if self.use_index and self.index:
                 duplicates = self._find_from_index()
             elif self.scan_path:
-                # Live-Scan durchführen
                 duplicates = self._scan_directory()
             else:
                 self.error.emit("Kein Index oder Pfad angegeben")
@@ -65,16 +67,22 @@ class DuplicateScanWorker(QThread):
         """Findet Duplikate aus dem Index"""
         duplicates = defaultdict(list)
         
-        cursor = self.index.conn.execute('''
-            SELECT hash, path, size
-            FROM files
-            WHERE hash IS NOT NULL
-            AND hash != ''
-            AND size >= ?
-            ORDER BY hash
-        ''', (self.min_size,))
+        conn = sqlite3.connect(self.index.db_path)
+        try:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT hash, path, size
+                FROM files
+                WHERE hash IS NOT NULL
+                AND hash != ''
+                AND size >= ?
+                ORDER BY hash
+            ''', (self.min_size,))
+            
+            rows = cursor.fetchall()
+        finally:
+            conn.close()
         
-        rows = cursor.fetchall()
         total = len(rows)
         
         for i, (file_hash, path, size) in enumerate(rows):
@@ -621,6 +629,8 @@ class DuplicateFinderDialog(QDialog):
             try:
                 os.remove(path)
                 deleted += 1
+                if self.file_index:
+                    self.file_index.remove_file(path)
             except Exception as e:
                 errors.append(f"{path}: {e}")
         

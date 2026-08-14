@@ -13,6 +13,12 @@ from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 from PySide6.QtCore import QThread, Signal
 
+# SQLite datetime adapter für Python 3.12+
+def _adapt_datetime_iso(val: datetime) -> str:
+    return val.isoformat()
+
+sqlite3.register_adapter(datetime, _adapt_datetime_iso)
+
 # Optionale Imports
 try:
     from PyPDF2 import PdfReader
@@ -268,6 +274,29 @@ class FileIndex:
         except Exception as e:
             print(f"Indizierung fehlgeschlagen für {filepath}: {e}")
             return False
+
+    def remove_file(self, filepath: str) -> bool:
+        """Entfernt eine Datei aus dem Index"""
+        conn = sqlite3.connect(self.db_path)
+        try:
+            cursor = conn.cursor()
+            cursor.execute('DELETE FROM files WHERE path = ?', (filepath,))
+            conn.commit()
+            return cursor.rowcount > 0
+        finally:
+            conn.close()
+
+    def get_file(self, filepath: str) -> Optional[Dict]:
+        """Gibt Informationen zu einer indizierten Datei zurück oder None"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM files WHERE path = ?', (filepath,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
     
     def search(self, query: str, extension: str = None, category: str = None,
                min_size: int = None, max_size: int = None, 

@@ -108,3 +108,68 @@ def test_close_event_skips_stopped_scan_worker():
 
     mock_worker.cancel.assert_not_called()
     mock_worker.wait.assert_not_called()
+
+
+def test_duplicate_scan_worker_find_from_index(tmp_path):
+    """DuplicateScanWorker._find_from_index liest Duplikate aus der SQLite-Datenbank."""
+    from core.file_index import FileIndex
+    from modules.indexer.duplicate_finder import DuplicateScanWorker
+
+    db_file = tmp_path / "test_index.db"
+    idx = FileIndex(str(db_file))
+
+    # Zwei identische Dateien erstellen
+    f1 = tmp_path / "file1.txt"
+    f2 = tmp_path / "file2.txt"
+    content = "Gleicher Inhalt für Hash-Berechnung"
+    f1.write_text(content, encoding="utf-8")
+    f2.write_text(content, encoding="utf-8")
+
+    idx.index_file(str(f1), calculate_hash=True)
+    idx.index_file(str(f2), calculate_hash=True)
+
+    worker = DuplicateScanWorker(file_index=idx, min_size=1, use_index=True)
+    found_duplicates = []
+    worker.duplicates_found.connect(lambda d: found_duplicates.append(d))
+    worker.run()
+
+    assert len(found_duplicates) == 1
+    assert len(found_duplicates[0]) == 1  # 1 Hash-Gruppe
+    hash_val = list(found_duplicates[0].keys())[0]
+    assert sorted(found_duplicates[0][hash_val]) == sorted([str(f1), str(f2)])
+
+
+def test_duplicate_dialog_delete_syncs_file_index(tmp_path, monkeypatch):
+    """Beim Löschen von Duplikaten wird der FileIndex synchron gehalten."""
+    from core.file_index import FileIndex
+    from PySide6.QtWidgets import QMessageBox
+
+    _ensure_app()
+    db_file = tmp_path / "test_index.db"
+    idx = FileIndex(str(db_file))
+
+    f1 = tmp_path / "dup1.txt"
+    f2 = tmp_path / "dup2.txt"
+    f1.write_text("Inhalt", encoding="utf-8")
+    f2.write_text("Inhalt", encoding="utf-8")
+
+    idx.index_file(str(f1), calculate_hash=True)
+    idx.index_file(str(f2), calculate_hash=True)
+
+    dialog = DuplicateFinderDialog(file_index=idx)
+    mock_box = MagicMock()
+    mock_box.StandardButton = QMessageBox.StandardButton
+    mock_box.question.return_value = QMessageBox.StandardButton.Yes
+    monkeypatch.setattr("modules.indexer.duplicate_finder.QMessageBox", mock_box)
+    monkeypatch.setattr(dialog, "_start_scan", lambda: None)
+
+    dialog.duplicate_groups = {"hash1": [str(f1), str(f2)]}
+    dialog._on_duplicates_found(dialog.duplicate_groups)
+    dialog._select_all_duplicates()  # wählt f2 aus
+
+    dialog._delete_selected()
+
+    assert not f2.exists()
+    assert idx.get_file(str(f2)) is None
+    assert f1.exists()
+    assert idx.get_file(str(f1)) is not None

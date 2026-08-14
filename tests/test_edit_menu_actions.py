@@ -72,6 +72,7 @@ class TestEditMenuWiring:
             win.file_browser, "copy_selection", lambda: aufrufe.append("copy") or True
         )
         win._copy_selection()
+        win.close()
         assert aufrufe == ["copy"]
 
     def test_paste_menu_action_calls_browser(self, monkeypatch):
@@ -83,6 +84,7 @@ class TestEditMenuWiring:
             lambda: aufrufe.append("paste") or True,
         )
         win._paste_clipboard()
+        win.close()
         assert aufrufe == ["paste"]
 
     def test_new_window_is_created_and_referenced(self):
@@ -92,3 +94,4 @@ class TestEditMenuWiring:
         assert isinstance(neu, MainWindow)
         assert neu in win._child_windows
         neu.close()
+        win.close()
