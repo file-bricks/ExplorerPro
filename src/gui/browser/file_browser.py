@@ -6,7 +6,8 @@ FileBrowser - Dateilisten-Ansicht mit QuickEditor-Integration
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableView, QHeaderView,
-    QMenu, QAbstractItemView, QMessageBox, QFileSystemModel
+    QMenu, QAbstractItemView, QMessageBox, QFileSystemModel,
+    QApplication
 )
 from PySide6.QtCore import (
     Qt, Signal, QDir, QModelIndex, QSortFilterProxyModel,
@@ -337,6 +338,7 @@ class FileBrowser(QWidget):
             # Standard-Aktionen
             copy_action = QAction("Kopieren", self)
             copy_action.setShortcut("Ctrl+C")
+            copy_action.triggered.connect(self.copy_selection)
             menu.addAction(copy_action)
             
             delete_action = QAction("Löschen", self)
@@ -354,6 +356,7 @@ class FileBrowser(QWidget):
             
             paste_action = QAction("Einfügen", self)
             paste_action.setShortcut("Ctrl+V")
+            paste_action.triggered.connect(self.paste_from_clipboard)
             menu.addAction(paste_action)
             
             menu.addSeparator()
@@ -508,6 +511,30 @@ class FileBrowser(QWidget):
         drag = QDrag(self)
         drag.setMimeData(mime_data)
         drag.exec(Qt.DropAction.CopyAction | Qt.DropAction.MoveAction)
+
+    def copy_selection(self) -> bool:
+        """Legt die ausgewählten Dateien als Datei-URLs in die Zwischenablage."""
+        paths = self.get_selected_files()
+        if not paths:
+            return False
+
+        mime_data = QMimeData()
+        mime_data.setUrls([QUrl.fromLocalFile(p) for p in paths])
+        QApplication.clipboard().setMimeData(mime_data)
+        return True
+
+    def paste_from_clipboard(self) -> bool:
+        """Kopiert Dateien aus der Zwischenablage in den aktuellen Ordner."""
+        mime_data = QApplication.clipboard().mimeData()
+        if mime_data is None or not mime_data.hasUrls():
+            return False
+
+        paths = [url.toLocalFile() for url in mime_data.urls() if url.isLocalFile()]
+        if not paths or not self._current_path:
+            return False
+
+        self._do_file_drop(paths, self._current_path, move=False)
+        return True
 
     def _do_file_drop(self, src_paths: list, target_dir: str, move: bool = False):
         """Kopiert oder verschiebt Dateien in den Zielordner ohne Überschreiben."""

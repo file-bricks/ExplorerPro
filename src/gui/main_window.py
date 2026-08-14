@@ -252,6 +252,7 @@ class MainWindow(QMainWindow):
         
         new_window_action = QAction("Neues Fenster", self)
         new_window_action.setShortcut(QKeySequence("Ctrl+N"))
+        new_window_action.triggered.connect(self._open_new_window)
         file_menu.addAction(new_window_action)
         
         file_menu.addSeparator()
@@ -280,10 +281,12 @@ class MainWindow(QMainWindow):
         
         copy_action = QAction("Kopieren", self)
         copy_action.setShortcut(QKeySequence.StandardKey.Copy)
+        copy_action.triggered.connect(self._copy_selection)
         edit_menu.addAction(copy_action)
-        
+
         paste_action = QAction("Einfügen", self)
         paste_action.setShortcut(QKeySequence.StandardKey.Paste)
+        paste_action.triggered.connect(self._paste_clipboard)
         edit_menu.addAction(paste_action)
         
         edit_menu.addSeparator()
@@ -595,6 +598,36 @@ class MainWindow(QMainWindow):
                 "Datenschutz-Monitor nicht initialisiert."
             )
     
+    def _open_new_window(self):
+        """Öffnet ein weiteres ExplorerPro-Fenster im aktuellen Ordner."""
+        # Referenzen sammeln, sonst raeumt der Garbage Collector die neuen
+        # Fenster sofort wieder ab.
+        if not hasattr(self, "_child_windows"):
+            self._child_windows = []
+
+        window = MainWindow()
+        if self.file_browser.current_path:
+            window.file_browser.navigate_to(self.file_browser.current_path)
+        self._child_windows.append(window)
+        window.show()
+        return window
+
+    def _copy_selection(self):
+        """Kopiert die Auswahl des Dateibrowsers in die Zwischenablage."""
+        if self.file_browser.copy_selection():
+            self.statusBar().showMessage("In die Zwischenablage kopiert", 3000)
+        else:
+            self.statusBar().showMessage("Keine Datei ausgewählt", 3000)
+
+    def _paste_clipboard(self):
+        """Fügt Dateien aus der Zwischenablage in den aktuellen Ordner ein."""
+        if self.file_browser.paste_from_clipboard():
+            self.statusBar().showMessage("Eingefügt", 3000)
+        else:
+            self.statusBar().showMessage(
+                "Keine Dateien in der Zwischenablage", 3000
+            )
+
     def _show_settings(self):
         """Öffnet das Einstellungsfenster."""
         from .settings_dialog import SettingsDialog
