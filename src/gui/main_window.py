@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QLabel, QToolBar, QLineEdit, QPushButton, QMessageBox,
     QToolButton, QDialog, QFormLayout, QCheckBox, QGroupBox,
     QVBoxLayout as QVBox, QDialogButtonBox, QFileDialog,
-    QInputDialog
+    QInputDialog, QMenu
 )
 from PySide6.QtCore import Qt, QSize, Signal, QStandardPaths
 from PySide6.QtGui import QAction, QKeySequence
@@ -383,7 +383,22 @@ class MainWindow(QMainWindow):
         
         settings_action = QAction("Einstellungen...", self)
         settings_action.setShortcut(QKeySequence("Ctrl+,"))
+        settings_action.triggered.connect(self._show_settings)
         tools_menu.addAction(settings_action)
+
+        # Menü für den Toolbar-Schalter "Ansicht". Wird als Attribut gehalten,
+        # damit es nicht vom Garbage Collector eingesammelt wird, und teilt
+        # sich die Aktionen mit dem Ansicht-Menü der Menüleiste, damit die
+        # Häkchen in beiden Menüs synchron bleiben.
+        self.view_toolbutton_menu = QMenu("Ansicht", self)
+        self.view_toolbutton_menu.addAction(self.toggle_sidebar)
+        self.view_toolbutton_menu.addAction(self.toggle_preview)
+        self.view_toolbutton_menu.addSeparator()
+        self.view_toolbutton_menu.addAction(apps_action)
+        self.view_toolbutton_menu.addAction(prompts_action)
+        self.view_toolbutton_menu.addAction(sync_action)
+        self.view_toolbutton_menu.addSeparator()
+        self.view_toolbutton_menu.addAction(refresh_action)
         
         # ===== Hilfe-Menü =====
         help_menu = menubar.addMenu("&Hilfe")
@@ -395,6 +410,8 @@ class MainWindow(QMainWindow):
     def _setup_toolbar(self):
         """Erstellt die Toolbar"""
         self.toolbar = SearchToolBar(self)
+        # Ohne Menü bleibt der Ansicht-Schalter im InstantPopup-Modus wirkungslos.
+        self.toolbar.view_btn.setMenu(self.view_toolbutton_menu)
         self.addToolBar(self.toolbar)
     
     def _setup_ui(self):
@@ -578,6 +595,31 @@ class MainWindow(QMainWindow):
                 "Datenschutz-Monitor nicht initialisiert."
             )
     
+    def _show_settings(self):
+        """Öffnet das Einstellungsfenster."""
+        from .settings_dialog import SettingsDialog
+
+        # Referenz am Fenster halten, damit der Dialog nicht sofort wieder
+        # eingesammelt wird.
+        self.settings_dialog = SettingsDialog(self)
+        if self.settings_dialog.exec() == QDialog.DialogCode.Accepted:
+            self._apply_settings()
+            self.statusBar().showMessage("Einstellungen gespeichert", 3000)
+
+    def _apply_settings(self):
+        """Wendet die gespeicherten Einstellungen auf das laufende Fenster an."""
+        from core.settings_manager import SettingsManager
+
+        settings = SettingsManager.instance()
+
+        show_hidden = bool(settings.get("general", "show_hidden_files", False))
+        if hasattr(self.file_browser, "set_show_hidden_files"):
+            self.file_browser.set_show_hidden_files(show_hidden)
+
+        show_preview = bool(settings.get("preview", "show_preview", True))
+        self.preview_panel.setVisible(show_preview)
+        self.toggle_preview.setChecked(show_preview)
+
     def _show_about(self):
         """Zeigt den Über-Dialog"""
         QMessageBox.about(

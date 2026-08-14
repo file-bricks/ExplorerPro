@@ -247,6 +247,14 @@ class FileBrowser(QWidget):
             self.model.setRootPath(self._current_path)
             self._update_file_count()
     
+    def set_show_hidden_files(self, show: bool):
+        """Schaltet die Anzeige versteckter Dateien um."""
+        filters = QDir.Filter.AllEntries | QDir.Filter.NoDotAndDotDot
+        if show:
+            filters |= QDir.Filter.Hidden
+        self.model.setFilter(filters)
+        self.refresh()
+
     def _on_item_clicked(self, index: QModelIndex):
         source_index = self.proxy.mapToSource(index)
         file_path = self.model.filePath(source_index)
