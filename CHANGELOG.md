@@ -5,6 +5,40 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben / Fixed
+- **Menuepunkt „Einstellungen…" oeffnete kein Fenster** (Usertest Welle 1, 2026-08-14):
+  Die QAction in `src/gui/main_window.py` war dem Tools-Menue hinzugefuegt, aber nie
+  mit `triggered.connect` verbunden; als lokale Variable konnte die Verbindung auch
+  nirgends nachgeholt werden. Ein Einstellungsdialog existierte ueberhaupt nicht.
+  Neu: `src/gui/settings_dialog.py` mit den fuenf Sektionen des `SettingsManager`
+  (Allgemein, Index, Vorschau, Datenschutz, Darstellung). `_show_settings` haelt eine
+  Referenz am Fenster; `_apply_settings` wendet Vorschau-Sichtbarkeit und versteckte
+  Dateien sofort an. `FileBrowser.set_show_hidden_files` ergaenzt.
+- **Toolbar-Schalter „Ansicht" war funktionslos**: Der `QToolButton` im Modus
+  `InstantPopup` hatte nie ein Menue per `setMenu` erhalten und reagierte daher
+  prinzipbedingt nicht auf Klicks. Das gleichnamige Menue der Menueleiste war intakt.
+  Neu: `view_toolbutton_menu` wird als Attribut gehalten und teilt sich die Aktionen
+  mit der Menueleiste, sodass die Haekchen in beiden Menues synchron bleiben.
+- **Weitere unverbundene Menuepunkte**: „Neues Fenster", „Kopieren" und „Einfuegen"
+  im Hauptmenue sowie dieselben Eintraege im Kontextmenue des Dateibrowsers.
+  `FileBrowser` erhaelt `copy_selection` und `paste_from_clipboard`; Einfuegen nutzt
+  die bestehende Kollisionsbehandlung aus `_do_file_drop` und ueberschreibt nichts.
+  Neue Fenster werden in `_child_windows` referenziert.
+
+### Hinzugefuegt / Added
+- `tests/test_menu_actions_wired.py` und `tests/test_edit_menu_actions.py`:
+  17 Regressionstests, die die Verdrahtung der Menuepunkte, die gehaltene
+  Dialogreferenz und den Zwischenablage-Rundlauf festhalten. Gesamtsuite 177 grün.
+
+### Gewartet / Maintenance
+- **Release-Build in sauberer virtueller Umgebung**: Der Build erfolgt jetzt gegen
+  eine venv mit ausschliesslich den Abhaengigkeiten aus `requirements.txt` plus
+  PyInstaller und pywin32. Ein Build gegen die globale Python-Installation hatte
+  projektfremde Pakete eingesammelt (aiohttp, botocore, paramiko, cryptography,
+  pydantic u. a.) und das Bundle auf 20,3 MB / 118 Dateien aufgeblaeht. Der saubere
+  Build liegt bei 11,5 MB / 89 Dateien und damit unter dem Stand vom 27.06.2026
+  (12,9 MB / 96 Dateien).
+
 ## [1.0.1] - 2026-07-27
 
 ### Gewartet / Maintenance
