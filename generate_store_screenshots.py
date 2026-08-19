@@ -7,10 +7,11 @@ import tempfile
 import time
 from pathlib import Path
 
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 os.environ.setdefault("QT_SCALE_FACTOR", "1.5")
 
 from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPainter, QPixmap
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -27,6 +28,51 @@ SCREENSHOT_FILES = {
     "duplicates": "duplicates.png",
     "sync": "sync.png",
 }
+
+
+def _force_native_platform() -> None:
+    """Entfernt eine geerbte offscreen-Plattform VOR der QApplication-Erzeugung.
+
+    Unter QT_QPA_PLATFORM=offscreen rendert Qt auf Windows keine echten
+    Glyphen -- jede Glyphe wird als .notdef-Kaestchen (Tofu) gerastert; ein
+    Screenshot per grab() sieht dann gueltig aus, ist aber unbrauchbar (Fund
+    aus der Store-Welle 1, behoben u.a. in SoftwareCenter/ProfiPrompt/
+    CleanMarkdown/LitZen/ProSync/PromptBoard/Klangpult/PDFtoPDFocr -- dieses
+    Skript setzte denselben Fehler bislang per `setdefault` selbst).
+    """
+    if os.environ.get("QT_QPA_PLATFORM") == "offscreen":
+        del os.environ["QT_QPA_PLATFORM"]
+
+
+def _render_probe_char(app: QtWidgets.QApplication, ch: str) -> bytes:
+    pm = QPixmap(48, 48)
+    pm.fill(Qt.GlobalColor.white)
+    p = QPainter(pm)
+    p.setFont(app.font())
+    p.drawText(pm.rect(), Qt.AlignCenter, ch)
+    p.end()
+    return bytes(pm.toImage().constBits())
+
+
+def _assert_font_rendering(app: QtWidgets.QApplication) -> None:
+    """Bricht ab statt still ein Tofu-Screenshot-Set zu erzeugen."""
+    platform = QtWidgets.QApplication.platformName()
+    if platform == "offscreen":
+        raise RuntimeError(
+            "Qt laeuft unter 'offscreen' -- Screenshots waeren Tofu (Kaestchen "
+            "statt Text). QT_QPA_PLATFORM=offscreen nicht setzen."
+        )
+    probes = ["A", "B", "g", "8", "M"]
+    renders = [_render_probe_char(app, ch) for ch in probes]
+    blank = _render_probe_char(app, " ")
+    distinct = len(set(renders))
+    non_blank = sum(1 for r in renders if r != blank)
+    if not (distinct >= 3 and non_blank >= len(probes) - 1):
+        raise RuntimeError(
+            f"Font-Rendering-Selbsttest fehlgeschlagen (Plattform '{platform}'): "
+            "gerenderte Glyphen sind nicht unterscheidbar (Tofu-Verdacht). "
+            "Abbruch, um kein defektes Screenshot-Set zu erzeugen."
+        )
 
 
 def _process_events(app: QtWidgets.QApplication, duration: float = 0.05) -> None:
@@ -187,9 +233,11 @@ def generate_store_screenshots(output_dir: Path) -> list[Path]:
         workspace, preview_file, duplicates = _build_demo_workspace(temp_root)
 
         QtCore.QStandardPaths.setTestModeEnabled(True)
+        _force_native_platform()
         app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
         app.setOrganizationName("ExplorerPro")
         app.setApplicationName("ExplorerPro Store Screenshots")
+        _assert_font_rendering(app)
 
         window = ExplorerProApp()
         window.resize(1500, 920)
@@ -213,11 +261,32 @@ def generate_store_screenshots(output_dir: Path) -> list[Path]:
             search_panel = window.sidebar.search_panel
             search_panel.search_input.setText("überblick")
             search_panel.type_combo.setCurrentIndex(1)
+            window.sidebar.switch_to_search()
+            # setText()/setCurrentIndex() above start the real (debounced)
+            # SearchWorker against the temp FileIndex asynchronously. If
+            # show_results() below ran first, that background worker could
+            # finish afterwards and overwrite the injected demo results with
+            # a real (empty) 0-hits result -- exactly what happened before
+            # this fix: the demo query has no built FTS index behind it, so
+            # the async real search always resolves to "0 Ergebnisse". Let
+            # any pending async search finish first, then cancel it, so the
+            # manually injected demo results are guaranteed to be the last
+            # (and therefore visible) state before the screenshot.
+            _process_events(app)
+            if search_panel.search_timer.isActive():
+                search_panel.search_timer.stop()
+            if search_panel.search_worker and search_panel.search_worker.isRunning():
+                search_panel.search_worker.cancel()
+                search_panel.search_worker.wait()
             search_panel.show_results(
                 [
                     {
                         "path": str(preview_file),
-                        "name": preview_file.name,
+                        # SearchPanel._on_results_ready() liest den DB-Spaltennamen
+                        # "filename", nicht "name" -- mit "name" blieb die Liste
+                        # leer und der Screenshot zeigte "0 Ergebnisse" trotz
+                        # zweier übergebener Treffer.
+                        "filename": preview_file.name,
                         "extension": ".txt",
                         "size": preview_file.stat().st_size,
                         "modified": None,
@@ -227,7 +296,7 @@ def generate_store_screenshots(output_dir: Path) -> list[Path]:
                     },
                     {
                         "path": str(workspace / "Berichte" / "Statusbericht.md"),
-                        "name": "Statusbericht.md",
+                        "filename": "Statusbericht.md",
                         "extension": ".md",
                         "size": (workspace / "Berichte" / "Statusbericht.md").stat().st_size,
                         "modified": None,
@@ -237,7 +306,6 @@ def generate_store_screenshots(output_dir: Path) -> list[Path]:
                     },
                 ]
             )
-            window.sidebar.switch_to_search()
             _process_events(app)
             _save_widget(window, targets[1])
 
