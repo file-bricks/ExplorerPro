@@ -111,12 +111,54 @@ def check_msix_package(project_root: Path) -> List[str]:
     return errors
 
 
+def check_url_reachability(project_root: Path) -> List[str]:
+    """Checks that privacy_url/support_url from store_package.json actually resolve.
+
+    Local file-existence checks cannot catch a broken, private, or wrong-branch
+    URL -- this class of bug slipped through undetected until a manual WebFetch
+    check found it (T-20260816-296785081: this project's own main->master branch
+    typo, PDFtoPDFocr's URLs pointing at a still-private GitHub repo). Partner
+    Center requires a reachable privacy policy URL for certification.
+    """
+    import urllib.error
+    import urllib.request
+
+    errors = []
+    file_path = project_root / "store_package.json"
+    if not file_path.exists():
+        return errors  # already reported by check_store_package_json
+
+    try:
+        data = json.loads(file_path.read_text(encoding="utf-8"))
+    except Exception:
+        return errors  # already reported by check_store_package_json
+
+    for field in ("privacy_url", "support_url"):
+        url = data.get(field)
+        if not url or not isinstance(url, str) or not url.strip():
+            continue
+        req = urllib.request.Request(url, headers={"User-Agent": "store-readiness-check/1.0"})
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                status = resp.status
+        except urllib.error.HTTPError as e:
+            status = e.code
+        except Exception as e:
+            errors.append(f"store_package.json field '{field}' ({url}) could not be checked (network error: {e}).")
+            continue
+        if status >= 400:
+            errors.append(f"store_package.json field '{field}' ({url}) returned HTTP {status} -- not reachable.")
+
+    return errors
+
+
 def run_store_readiness_check(project_root: Path = PROJECT_ROOT) -> Tuple[bool, List[str]]:
     all_errors = []
     all_errors.extend(check_store_package_json(project_root))
     all_errors.extend(check_documentation_files(project_root))
     all_errors.extend(check_store_icon_assets(project_root))
     all_errors.extend(check_msix_package(project_root))
+    all_errors.extend(check_url_reachability(project_root))
 
     success = len(all_errors) == 0
     return success, all_errors
