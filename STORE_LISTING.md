@@ -51,10 +51,10 @@ Dateimanager, Explorer, Dateivorschau, Duplikatsuche, Datenschutz, Suche, PDF, E
 Productivity
 
 ### Datenschutz
-https://github.com/file-bricks/ExplorerPro/blob/main/PRIVACY_POLICY.md
+https://github.com/file-bricks/ExplorerPro/blob/master/PRIVACY_POLICY.md
 
 ### Support
-https://github.com/file-bricks/ExplorerPro/blob/main/SUPPORT.md
+https://github.com/file-bricks/ExplorerPro/blob/master/SUPPORT.md
 
 ### Screenshot-Bedarf
 Vor der Einreichung sollten mindestens vier Store-Screenshots vorliegen:
@@ -122,7 +122,7 @@ file manager, explorer, preview, duplicate finder, privacy, search, PDF, editor,
 Productivity
 
 ### Privacy Policy
-https://github.com/file-bricks/ExplorerPro/blob/main/PRIVACY_POLICY.md
+https://github.com/file-bricks/ExplorerPro/blob/master/PRIVACY_POLICY.md
 
 ### Support
-https://github.com/file-bricks/ExplorerPro/blob/main/SUPPORT.md
+https://github.com/file-bricks/ExplorerPro/blob/master/SUPPORT.md
