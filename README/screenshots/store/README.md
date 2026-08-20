@@ -12,6 +12,12 @@ Der Generator verwendet bewusst redigierte Demo-Daten in einem temporären
 Arbeitsbereich. So bleiben private Dateinamen, echte Pfade und lokale Inhalte
 aus dem finalen Store-Set heraus.
 
+Die Erzeugung benötigt eine native Qt-Plattform mit funktionsfähigem
+Font-Rendering. Unter `QT_QPA_PLATFORM=offscreen` bricht der Generator bewusst
+ab, weil diese Plattform auf Windows unleserliche Tofu-Kästchen statt echter
+Glyphen erzeugen kann. Der headless CI-Test prüft diesen Schutz; der eigentliche
+PNG-Smoke läuft nur mit nativer Anzeige.
+
 ## Enthaltenes Screenshot-Set
 
 1. `main-window.png` - Hauptfenster mit Dateibrowser, Breadcrumbs und Vorschau
@@ -24,3 +30,4 @@ aus dem finalen Store-Set heraus.
 - Keine privaten Dateinamen, Pfade oder Dokumentinhalte im finalen Screenshot-Set
 - Möglichst konsistente Fenstergröße und helle, gut lesbare Oberfläche
 - Keine temporären Testordner oder Build-Artefakte sichtbar
+- Keine Tofu-Kästchen oder sonstigen Font-Rendering-Ausfälle

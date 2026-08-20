@@ -17,6 +17,8 @@ import os
 import sys
 from pathlib import Path
 
+import pytest
+
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 SRC_DIR = Path(__file__).resolve().parents[1] / "src"
@@ -31,6 +33,14 @@ from gui.browser.file_browser import FileBrowser  # noqa: E402
 from gui.main_window import MainWindow  # noqa: E402
 
 
+@pytest.fixture
+def clean_clipboard():
+    """Entfernt temporäre Datei-URLs vor QApplication-Finalisierung."""
+    yield
+    QApplication.clipboard().clear()
+    QApplication.processEvents()
+
+
 class TestClipboardOperations:
     """Kopieren und Einfuegen muessen echte Dateien bewegen."""
 
@@ -43,7 +53,7 @@ class TestClipboardOperations:
         browser = FileBrowser()
         assert browser.paste_from_clipboard() is False
 
-    def test_copy_then_paste_duplicates_file(self, tmp_path, monkeypatch):
+    def test_copy_then_paste_duplicates_file(self, tmp_path, monkeypatch, clean_clipboard):
         quelle = tmp_path / "quelle"
         ziel = tmp_path / "ziel"
         quelle.mkdir()
