@@ -173,6 +173,12 @@ class FileBrowser(QWidget):
         self.table.setAcceptDrops(True)
         self.table.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop)
         self.table.setDropIndicatorShown(True)
+        self.table.setAccessibleName("Dateiliste")
+        self.table.setAccessibleDescription(
+            "Tabelle der Dateien und Ordner im aktuellen Verzeichnis. "
+            "Navigieren mit Pfeiltasten, Öffnen mit Enter oder Doppelklick."
+        )
+        self.table.setToolTip("Dateien und Ordner im aktuellen Verzeichnis")
         self.setAcceptDrops(True)   # Widget-Level als Fallback für Randbereich
 
         layout.addWidget(self.table)

@@ -39,6 +39,11 @@ class TreePanel(QWidget):
         self.tree.setHeaderHidden(True)
         self.tree.setRootIsDecorated(True)
         self.tree.setAnimated(True)
+        self.tree.setAccessibleName("Ordnerbaum")
+        self.tree.setAccessibleDescription(
+            "Hierarchische Struktur aller lokalen Laufwerke und Schnellzugriff-Verzeichnisse."
+        )
+        self.tree.setToolTip("Ordnerbaum zur Dateinavigation")
         self.tree.itemClicked.connect(self._on_item_clicked)
         self.tree.itemExpanded.connect(self._on_item_expanded)
         
@@ -129,14 +134,19 @@ class FavoritesPanel(QWidget):
         header = QHBoxLayout()
         header.addWidget(QLabel("Favoriten"))
         
-        add_btn = QPushButton("+")
-        add_btn.setFixedSize(24, 24)
-        add_btn.setToolTip("Aktuellen Ordner zu Favoriten hinzufügen")
-        header.addWidget(add_btn)
+        self.add_btn = QPushButton("+")
+        self.add_btn.setFixedSize(24, 24)
+        self.add_btn.setToolTip("Aktuellen Ordner zu Favoriten hinzufügen")
+        self.add_btn.setAccessibleName("Zu Favoriten hinzufügen")
+        self.add_btn.setAccessibleDescription("Fügt den aktuellen Ordnerpfad zur Favoritenliste hinzu.")
+        header.addWidget(self.add_btn)
         
         layout.addLayout(header)
         
         self.list = QListWidget()
+        self.list.setAccessibleName("Favoritenliste")
+        self.list.setAccessibleDescription("Liste der gespeicherten Schnellzugriff-Favoriten.")
+        self.list.setToolTip("Favoritenliste")
         self.list.itemClicked.connect(self._on_item_clicked)
         layout.addWidget(self.list)
     

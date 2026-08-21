@@ -5,6 +5,24 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt / Added
+- **Barrierefreiheit (A11y) & UX-Verbesserungen (`src/gui/`, `src/modules/`, `tests/test_ui_accessibility.py`)**:
+  - **Datenschutz-Ampel & Statusleiste** (`src/gui/status_bar.py`):
+    - `PrivacyIndicator` erhielt `accessibleName` („Datenschutz-Status"), kontextbezogene `accessibleDescription`, Tastaturfokus (`Qt.FocusPolicy.StrongFocus`) sowie vollständige Tastaturbedienung über `Enter`- und `Leertaste`.
+    - `StatusBarWidget` wurde mit `accessibleName`, `accessibleDescription` und Tooltip-Synchronisation für Pfadanzeige, Element- und Auswahlzähler, Speicherplatzanzeige sowie Synchronisationsstatus ausgestattet.
+  - **Dateibrowser & Navigation** (`src/gui/browser/file_browser.py`):
+    - Tabellenansicht (`self.table`) mit `accessibleName` („Dateiliste"), detaillierter Bedienbeschreibung für Tastaturnavigation und Screen-Reader sowie informativem Tooltip versehen.
+  - **Sidebar-Komponenten** (`src/gui/sidebar/sidebar_main.py`):
+    - `TreePanel` (`self.tree`) mit `accessibleName` („Ordnerbaum") und semantischer Strukturbeschreibung versehen.
+    - `FavoritesPanel` (`self.list`, `self.add_btn`) mit `accessibleName` und Beschreibung für Schnellzugriff ausgestattet.
+  - **Schnell-Editor** (`src/modules/editor/quick_editor.py`):
+    - Werkzeugleisten-Aktionen (`btn_save`, `btn_validate`, `btn_run`, `btn_stop`) mit barrierefreien Namen, Beschreibungen und Tooltips versehen.
+    - `CodeEditor`, Ausgabekonsole sowie Statusanzeigen (Cursor, Encoding, Änderungsstatus) mit barrierefreien Attributen versehen.
+  - **Duplikat-Finder** (`src/modules/indexer/duplicate_finder.py`):
+    - Alle Scan-Optionen (`source_combo`, `folder_btn`, `min_size_spin`, `scan_btn`, `cancel_btn`), die Duplikat-Ergebnisliste (`self.tree`) und Aktions-Buttons (`select_all_btn`, `select_newest_btn`, `select_oldest_btn`, `delete_btn`) mit `accessibleName`, `accessibleDescription` und Tooltips ausgestattet.
+  - **Automatisierte Testsuite** (`tests/test_ui_accessibility.py`):
+    - 6 neue Integrationstests zur lückenlosen Verifikation aller A11y-Attribute, Tastatur-Interaktionen und dynamischen Statusaktualisierungen.
+
 ## [1.0.2] - 2026-08-21
 
 ### Hinzugefügt / Added

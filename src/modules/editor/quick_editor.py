@@ -289,21 +289,33 @@ class QuickEditorDialog(QDialog):
         # Buttons
         self.btn_save = QPushButton("💾 Speichern")
         self.btn_save.setShortcut(QKeySequence.StandardKey.Save)
+        self.btn_save.setToolTip("Datei speichern (Strg+S)")
+        self.btn_save.setAccessibleName("Datei speichern")
+        self.btn_save.setAccessibleDescription("Speichert den Inhalt des Editors in die aktuelle Datei.")
         self.btn_save.clicked.connect(self._save_file)
         toolbar.addWidget(self.btn_save)
 
         self.btn_validate = QPushButton("✔ Validieren")
         self.btn_validate.setShortcut(QKeySequence("F6"))
+        self.btn_validate.setToolTip("Syntax validieren (F6)")
+        self.btn_validate.setAccessibleName("Syntax validieren")
+        self.btn_validate.setAccessibleDescription("Validiert die Syntax der aktuellen Datei (z. B. JSON, TOML).")
         self.btn_validate.clicked.connect(self._validate_file)
         toolbar.addWidget(self.btn_validate)
 
         self.btn_run = QPushButton("▶ Ausführen")
         self.btn_run.setShortcut(QKeySequence("F5"))
+        self.btn_run.setToolTip("Code ausführen (F5)")
+        self.btn_run.setAccessibleName("Code ausführen")
+        self.btn_run.setAccessibleDescription("Führt das aktuelle Skript im Unterprozess aus.")
         self.btn_run.clicked.connect(self._run_code)
         toolbar.addWidget(self.btn_run)
         
         self.btn_stop = QPushButton("⏹ Stop")
         self.btn_stop.setObjectName("danger")
+        self.btn_stop.setToolTip("Ausführung stoppen")
+        self.btn_stop.setAccessibleName("Ausführung stoppen")
+        self.btn_stop.setAccessibleDescription("Bricht den laufenden Unterprozess ab.")
         self.btn_stop.clicked.connect(self._stop_process)
         self.btn_stop.setEnabled(False)
         toolbar.addWidget(self.btn_stop)
@@ -315,6 +327,10 @@ class QuickEditorDialog(QDialog):
         
         # Editor
         self.editor = CodeEditor()
+        self.editor.setAccessibleName("Code-Editor")
+        self.editor.setAccessibleDescription(
+            "Mehrzeiliger Quelltext-Editor mit Zeilennummern und Syntax-Hervorhebung."
+        )
         self.editor.textChanged.connect(self._on_text_changed)
         splitter.addWidget(self.editor)
         
@@ -322,6 +338,10 @@ class QuickEditorDialog(QDialog):
         self.output = QTextEdit()
         self.output.setReadOnly(True)
         self.output.setFont(QFont("Consolas", 10))
+        self.output.setAccessibleName("Programmausgabe")
+        self.output.setAccessibleDescription(
+            "Ausgabe des ausgeführten Skripts (Standardausgabe und Fehlermeldungen)."
+        )
         self.output.setStyleSheet("""
             QTextEdit {
                 background-color: #1E1E1E;
@@ -341,16 +361,19 @@ class QuickEditorDialog(QDialog):
         status_layout.setContentsMargins(8, 4, 8, 4)
         
         self.line_label = QLabel("Zeile: 1, Spalte: 1")
+        self.line_label.setAccessibleName("Cursor-Position")
         self.line_label.setStyleSheet("color: #858585;")
         status_layout.addWidget(self.line_label)
         
         status_layout.addStretch()
         
         self.encoding_label = QLabel("UTF-8")
+        self.encoding_label.setAccessibleName("Zeichenkodierung")
         self.encoding_label.setStyleSheet("color: #858585;")
         status_layout.addWidget(self.encoding_label)
         
         self.modified_label = QLabel("")
+        self.modified_label.setAccessibleName("Änderungsstatus")
         self.modified_label.setStyleSheet("color: #F14C4C;")
         status_layout.addWidget(self.modified_label)
         

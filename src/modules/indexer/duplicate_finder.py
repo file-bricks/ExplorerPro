@@ -195,10 +195,15 @@ class DuplicateFinderDialog(QDialog):
         options_layout.addWidget(QLabel("Quelle:"))
         self.source_combo = QComboBox()
         self.source_combo.addItems(["Index (schnell)", "Ordner scannen..."])
+        self.source_combo.setAccessibleName("Scan-Quelle")
+        self.source_combo.setAccessibleDescription("Auswahl zwischen Index-basierter Duplikatsuche und Verzeichnis-Scan.")
         self.source_combo.currentIndexChanged.connect(self._on_source_changed)
         options_layout.addWidget(self.source_combo)
         
         self.folder_btn = QPushButton("📁 Ordner wählen...")
+        self.folder_btn.setToolTip("Zu scannenden Ordner auswählen")
+        self.folder_btn.setAccessibleName("Ordner auswählen")
+        self.folder_btn.setAccessibleDescription("Öffnet einen Dialog zur Auswahl des zu scannenden Verzeichnisses.")
         self.folder_btn.clicked.connect(self._select_folder)
         self.folder_btn.hide()
         options_layout.addWidget(self.folder_btn)
@@ -215,10 +220,16 @@ class DuplicateFinderDialog(QDialog):
         self.min_size_spin.setRange(0, 10000)
         self.min_size_spin.setValue(1)
         self.min_size_spin.setSuffix(" KB")
+        self.min_size_spin.setToolTip("Minimale Dateigröße in Kilobyte")
+        self.min_size_spin.setAccessibleName("Minimale Dateigröße")
+        self.min_size_spin.setAccessibleDescription("Dateien unter dieser Mindestgröße werden beim Scan ignoriert.")
         options_layout.addWidget(self.min_size_spin)
         
         # Scan-Button
         self.scan_btn = QPushButton("🔍 Scan starten")
+        self.scan_btn.setToolTip("Suche nach Dateiduplikaten starten")
+        self.scan_btn.setAccessibleName("Scan starten")
+        self.scan_btn.setAccessibleDescription("Startet die Suche nach Dateiduplikaten anhand von SHA-256 Hashes.")
         self.scan_btn.clicked.connect(self._start_scan)
         options_layout.addWidget(self.scan_btn)
         
@@ -227,6 +238,7 @@ class DuplicateFinderDialog(QDialog):
         # ===== Progress =====
         progress_layout = QHBoxLayout()
         self.progress_bar = QProgressBar()
+        self.progress_bar.setAccessibleName("Scan-Fortschritt")
         self.progress_bar.hide()
         progress_layout.addWidget(self.progress_bar)
         
@@ -234,6 +246,9 @@ class DuplicateFinderDialog(QDialog):
         progress_layout.addWidget(self.progress_label)
         
         self.cancel_btn = QPushButton("Abbrechen")
+        self.cancel_btn.setToolTip("Laufenden Scan-Vorgang abbrechen")
+        self.cancel_btn.setAccessibleName("Scan abbrechen")
+        self.cancel_btn.setAccessibleDescription("Bricht den laufenden Hintergrund-Scan sofort ab.")
         self.cancel_btn.clicked.connect(self._cancel_scan)
         self.cancel_btn.hide()
         progress_layout.addWidget(self.cancel_btn)
@@ -249,6 +264,11 @@ class DuplicateFinderDialog(QDialog):
         self.tree.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.tree.setAlternatingRowColors(True)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tree.setAccessibleName("Duplikate-Ergebnisliste")
+        self.tree.setAccessibleDescription(
+            "Baumansicht der gefundenen Duplikat-Gruppen mit Dateigröße und Speicherpfad."
+        )
+        self.tree.setToolTip("Gefundene Dateiduplikate")
         self.tree.customContextMenuRequested.connect(self._show_context_menu)
         
         # Spaltenbreiten
@@ -264,16 +284,27 @@ class DuplicateFinderDialog(QDialog):
         action_layout = QHBoxLayout()
         
         self.select_all_btn = QPushButton("Alle auswählen")
+        self.select_all_btn.setToolTip("Alle Duplikate außer dem ersten Original jeder Gruppe auswählen")
+        self.select_all_btn.setAccessibleName("Alle Duplikate auswählen")
+        self.select_all_btn.setAccessibleDescription(
+            "Wählt alle Duplikate außer dem jeweils ersten Eintrag jeder Gruppe zum Löschen aus."
+        )
         self.select_all_btn.clicked.connect(self._select_all_duplicates)
         self.select_all_btn.setEnabled(False)
         action_layout.addWidget(self.select_all_btn)
         
         self.select_newest_btn = QPushButton("Neueste behalten")
+        self.select_newest_btn.setToolTip("Ältere Duplikate zum Löschen markieren")
+        self.select_newest_btn.setAccessibleName("Neueste behalten")
+        self.select_newest_btn.setAccessibleDescription("Wählt ältere Duplikate aus und behält die neueste Datei.")
         self.select_newest_btn.clicked.connect(self._select_keep_newest)
         self.select_newest_btn.setEnabled(False)
         action_layout.addWidget(self.select_newest_btn)
         
         self.select_oldest_btn = QPushButton("Älteste behalten")
+        self.select_oldest_btn.setToolTip("Neuere Duplikate zum Löschen markieren")
+        self.select_oldest_btn.setAccessibleName("Älteste behalten")
+        self.select_oldest_btn.setAccessibleDescription("Wählt neuere Duplikate aus und behält die älteste Datei.")
         self.select_oldest_btn.clicked.connect(self._select_keep_oldest)
         self.select_oldest_btn.setEnabled(False)
         action_layout.addWidget(self.select_oldest_btn)
@@ -281,6 +312,11 @@ class DuplicateFinderDialog(QDialog):
         action_layout.addStretch()
         
         self.delete_btn = QPushButton("🗑️ Ausgewählte löschen")
+        self.delete_btn.setToolTip("Markierte Duplikate dauerhaft löschen")
+        self.delete_btn.setAccessibleName("Ausgewählte Duplikate löschen")
+        self.delete_btn.setAccessibleDescription(
+            "Löscht alle markierten Duplikat-Dateien unwiderruflich von der Festplatte."
+        )
         self.delete_btn.clicked.connect(self._delete_selected)
         self.delete_btn.setEnabled(False)
         self.delete_btn.setStyleSheet("color: red;")
