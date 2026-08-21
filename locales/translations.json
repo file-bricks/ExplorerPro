@@ -230,5 +230,61 @@
     "zh": "🗑️ 删除选中项",
     "ja": "🗑️ 選択した項目を削除",
     "ru": "🗑️ Удалить выбранные"
+  },
+  "2 Sync-Paare für Vorschau vorbereitet": {
+    "de": "2 Sync-Paare für Vorschau vorbereitet",
+    "en": "2 sync pairs prepared for preview",
+    "es": "2 pares de sincronización preparados para vista previa",
+    "zh": "已准备2个同步对进行预览",
+    "ja": "プレビュー用に2組の同期ペアを準備しました",
+    "ru": "Подготовлены 2 пары синхронизации для предварительного просмотра"
+  },
+  "Auswählen...": {
+    "de": "Auswählen...",
+    "en": "Select...",
+    "es": "Seleccionar...",
+    "zh": "选择...",
+    "ja": "選択...",
+    "ru": "Выбрать..."
+  },
+  "Einstellungen": {
+    "de": "Einstellungen",
+    "en": "Settings",
+    "es": "Configuración",
+    "zh": "设置",
+    "ja": "設定",
+    "ru": "Настройки"
+  },
+  "Extern öffnen": {
+    "de": "Extern öffnen",
+    "en": "Open Externally",
+    "es": "Abrir externamente",
+    "zh": "在外部打开",
+    "ja": "外部で開く",
+    "ru": "Открыть во внешней программе"
+  },
+  "Verknüpfung konnte nicht aufgelöst werden\\noder das Ziel existiert nicht.": {
+    "de": "Verknüpfung konnte nicht aufgelöst werden\\noder das Ziel existiert nicht.",
+    "en": "Shortcut could not be resolved\\nor the target does not exist.",
+    "es": "No se pudo resolver el acceso directo\\no el destino no existe.",
+    "zh": "快捷方式无法解析\\n或目标不存在。",
+    "ja": "ショートカットを解決できませんでした\\nまたはターゲットが存在しません。",
+    "ru": "Не удалось разрешить ярлык\\nили целевой объект не существует."
+  },
+  "Übernehmen": {
+    "de": "Übernehmen",
+    "en": "Apply",
+    "es": "Aplicar",
+    "zh": "应用",
+    "ja": "適用",
+    "ru": "Применить"
+  },
+  "überblick": {
+    "de": "überblick",
+    "en": "Overview",
+    "es": "Resumen",
+    "zh": "概览",
+    "ja": "概要",
+    "ru": "Обзор"
   }
 }

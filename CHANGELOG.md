@@ -8,6 +8,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [1.0.2] - 2026-08-21
 
 ### Hinzugefügt / Added
+- **AI Agent Governance & Bootstrap-Standard** (`CLAUDE.md`, `AGENTS.md`, `tests/test_metadata_contract.py`):
+  - Erstanlage von `CLAUDE.md` mit YAML-Frontmatter nach `project-docs`-Standard, Dokumentation von Quick Commands, Architektur, Hard Rules (Zero-Egress, Non-Elevation, Plan D), Domain-Kontext und Schlüsseldateien.
+  - Erstanlage von `AGENTS.md` als universeller Multi-Agent-Redirect auf `CLAUDE.md`.
+  - Vervollständigung aller 36 GUI-Strings in `locales/translations.json` (100% Deckung über 6 Zielsprachen: DE, EN, ES, ZH, JA, RU), verifiziert via `manage_translations.py`.
+  - Validierung von `scripts/check_store_readiness.py` (0 Findings, Store Readiness OK).
+  - 9 automatisierte Metadaten- und Governance-Vertragstests in `tests/test_metadata_contract.py`.
 - **Kontextmenü & Datei-Operationen in `FileBrowser`** (`src/gui/browser/file_browser.py`):
   - Vollständige Implementierung aller Datei- und Verzeichnisoperationen im Kontextmenü des Datei-Browsers:
     - **Löschen** (`delete_selection`): Mit Sicherheits-Bestätigungsdialog (`QMessageBox.question`), Löschung von Dateien (`os.remove`) und Verzeichnissen (`shutil.rmtree`), Fehlerbehandlung und Aktualisierung. Tastenkürzel `Delete`.
