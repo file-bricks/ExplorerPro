@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QLabel, QToolBar, QLineEdit, QPushButton, QMessageBox,
     QToolButton, QDialog, QFormLayout, QCheckBox, QGroupBox,
     QVBoxLayout as QVBox, QDialogButtonBox, QFileDialog,
-    QInputDialog, QMenu
+    QMenu
 )
 from PySide6.QtCore import Qt, QSize, Signal, QStandardPaths
 from PySide6.QtGui import QAction, QKeySequence
@@ -489,17 +489,7 @@ class MainWindow(QMainWindow):
     
     def _create_new_folder(self):
         """Erstellt einen neuen Ordner"""
-        name, ok = QInputDialog.getText(
-            self, "Neuer Ordner", "Ordnername:"
-        )
-        if ok and name:
-            path = os.path.join(self.file_browser.current_path, name)
-            try:
-                os.makedirs(path, exist_ok=True)
-                self.file_browser.refresh()
-                self.statusBar().showMessage(f"Ordner erstellt: {name}", 3000)
-            except Exception as e:
-                QMessageBox.warning(self, "Fehler", f"Konnte Ordner nicht erstellen: {e}")
+        self.file_browser.create_new_folder()
     
     def _toggle_sidebar(self):
         """Sidebar ein-/ausblenden"""
@@ -602,6 +592,8 @@ class MainWindow(QMainWindow):
         """Öffnet ein weiteres ExplorerPro-Fenster im aktuellen Ordner."""
         # Referenzen sammeln, sonst raeumt der Garbage Collector die neuen
         # Fenster sofort wieder ab.
+        if not hasattr(MainWindow, "_child_windows"):
+            MainWindow._child_windows = []
         if not hasattr(self, "_child_windows"):
             self._child_windows = []
 
@@ -609,6 +601,7 @@ class MainWindow(QMainWindow):
         if self.file_browser.current_path:
             window.file_browser.navigate_to(self.file_browser.current_path)
         self._child_windows.append(window)
+        MainWindow._child_windows.append(window)
         window.show()
         return window
 

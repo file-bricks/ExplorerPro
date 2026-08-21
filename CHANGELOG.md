@@ -5,6 +5,28 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-08-21
+
+### Hinzugefügt / Added
+- **Kontextmenü & Datei-Operationen in `FileBrowser`** (`src/gui/browser/file_browser.py`):
+  - Vollständige Implementierung aller Datei- und Verzeichnisoperationen im Kontextmenü des Datei-Browsers:
+    - **Löschen** (`delete_selection`): Mit Sicherheits-Bestätigungsdialog (`QMessageBox.question`), Löschung von Dateien (`os.remove`) und Verzeichnissen (`shutil.rmtree`), Fehlerbehandlung und Aktualisierung. Tastenkürzel `Delete`.
+    - **Umbenennen** (`rename_selection`): Dialog mit Vorbelegung des aktuellen Namens (`QInputDialog.getText`), Kollisionsprüfung und Warnung bei vorhandenem Zieldateinamen, `os.rename` mit Fehlerbehandlung. Tastenkürzel `F2`.
+    - **Neuer Ordner** (`create_new_folder`): Erstellung im aktuellen Verzeichnis via `QInputDialog.getText` und `os.makedirs`, Duplikat- und Fehlerbehandlung.
+    - **Kopieren & Einfügen** (`copy_selection`, `paste_from_clipboard`): Synchronisation mit der System-Zwischenablage (`QMimeData` mit file URLs und Pfad-Text), Einfügen mit kollisionsfreiem Auto-Suffix (`_copy`, `_copy_2`) ohne Überschreiben. Tastenkürzel `Ctrl+C` und `Ctrl+V`.
+    - **In Index suchen** (`_search_in_index`): Übergibt Dateinamen an die Toolbar-Suche und startet Volltext-Recherche.
+    - **Pfad als Prompt speichern** (`_save_path_as_prompt`): Legt Dateipfad-Prompt in der Prompt-Bibliothek ab oder kopiert Analyse-Template in die Zwischenablage.
+    - **Zur Blacklist hinzufügen** (`_add_to_blacklist`): Trägt Dateinamen in den Datenschutz-Monitor (`PrivacyMonitor`) ein.
+    - **Synchronisieren** (`_sync_path`): Öffnet das Synchronisations-Panel für den ausgewählten Pfad.
+  - Erweiterte Tastatur-Events in `_DnDTableView` (`keyPressEvent`) für Delete, F2, Copy und Paste.
+- **Menü-Verdrahtung in `MainWindow`** (`src/gui/main_window.py`):
+  - Datei -> „Neues Fenster" (`_open_new_window`, Ctrl+N) öffnet neue Instanz und registriert sie in `_child_windows`.
+  - Bearbeiten -> „Kopieren" (Ctrl+C), „Einfügen" (Ctrl+V) und „Neuer Ordner" (Ctrl+Shift+N) vollständig mit `FileBrowser` verdrahtet.
+  - Tools -> „Einstellungen…" (Ctrl+,) mit Einstellungsdialog (`SettingsDialog`) verdrahtet.
+- **Automatisierte Testsuiten** (`tests/test_file_browser.py`, `tests/test_menu_actions_wired.py`):
+  - 11 neue Tests für Datei-Browser-Operationen (Ordnererstellung, Umbenennen mit Kollision, Löschen mit Bestätigung/Abbruch, Copy/Paste, Prompt/Blacklist-Aktionen).
+  - Umfassende Testsuite `tests/test_menu_actions_wired.py` für Menü-Verdrahtung, Einstellungs-Roundtrip, Ansichtsmenü und Tastatur-Shortcuts.
+
 ### Behoben / Fixed
 - **Kontextmenü-Aktionen im Dateibrowser verdrahtet** (`src/gui/browser/file_browser.py`):
   Die Kontextmenü-Aktionen „Löschen", „Umbenennen" und „Neuer Ordner" waren im Kontextmenü vorhanden, aber nicht mit Aktionen verbunden. Die Methoden `delete_selection()`, `rename_selection()` und `create_new_folder()` wurden implementiert und mit Sicherheitsabfragen/Dialogen versehen.
@@ -34,11 +56,6 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
   `FileBrowser` erhaelt `copy_selection` und `paste_from_clipboard`; Einfuegen nutzt
   die bestehende Kollisionsbehandlung aus `_do_file_drop` und ueberschreibt nichts.
   Neue Fenster werden in `_child_windows` referenziert.
-
-### Hinzugefuegt / Added
-- `tests/test_menu_actions_wired.py` und `tests/test_edit_menu_actions.py`:
-  17 Regressionstests, die die Verdrahtung der Menuepunkte, die gehaltene
-  Dialogreferenz und den Zwischenablage-Rundlauf festhalten. Gesamtsuite 177 grün.
 
 ### Gewartet / Maintenance
 - **Release-Build in sauberer virtueller Umgebung**: Der Build erfolgt jetzt gegen

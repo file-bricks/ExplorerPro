@@ -13,7 +13,7 @@ from PySide6.QtCore import (
     Qt, Signal, QDir, QModelIndex, QSortFilterProxyModel,
     QStandardPaths, QUrl, QMimeData, QSize
 )
-from PySide6.QtGui import QAction, QCursor, QDrag
+from PySide6.QtGui import QAction, QCursor, QDrag, QKeySequence
 import os
 import subprocess
 import shutil
@@ -34,11 +34,10 @@ EDITOR_EXTENSIONS = {
 
 
 class _DnDTableView(QTableView):
-    """QTableView-Unterklasse: delegiert DnD-Events an den FileBrowser.
+    """QTableView-Unterklasse: delegiert DnD-Events und Tastatur-Shortcuts an den FileBrowser.
 
-    Notwendig, weil QAbstractItemView.startDrag() eine C++-virtuelle
-    Methode ist, die sich nur durch Subclassing überschreiben lässt.
-    Alle Drag-Logik liegt in FileBrowser (_start_drag_files, _handle_url_drop).
+    Notwendig, weil QAbstractItemView.startDrag() und keyPressEvent
+    C++-virtuelle Methoden sind, die sich sauber durch Subclassing überschreiben lassen.
     """
 
     def __init__(self, file_browser, parent=None):
@@ -65,6 +64,22 @@ class _DnDTableView(QTableView):
 
     def startDrag(self, supported_actions):
         self._fb._start_drag_files(supported_actions)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Delete:
+            self._fb.delete_selection()
+            event.accept()
+        elif event.key() == Qt.Key.Key_F2:
+            self._fb.rename_selection()
+            event.accept()
+        elif event.matches(QKeySequence.StandardKey.Copy):
+            self._fb.copy_selection()
+            event.accept()
+        elif event.matches(QKeySequence.StandardKey.Paste):
+            self._fb.paste_from_clipboard()
+            event.accept()
+        else:
+            super().keyPressEvent(event)
 
 
 class FileBrowser(QWidget):
@@ -305,6 +320,7 @@ class FileBrowser(QWidget):
             
             # Index-Aktionen
             index_action = QAction("🔍 In Index suchen", self)
+            index_action.triggered.connect(lambda: self._search_in_index(file_path))
             menu.addAction(index_action)
             
             meta_action = QAction("📊 Metadaten anzeigen", self)
@@ -312,15 +328,18 @@ class FileBrowser(QWidget):
             menu.addAction(meta_action)
             
             tags_action = QAction("🏷️ Tags bearbeiten", self)
+            tags_action.triggered.connect(lambda: self.file_selected.emit(file_path))
             menu.addAction(tags_action)
             
             menu.addSeparator()
             
             # Sync
             sync_action = QAction("🔄 Synchronisieren", self)
+            sync_action.triggered.connect(lambda: self._sync_path(file_path))
             menu.addAction(sync_action)
             
             prompt_action = QAction("📋 Pfad als Prompt speichern", self)
+            prompt_action.triggered.connect(lambda: self._save_path_as_prompt(file_path))
             menu.addAction(prompt_action)
             
             menu.addSeparator()
@@ -331,6 +350,7 @@ class FileBrowser(QWidget):
             menu.addAction(privacy_action)
             
             blacklist_action = QAction("🔴 Zur Blacklist hinzufügen", self)
+            blacklist_action.triggered.connect(lambda: self._add_to_blacklist(file_path))
             menu.addAction(blacklist_action)
             
             menu.addSeparator()
@@ -343,12 +363,12 @@ class FileBrowser(QWidget):
             
             delete_action = QAction("Löschen", self)
             delete_action.setShortcut("Delete")
-            delete_action.triggered.connect(self.delete_selection)
+            delete_action.triggered.connect(lambda: self.delete_selection([file_path]))
             menu.addAction(delete_action)
             
             rename_action = QAction("Umbenennen", self)
             rename_action.setShortcut("F2")
-            rename_action.triggered.connect(self.rename_selection)
+            rename_action.triggered.connect(lambda: self.rename_selection(file_path))
             menu.addAction(rename_action)
         
         else:
@@ -452,6 +472,212 @@ class FileBrowser(QWidget):
                 selected.append(path)
         return selected
 
+    def copy_selection(self) -> bool:
+        """Kopiert ausgewählte Dateien/Ordner in die Zwischenablage."""
+        paths = self.get_selected_files()
+        if not paths:
+            return False
+        mime_data = QMimeData()
+        mime_data.setUrls([QUrl.fromLocalFile(p) for p in paths])
+        mime_data.setText("\n".join(paths))
+        QApplication.clipboard().setMimeData(mime_data)
+        return True
+
+    def paste_from_clipboard(self) -> bool:
+        """Fügt Dateien/Ordner aus der Zwischenablage in den aktuellen Ordner ein."""
+        if not self._current_path:
+            return False
+        mime_data = QApplication.clipboard().mimeData()
+        if not mime_data or not mime_data.hasUrls():
+            return False
+        src_paths = [
+            url.toLocalFile()
+            for url in mime_data.urls()
+            if url.isLocalFile()
+        ]
+        if not src_paths:
+            return False
+        self._do_file_drop(src_paths, self._current_path, move=False)
+        return True
+
+    def create_new_folder(self) -> bool:
+        """Erstellt einen neuen Unterordner im aktuellen Verzeichnis."""
+        if not self._current_path or not os.path.exists(self._current_path):
+            return False
+        name, ok = QInputDialog.getText(
+            self, "Neuer Ordner", "Ordnername:"
+        )
+        if not ok or not name or not name.strip():
+            return False
+        name = name.strip()
+        new_path = os.path.join(self._current_path, name)
+        try:
+            os.makedirs(new_path, exist_ok=False)
+            self.refresh()
+            return True
+        except FileExistsError:
+            QMessageBox.warning(
+                self, "Neuer Ordner",
+                f"Ein Ordner oder eine Datei mit dem Namen '{name}' existiert bereits."
+            )
+            return False
+        except OSError as exc:
+            QMessageBox.warning(
+                self, "Neuer Ordner",
+                f"Konnte Ordner nicht erstellen:\n{exc}"
+            )
+            return False
+
+    def rename_selection(self, target_path: str = None) -> bool:
+        """Benennt die ausgewählte Datei oder den ausgewählten Ordner um."""
+        if not target_path:
+            selected = self.get_selected_files()
+            if not selected:
+                return False
+            target_path = selected[0]
+
+        if not os.path.exists(target_path):
+            return False
+
+        old_name = os.path.basename(target_path)
+        parent_dir = os.path.dirname(target_path)
+
+        new_name, ok = QInputDialog.getText(
+            self, "Umbenennen", "Neuer Name:", text=old_name
+        )
+        if not ok or not new_name or not new_name.strip() or new_name.strip() == old_name:
+            return False
+
+        new_name = new_name.strip()
+        new_path = os.path.join(parent_dir, new_name)
+        if os.path.exists(new_path):
+            QMessageBox.warning(
+                self, "Umbenennen",
+                f"Ein Element namens '{new_name}' existiert bereits in diesem Verzeichnis."
+            )
+            return False
+
+        try:
+            os.rename(target_path, new_path)
+            self.refresh()
+            return True
+        except OSError as exc:
+            QMessageBox.warning(
+                self, "Umbenennen",
+                f"Konnte Element nicht umbenennen:\n{exc}"
+            )
+            return False
+
+    def delete_selection(self, target_paths: list = None) -> bool:
+        """Löscht ausgewählte Dateien oder Ordner nach Bestätigung."""
+        if not target_paths:
+            target_paths = self.get_selected_files()
+        if not target_paths:
+            return False
+
+        count = len(target_paths)
+        if count == 1:
+            msg = f"Möchten Sie '{os.path.basename(target_paths[0])}' wirklich unwiderruflich löschen?"
+        else:
+            preview = "\n".join(f"• {os.path.basename(p)}" for p in target_paths[:5])
+            if count > 5:
+                preview += f"\n... und {count - 5} weitere"
+            msg = f"Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?\n\n{preview}"
+
+        reply = QMessageBox.question(
+            self,
+            "Löschen bestätigen",
+            msg,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+
+        if reply != QMessageBox.StandardButton.Yes:
+            return False
+
+        errors = []
+        for path in target_paths:
+            if not os.path.exists(path):
+                continue
+            try:
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
+            except OSError as exc:
+                errors.append(f"{os.path.basename(path)}: {exc}")
+
+        self.refresh()
+        if errors:
+            QMessageBox.warning(
+                self, "Fehler beim Löschen",
+                "Folgende Elemente konnten nicht gelöscht werden:\n\n" + "\n".join(errors)
+            )
+            return False
+        return True
+
+    def _search_in_index(self, path: str):
+        """Sucht nach dem Dateinamen im Index."""
+        filename = os.path.basename(path)
+        main_win = self.window()
+        if hasattr(main_win, 'toolbar') and hasattr(main_win.toolbar, 'search_edit'):
+            main_win.toolbar.search_edit.setText(filename)
+            if hasattr(main_win, '_on_search'):
+                main_win._on_search(filename)
+            elif hasattr(main_win.toolbar, 'search_requested'):
+                main_win.toolbar.search_requested.emit(filename)
+
+    def _save_path_as_prompt(self, path: str):
+        """Speichert den Pfad als Prompt in der Bibliothek oder im Clipboard."""
+        main_win = self.window()
+        filename = os.path.basename(path)
+        is_file = os.path.isfile(path)
+        content = f"Analysiere bitte folgende Datei:\n{path}" if is_file else f"Analysiere bitte folgenden Ordner:\n{path}"
+        title = f"Pfad: {filename}"
+
+        if hasattr(main_win, 'sidebar') and hasattr(main_win.sidebar, 'prompts_panel'):
+            prompts_panel = main_win.sidebar.prompts_panel
+            from modules.prompts.prompts_panel import Prompt
+            category = "Code" if Path(path).suffix.lower() in EDITOR_EXTENSIONS else "Allgemein"
+            p = Prompt(id="", title=title, content=content, category=category, tags=["pfad", "analyse"])
+            prompts_panel.prompts.append(p)
+            prompts_panel._save_prompts()
+            prompts_panel._refresh_list()
+            if hasattr(main_win, 'show_prompts_panel'):
+                main_win.show_prompts_panel()
+            QMessageBox.information(
+                self, "Prompt gespeichert",
+                f"Prompt für '{filename}' wurde in der Bibliothek gespeichert."
+            )
+        else:
+            QApplication.clipboard().setText(content)
+            QMessageBox.information(
+                self, "Prompt in Zwischenablage",
+                f"Prompt-Vorlage für '{filename}' in die Zwischenablage kopiert."
+            )
+
+    def _add_to_blacklist(self, path: str):
+        """Fügt den Dateinamen zur Datenschutz-Blacklist hinzu."""
+        filename = os.path.basename(path)
+        main_win = self.window()
+        if hasattr(main_win, 'privacy_monitor') and main_win.privacy_monitor:
+            main_win.privacy_monitor.add_to_blacklist(filename)
+            QMessageBox.information(
+                self, "Datenschutz",
+                f"'{filename}' wurde zur Datenschutz-Blacklist hinzugefügt."
+            )
+        else:
+            QMessageBox.information(
+                self, "Datenschutz",
+                f"'{filename}' konnte nicht hinzugefügt werden: Datenschutz-Monitor nicht initialisiert."
+            )
+
+    def _sync_path(self, path: str):
+        """Öffnet das Sync-Panel für den Pfad."""
+        main_win = self.window()
+        if hasattr(main_win, 'show_sync_panel'):
+            main_win.show_sync_panel()
+
     # ------------------------------------------------------------------ #
     # Drag-and-Drop                                                        #
     # ------------------------------------------------------------------ #
@@ -514,114 +740,6 @@ class FileBrowser(QWidget):
         drag = QDrag(self)
         drag.setMimeData(mime_data)
         drag.exec(Qt.DropAction.CopyAction | Qt.DropAction.MoveAction)
-
-    def copy_selection(self) -> bool:
-        """Legt die ausgewählten Dateien als Datei-URLs in die Zwischenablage."""
-        paths = self.get_selected_files()
-        if not paths:
-            return False
-
-        mime_data = QMimeData()
-        mime_data.setUrls([QUrl.fromLocalFile(p) for p in paths])
-        QApplication.clipboard().setMimeData(mime_data)
-        return True
-
-    def paste_from_clipboard(self) -> bool:
-        """Kopiert Dateien aus der Zwischenablage in den aktuellen Ordner."""
-        mime_data = QApplication.clipboard().mimeData()
-        if mime_data is None or not mime_data.hasUrls():
-            return False
-
-        paths = [url.toLocalFile() for url in mime_data.urls() if url.isLocalFile()]
-        if not paths or not self._current_path:
-            return False
-
-        self._do_file_drop(paths, self._current_path, move=False)
-        return True
-
-    def delete_selection(self) -> bool:
-        """Löscht die aktuell ausgewählten Dateien/Ordner nach Bestätigung."""
-        paths = self.get_selected_files()
-        if not paths:
-            return False
-
-        reply = QMessageBox.question(
-            self,
-            "Löschen bestätigen",
-            f"Möchten Sie die ausgewählten {len(paths)} Element(e) wirklich löschen?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
-        )
-        if reply != QMessageBox.StandardButton.Yes:
-            return False
-
-        errors = []
-        for p in paths:
-            try:
-                if os.path.isdir(p):
-                    shutil.rmtree(p)
-                elif os.path.exists(p):
-                    os.remove(p)
-            except Exception as exc:
-                errors.append(f"{os.path.basename(p)}: {exc}")
-
-        self.refresh()
-        if errors:
-            QMessageBox.warning(
-                self, "Löschen",
-                "Einige Elemente konnten nicht gelöscht werden:\n\n" + "\n".join(errors)
-            )
-            return False
-        return True
-
-    def rename_selection(self) -> bool:
-        """Benennt die aktuell ausgewählte Datei oder den Ordner um."""
-        paths = self.get_selected_files()
-        if not paths:
-            return False
-
-        src_path = paths[0]
-        old_name = os.path.basename(src_path)
-        new_name, ok = QInputDialog.getText(
-            self, "Umbenennen", "Neuer Name:", text=old_name
-        )
-        if not ok or not new_name.strip() or new_name.strip() == old_name:
-            return False
-
-        dest_path = os.path.join(os.path.dirname(src_path), new_name.strip())
-        try:
-            os.rename(src_path, dest_path)
-            self.refresh()
-            return True
-        except Exception as exc:
-            QMessageBox.warning(
-                self, "Umbenennen",
-                f"Konnte '{old_name}' nicht umbenennen:\n{exc}"
-            )
-            return False
-
-    def create_new_folder(self) -> bool:
-        """Erstellt einen neuen Ordner im aktuellen Verzeichnis."""
-        if not self._current_path or not os.path.exists(self._current_path):
-            return False
-
-        name, ok = QInputDialog.getText(
-            self, "Neuer Ordner", "Ordnername:"
-        )
-        if not ok or not name.strip():
-            return False
-
-        folder_path = os.path.join(self._current_path, name.strip())
-        try:
-            os.makedirs(folder_path, exist_ok=True)
-            self.refresh()
-            return True
-        except Exception as exc:
-            QMessageBox.warning(
-                self, "Neuer Ordner",
-                f"Konnte Ordner '{name}' nicht erstellen:\n{exc}"
-            )
-            return False
 
     def _do_file_drop(self, src_paths: list, target_dir: str, move: bool = False):
         """Kopiert oder verschiebt Dateien in den Zielordner ohne Überschreiben."""
