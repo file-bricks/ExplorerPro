@@ -167,7 +167,7 @@ def test_main_window_menu_actions_wired():
     edit_menu = actions[1].menu()
     edit_actions = [act for act in edit_menu.actions() if not act.isSeparator()]
     assert len(edit_actions) >= 3, "Bearbeiten-Menü muss Kopieren, Einfügen, Neuer Ordner haben"
-    
+
     # Trigger Kopieren
     edit_actions[0].trigger()
     copy_mock.assert_called_once()

@@ -8,7 +8,7 @@ HINWEIS: Lazy Imports verwendet um Access Violation beim Start zu vermeiden.
 
 __all__ = [
     'AppsPanel',
-    'PromptsPanel', 
+    'PromptsPanel',
     'SyncPanel',
     'PrivacyMonitor',
     'QuickEditor'

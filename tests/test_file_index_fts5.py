@@ -59,6 +59,7 @@ class TestFileIndexFTS5:
             self._insert_file(idx, "/fake/report.txt", "report.txt",
                               "Das ist ein Test-Dokument mit wichtigem Inhalt")
             results = idx.search("Test")
+            assert isinstance(results, list)
             # Kein Crash = Erfolg
         finally:
             os.unlink(db)
@@ -88,7 +89,7 @@ class TestFileIndexFTS5:
                               "Dieser Text hat keinen passenden Begriff")
             results = idx.search("Schlüsselwort")
             paths = [r['path'] for r in results]
-            assert "/fake/nomatch.txt" not in paths, f"nomatch.txt sollte nicht gefunden werden"
+            assert "/fake/nomatch.txt" not in paths, "nomatch.txt sollte nicht gefunden werden"
         finally:
             os.unlink(db)
 

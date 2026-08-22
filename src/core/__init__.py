@@ -12,7 +12,7 @@ Module werden bei Bedarf importiert, nicht beim Package-Load.
 
 __all__ = [
     'FileIndex',
-    'IndexWorker', 
+    'IndexWorker',
     'SettingsManager',
     'EventBus'
 ]

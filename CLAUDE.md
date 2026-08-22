@@ -2,11 +2,11 @@
 name: ExplorerPro
 type: project-docs
 profile: STANDARD
-version: 1.0.0
+version: 1.0.3
 created: 2026-07-22
-updated: 2026-08-21
-reason_last_change: "Systematischer Bootstrap-Check: Erstanlage CLAUDE.md, AGENTS.md, i18n-Vervollständigung und Metadaten-Vertragstests"
-last_verified: 2026-08-21
+updated: 2026-08-23
+reason_last_change: "Path A Hygiene Run: Multi-OS CI Workflow, PEP 621 Classifiers & URLs, Bilingual Security Policy & Contract Tests"
+last_verified: 2026-08-23
 author: Lukas Geiger
 anthropic_compatible: true
 description: |

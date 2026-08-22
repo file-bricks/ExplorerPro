@@ -56,7 +56,7 @@ class FileIndex:
     SQLite-basierte Dateiindizierung.
     Ermöglicht Volltextsuche, Hash-Duplikatenerkennung und Metadaten-Speicherung.
     """
-    
+
     # Dateikategorien
     CATEGORIES = {
         "Dokumente": ['.pdf', '.doc', '.docx', '.txt', '.md', '.rtf', '.odt'],
@@ -67,16 +67,16 @@ class FileIndex:
         "Code": ['.py', '.js', '.html', '.css', '.json', '.xml', '.sql', '.cpp', '.c', '.h'],
         "Tabellen": ['.xls', '.xlsx', '.csv'],
     }
-    
+
     def __init__(self, db_path: Optional[str] = None):
         if db_path is None:
             from .settings_manager import SettingsManager
             config_dir = SettingsManager.instance().config_dir
             db_path = str(config_dir / "explorer.db")
-        
+
         self.db_path = db_path
         self._init_database()
-    
+
     def _init_database(self):
         """Initialisiert die Datenbankstruktur"""
         conn = sqlite3.connect(self.db_path)
@@ -170,7 +170,7 @@ class FileIndex:
             conn.commit()
         finally:
             conn.close()
-    
+
     def get_category(self, filename: str) -> str:
         """Bestimmt die Kategorie einer Datei"""
         ext = os.path.splitext(filename)[1].lower()
@@ -178,7 +178,7 @@ class FileIndex:
             if ext in extensions:
                 return category
         return "Andere"
-    
+
     @staticmethod
     def calculate_hash(filepath: str, chunk_size: int = 1024*1024) -> Optional[str]:
         """Berechnet SHA256 Hash einer Datei"""
@@ -193,16 +193,16 @@ class FileIndex:
             return h.hexdigest()
         except (PermissionError, OSError):
             return None
-    
+
     def extract_text(self, filepath: str) -> Optional[str]:
         """Extrahiert Text aus Dateien (PDF, TXT, etc.)"""
         ext = os.path.splitext(filepath)[1].lower()
-        
+
         try:
             if ext == '.txt' or ext == '.md':
                 with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
                     return f.read()[:50000]  # Max 50KB Text
-            
+
             elif ext == '.pdf' and HAS_FITZ:
                 doc = fitz.open(filepath)
                 try:
@@ -212,7 +212,7 @@ class FileIndex:
                 finally:
                     doc.close()
                 return '\n'.join(text_parts)[:50000]
-            
+
             elif ext == '.pdf' and HAS_PDF:
                 with open(filepath, 'rb') as f:
                     reader = PdfReader(f)
@@ -222,29 +222,29 @@ class FileIndex:
                         if text:
                             text_parts.append(text)
                 return '\n'.join(text_parts)[:50000]
-                
+
         except Exception as e:
             print(f"Text-Extraktion fehlgeschlagen für {filepath}: {e}")
-        
+
         return None
-    
+
     def index_file(self, filepath: str, calculate_hash: bool = True) -> bool:
         """Indiziert eine einzelne Datei"""
         if not os.path.exists(filepath):
             return False
-        
+
         try:
             stat = os.stat(filepath)
             filename = os.path.basename(filepath)
             ext = os.path.splitext(filename)[1].lower()
-            
+
             file_hash = None
             if calculate_hash and stat.st_size < 100 * 1024 * 1024:  # Max 100MB
                 file_hash = self.calculate_hash(filepath)
-            
+
             text_content = self.extract_text(filepath)
             category = self.get_category(filename)
-            
+
             conn = sqlite3.connect(self.db_path)
             try:
                 cursor = conn.cursor()
@@ -297,9 +297,9 @@ class FileIndex:
             return dict(row) if row else None
         finally:
             conn.close()
-    
+
     def search(self, query: str, extension: str = None, category: str = None,
-               min_size: int = None, max_size: int = None, 
+               min_size: int = None, max_size: int = None,
                content_only: bool = False, limit: int = 100) -> List[Dict]:
         """
         Volltextsuche im Index mit optionalen Filtern.
@@ -316,7 +316,7 @@ class FileIndex:
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
-        
+
         # Basis-Query mit FTS5
         if content_only:
             fts_query = f'text_content:{query}'
@@ -332,7 +332,7 @@ class FileIndex:
             WHERE files_fts MATCH ?
         '''
         params = [fts_query]
-        
+
         # Filter hinzufügen
         if extension:
             if extension.startswith('.'):
@@ -341,22 +341,22 @@ class FileIndex:
             else:
                 sql += ' AND f.extension = ?'
                 params.append(f'.{extension}')
-        
+
         if category:
             sql += ' AND f.category = ?'
             params.append(category)
-        
+
         if min_size is not None:
             sql += ' AND f.size >= ?'
             params.append(min_size)
-        
+
         if max_size is not None:
             sql += ' AND f.size <= ?'
             params.append(max_size)
-        
+
         sql += ' ORDER BY rank LIMIT ?'
         params.append(limit)
-        
+
         try:
             cursor.execute(sql, params)
             results = []
@@ -421,7 +421,7 @@ class FileIndex:
         finally:
             conn.close()
         return results
-    
+
     def advanced_search(self, query: str = None, extensions: List[str] = None,
                        date_from = None, date_to = None,
                        min_size: int = None, max_size: int = None,
@@ -508,7 +508,7 @@ class FileIndex:
         finally:
             conn.close()
         return results
-    
+
     def find_duplicates(self) -> List[Tuple[str, List[str]]]:
         """Findet Duplikate basierend auf Hash"""
         conn = sqlite3.connect(self.db_path)
@@ -531,7 +531,7 @@ class FileIndex:
         finally:
             conn.close()
         return results
-    
+
     def get_stats(self) -> Dict:
         """Gibt Statistiken zum Index zurück"""
         conn = sqlite3.connect(self.db_path)
@@ -555,26 +555,26 @@ class FileIndex:
 
 class IndexWorker(QThread):
     """Worker-Thread für Hintergrund-Indizierung"""
-    
+
     progress = Signal(int, int)  # current, total
     file_indexed = Signal(str)
     finished_indexing = Signal(int)  # total indexed
     error = Signal(str)
-    
+
     def __init__(self, index: FileIndex, folder: str, recursive: bool = True):
         super().__init__()
         self.index = index
         self.folder = folder
         self.recursive = recursive
         self._cancelled = False
-    
+
     def cancel(self):
         self._cancelled = True
-    
+
     def run(self):
         """Führt die Indizierung im Hintergrund aus"""
         indexed_count = 0
-        
+
         try:
             files = []
             if self.recursive:
@@ -583,24 +583,24 @@ class IndexWorker(QThread):
                         files.append(os.path.join(root, filename))
             else:
                 files = [
-                    os.path.join(self.folder, f) 
-                    for f in os.listdir(self.folder) 
+                    os.path.join(self.folder, f)
+                    for f in os.listdir(self.folder)
                     if os.path.isfile(os.path.join(self.folder, f))
                 ]
-            
+
             total = len(files)
-            
+
             for i, filepath in enumerate(files):
                 if self._cancelled:
                     break
-                
+
                 if self.index.index_file(filepath):
                     indexed_count += 1
                     self.file_indexed.emit(filepath)
-                
+
                 self.progress.emit(i + 1, total)
-            
+
             self.finished_indexing.emit(indexed_count)
-            
+
         except Exception as e:
             self.error.emit(str(e))

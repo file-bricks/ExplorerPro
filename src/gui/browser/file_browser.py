@@ -87,7 +87,7 @@ class FileBrowser(QWidget):
     Datei-Browser mit Tabellen-Ansicht
     Integriert QuickEditor für Code-Dateien
     """
-    
+
     # Signale
     file_selected = Signal(str)
     folder_changed = Signal(str)
@@ -95,7 +95,7 @@ class FileBrowser(QWidget):
     selection_changed = Signal(int)     # Anzahl ausgewählter Dateien
     file_double_clicked = Signal(str)
     edit_requested = Signal(str)        # Datei im Editor öffnen
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self._current_path = ""
@@ -103,38 +103,38 @@ class FileBrowser(QWidget):
         self._history_index = -1
         self._file_count = 0
         self._setup_ui()
-        
+
         # Startverzeichnis
         home = QStandardPaths.writableLocation(
             QStandardPaths.StandardLocation.HomeLocation
         )
         self.navigate_to(home)
-    
+
     def _setup_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        
+
         # Datei-System-Model
         self.model = QFileSystemModel()
         self.model.setRootPath("")
         self.model.setFilter(
-            QDir.Filter.AllEntries | 
+            QDir.Filter.AllEntries |
             QDir.Filter.NoDotAndDotDot
         )
         self.model.directoryLoaded.connect(self._on_directory_loaded)
-        
+
         # Sortier-Proxy
         self.proxy = QSortFilterProxyModel()
         self.proxy.setSourceModel(self.model)
         self.proxy.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-        
+
         # Tabellen-View (DnD-fähige Unterklasse für startDrag-Override)
         self.table = _DnDTableView(self)
         self.table.setModel(self.proxy)
         self.table.setRootIndex(self.proxy.mapFromSource(
             self.model.index(QDir.rootPath())
         ))
-        
+
         # Spalten konfigurieren
         self.table.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows
@@ -149,20 +149,20 @@ class FileBrowser(QWidget):
         # System-Icons: explizite Größe damit die Icons in Spalte 0 sichtbar
         # dargestellt werden (QFileSystemModel liefert sie über QFileIconProvider).
         self.table.setIconSize(QSize(16, 16))
-        
+
         # Header
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
-        
+
         # Signale
         self.table.clicked.connect(self._on_item_clicked)
         self.table.doubleClicked.connect(self._on_item_double_clicked)
         self.table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.table.customContextMenuRequested.connect(self._show_context_menu)
-        
+
         # Selection-Signal
         self.table.selectionModel().selectionChanged.connect(
             self._on_selection_changed
@@ -182,12 +182,12 @@ class FileBrowser(QWidget):
         self.setAcceptDrops(True)   # Widget-Level als Fallback für Randbereich
 
         layout.addWidget(self.table)
-    
+
     def _on_directory_loaded(self, path: str):
         """Handler wenn Verzeichnis geladen wurde"""
         if path == self._current_path:
             self._update_file_count()
-    
+
     def _update_file_count(self):
         """Aktualisiert die Datei-Anzahl"""
         if self._current_path:
@@ -196,17 +196,17 @@ class FileBrowser(QWidget):
                 self._file_count = len(entries)
             except (OSError, PermissionError):
                 self._file_count = 0
-    
+
     def _on_selection_changed(self):
         """Handler für Auswahl-Änderungen"""
         selected = len(self.get_selected_files())
         self.selection_changed.emit(selected)
-    
+
     def navigate_to(self, path: str):
         """Navigiert zu einem Pfad"""
         if not os.path.exists(path):
             return
-        
+
         # History aktualisieren
         if self._current_path and self._current_path != path:
             # Vorwärts-History löschen
@@ -216,19 +216,19 @@ class FileBrowser(QWidget):
         elif not self._history:
             self._history.append(path)
             self._history_index = 0
-        
+
         self._current_path = path
-        
+
         source_index = self.model.index(path)
         proxy_index = self.proxy.mapFromSource(source_index)
         self.table.setRootIndex(proxy_index)
-        
+
         self._update_file_count()
-        
+
         # Signale senden
         self.folder_changed.emit(path)
         self.path_changed.emit(path)
-    
+
     def go_back(self):
         """Geht einen Schritt zurück"""
         if self._history_index > 0:
@@ -241,7 +241,7 @@ class FileBrowser(QWidget):
             self._update_file_count()
             self.folder_changed.emit(path)
             self.path_changed.emit(path)
-    
+
     def go_forward(self):
         """Geht einen Schritt vorwärts"""
         if self._history_index < len(self._history) - 1:
@@ -254,21 +254,21 @@ class FileBrowser(QWidget):
             self._update_file_count()
             self.folder_changed.emit(path)
             self.path_changed.emit(path)
-    
+
     def go_up(self):
         """Geht zum übergeordneten Ordner"""
         if self._current_path:
             parent = os.path.dirname(self._current_path)
             if parent and parent != self._current_path:
                 self.navigate_to(parent)
-    
+
     def refresh(self):
         """Aktualisiert die Ansicht"""
         if self._current_path:
             self.model.setRootPath("")
             self.model.setRootPath(self._current_path)
             self._update_file_count()
-    
+
     def set_show_hidden_files(self, show: bool):
         """Schaltet die Anzeige versteckter Dateien um."""
         filters = QDir.Filter.AllEntries | QDir.Filter.NoDotAndDotDot
@@ -280,14 +280,14 @@ class FileBrowser(QWidget):
     def _on_item_clicked(self, index: QModelIndex):
         source_index = self.proxy.mapToSource(index)
         file_path = self.model.filePath(source_index)
-        
+
         if os.path.isfile(file_path):
             self.file_selected.emit(file_path)
-    
+
     def _on_item_double_clicked(self, index: QModelIndex):
         source_index = self.proxy.mapToSource(index)
         file_path = self.model.filePath(source_index)
-        
+
         if os.path.isdir(file_path):
             self.navigate_to(file_path)
         else:
@@ -297,106 +297,106 @@ class FileBrowser(QWidget):
                 self._edit_file(file_path)
             else:
                 self._open_file(file_path)
-    
+
     def _show_context_menu(self, pos):
         """Zeigt das Kontextmenü"""
         index = self.table.indexAt(pos)
-        
+
         menu = QMenu(self)
-        
+
         if index.isValid():
             source_index = self.proxy.mapToSource(index)
             file_path = self.model.filePath(source_index)
             is_file = os.path.isfile(file_path)
             ext = Path(file_path).suffix.lower() if is_file else ""
-            
+
             # Öffnen
             open_action = QAction("📂 Öffnen", self)
             open_action.triggered.connect(lambda: self._open_file(file_path))
             menu.addAction(open_action)
-            
+
             # In Editor öffnen (nur für Code-Dateien)
             if is_file and ext in EDITOR_EXTENSIONS:
                 edit_action = QAction("✏️ In Editor öffnen", self)
                 edit_action.setShortcut("F4")
                 edit_action.triggered.connect(lambda: self._edit_file(file_path))
                 menu.addAction(edit_action)
-            
+
             menu.addSeparator()
-            
+
             # Index-Aktionen
             index_action = QAction("🔍 In Index suchen", self)
             index_action.triggered.connect(lambda: self._search_in_index(file_path))
             menu.addAction(index_action)
-            
+
             meta_action = QAction("📊 Metadaten anzeigen", self)
             meta_action.triggered.connect(lambda: self.file_selected.emit(file_path))
             menu.addAction(meta_action)
-            
+
             tags_action = QAction("🏷️ Tags bearbeiten", self)
             tags_action.triggered.connect(lambda: self.file_selected.emit(file_path))
             menu.addAction(tags_action)
-            
+
             menu.addSeparator()
-            
+
             # Sync
             sync_action = QAction("🔄 Synchronisieren", self)
             sync_action.triggered.connect(lambda: self._sync_path(file_path))
             menu.addAction(sync_action)
-            
+
             prompt_action = QAction("📋 Pfad als Prompt speichern", self)
             prompt_action.triggered.connect(lambda: self._save_path_as_prompt(file_path))
             menu.addAction(prompt_action)
-            
+
             menu.addSeparator()
-            
+
             # Datenschutz
             privacy_action = QAction("🛡️ Datenschutz prüfen", self)
             privacy_action.triggered.connect(lambda: self._check_privacy(file_path))
             menu.addAction(privacy_action)
-            
+
             blacklist_action = QAction("🔴 Zur Blacklist hinzufügen", self)
             blacklist_action.triggered.connect(lambda: self._add_to_blacklist(file_path))
             menu.addAction(blacklist_action)
-            
+
             menu.addSeparator()
-            
+
             # Standard-Aktionen
             copy_action = QAction("Kopieren", self)
             copy_action.setShortcut("Ctrl+C")
             copy_action.triggered.connect(self.copy_selection)
             menu.addAction(copy_action)
-            
+
             delete_action = QAction("Löschen", self)
             delete_action.setShortcut("Delete")
             delete_action.triggered.connect(lambda: self.delete_selection([file_path]))
             menu.addAction(delete_action)
-            
+
             rename_action = QAction("Umbenennen", self)
             rename_action.setShortcut("F2")
             rename_action.triggered.connect(lambda: self.rename_selection(file_path))
             menu.addAction(rename_action)
-        
+
         else:
             # Leer-Bereich-Menü
             new_folder = QAction("📁 Neuer Ordner", self)
             new_folder.triggered.connect(self.create_new_folder)
             menu.addAction(new_folder)
-            
+
             paste_action = QAction("Einfügen", self)
             paste_action.setShortcut("Ctrl+V")
             paste_action.triggered.connect(self.paste_from_clipboard)
             menu.addAction(paste_action)
-            
+
             menu.addSeparator()
-            
+
             refresh_action = QAction("Aktualisieren", self)
             refresh_action.setShortcut("F5")
             refresh_action.triggered.connect(self.refresh)
             menu.addAction(refresh_action)
-        
+
         menu.exec(QCursor.pos())
-    
+
     def _open_file(self, path: str):
         """Öffnet eine Datei/Ordner mit System-Standard"""
         if os.path.isdir(path):
@@ -411,19 +411,19 @@ class FileBrowser(QWidget):
                 "Datei öffnen",
                 f"Die Datei konnte nicht geöffnet werden:\n{path}\n\n{exc}"
             )
-    
+
     def _edit_file(self, path: str):
         """Öffnet Datei im QuickEditor"""
         from modules.editor.quick_editor import QuickEditorDialog
-        
+
         editor = QuickEditorDialog(path, self.window())
         editor.exec()
-    
+
     def _check_privacy(self, path: str):
         """Prüft Datei auf sensible Daten"""
         if not os.path.isfile(path):
             return
-        
+
         try:
             # Nur Text-Dateien prüfen
             ext = Path(path).suffix.lower()
@@ -433,20 +433,20 @@ class FileBrowser(QWidget):
                     "Datenschutz-Prüfung nur für Text-Dateien verfügbar."
                 )
                 return
-            
+
             with open(path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read(50000)  # Max 50KB
-            
+
             # PrivacyMonitor vom Hauptfenster holen
             main_window = self.window()
             if hasattr(main_window, 'privacy_monitor'):
                 alert = main_window.privacy_monitor.check_text(content)
-                
+
                 if alert.detected_patterns:
                     QMessageBox.warning(
                         self, "Datenschutz-Prüfung",
                         f"Status: {alert.status.value.upper()}\n\n"
-                        f"Erkannte Muster:\n• " + 
+                        f"Erkannte Muster:\n• " +
                         "\n• ".join(alert.detected_patterns)
                     )
                 else:
@@ -459,15 +459,15 @@ class FileBrowser(QWidget):
                 self, "Fehler",
                 f"Konnte Datei nicht prüfen: {e}"
             )
-    
+
     @property
     def current_path(self) -> str:
         return self._current_path
-    
+
     @property
     def file_count(self) -> int:
         return self._file_count
-    
+
     def get_selected_files(self) -> list:
         """Gibt ausgewählte Dateien zurück"""
         selected = []

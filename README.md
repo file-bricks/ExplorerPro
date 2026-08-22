@@ -4,12 +4,15 @@
 
 **[Deutsch](README_de.md)** | [English](README.md) | [Machine-readable context](llms.txt)
 
+[![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![Pytest: 160 passed](https://img.shields.io/badge/pytest-160%20passed-brightgreen.svg)](tests/)
+[![Pytest: 220 passed](https://img.shields.io/badge/pytest-220%20passed-brightgreen.svg)](tests/)
 [![UI: PySide6](https://img.shields.io/badge/UI-PySide6-informational.svg)](src/gui/)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
+[![Security: Policy](https://img.shields.io/badge/Security-Policy-blue.svg)](SECURITY.md)
 [![Privacy: Local--First](https://img.shields.io/badge/Privacy-Local--First-blueviolet.svg)](PRIVACY_POLICY.md)
+[![Umbrella: open--bricks](https://img.shields.io/badge/Umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
 
 > [!NOTE]
 > **For AI Agents & LLMs:** Machine-readable architecture context, search phrases, and verification entry points are maintained in [llms.txt](llms.txt).
@@ -29,6 +32,7 @@ ExplorerPro is a desktop file explorer for power users. It combines a multi-tab 
 | Start the app | `python src/main.py` or `START_ExplorerPro.bat` |
 | Install deps | `pip install -r requirements.txt` |
 | Run tests | `python -m pytest -q` |
+| Security | [SECURITY.md](SECURITY.md) |
 | Docs | [ARCHITEKTUR.md](ARCHITEKTUR.md) · [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md) · [PRIVACY_POLICY.md](PRIVACY_POLICY.md) |
 | Changelog | [CHANGELOG.md](CHANGELOG.md) |
 

@@ -39,30 +39,30 @@ class AppEntry:
 
 class AppButton(QPushButton):
     """Button für eine App mit Icon und Name"""
-    
+
     app_clicked = Signal(object)
     edit_requested = Signal(object)
     delete_requested = Signal(object)
-    
+
     def __init__(self, app: AppEntry, parent=None):
         super().__init__(parent)
         self.app = app
         self._setup_ui()
-    
+
     def _setup_ui(self):
         self.setFixedSize(80, 80)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setToolTip(f"{self.app.name}\n{self.app.path}")
-        
+
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
         layout.setSpacing(2)
-        
+
         # Icon
         icon_label = QLabel()
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         icon_label.setFixedSize(40, 40)
-        
+
         if self.app.icon and os.path.exists(self.app.icon):
             pixmap = QPixmap(self.app.icon).scaled(
                 32, 32, Qt.AspectRatioMode.KeepAspectRatio,
@@ -74,21 +74,21 @@ class AppButton(QPushButton):
             emoji = self._get_emoji_for_ext(ext)
             icon_label.setText(emoji)
             icon_label.setStyleSheet("font-size: 24px;")
-        
+
         layout.addWidget(icon_label)
-        
+
         # Name
         name_label = QLabel(self.app.name[:12])
         name_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         name_label.setStyleSheet("font-size: 10px;")
         name_label.setWordWrap(True)
         layout.addWidget(name_label)
-        
+
         self.clicked.connect(lambda: self.app_clicked.emit(self.app))
-        
+
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self._show_context_menu)
-    
+
     def _get_emoji_for_ext(self, ext: str) -> str:
         mapping = {
             '.exe': '🖥️', '.py': '🐍', '.js': '📜',
@@ -96,7 +96,7 @@ class AppButton(QPushButton):
             '.sh': '🐚', '.msi': '📦', '.lnk': '🔗',
         }
         return mapping.get(ext, '📁')
-    
+
     def _show_context_menu(self, pos):
         menu = QMenu(self)
         menu.addAction("▶️ Starten", lambda: self.app_clicked.emit(self.app))
@@ -106,7 +106,7 @@ class AppButton(QPushButton):
         menu.addSeparator()
         menu.addAction("🗑️ Entfernen", lambda: self.delete_requested.emit(self.app))
         menu.exec(QCursor.pos())
-    
+
     def _open_folder(self):
         folder = str(Path(self.app.path).parent)
         try:
@@ -117,7 +117,7 @@ class AppButton(QPushButton):
 
 class AppEditDialog(QDialog):
     """Dialog zum Bearbeiten/Erstellen einer App"""
-    
+
     def __init__(self, app: AppEntry = None, parent=None):
         super().__init__(parent)
         self.app = app or AppEntry(name="", path="")
@@ -125,14 +125,14 @@ class AppEditDialog(QDialog):
         self.setMinimumWidth(450)
         self._setup_ui()
         self._load_data()
-    
+
     def _setup_ui(self):
         layout = QVBoxLayout(self)
         form = QFormLayout()
-        
+
         self.name_edit = QLineEdit()
         form.addRow("Name:", self.name_edit)
-        
+
         path_layout = QHBoxLayout()
         self.path_edit = QLineEdit()
         path_btn = QPushButton("...")
@@ -141,24 +141,24 @@ class AppEditDialog(QDialog):
         path_layout.addWidget(self.path_edit)
         path_layout.addWidget(path_btn)
         form.addRow("Pfad:", path_layout)
-        
+
         self.category_combo = QComboBox()
         self.category_combo.setEditable(True)
         self.category_combo.addItems([
-            "Allgemein", "Entwicklung", "Office", "Grafik", 
+            "Allgemein", "Entwicklung", "Office", "Grafik",
             "Multimedia", "Internet", "System", "Spiele"
         ])
         form.addRow("Kategorie:", self.category_combo)
-        
+
         self.desc_edit = QLineEdit()
         form.addRow("Beschreibung:", self.desc_edit)
-        
+
         self.args_edit = QLineEdit()
         self.args_edit.setPlaceholderText("z.B. --verbose --config=config.ini")
         form.addRow("Argumente:", self.args_edit)
-        
+
         layout.addLayout(form)
-        
+
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok |
             QDialogButtonBox.StandardButton.Cancel
@@ -166,14 +166,14 @@ class AppEditDialog(QDialog):
         buttons.accepted.connect(self._save_and_accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
-    
+
     def _load_data(self):
         self.name_edit.setText(self.app.name)
         self.path_edit.setText(self.app.path)
         self.category_combo.setCurrentText(self.app.category)
         self.desc_edit.setText(self.app.description)
         self.args_edit.setText(self.app.arguments)
-    
+
     def _browse_path(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "Programm wählen", "",
@@ -183,7 +183,7 @@ class AppEditDialog(QDialog):
             self.path_edit.setText(path)
             if not self.name_edit.text():
                 self.name_edit.setText(Path(path).stem)
-    
+
     def _save_and_accept(self):
         if not self.name_edit.text().strip():
             QMessageBox.warning(self, "Fehler", "Bitte Namen eingeben!")
@@ -191,82 +191,82 @@ class AppEditDialog(QDialog):
         if not self.path_edit.text().strip():
             QMessageBox.warning(self, "Fehler", "Bitte Pfad angeben!")
             return
-        
+
         self.app.name = self.name_edit.text().strip()
         self.app.path = self.path_edit.text().strip()
         self.app.category = self.category_combo.currentText()
         self.app.description = self.desc_edit.text().strip()
         self.app.arguments = self.args_edit.text().strip()
         self.accept()
-    
+
     def get_app(self) -> AppEntry:
         return self.app
 
 
 class AppsPanel(QWidget):
     """App-Launcher Panel mit Kategorien-Tabs"""
-    
+
     app_launched = Signal(str)
-    
+
     DEFAULT_CATEGORIES = ["Favoriten", "Entwicklung", "Office", "System", "Allgemein"]
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.apps: List[AppEntry] = []
         self.config_path = Path.home() / ".explorerpro" / "apps.json"
         self._setup_ui()
         self._load_apps()
-    
+
     def _setup_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
-        
+
         # Header mit Suche
         header = QHBoxLayout()
         self.search_edit = QLineEdit()
         self.search_edit.setPlaceholderText("🔍 App suchen...")
         self.search_edit.textChanged.connect(self._filter_apps)
         header.addWidget(self.search_edit)
-        
+
         add_btn = QToolButton()
         add_btn.setText("➕")
         add_btn.setToolTip("App hinzufügen")
         add_btn.clicked.connect(self._add_app)
         header.addWidget(add_btn)
         layout.addLayout(header)
-        
+
         # Tabs
         self.tabs = QTabWidget()
         self.tabs.setDocumentMode(True)
         layout.addWidget(self.tabs)
-        
+
         self.category_widgets = {}
         for cat in self.DEFAULT_CATEGORIES:
             self._create_category_tab(cat)
-    
+
     def _create_category_tab(self, category: str):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        
+
         container = QWidget()
         grid = QGridLayout(container)
         grid.setSpacing(8)
         grid.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         scroll.setWidget(container)
-        
+
         self.category_widgets[category] = {
             'scroll': scroll, 'container': container,
             'grid': grid, 'buttons': []
         }
-        
+
         icons = {
             "Favoriten": "⭐", "Entwicklung": "💻", "Office": "📄",
             "System": "⚙️", "Allgemein": "📁", "Grafik": "🎨",
             "Multimedia": "🎬", "Internet": "🌐", "Spiele": "🎮"
         }
         self.tabs.addTab(scroll, f"{icons.get(category, '📁')} {category}")
-    
+
     def _load_apps(self):
         if self.config_path.exists():
             try:
@@ -274,11 +274,11 @@ class AppsPanel(QWidget):
                     self.apps = [AppEntry(**a) for a in json.load(f)]
             except (OSError, FileNotFoundError, json.JSONDecodeError, TypeError):
                 self.apps = []
-        
+
         if not self.apps:
             self._add_default_apps()
         self._refresh_display()
-    
+
     def _add_default_apps(self):
         self.apps = [
             AppEntry("Notepad", "notepad.exe", category="System"),
@@ -287,7 +287,7 @@ class AppsPanel(QWidget):
             AppEntry("PowerShell", "powershell.exe", category="System"),
             AppEntry("Rechner", "calc.exe", category="System"),
         ]
-        
+
         dev_paths = [
             (r"C:\Program Files\Microsoft VS Code\Code.exe", "VS Code", "Entwicklung"),
             (r"C:\Program Files\Git\git-bash.exe", "Git Bash", "Entwicklung"),
@@ -295,9 +295,9 @@ class AppsPanel(QWidget):
         for path, name, cat in dev_paths:
             if os.path.exists(path):
                 self.apps.append(AppEntry(name, path, category=cat))
-        
+
         self._save_apps()
-    
+
     def _save_apps(self):
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
         data = [{
@@ -311,13 +311,13 @@ class AppsPanel(QWidget):
                 json.dump(data, f, indent=2, ensure_ascii=False)
         except OSError as e:
             print(f"Fehler beim Speichern der Apps: {e}")
-    
+
     def _refresh_display(self):
         for cat_data in self.category_widgets.values():
             for btn in cat_data['buttons']:
                 btn.deleteLater()
             cat_data['buttons'] = []
-        
+
         apps_by_cat = {}
         for app in self.apps:
             if app.category not in apps_by_cat:
@@ -325,11 +325,11 @@ class AppsPanel(QWidget):
             apps_by_cat[app.category].append(app)
             if app.favorite:
                 apps_by_cat.setdefault("Favoriten", []).append(app)
-        
+
         for category, cat_data in self.category_widgets.items():
             apps = apps_by_cat.get(category, [])
             grid = cat_data['grid']
-            
+
             for i, app in enumerate(apps):
                 btn = AppButton(app)
                 btn.app_clicked.connect(self._launch_app)
@@ -337,7 +337,7 @@ class AppsPanel(QWidget):
                 btn.delete_requested.connect(self._delete_app)
                 grid.addWidget(btn, i // 4, i % 4)
                 cat_data['buttons'].append(btn)
-    
+
     def _filter_apps(self, text: str):
         text = text.lower()
         for cat_data in self.category_widgets.values():
@@ -346,7 +346,7 @@ class AppsPanel(QWidget):
                     text in btn.app.name.lower() or
                     text in btn.app.path.lower()
                 )
-    
+
     def _add_app(self):
         dialog = AppEditDialog(parent=self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
@@ -356,13 +356,13 @@ class AppsPanel(QWidget):
             self.apps.append(app)
             self._save_apps()
             self._refresh_display()
-    
+
     def _edit_app(self, app: AppEntry):
         dialog = AppEditDialog(app, parent=self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self._save_apps()
             self._refresh_display()
-    
+
     def _delete_app(self, app: AppEntry):
         if QMessageBox.question(
             self, "Entfernen", f"'{app.name}' entfernen?",
@@ -371,7 +371,7 @@ class AppsPanel(QWidget):
             self.apps.remove(app)
             self._save_apps()
             self._refresh_display()
-    
+
     def _launch_app(self, app: AppEntry):
         try:
             arg_list = shlex.split(app.arguments) if app.arguments else []

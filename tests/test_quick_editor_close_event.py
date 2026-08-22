@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -18,7 +18,6 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from PySide6.QtWidgets import QApplication, QMessageBox
-from PySide6.QtCore import QEvent
 
 _app = QApplication.instance() or QApplication([])
 

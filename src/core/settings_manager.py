@@ -16,9 +16,9 @@ class SettingsManager:
     Verwaltet alle Anwendungseinstellungen.
     Unterstützt sowohl QSettings (Registry/plist) als auch JSON-Dateien.
     """
-    
+
     _instance = None
-    
+
     # Standard-Einstellungen
     DEFAULTS = {
         "general": {
@@ -53,24 +53,24 @@ class SettingsManager:
             "icon_size": 24,
         },
     }
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialized = False
         return cls._instance
-    
+
     def __init__(self):
         if self._initialized:
             return
         self._initialized = True
-        
+
         self._qsettings = QSettings("ExplorerPro", "ExplorerPro")
         self._config_path = self._get_config_path()
         self._settings: Dict[str, Any] = {}
-        
+
         self._load_settings()
-    
+
     def _get_config_path(self) -> Path:
         """Ermittelt den Konfigurationspfad"""
         config_dir = QStandardPaths.writableLocation(
@@ -81,11 +81,11 @@ class SettingsManager:
         path = Path(config_dir) / "ExplorerPro"
         path.mkdir(parents=True, exist_ok=True)
         return path / "settings.json"
-    
+
     def _load_settings(self):
         """Lädt Einstellungen aus JSON-Datei"""
         self._settings = self._deep_copy(self.DEFAULTS)
-        
+
         if self._config_path.exists():
             try:
                 with open(self._config_path, 'r', encoding='utf-8') as f:
@@ -93,11 +93,11 @@ class SettingsManager:
                     self._merge_settings(self._settings, saved)
             except Exception as e:
                 print(f"Fehler beim Laden der Einstellungen: {e}")
-    
+
     def _deep_copy(self, d: Dict) -> Dict:
         """Tiefe Kopie eines Dicts"""
         return json.loads(json.dumps(d))
-    
+
     def _merge_settings(self, target: Dict, source: Dict):
         """Merged source in target (rekursiv)"""
         for key, value in source.items():
@@ -105,7 +105,7 @@ class SettingsManager:
                 self._merge_settings(target[key], value)
             else:
                 target[key] = value
-    
+
     def save(self):
         """Speichert Einstellungen in JSON-Datei"""
         try:
@@ -113,29 +113,29 @@ class SettingsManager:
                 json.dump(self._settings, f, indent=2, ensure_ascii=False)
         except Exception as e:
             print(f"Fehler beim Speichern: {e}")
-    
+
     def get(self, section: str, key: str, default: Any = None) -> Any:
         """Holt eine Einstellung"""
         try:
             return self._settings[section][key]
         except KeyError:
             return default
-    
+
     def set(self, section: str, key: str, value: Any):
         """Setzt eine Einstellung"""
         if section not in self._settings:
             self._settings[section] = {}
         self._settings[section][key] = value
-    
+
     def get_section(self, section: str) -> Dict:
         """Holt eine ganze Sektion"""
         return self._settings.get(section, {})
-    
+
     @property
     def config_dir(self) -> Path:
         """Gibt das Konfigurationsverzeichnis zurück"""
         return self._config_path.parent
-    
+
     @classmethod
     def instance(cls) -> 'SettingsManager':
         """Gibt die Singleton-Instanz zurück"""

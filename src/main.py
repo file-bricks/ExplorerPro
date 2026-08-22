@@ -46,7 +46,7 @@ def main():
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
     )
-    
+
     app = QApplication(sys.argv)
     app.setApplicationName("ExplorerPro")
     app.setOrganizationName("ExplorerPro")
@@ -54,20 +54,20 @@ def main():
     icon = load_app_icon()
     if not icon.isNull():
         app.setWindowIcon(icon)
-    
+
     # Style
     app.setStyle("Fusion")
-    
+
     # Dark Theme (optional)
     # from gui.themes import apply_dark_theme
     # apply_dark_theme(app)
-    
+
     # Hauptfenster starten
     explorer = ExplorerProApp()
     if not icon.isNull():
         explorer.setWindowIcon(icon)
     explorer.show()
-    
+
     sys.exit(app.exec())
 
 

@@ -1,6 +1,6 @@
 [project]
 name = "explorer-pro-suite"
-version = "1.0.0"
+version = "1.0.3"
 description = "Datei-Explorer-Suite mit Editor, PDF-Viewer und Datenanalyse"
 authors = [{ name = "Lukas Geiger", email = "lukasgeiger@googlemail.com" }]
 requires-python = ">=3.10"
@@ -14,13 +14,48 @@ dependencies = [
     "openpyxl>=3.1.0,<4.0.0",
 ]
 
-keywords = ["file-explorer", "pyside6", "file-manager", "privacy", "duplicate-finder", "local-first"]
+keywords = [
+    "file-explorer",
+    "pyside6",
+    "file-manager",
+    "privacy",
+    "duplicate-finder",
+    "local-first",
+    "fts5",
+    "offline-first",
+    "qt6",
+    "desktop-app",
+    "llm-ready",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications :: Qt",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Desktop Environment :: File Managers",
+    "Topic :: System :: Filesystems",
+    "Topic :: Utilities",
+]
 
 [project.urls]
 Homepage = "https://github.com/file-bricks/ExplorerPro"
 Repository = "https://github.com/file-bricks/ExplorerPro.git"
-"Bug Tracker" = "https://github.com/file-bricks/ExplorerPro/issues"
 Documentation = "https://github.com/file-bricks/ExplorerPro#readme"
+Issues = "https://github.com/file-bricks/ExplorerPro/issues"
+"Bug Tracker" = "https://github.com/file-bricks/ExplorerPro/issues"
+Changelog = "https://github.com/file-bricks/ExplorerPro/blob/master/CHANGELOG.md"
+Security = "https://github.com/file-bricks/ExplorerPro/blob/master/SECURITY.md"
+Umbrella = "https://github.com/open-bricks"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.5"]
@@ -35,4 +70,8 @@ pythonpath = [".", "src"]
 
 [tool.ruff]
 target-version = "py310"
-line-length = 100
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E402", "E501", "W291", "W293"]

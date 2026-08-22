@@ -6,7 +6,7 @@ Primary language: Python
 Primary UI stack: PySide6
 License: AGPL-3.0
 
-Last-checked: 2026-08-21
+Last-checked: 2026-08-23
 
 ## Search Phrases
 
@@ -46,6 +46,7 @@ ExplorerPro is a local-first desktop file explorer suite for power users. It com
 
 - `README.md`: English GitHub entry point.
 - `README_de.md`: German entry point.
+- `SECURITY.md`: Bilingual security policy with local-first, zero-egress, and non-elevation guarantees.
 - `PORTIERUNGSPLAN.md`: Platform, store-readiness, and companion plan.
 - `EXPORTFORMAT.md`: Implemented `explorerpro-workspace-v1` redacted workspace exchange contract.
 - `PRIVACY_POLICY.md`: Repository privacy posture.
@@ -61,6 +62,7 @@ Use these local checks before publishing changes:
 ```bash
 python -m pytest -q
 python -m compileall -q src tests manage_translations.py translator.py
+python -m ruff check .
 ```
 
-The GitHub workflow `ExplorerPro Smoke Tests` runs the smoke suite on Python 3.10, 3.11, and 3.12.
+The GitHub workflow `CI` (`.github/workflows/ci.yml`) runs the test matrix across Windows, macOS, and Ubuntu on Python 3.10, 3.11, and 3.12.

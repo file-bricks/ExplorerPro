@@ -4,7 +4,6 @@ import os
 import sys
 import warnings
 from pathlib import Path
-from unittest.mock import Mock
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -18,7 +17,7 @@ _app = QApplication.instance() or QApplication([])
 
 from gui.browser.file_browser import FileBrowser
 from gui.preview.preview_panel import TextPreview
-from modules.sync.sync_manager import SyncWorker, SyncPair, SyncDirection
+from modules.sync.sync_manager import SyncWorker, SyncPair
 from core.file_index import FileIndex
 
 

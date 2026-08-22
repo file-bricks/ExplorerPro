@@ -32,14 +32,18 @@ class TestEventBusUnregisterFix:
 
     def test_unregister_not_registered_handler_no_crash(self):
         bus = EventBus()
-        handler = lambda: None
+
+        def handler():
+            return None
 
         # Kein Register vorher — darf nicht crashen
         bus.unregister_handler("some_event", handler)
 
     def test_unregister_already_removed_handler_no_crash(self):
         bus = EventBus()
-        handler = lambda: None
+
+        def handler():
+            return None
 
         bus.register_handler("my_event", handler)
         bus.unregister_handler("my_event", handler)
@@ -50,8 +54,12 @@ class TestEventBusUnregisterFix:
     def test_unregister_removes_correct_handler(self):
         bus = EventBus()
         calls = []
-        h1 = lambda: calls.append(1)
-        h2 = lambda: calls.append(2)
+
+        def h1():
+            calls.append(1)
+
+        def h2():
+            calls.append(2)
 
         bus.register_handler("ev", h1)
         bus.register_handler("ev", h2)

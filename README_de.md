@@ -4,12 +4,15 @@
 
 [English](README.md) | **[Deutsch](README_de.md)** | [Maschinenlesbarer Kontext](llms.txt)
 
+[![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
 [![Lizenz: AGPL v3](https://img.shields.io/badge/Lizenz-AGPL%20v3-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![Pytest: 160 passed](https://img.shields.io/badge/pytest-160%20passed-brightgreen.svg)](tests/)
+[![Pytest: 220 passed](https://img.shields.io/badge/pytest-220%20passed-brightgreen.svg)](tests/)
 [![UI: PySide6](https://img.shields.io/badge/UI-PySide6-informational.svg)](src/gui/)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
+[![Sicherheit: Policy](https://img.shields.io/badge/Sicherheit-Policy-blue.svg)](SECURITY.md)
 [![Datenschutz: Local--First](https://img.shields.io/badge/Datenschutz-Local--First-blueviolet.svg)](PRIVACY_POLICY.md)
+[![Umbrella: open--bricks](https://img.shields.io/badge/Umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
 
 > [!NOTE]
 > **Für KI-Agenten & LLMs:** Maschinenlesbarer Architekturkontext, Suchbegriffe und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt.
@@ -19,6 +22,15 @@
 
 
 ExplorerPro ist ein lokaler Desktop-Dateimanager für Power User. Die App bündelt Mehrtab-Dateibrowser, Vorschau, Datenschutzprüfung, Duplikatsuche, Synchronisation, App-Launcher, Prompt-Sammlung und einen leichten Code-Editor in einer PySide6-Oberfläche.
+
+| Thema | Ressource |
+|---|---|
+| Starten | `python src/main.py` oder `START_ExplorerPro.bat` |
+| Abhängigkeiten | `pip install -r requirements.txt` |
+| Tests | `python -m pytest -q` |
+| Sicherheit | [SECURITY.md](SECURITY.md) |
+| Dokumentation | [ARCHITEKTUR.md](ARCHITEKTUR.md) · [PORTIERUNGSPLAN.md](PORTIERUNGSPLAN.md) · [PRIVACY_POLICY.md](PRIVACY_POLICY.md) |
+| Changelog | [CHANGELOG.md](CHANGELOG.md) |
 
 ## Funktionen
 

@@ -3,25 +3,33 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [Unreleased]
+## [1.0.3] - 2026-08-23
 
 ### Hinzugefügt / Added
+- **Multi-OS CI Matrix Workflow (`.github/workflows/ci.yml`)**:
+  - Implementierung eines vollständigen GitHub Actions CI-Workflows mit Multi-OS Matrix (`ubuntu-latest`, `windows-latest`, `macos-latest`) und Python Matrix (`['3.10', '3.11', '3.12']`).
+  - Standardisierte offizielle Actions `actions/checkout@v4` und `actions/setup-python@v5` mit Pip-Caching.
+  - Automatisierte Installation der Linux Qt-Laufzeitbibliotheken (`libegl1`, `libgl1`, `libxkbcommon-x11-0`, `libxcb-cursor0`), Bytecode-Kompilierung (`compileall`), Ruff-Linting und Pytest-Vollsuite mit `QT_QPA_PLATFORM: offscreen`.
+- **PEP 621 Standard Classifiers & Projekt-URLs (`pyproject.toml`)**:
+  - Vollständige PEP 621 Standard Classifiers (`Development Status :: 5 - Production/Stable`, `Python 3.10-3.12`, `OS Independent`, `Microsoft Windows`, `POSIX Linux`, `MacOS`, `Qt6 Desktop-Environment`, `AGPLv3`).
+  - Standardisierte Projekt-URLs (`Homepage`, `Repository`, `Issues`, `Bug Tracker`, `Documentation`, `Changelog`, `Security`, `Umbrella`).
+  - Erweiterte Suchbegriffe (Keywords) für Portfolio- und Paketmanager-Auffindbarkeit.
+- **Zweisprachige Sicherheitsrichtlinie (`SECURITY.md`)**:
+  - Vollständige zweisprachige Sicherheitsrichtlinie (Deutsch & Englisch) mit verbindlichen Garantien für Local-First & Zero-Egress (100% Offline-Betrieb, 0 Telemetrie, keine Cloud-Abhängigkeit), unprivilegierten User-Mode (Non-Elevation), destruktive Dateisicherheit (Bestätigungsdialoge, Papierkorb-Integration), isolierte SQLite/FTS5-Datenbanken und host-lokale Datenisolation.
+  - Dokumentierte direkte Sicherheitskontakte (`security@file-bricks.org`, `security@ellmos.ai`, `support@lukasgeiger.com`, `lukas@open-bricks.org`) sowie GitHub Private Vulnerability Reporting Link.
+- **Erweiterte Metadaten- & Governance-Vertragstests (`tests/test_metadata_contract.py`)**:
+  - Neue automatisierte Contract-Tests für CI-Workflow-Integrität (`test_ci_workflow_integrity`), PEP 621 Classifiers & Projekt-URLs (`test_pyproject_pep621_classifiers_and_urls`), zweisprachige Sicherheitsrichtlinie (`test_security_policy`) und Versionsparität (`test_version_parity`).
 - **Barrierefreiheit (A11y) & UX-Verbesserungen (`src/gui/`, `src/modules/`, `tests/test_ui_accessibility.py`)**:
-  - **Datenschutz-Ampel & Statusleiste** (`src/gui/status_bar.py`):
-    - `PrivacyIndicator` erhielt `accessibleName` („Datenschutz-Status"), kontextbezogene `accessibleDescription`, Tastaturfokus (`Qt.FocusPolicy.StrongFocus`) sowie vollständige Tastaturbedienung über `Enter`- und `Leertaste`.
-    - `StatusBarWidget` wurde mit `accessibleName`, `accessibleDescription` und Tooltip-Synchronisation für Pfadanzeige, Element- und Auswahlzähler, Speicherplatzanzeige sowie Synchronisationsstatus ausgestattet.
-  - **Dateibrowser & Navigation** (`src/gui/browser/file_browser.py`):
-    - Tabellenansicht (`self.table`) mit `accessibleName` („Dateiliste"), detaillierter Bedienbeschreibung für Tastaturnavigation und Screen-Reader sowie informativem Tooltip versehen.
-  - **Sidebar-Komponenten** (`src/gui/sidebar/sidebar_main.py`):
-    - `TreePanel` (`self.tree`) mit `accessibleName` („Ordnerbaum") und semantischer Strukturbeschreibung versehen.
-    - `FavoritesPanel` (`self.list`, `self.add_btn`) mit `accessibleName` und Beschreibung für Schnellzugriff ausgestattet.
-  - **Schnell-Editor** (`src/modules/editor/quick_editor.py`):
-    - Werkzeugleisten-Aktionen (`btn_save`, `btn_validate`, `btn_run`, `btn_stop`) mit barrierefreien Namen, Beschreibungen und Tooltips versehen.
-    - `CodeEditor`, Ausgabekonsole sowie Statusanzeigen (Cursor, Encoding, Änderungsstatus) mit barrierefreien Attributen versehen.
-  - **Duplikat-Finder** (`src/modules/indexer/duplicate_finder.py`):
-    - Alle Scan-Optionen (`source_combo`, `folder_btn`, `min_size_spin`, `scan_btn`, `cancel_btn`), die Duplikat-Ergebnisliste (`self.tree`) und Aktions-Buttons (`select_all_btn`, `select_newest_btn`, `select_oldest_btn`, `delete_btn`) mit `accessibleName`, `accessibleDescription` und Tooltips ausgestattet.
-  - **Automatisierte Testsuite** (`tests/test_ui_accessibility.py`):
-    - 6 neue Integrationstests zur lückenlosen Verifikation aller A11y-Attribute, Tastatur-Interaktionen und dynamischen Statusaktualisierungen.
+  - **Datenschutz-Ampel & Statusleiste** (`src/gui/status_bar.py`): `PrivacyIndicator` mit `accessibleName`, `accessibleDescription`, Tastaturfokus (`StrongFocus`) und Tastaturbedienung (`Enter`/`Leertaste`); `StatusBarWidget` mit barrierefreien Attributen und dynamischer Tooltip-Synchronisation.
+  - **Dateibrowser & Navigation** (`src/gui/browser/file_browser.py`): Tabellenansicht (`self.table`) mit `accessibleName`, Bedienungsanleitung für Screen-Reader und informativen Tooltips versehen.
+  - **Sidebar-Komponenten** (`src/gui/sidebar/sidebar_main.py`): `TreePanel` und `FavoritesPanel` mit `accessibleName` und Strukturbeschreibungen versehen.
+  - **Schnell-Editor** (`src/modules/editor/quick_editor.py`): Werkzeugleisten-Aktionen und Statusanzeigen mit barrierefreien Namen, Beschreibungen und Tooltips versehen.
+  - **Duplikat-Finder** (`src/modules/indexer/duplicate_finder.py`): Alle Scan-Optionen, Ergebnisbaum und Aktionsschaltflächen mit barrierefreien Attributen versehen.
+  - **Automatisierte Testsuite** (`tests/test_ui_accessibility.py`): 6 Integrationstests zur Verifikation aller A11y-Attribute und Tastatur-Interaktionen.
+
+### Behoben / Fixed
+- **Code-Hygiene & Linting (`translator.py`, `tests/`)**:
+  - Unbenutzte Imports und uneindeutige Variablennamen (`l` -> `lang_code`) bereinigt. Ruff-Prüfung läuft mit 0 Fehlern über die gesamte Codebasis.
 
 ## [1.0.2] - 2026-08-21
 

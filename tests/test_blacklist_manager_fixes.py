@@ -9,7 +9,6 @@ import json
 import os
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 SRC_DIR = Path(__file__).resolve().parents[1] / "src"
 if str(SRC_DIR) not in sys.path:
@@ -73,8 +72,6 @@ class TestImportNanFix:
 
     def test_nan_skipped_from_csv(self, tmp_path):
         """CSV mit leerer Zeile (→ pandas NaN → 'nan') darf nicht importiert werden."""
-        import pandas as pd
-
         csv_file = tmp_path / "terms.csv"
         # Leere Zeile erzeugt in pandas NaN, astype(str) macht daraus 'nan'
         csv_file.write_text("foo\n\nbar\n", encoding="utf-8")
