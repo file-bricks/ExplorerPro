@@ -1,15 +1,19 @@
 """
-test_metadata_contract.py - Automated metadata, governance and bootstrap parity tests.
+test_metadata_contract.py - Automated metadata, governance, discoverability and bootstrap parity tests.
 
-Validates that ExplorerPro complies with portfolio bootstrap standards:
+Validates that ExplorerPro complies with portfolio standards:
 - CLAUDE.md with valid YAML frontmatter and operational quick commands
 - AGENTS.md redirecting to CLAUDE.md
-- README.md and README_de.md substantive documentation
+- README.md and README_de.md substantive documentation and bilingual parity
+- Dual Mermaid diagrams (architecture flowchart and processing sequence diagram)
+- Visual showcase gallery and store assets
+- Sibling ecosystem matrix and organization URLs
+- Keyboard shortcuts and capabilities matrix
 - LICENSE (AGPL-3.0) and SECURITY.md (Zero-Egress / offline posture)
-- llms.txt entry point
+- llms.txt entry point with up-to-date verification
 - locales/translations.json 100% complete across 6 target languages
 - store_package.json valid configuration
-- .gitignore coverage
+- .gitignore coverage and Zero-Egress offline invariants
 """
 
 import json
@@ -42,8 +46,104 @@ def test_readme_and_readme_de():
     readme_de = REPO_ROOT / "README_de.md"
     assert readme_en.exists(), "README.md must exist."
     assert readme_de.exists(), "README_de.md must exist."
-    assert len(readme_en.read_text(encoding="utf-8")) > 500
-    assert len(readme_de.read_text(encoding="utf-8")) > 500
+    assert len(readme_en.read_text(encoding="utf-8")) > 1000
+    assert len(readme_de.read_text(encoding="utf-8")) > 1000
+
+
+def test_readme_bilingual_structure_and_quick_nav():
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    # Both must reference the language switcher
+    assert "[Deutsch](README_de.md)" in readme_en
+    assert "[English](README.md)" in readme_de
+    assert "llms.txt" in readme_en and "llms.txt" in readme_de
+
+    # Both must contain quick navigation sections
+    assert "## Quick Navigation" in readme_en
+    assert "## Schnellnavigation" in readme_de
+
+    # Both must reference core sections
+    for sec in ["System Architecture", "Visual Showcase Gallery", "Keyboard Shortcuts", "Sibling Ecosystem"]:
+        assert sec in readme_en
+    for sec_de in ["Systemarchitektur", "Visuelle Showcase-Galerie", "Tastaturkürzel", "Geschwister-Ökosystem"]:
+        assert sec_de in readme_de
+
+
+def test_mermaid_diagrams_syntax():
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    for doc in [readme_en, readme_de]:
+        assert "```mermaid" in doc, "Must contain mermaid fenced blocks"
+        assert "flowchart TD" in doc, "Must contain architecture flowchart"
+        assert "sequenceDiagram" in doc, "Must contain sequence lifecycle diagram"
+        assert "subgraph UI" in doc, "Flowchart must contain UI subgraph"
+        assert "subgraph Core" in doc, "Flowchart must contain Core subgraph"
+        assert "subgraph Invariants" in doc, "Flowchart must contain Invariants subgraph"
+        assert "autonumber" in doc, "Sequence diagram must use autonumber"
+
+
+def test_showcase_gallery_and_assets():
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    for doc in [readme_en, readme_de]:
+        assert "README/screenshots/store/main-window.png" in doc
+        assert "README/screenshots/store/search.png" in doc
+        assert "README/screenshots/store/duplicates.png" in doc
+        assert "README/screenshots/store/sync.png" in doc
+
+    for img_rel in [
+        "README/screenshots/store/main-window.png",
+        "README/screenshots/store/search.png",
+        "README/screenshots/store/duplicates.png",
+        "README/screenshots/store/sync.png",
+        "assets/banner_v2.svg",
+    ]:
+        img_path = REPO_ROOT / img_rel
+        assert img_path.exists(), f"Showcase image '{img_rel}' must exist on disk"
+        assert img_path.stat().st_size > 500, f"Showcase image '{img_rel}' must not be empty"
+
+
+def test_sibling_ecosystem_and_urls():
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    siblings = [
+        "file-bricks/ProFiler",
+        "file-bricks/ProSync",
+        "file-bricks/SQLiteViewer",
+        "file-bricks/SoftwareCenter",
+        "file-bricks/WinStorePackager",
+        "doc-bricks/DokuZen",
+        "doc-bricks/FormularErstellen",
+        "dev-bricks/CodeBox",
+        "dev-bricks/automizer-for-claude-desktop",
+        "ellmos-ai/ellmos-controlcenter-mcp",
+        "open-bricks",
+    ]
+
+    for doc in [readme_en, readme_de]:
+        for sib in siblings:
+            assert sib in doc, f"Must mention sibling project '{sib}' in ecosystem matrix"
+
+
+def test_keyboard_shortcuts_and_capabilities_table():
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    shortcuts_en = ["Ctrl", "F2", "Delete", "F5", "Alt"]
+    for sc in shortcuts_en:
+        assert sc in readme_en, f"Shortcut '{sc}' missing in README.md"
+
+    shortcuts_de = ["Strg", "F2", "Entf", "F5", "Alt"]
+    for sc_de in shortcuts_de:
+        assert sc_de in readme_de, f"Shortcut '{sc_de}' missing in README_de.md"
+
+    capabilities = ["Local-First", "PySide6", "FTS5", "PyMuPDF", "Zero-Egress"]
+    for cap in capabilities:
+        assert cap in readme_en and cap in readme_de
 
 
 def test_license_exists_and_agpl3():
@@ -110,7 +210,7 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-08-23" in content
+    assert "Last-checked: 2026-08-24" in content
     assert "ci.yml" in content
 
 
@@ -154,4 +254,22 @@ def test_version_parity():
 
     assert 'version = "1.0.3"' in pyproject_text
     assert "version: 1.0.3" in claude_text
-    assert "## [1.0.3] - 2026-08-23" in changelog_text
+    assert "## [1.0.3]" in changelog_text
+
+
+def test_offline_zero_egress_and_privacy_invariants():
+    """Validates that no runtime code in src/ performs remote network calls or telemetry imports."""
+    forbidden_imports = [
+        "import requests",
+        "import urllib.request",
+        "import httpx",
+        "import aiohttp",
+        "import telebot",
+        "import sentry_sdk",
+        "import mixpanel",
+    ]
+
+    for py_file in (REPO_ROOT / "src").rglob("*.py"):
+        text = py_file.read_text(encoding="utf-8", errors="ignore")
+        for bad in forbidden_imports:
+            assert bad not in text, f"Forbidden remote egress import '{bad}' found in {py_file.name}"

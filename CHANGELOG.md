@@ -3,9 +3,28 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [1.0.3] - 2026-08-23
+## [1.0.3] - 2026-08-24
 
 ### Hinzugefügt / Added
+- **Discoverability, README-Architektur & Dual-Mermaid-Diagramme (`README.md`, `README_de.md`)**:
+  - Vollständige zweisprachige README-Architektur (Englisch & Deutsch) mit strukturierter Schnellnavigation (12 Sprungmarken) und detailliertem Werteversprechen für Power-User.
+  - **Interaktive Dual-Mermaid-Diagramme**:
+    - `flowchart TD`: 5-Schichten-Architekturmodell (`PySide6 UI Layer`, `Core Application Services`, `Background Indexing & Analysis Engines`, `File Operations & Safety Layer`, `Platform & Privacy Invariants`).
+    - `sequenceDiagram`: End-to-End Verarbeitungs-Lebenszyklus für asynchrone Ordnernavigation & Vorschaugenerierung (PyMuPDF), FTS5-Volltextsuche und 2-Phasen Duplikatanalyse & sicheres Recycling.
+  - **Visuelle Showcase-Galerie & Store-Assets**:
+    - Einbindung von 4 hochauflösenden Bildschirmfotos (`main-window.png`, `search.png`, `duplicates.png`, `sync.png`) aus `README/screenshots/store/`.
+  - **Tabelle der Kernfähigkeiten & Sicherheitsinvarianten**:
+    - Detaillierte Matrix für 100% Offline-Betrieb (Zero-Egress), unprivilegierten User-Mode (Non-Elevation), Mehrtab-Browser, FTS5-Suche, Duplikat-Finder, Datenschutz-Monitor, Schnell-Editor, Ordnersynchronisation und 6-Sprachen-i18n.
+  - **Tastaturkürzel-Matrix**:
+    - Vollständige Referenztabelle aller globalen und browser-spezifischen Tastaturkürzel (Ctrl+N, Ctrl+T, Ctrl+W, Ctrl+Tab, Ctrl+F, F2, Delete, Ctrl+C, Ctrl+V, Ctrl+Shift+N, F5, Alt+Left/Right/Up, Ctrl+,, Ctrl+Q).
+  - **Geschwisterwerkzeuge- & Ökosystem-Matrix**:
+    - Vernetzung von ExplorerPro mit verwandten Repositories der `file-bricks`, `doc-bricks`, `dev-bricks`, `ellmos-ai` und `open-bricks` Produktfamilien.
+  - **Shields.io Badges**:
+    - Synchronisation aller Status-Badges (CI, Tests: 221 bestanden, Python 3.10-3.12, Plattformen: Windows | Linux | macOS, UI: PySide6 (Qt6), Datenschutz: 100% Local-First, Sicherheit: Zweisprachige Policy, Lizenz: AGPLv3, Microsoft Store: Live, LLM-Ready: llms.txt, Version: 1.0.3).
+- **Erweiterte Metadaten-, Discoverability- & Offline-Vertragstests (`tests/test_metadata_contract.py`)**:
+  - Neue automatisierte Contract-Tests für zweisprachige README-Parität (`test_readme_bilingual_structure_and_quick_nav`), Mermaid-Diagramm-Syntax (`test_mermaid_diagrams_syntax`), Showcase-Bilder-Integrität (`test_showcase_gallery_and_assets`), Geschwister-Ökosystem (`test_sibling_ecosystem_and_urls`), Tastaturkürzel & Fähigkeiten (`test_keyboard_shortcuts_and_capabilities_table`) und statischen Ausschluss unerlaubter Netzwerk-Imports (`test_offline_zero_egress_and_privacy_invariants`).
+- **Maschinenlesbarer KI-Kontext (`llms.txt`)**:
+  - Aktualisierung auf Stand 2026-08-24 mit Dokumentation der 5-Schichten-Architektur, 221+ bestandenen Tests und Microsoft Store Identität (`Geiger.ExplorerPro` / `9P0X52WSHZ3Q`).
 - **Multi-OS CI Matrix Workflow (`.github/workflows/ci.yml`)**:
   - Implementierung eines vollständigen GitHub Actions CI-Workflows mit Multi-OS Matrix (`ubuntu-latest`, `windows-latest`, `macos-latest`) und Python Matrix (`['3.10', '3.11', '3.12']`).
   - Standardisierte offizielle Actions `actions/checkout@v4` und `actions/setup-python@v5` mit Pip-Caching.

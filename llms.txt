@@ -2,58 +2,63 @@
 
 Canonical repository: https://github.com/file-bricks/ExplorerPro
 Owner: file-bricks
-Primary language: Python
-Primary UI stack: PySide6
+Primary language: Python (3.10--3.12)
+Primary UI stack: PySide6 (Qt 6)
 License: AGPL-3.0
+Microsoft Store Identity: Geiger.ExplorerPro (Store-ID: 9P0X52WSHZ3Q)
 
-Last-checked: 2026-08-23
+Last-checked: 2026-08-24
 
 ## Search Phrases
 
 - file explorer Python
-- PySide6 file manager
-- local-first file browser desktop
-- privacy-aware file explorer Windows
-- desktop duplicate finder Python
-- Qt file browser multi-tab
+- PySide6 file manager desktop
+- local-first file browser multi-tab
+- privacy-aware file explorer Windows Linux macOS
+- desktop duplicate finder Python FTS5
+- Qt6 file browser preview panel
 - file explorer PySide6 AGPL
 
 ## Audience
 
-Power users and developers who want a local-first, privacy-aware desktop file explorer. Useful for anyone managing large file collections, scanning for duplicates, or integrating AI prompt workflows into their local file management.
+Power users, developers, and researchers who require a local-first, privacy-aware desktop file explorer suite with multi-tab browsing, instant multi-format previews, SQLite FTS5 search, hash-based duplicate detection, and built-in editor and sync tools.
 
 ## Disambiguation
 
-ExplorerPro is a local desktop application (PySide6/Python). It is not:
+ExplorerPro is a local desktop application (PySide6/Python). It is NOT:
 - A cloud storage client or web file manager
-- A replacement for Windows Explorer (no shell integration)
-- A mobile app
-- Related to Internet Explorer or any browser product
+- A replacement for Windows Explorer system shell integration
+- A mobile application
+- Connected to external telemetry or cloud analytics
 
 ## Summary
 
-ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, file preview, privacy checks, duplicate detection, folder sync, app launching, prompt management, and a lightweight code editor.
+ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, multi-format file preview (PDF, images, syntax-highlighted source code, markdown), privacy checks, SQLite FTS5 full-text indexing, duplicate detection, folder sync, app launching, prompt management, and a lightweight code editor in a single native desktop interface.
 
-## Current Scope
+## Current Scope & Architecture
 
-- Primary platform: Windows desktop.
-- Source/build smoke targets: macOS and Linux.
-- Companion decision: no separate Web/PWA viewer without a new, evidenced usecase; the local redacted JSON contract remains available.
-- Non-goals: cloud sync, web upload service, and native mobile file-manager clone; any future companion is limited to local redacted exports.
-- Current release gates: ExplorerPro MSIX and WACK remain open because the Windows SDK/App Certification Kit is unavailable locally; the four redacted store screenshots already exist.
+- **Primary platform:** Windows 10/11 desktop (Microsoft Store live).
+- **Source/build smoke targets:** Ubuntu Linux and macOS.
+- **5-Layer Architecture:**
+  1. *PySide6 Desktop UI Layer:* MainWindow, FileBrowser, PreviewPanel, Sidebar, QuickEditor, DuplicateFinder, SyncPanel, PrivacyIndicator.
+  2. *Core Application Services:* EventBus, SettingsManager, ThemeEngine, Translator (6 languages: DE, EN, ES, ZH, JA, RU).
+  3. *Background Engines:* SQLite FTS5 WAL Full-Text Search, 2-phase MD5/SHA-256 HashEngine, PrivacyMonitor Regex Engine, SearchWorker QThread.
+  4. *Safety Guard Layer:* Safe File Operations (Recycle Bin), Collision-Free Paste Engine, Sanitized Workspace Exporter (`explorerpro-workspace-v1`).
+  5. *Platform & Privacy Invariants:* 100% Offline Zero-Egress, Non-Elevation User Mode, Multi-OS Parity.
+- **Visual Assets & Store Showcase:** Redacted high-resolution showcase in `README/screenshots/store/` (main-window, search, duplicates, sync).
 
 ## Important Files
 
-- `README.md`: English GitHub entry point.
-- `README_de.md`: German entry point.
+- `README.md`: English GitHub entry point with badges, quick navigation, showcase gallery, dual Mermaid diagrams, and ecosystem matrix.
+- `README_de.md`: German entry point with full bilingual parity.
 - `SECURITY.md`: Bilingual security policy with local-first, zero-egress, and non-elevation guarantees.
 - `PORTIERUNGSPLAN.md`: Platform, store-readiness, and companion plan.
 - `EXPORTFORMAT.md`: Implemented `explorerpro-workspace-v1` redacted workspace exchange contract.
 - `PRIVACY_POLICY.md`: Repository privacy posture.
 - `src/main.py`: Application entry point.
-- `src/gui/`: Main UI components.
+- `src/gui/`: Main UI components and PySide6 widgets.
 - `src/modules/indexer/duplicate_finder.py`: Duplicate-finder UI and actions.
-- `tests/`: Smoke and regression tests.
+- `tests/`: Automated test suite (221+ unit, integration, accessibility, and metadata contract tests).
 
 ## Verification
 
@@ -63,6 +68,9 @@ Use these local checks before publishing changes:
 python -m pytest -q
 python -m compileall -q src tests manage_translations.py translator.py
 python -m ruff check .
+python tests/source_platform_smoke.py
+python manage_translations.py .
+python scripts/check_store_readiness.py
 ```
 
-The GitHub workflow `CI` (`.github/workflows/ci.yml`) runs the test matrix across Windows, macOS, and Ubuntu on Python 3.10, 3.11, and 3.12.
+The GitHub workflow `CI` (`.github/workflows/ci.yml`) runs the test matrix across Windows, macOS, and Ubuntu on Python 3.10, 3.11, and 3.12 with `QT_QPA_PLATFORM: offscreen`.

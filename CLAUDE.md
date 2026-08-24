@@ -4,9 +4,9 @@ type: project-docs
 profile: STANDARD
 version: 1.0.3
 created: 2026-07-22
-updated: 2026-08-23
-reason_last_change: "Path A Hygiene Run: Multi-OS CI Workflow, PEP 621 Classifiers & URLs, Bilingual Security Policy & Contract Tests"
-last_verified: 2026-08-23
+updated: 2026-08-24
+reason_last_change: "Path B Marketing & Discoverability: Dual Mermaid Diagrams, Showcase Gallery, Capability & Sibling Matrix, Contract Tests"
+last_verified: 2026-08-24
 author: Lukas Geiger
 anthropic_compatible: true
 description: |
