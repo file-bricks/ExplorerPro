@@ -21,6 +21,7 @@ from gui.browser.file_browser import FileBrowser
 from gui.sidebar.sidebar_main import TreePanel, FavoritesPanel
 from modules.editor.quick_editor import QuickEditorDialog
 from modules.indexer.duplicate_finder import DuplicateFinderDialog
+from modules.sync.sync_manager import SyncPair, SyncPairDialog, SyncPanel
 
 
 def test_privacy_indicator_accessibility_and_keyboard():
@@ -118,3 +119,32 @@ def test_duplicate_finder_accessibility():
         assert dialog.delete_btn.accessibleName() == "Ausgewählte Duplikate löschen"
     finally:
         dialog.close()
+
+
+def test_sync_controls_accessibility(tmp_path, monkeypatch):
+    monkeypatch.setattr(Path, "home", classmethod(lambda cls: tmp_path))
+    dialog = SyncPairDialog()
+    panel = SyncPanel()
+    try:
+        assert dialog.name_edit.accessibleName() == "Name des Synchronisationspaars"
+        assert dialog.source_edit.accessibleName() == "Quellordner"
+        assert dialog.source_btn.accessibleName() == "Quellordner auswählen"
+        assert dialog.target_edit.accessibleName() == "Zielordner"
+        assert dialog.target_btn.accessibleName() == "Zielordner auswählen"
+        assert dialog.direction_combo.accessibleName() == "Synchronisationsrichtung"
+        assert dialog.conflict_combo.accessibleName() == "Konfliktlösung"
+        assert dialog.exclude_edit.accessibleName() == "Ausgeschlossene Dateimuster"
+
+        assert panel.add_btn.accessibleName() == "Neues Synchronisationspaar erstellen"
+        assert panel.pair_list.accessibleName() == "Synchronisationspaare"
+        assert panel.sync_btn.accessibleName() == "Synchronisation starten"
+        assert panel.preview_btn.accessibleName() == "Synchronisationsvorschau öffnen"
+
+        panel.sync_pairs = [
+            SyncPair(id="sync-1", name="Dokumente", source="/source", target="/target", direction="target_to_source")
+        ]
+        panel._refresh_list()
+        assert "Ziel zu Quelle" in panel.pair_list.item(0).toolTip()
+    finally:
+        dialog.close()
+        panel.close()

@@ -398,26 +398,38 @@ class SyncPairDialog(QDialog):
 
         # Name
         self.name_edit = QLineEdit()
+        self.name_edit.setAccessibleName("Name des Synchronisationspaars")
+        self.name_edit.setAccessibleDescription("Eindeutiger Name für dieses Synchronisationspaar")
         form.addRow("Name:", self.name_edit)
 
         # Source
         source_layout = QHBoxLayout()
         self.source_edit = QLineEdit()
-        source_btn = QPushButton("...")
-        source_btn.setFixedWidth(30)
-        source_btn.clicked.connect(lambda: self._browse('source'))
+        self.source_edit.setAccessibleName("Quellordner")
+        self.source_edit.setAccessibleDescription("Ordner, aus dem Dateien abhängig von der gewählten Richtung übertragen werden")
+        self.source_btn = QPushButton("...")
+        self.source_btn.setFixedWidth(30)
+        self.source_btn.setAccessibleName("Quellordner auswählen")
+        self.source_btn.setAccessibleDescription("Öffnet die Ordnerauswahl für den Quellordner")
+        self.source_btn.setToolTip("Quellordner auswählen")
+        self.source_btn.clicked.connect(lambda: self._browse('source'))
         source_layout.addWidget(self.source_edit)
-        source_layout.addWidget(source_btn)
+        source_layout.addWidget(self.source_btn)
         form.addRow("Quellordner:", source_layout)
 
         # Target
         target_layout = QHBoxLayout()
         self.target_edit = QLineEdit()
-        target_btn = QPushButton("...")
-        target_btn.setFixedWidth(30)
-        target_btn.clicked.connect(lambda: self._browse('target'))
+        self.target_edit.setAccessibleName("Zielordner")
+        self.target_edit.setAccessibleDescription("Ordner, in den Dateien abhängig von der gewählten Richtung übertragen werden")
+        self.target_btn = QPushButton("...")
+        self.target_btn.setFixedWidth(30)
+        self.target_btn.setAccessibleName("Zielordner auswählen")
+        self.target_btn.setAccessibleDescription("Öffnet die Ordnerauswahl für den Zielordner")
+        self.target_btn.setToolTip("Zielordner auswählen")
+        self.target_btn.clicked.connect(lambda: self._browse('target'))
         target_layout.addWidget(self.target_edit)
-        target_layout.addWidget(target_btn)
+        target_layout.addWidget(self.target_btn)
         form.addRow("Zielordner:", target_layout)
 
         # Richtung
@@ -427,6 +439,8 @@ class SyncPairDialog(QDialog):
             "Ziel → Quelle",
             "Bidirektional ↔"
         ])
+        self.direction_combo.setAccessibleName("Synchronisationsrichtung")
+        self.direction_combo.setAccessibleDescription("Legt fest, ob Dateien von Quelle zu Ziel, von Ziel zu Quelle oder in beide Richtungen übertragen werden")
         form.addRow("Richtung:", self.direction_combo)
 
         # Konflikt-Lösung
@@ -437,15 +451,20 @@ class SyncPairDialog(QDialog):
             "Quelle gewinnt immer",
             "Ziel gewinnt immer"
         ])
+        self.conflict_combo.setAccessibleName("Konfliktlösung")
+        self.conflict_combo.setAccessibleDescription("Legt fest, welche Datei bei unterschiedlichen Versionen behalten wird")
         form.addRow("Bei Konflikten:", self.conflict_combo)
 
         # Hidden Files
         self.hidden_cb = QCheckBox("Versteckte Dateien einbeziehen")
+        self.hidden_cb.setAccessibleDescription("Bezieht versteckte Dateien und Ordner in die Synchronisation ein")
         form.addRow("", self.hidden_cb)
 
         # Exclude Patterns
         self.exclude_edit = QLineEdit()
         self.exclude_edit.setPlaceholderText("*.tmp, *.bak, ~* (Komma-getrennt)")
+        self.exclude_edit.setAccessibleName("Ausgeschlossene Dateimuster")
+        self.exclude_edit.setAccessibleDescription("Kommagetrennte Muster für Dateien und Ordner, die nicht synchronisiert werden")
         form.addRow("Ausschließen:", self.exclude_edit)
 
         layout.addLayout(form)
@@ -549,16 +568,20 @@ class SyncPanel(QWidget):
         header.addWidget(QLabel("🔄 Synchronisation"))
         header.addStretch()
 
-        add_btn = QToolButton()
-        add_btn.setText("➕")
-        add_btn.setToolTip("Neues Sync-Paar")
-        add_btn.clicked.connect(self._add_pair)
-        header.addWidget(add_btn)
+        self.add_btn = QToolButton()
+        self.add_btn.setText("➕")
+        self.add_btn.setToolTip("Neues Sync-Paar")
+        self.add_btn.setAccessibleName("Neues Synchronisationspaar erstellen")
+        self.add_btn.setAccessibleDescription("Öffnet den Dialog zum Anlegen eines neuen Synchronisationspaars")
+        self.add_btn.clicked.connect(self._add_pair)
+        header.addWidget(self.add_btn)
 
         layout.addLayout(header)
 
         # Sync-Paare Liste
         self.pair_list = QListWidget()
+        self.pair_list.setAccessibleName("Synchronisationspaare")
+        self.pair_list.setAccessibleDescription("Liste der gespeicherten Synchronisationspaare; mit Doppelklick wird eine Vorschau geöffnet")
         self.pair_list.itemDoubleClicked.connect(self._run_sync)
         self.pair_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.pair_list.customContextMenuRequested.connect(self._show_context_menu)
@@ -566,22 +589,28 @@ class SyncPanel(QWidget):
 
         # Progress
         self.progress_bar = QProgressBar()
+        self.progress_bar.setAccessibleName("Fortschritt der Synchronisationsanalyse")
         self.progress_bar.hide()
         layout.addWidget(self.progress_bar)
 
         self.status_label = QLabel("")
         self.status_label.setStyleSheet("font-size: 11px; color: gray;")
+        self.status_label.setAccessibleName("Synchronisationsstatus")
         layout.addWidget(self.status_label)
 
         # Buttons
         btn_layout = QHBoxLayout()
 
         self.sync_btn = QPushButton("🔄 Sync starten")
+        self.sync_btn.setAccessibleName("Synchronisation starten")
+        self.sync_btn.setAccessibleDescription("Startet die Synchronisation des ausgewählten Paars nach einer Bestätigung")
         self.sync_btn.clicked.connect(self._run_selected_sync)
         self.sync_btn.setEnabled(False)
         btn_layout.addWidget(self.sync_btn)
 
         self.preview_btn = QPushButton("👁️ Vorschau")
+        self.preview_btn.setAccessibleName("Synchronisationsvorschau öffnen")
+        self.preview_btn.setAccessibleDescription("Analysiert die Änderungen des ausgewählten Paars ohne Dateien zu übertragen")
         self.preview_btn.clicked.connect(self._preview_sync)
         self.preview_btn.setEnabled(False)
         btn_layout.addWidget(self.preview_btn)
@@ -629,9 +658,14 @@ class SyncPanel(QWidget):
             }
             icon = direction_icons.get(pair.direction, '→')
 
+            direction_text = {
+                'source_to_target': 'Quelle zu Ziel',
+                'target_to_source': 'Ziel zu Quelle',
+                'bidirectional': 'Bidirektional'
+            }.get(pair.direction, 'Quelle zu Ziel')
             item = QListWidgetItem(f"🔄 {pair.name} {icon}")
             item.setData(Qt.ItemDataRole.UserRole, pair)
-            item.setToolTip(f"{pair.source}\n{icon}\n{pair.target}")
+            item.setToolTip(f"{direction_text}\n{pair.source}\n{icon}\n{pair.target}")
 
             if not pair.enabled:
                 item.setForeground(Qt.GlobalColor.gray)
@@ -770,18 +804,23 @@ class SyncPanel(QWidget):
 
         layout = QVBoxLayout(dialog)
 
-        layout.addWidget(QLabel(f"📊 {len(actions)} Änderungen gefunden:"))
+        summary = QLabel(f"📊 {len(actions)} Änderungen gefunden:")
+        summary.setAccessibleName("Anzahl geplanter Synchronisationsänderungen")
+        layout.addWidget(summary)
 
         table = QTableWidget()
         table.setColumnCount(4)
         table.setHorizontalHeaderLabels(["Aktion", "Datei", "Richtung", "Grund"])
         table.setRowCount(len(actions))
         table.setAlternatingRowColors(True)
+        table.setAccessibleName("Geplante Synchronisationsänderungen")
+        table.setAccessibleDescription("Tabelle mit Aktion, Datei, Richtung und Grund jeder geplanten Synchronisationsänderung")
 
         for i, action in enumerate(actions):
             table.setItem(i, 0, QTableWidgetItem(action.action))
             table.setItem(i, 1, QTableWidgetItem(Path(action.source_path).name))
-            table.setItem(i, 2, QTableWidgetItem(action.direction))
+            direction_text = "Zu Ziel" if action.direction == "to_target" else "Zu Quelle"
+            table.setItem(i, 2, QTableWidgetItem(direction_text))
             table.setItem(i, 3, QTableWidgetItem(action.reason))
 
         table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
@@ -791,10 +830,13 @@ class SyncPanel(QWidget):
         btn_layout = QHBoxLayout()
 
         sync_btn = QPushButton("🔄 Jetzt synchronisieren")
+        sync_btn.setAccessibleName("Vorschauänderungen synchronisieren")
+        sync_btn.setAccessibleDescription("Überträgt alle in der Vorschau gezeigten Änderungen")
         sync_btn.clicked.connect(lambda: self._execute_from_preview(pair, dialog))
         btn_layout.addWidget(sync_btn)
 
         close_btn = QPushButton("Schließen")
+        close_btn.setAccessibleDescription("Schließt die Vorschau ohne Dateien zu übertragen")
         close_btn.clicked.connect(dialog.close)
         btn_layout.addWidget(close_btn)
 
