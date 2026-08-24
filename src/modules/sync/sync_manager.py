@@ -108,76 +108,158 @@ class SyncWorker(QThread):
         """Analysiert Unterschiede zwischen Source und Target"""
         source = Path(self.sync_pair.source)
         target = Path(self.sync_pair.target)
+        direction = self.sync_pair.direction
+        conflict = self.sync_pair.conflict_resolution
 
-        if not source.exists():
-            self.error.emit(f"Quellordner existiert nicht: {source}")
-            return
+        if direction == "target_to_source":
+            if not target.exists():
+                self.error.emit(f"Zielordner existiert nicht: {target}")
+                return
+        else:
+            if not source.exists():
+                self.error.emit(f"Quellordner existiert nicht: {source}")
+                return
 
         # Alle Dateien sammeln
-        source_files = self._get_files(source)
+        source_files = self._get_files(source) if source.exists() else {}
         target_files = self._get_files(target) if target.exists() else {}
 
         total = len(source_files) + len(target_files)
         current = 0
 
-        # Source -> Target prüfen
-        for rel_path, source_info in source_files.items():
-            if self._cancelled:
-                return
+        # Source -> Target prüfen (relevant für source_to_target und bidirectional)
+        if direction in ("source_to_target", "bidirectional"):
+            for rel_path, source_info in source_files.items():
+                if self._cancelled:
+                    return
 
-            current += 1
-            self.progress.emit(current, total, str(rel_path))
+                current += 1
+                self.progress.emit(current, total, str(rel_path))
 
-            target_path = target / rel_path
-            target_info = target_files.get(rel_path)
+                target_path = target / rel_path
+                target_info = target_files.get(rel_path)
 
-            if target_info is None:
-                # Datei existiert nicht im Ziel
-                action = SyncAction(
-                    source_path=str(source / rel_path),
-                    target_path=str(target_path),
-                    action='copy',
-                    direction='to_target',
-                    reason='Neu in Quelle',
-                    size=source_info['size']
-                )
-                self.actions.append(action)
-                self.action_found.emit(action)
+                if target_info is None:
+                    # Datei existiert nicht im Ziel
+                    action = SyncAction(
+                        source_path=str(source / rel_path),
+                        target_path=str(target_path),
+                        action='copy',
+                        direction='to_target',
+                        reason='Neu in Quelle',
+                        size=source_info['size']
+                    )
+                    self.actions.append(action)
+                    self.action_found.emit(action)
 
-            elif source_info['mtime'] > target_info['mtime']:
-                # Quelle ist neuer
-                action = SyncAction(
-                    source_path=str(source / rel_path),
-                    target_path=str(target_path),
-                    action='copy',
-                    direction='to_target',
-                    reason='Quelle neuer',
-                    size=source_info['size']
-                )
-                self.actions.append(action)
-                self.action_found.emit(action)
+                elif direction == "source_to_target":
+                    should_copy = False
+                    reason = "Quelle aktualisiert"
+                    if conflict == "larger_wins" and source_info['size'] > target_info['size']:
+                        should_copy = True
+                        reason = "Quelle größer"
+                    elif conflict == "source_wins" and (source_info['mtime'] != target_info['mtime'] or source_info['size'] != target_info['size']):
+                        should_copy = True
+                        reason = "Quelle gewinnt"
+                    elif conflict == "target_wins":
+                        should_copy = False
+                    elif source_info['mtime'] > target_info['mtime']:
+                        should_copy = True
+                        reason = "Quelle neuer"
 
-            elif source_info['mtime'] < target_info['mtime'] and \
-                 self.sync_pair.direction == 'bidirectional':
-                # Ziel ist neuer (bei bidirektional)
-                action = SyncAction(
-                    source_path=str(source / rel_path),
-                    target_path=str(target_path),
-                    action='copy',
-                    direction='to_source',
-                    reason='Ziel neuer',
-                    size=target_info['size']
-                )
-                self.actions.append(action)
-                self.action_found.emit(action)
+                    if should_copy:
+                        action = SyncAction(
+                            source_path=str(source / rel_path),
+                            target_path=str(target_path),
+                            action='copy',
+                            direction='to_target',
+                            reason=reason,
+                            size=source_info['size']
+                        )
+                        self.actions.append(action)
+                        self.action_found.emit(action)
 
-        # Target -> Source prüfen (für neue Dateien im Ziel bei bidirektional)
-        if self.sync_pair.direction == 'bidirectional':
+                elif direction == "bidirectional":
+                    if conflict == "larger_wins":
+                        if source_info['size'] > target_info['size']:
+                            action = SyncAction(
+                                source_path=str(source / rel_path),
+                                target_path=str(target_path),
+                                action='copy',
+                                direction='to_target',
+                                reason='Quelle größer',
+                                size=source_info['size']
+                            )
+                            self.actions.append(action)
+                            self.action_found.emit(action)
+                        elif target_info['size'] > source_info['size']:
+                            action = SyncAction(
+                                source_path=str(source / rel_path),
+                                target_path=str(target_path),
+                                action='copy',
+                                direction='to_source',
+                                reason='Ziel größer',
+                                size=target_info['size']
+                            )
+                            self.actions.append(action)
+                            self.action_found.emit(action)
+                    elif conflict == "source_wins":
+                        if source_info['mtime'] != target_info['mtime'] or source_info['size'] != target_info['size']:
+                            action = SyncAction(
+                                source_path=str(source / rel_path),
+                                target_path=str(target_path),
+                                action='copy',
+                                direction='to_target',
+                                reason='Quelle gewinnt',
+                                size=source_info['size']
+                            )
+                            self.actions.append(action)
+                            self.action_found.emit(action)
+                    elif conflict == "target_wins":
+                        if source_info['mtime'] != target_info['mtime'] or source_info['size'] != target_info['size']:
+                            action = SyncAction(
+                                source_path=str(source / rel_path),
+                                target_path=str(target_path),
+                                action='copy',
+                                direction='to_source',
+                                reason='Ziel gewinnt',
+                                size=target_info['size']
+                            )
+                            self.actions.append(action)
+                            self.action_found.emit(action)
+                    else:  # newer_wins (default)
+                        if source_info['mtime'] > target_info['mtime']:
+                            action = SyncAction(
+                                source_path=str(source / rel_path),
+                                target_path=str(target_path),
+                                action='copy',
+                                direction='to_target',
+                                reason='Quelle neuer',
+                                size=source_info['size']
+                            )
+                            self.actions.append(action)
+                            self.action_found.emit(action)
+                        elif target_info['mtime'] > source_info['mtime']:
+                            action = SyncAction(
+                                source_path=str(source / rel_path),
+                                target_path=str(target_path),
+                                action='copy',
+                                direction='to_source',
+                                reason='Ziel neuer',
+                                size=target_info['size']
+                            )
+                            self.actions.append(action)
+                            self.action_found.emit(action)
+
+        # Target -> Source prüfen (relevant für target_to_source und bidirectional)
+        if direction in ("target_to_source", "bidirectional"):
             for rel_path, target_info in target_files.items():
                 if self._cancelled:
                     return
 
-                if rel_path not in source_files:
+                source_info = source_files.get(rel_path)
+
+                if source_info is None:
                     current += 1
                     self.progress.emit(current, total, str(rel_path))
 
@@ -191,6 +273,36 @@ class SyncWorker(QThread):
                     )
                     self.actions.append(action)
                     self.action_found.emit(action)
+
+                elif direction == "target_to_source":
+                    current += 1
+                    self.progress.emit(current, total, str(rel_path))
+
+                    should_copy = False
+                    reason = "Ziel aktualisiert"
+                    if conflict == "larger_wins" and target_info['size'] > source_info['size']:
+                        should_copy = True
+                        reason = "Ziel größer"
+                    elif conflict == "target_wins" and (target_info['mtime'] != source_info['mtime'] or target_info['size'] != source_info['size']):
+                        should_copy = True
+                        reason = "Ziel gewinnt"
+                    elif conflict == "source_wins":
+                        should_copy = False
+                    elif target_info['mtime'] > source_info['mtime']:
+                        should_copy = True
+                        reason = "Ziel neuer"
+
+                    if should_copy:
+                        action = SyncAction(
+                            source_path=str(source / rel_path),
+                            target_path=str(target / rel_path),
+                            action='copy',
+                            direction='to_source',
+                            reason=reason,
+                            size=target_info['size']
+                        )
+                        self.actions.append(action)
+                        self.action_found.emit(action)
 
     def _get_files(self, folder: Path) -> Dict[str, dict]:
         """Sammelt alle Dateien in einem Ordner"""
