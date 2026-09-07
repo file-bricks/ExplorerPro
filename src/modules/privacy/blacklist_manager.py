@@ -51,16 +51,24 @@ class BlacklistManager(QObject):
         if self.blacklist_path.exists():
             try:
                 with open(self.blacklist_path, 'r', encoding='utf-8') as f:
-                    self._blacklist = set(json.load(f))
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        self._blacklist = {str(x).strip() for x in data if str(x).strip()}
+                    else:
+                        self._blacklist = set()
             except (OSError, json.JSONDecodeError, TypeError, ValueError):
-                pass
+                self._blacklist = set()
 
         if self.whitelist_path.exists():
             try:
                 with open(self.whitelist_path, 'r', encoding='utf-8') as f:
-                    self._whitelist = set(json.load(f))
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        self._whitelist = {str(x).strip() for x in data if str(x).strip()}
+                    else:
+                        self._whitelist = set()
             except (OSError, json.JSONDecodeError, TypeError, ValueError):
-                pass
+                self._whitelist = set()
 
     def _save(self):
         """Speichert beide Listen"""
@@ -178,6 +186,7 @@ class BlacklistManager(QObject):
             True bei Erfolg
         """
         path = Path(filepath)
+        path.parent.mkdir(parents=True, exist_ok=True)
         source_list = self._blacklist if source == "blacklist" else self._whitelist
 
         try:
@@ -203,9 +212,13 @@ class BlacklistManager(QObject):
 
     def is_blacklisted(self, text: str, case_sensitive: bool = False) -> bool:
         """Prüft, ob der Text Blacklist-Begriffe enthält"""
+        if not text:
+            return False
         check_text = text if case_sensitive else text.lower()
 
         for term in self._blacklist:
+            if not term:
+                continue
             check_term = term if case_sensitive else term.lower()
             if check_term in check_text:
                 return True
@@ -213,9 +226,13 @@ class BlacklistManager(QObject):
 
     def is_whitelisted(self, text: str, case_sensitive: bool = False) -> bool:
         """Prüft, ob der Text Whitelist-Begriffe enthält"""
+        if not text:
+            return False
         check_text = text if case_sensitive else text.lower()
 
         for term in self._whitelist:
+            if not term:
+                continue
             check_term = term if case_sensitive else term.lower()
             if check_term in check_text:
                 return True
@@ -223,10 +240,14 @@ class BlacklistManager(QObject):
 
     def get_matching_blacklist_terms(self, text: str, case_sensitive: bool = False) -> List[str]:
         """Gibt alle im Text gefundenen Blacklist-Begriffe zurück"""
+        if not text:
+            return []
         check_text = text if case_sensitive else text.lower()
         matches = []
 
         for term in self._blacklist:
+            if not term:
+                continue
             check_term = term if case_sensitive else term.lower()
             if check_term in check_text:
                 matches.append(term)

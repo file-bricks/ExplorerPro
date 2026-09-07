@@ -182,8 +182,18 @@ class PrivacyMonitor(QObject):
                 with open(self.config_path, 'r', encoding='utf-8') as f:
                     cfg = json.load(f)
 
-                self.blacklist = set(cfg.get('blacklist', []))
-                self.whitelist = set(cfg.get('whitelist', []))
+                raw_bl = cfg.get('blacklist', [])
+                if isinstance(raw_bl, (list, set)):
+                    self.blacklist = {str(x).strip() for x in raw_bl if str(x).strip()}
+                else:
+                    self.blacklist = set()
+
+                raw_wl = cfg.get('whitelist', [])
+                if isinstance(raw_wl, (list, set)):
+                    self.whitelist = {str(x).strip() for x in raw_wl if str(x).strip()}
+                else:
+                    self.whitelist = set()
+
                 self.pattern_enabled = cfg.get('patterns', self.pattern_enabled)
                 self.case_sensitive = cfg.get('case_sensitive', False)
                 self.whole_words = cfg.get('whole_words', False)
@@ -220,6 +230,9 @@ class PrivacyMonitor(QObject):
 
         # 1. Blacklist-Begriffe
         for item in self.blacklist:
+            if not isinstance(item, str) or not item.strip():
+                continue
+            item = item.strip()
             if item in self.whitelist:
                 continue
 
@@ -298,6 +311,63 @@ class PrivacyMonitor(QObject):
 
     # ===== Prüfung & Anonymisierung =====
 
+    def _collect_matches(self, text: str):
+        """Sucht alle Treffer aktiver Patterns unter Berücksichtigung der Whitelist."""
+        if not text:
+            return [], [], False
+
+        whitelist_check = (
+            {str(t) for t in self.whitelist}
+            if self.case_sensitive
+            else {str(t).lower() for t in self.whitelist}
+        )
+
+        detected = []
+        all_spans = []
+        has_high = False
+
+        for pattern, severity, name in self.compiled_patterns:
+            all_matches = list(pattern.finditer(text))
+            matches = [
+                m for m in all_matches
+                if (m.group() if self.case_sensitive else m.group().lower()) not in whitelist_check
+            ]
+            if matches:
+                detected.append(f"{name}: {len(matches)}x")
+                if severity == "high":
+                    has_high = True
+                for m in matches:
+                    all_spans.append((m.start(), m.end()))
+
+        return detected, all_spans, has_high
+
+    @staticmethod
+    def _redact_spans(text: str, spans: List[tuple[int, int]], placeholder: str = "[***]") -> str:
+        """Ersetzt Zeichenspannen atomar und überschneidungsfrei im Originaltext."""
+        if not spans or not text:
+            return text
+
+        spans_sorted = sorted(spans, key=lambda s: (s[0], -s[1]))
+        merged = []
+        for start, end in spans_sorted:
+            if not merged:
+                merged.append((start, end))
+            else:
+                last_start, last_end = merged[-1]
+                if start <= last_end:
+                    merged[-1] = (last_start, max(last_end, end))
+                else:
+                    merged.append((start, end))
+
+        parts = []
+        last_idx = 0
+        for start, end in merged:
+            parts.append(text[last_idx:start])
+            parts.append(placeholder)
+            last_idx = end
+        parts.append(text[last_idx:])
+        return "".join(parts)
+
     def check_text(self, text: str) -> PrivacyAlert:
         """
         Prüft einen Text auf sensible Daten.
@@ -312,24 +382,8 @@ class PrivacyMonitor(QObject):
                 anonymized_text=text or ""
             )
 
-        detected = []
-        anonymized = text
-        has_high = False
-
-        # Whitelist-Check: Tatsächlich gematchte Inhalte gegen Whitelist prüfen
-        whitelist_lower = {t.lower() for t in self.whitelist}
-
-        # Pattern-Check
-        for pattern, severity, name in self.compiled_patterns:
-            all_matches = list(pattern.finditer(text))
-            # Nur Treffer behalten, deren tatsächlicher Inhalt NICHT in der Whitelist steht
-            matches = [m for m in all_matches if m.group().lower() not in whitelist_lower]
-            if matches:
-                detected.append(f"{name}: {len(matches)}x")
-                for m in matches:
-                    anonymized = anonymized.replace(m.group(), "[***]", 1)
-                if severity == "high":
-                    has_high = True
+        detected, spans, has_high = self._collect_matches(text)
+        anonymized = self._redact_spans(text, spans)
 
         # Status bestimmen
         if not detected:
@@ -337,7 +391,6 @@ class PrivacyMonitor(QObject):
             message = "Keine sensiblen Daten erkannt"
         else:
             # Prüfe Severity
-
             if has_high or len(detected) > 2:
                 status = PrivacyStatus.RED
                 message = f"WARNUNG: {len(detected)} sensible Muster erkannt!"
@@ -354,15 +407,11 @@ class PrivacyMonitor(QObject):
         )
 
     def anonymize(self, text: str) -> str:
-        """Anonymisiert einen Text"""
+        """Anonymisiert einen Text unter Berücksichtigung von Blacklist, Whitelist und Patterns"""
         if not text:
             return ""
-
-        result = text
-        for pattern, severity, name in self.compiled_patterns:
-            result = pattern.sub("[***]", result)
-
-        return result
+        _, spans, _ = self._collect_matches(text)
+        return self._redact_spans(text, spans)
 
     # ===== Clipboard-Überwachung =====
 

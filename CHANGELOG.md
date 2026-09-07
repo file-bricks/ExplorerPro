@@ -3,6 +3,17 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [Unreleased]
+
+### Behoben / Fixed
+- **Datenschutz & Privatsphäre (`src/modules/privacy/privacy_monitor.py`, `src/modules/privacy/blacklist_manager.py`)**:
+  - **Span-basierte Redaktion & Substring-Schutz**: Ersetzung von fehleranfälligem `str.replace` durch atomare, interval-gemergte Zeichenspannen-Redaktion. Verhindert, dass Blacklist-Wörter (z. B. "anna" bei `whole_words=True`) innerhalb unbeteiligter Wörter (z. B. "johanna") fälschlicherweise ersetzt werden und sensible Treffer unmaskiert bleiben.
+  - **Überlappende Muster-Erkennung**: Überlappende Treffer (z. B. E-Mail-Adresse und darin enthaltene Blacklist-Domain) werden sauber zu einem einzigen Platzhalter `[***]` konsolidiert.
+  - **Whitelist-Durchsetzung in `anonymize()`**: Die Methode `anonymize()` respektiert nun ausnahmslos alle Whitelist-Einträge identisch zu `check_text()`.
+  - **Strikte Groß-/Kleinschreibung**: Bei `case_sensitive=True` wird die Whitelist nun exakt unter Berücksichtigung von Groß-/Kleinschreibung ausgewertet.
+  - **Robuste Datei-Exporte & Datenbereinigung**: `BlacklistManager.export_to_file()` erstellt fehlende Elternordner automatisch (`mkdir(parents=True, exist_ok=True)`). Deserialisierte leere/Whitespace-Begriffe werden in `PrivacyMonitor` und `BlacklistManager` gefiltert.
+  - **Automatisierte Regressionstests (`tests/test_privacy_monitor_anonymization.py`)**: 7 neue Tests verifizieren alle behobenen Fehlerfälle.
+
 ## [1.0.3] - 2026-08-24
 
 ### Hinzugefügt / Added
