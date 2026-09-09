@@ -6,9 +6,10 @@ Basiert auf ProFiler V14
 """
 
 import os
+import re
 import sqlite3
 import hashlib
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 from PySide6.QtCore import QThread, Signal
@@ -454,19 +455,56 @@ class FileIndex:
             # Query-Bedingung
             if query:
                 query_conditions = []
-                pattern = f'%{query}%'
+                if use_regex:
+                    flags = 0 if case_sensitive else re.IGNORECASE
+                    try:
+                        compiled_re = re.compile(query, flags)
+                    except re.error as exc:
+                        raise ValueError(f"Ungültiger regulärer Ausdruck: {exc}") from exc
 
-                if search_name:
-                    query_conditions.append('LOWER(f.filename) LIKE LOWER(?)')
-                    params.append(pattern)
+                    def regexp_match(_expr, val):
+                        if val is None:
+                            return False
+                        return bool(compiled_re.search(str(val)))
 
-                if search_content:
-                    query_conditions.append('LOWER(f.text_content) LIKE LOWER(?)')
-                    params.append(pattern)
+                    conn.create_function("REGEXP", 2, regexp_match)
 
-                if search_path:
-                    query_conditions.append('LOWER(f.path) LIKE LOWER(?)')
-                    params.append(pattern)
+                    if search_name:
+                        query_conditions.append('f.filename REGEXP ?')
+                        params.append(query)
+
+                    if search_content:
+                        query_conditions.append('f.text_content REGEXP ?')
+                        params.append(query)
+
+                    if search_path:
+                        query_conditions.append('f.path REGEXP ?')
+                        params.append(query)
+                elif case_sensitive:
+                    if search_name:
+                        query_conditions.append('INSTR(f.filename, ?) > 0')
+                        params.append(query)
+
+                    if search_content:
+                        query_conditions.append('INSTR(f.text_content, ?) > 0')
+                        params.append(query)
+
+                    if search_path:
+                        query_conditions.append('INSTR(f.path, ?) > 0')
+                        params.append(query)
+                else:
+                    pattern = f'%{query}%'
+                    if search_name:
+                        query_conditions.append('LOWER(f.filename) LIKE LOWER(?)')
+                        params.append(pattern)
+
+                    if search_content:
+                        query_conditions.append('LOWER(f.text_content) LIKE LOWER(?)')
+                        params.append(pattern)
+
+                    if search_path:
+                        query_conditions.append('LOWER(f.path) LIKE LOWER(?)')
+                        params.append(pattern)
 
                 if query_conditions:
                     conditions.append(f'({" OR ".join(query_conditions)})')
@@ -480,12 +518,28 @@ class FileIndex:
 
             # Datum
             if date_from:
+                if isinstance(date_from, datetime):
+                    df_str = date_from.isoformat()
+                elif isinstance(date_from, date):
+                    df_str = datetime.combine(date_from, datetime.min.time()).isoformat()
+                elif isinstance(date_from, str) and len(date_from) == 10:
+                    df_str = f"{date_from}T00:00:00"
+                else:
+                    df_str = str(date_from)
                 conditions.append('f.modified >= ?')
-                params.append(str(date_from))
+                params.append(df_str)
 
             if date_to:
+                if isinstance(date_to, datetime):
+                    dt_str = date_to.isoformat()
+                elif isinstance(date_to, date):
+                    dt_str = datetime.combine(date_to, datetime.max.time()).isoformat()
+                elif isinstance(date_to, str) and len(date_to) == 10:
+                    dt_str = f"{date_to}T23:59:59.999999"
+                else:
+                    dt_str = str(date_to)
                 conditions.append('f.modified <= ?')
-                params.append(str(date_to))
+                params.append(dt_str)
 
             # Größe
             if min_size is not None:
@@ -504,7 +558,15 @@ class FileIndex:
             params.append(limit)
 
             cursor.execute(sql, params)
-            results = [dict(row) for row in cursor.fetchall()]
+            results = []
+            for row in cursor.fetchall():
+                res = dict(row)
+                if res.get('modified'):
+                    try:
+                        res['modified'] = datetime.fromisoformat(str(res['modified']))
+                    except (ValueError, TypeError):
+                        pass
+                results.append(res)
         finally:
             conn.close()
         return results

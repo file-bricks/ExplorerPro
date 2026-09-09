@@ -6,6 +6,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [Unreleased]
 
 ### Behoben / Fixed
+- **Erweiterte Suche & Dateiindex (`src/core/file_index.py`, `src/gui/sidebar/advanced_search_dialog.py`)**:
+  - **Regex-Suche (`use_regex=True`)**: Vollständige Unterstützung für reguläre Ausdrücke über eine SQLite-Benutzerfunktion `REGEXP`. Ermöglicht komplexe Musterabfragen auf Dateinamen, Textinhalte und Pfade bei defensiver Validierung (`ValueError` bei Syntaxfehlern).
+  - **Exakte Groß-/Kleinschreibung (`case_sensitive=True`)**: Respektierung der Case-Sensitivity via `INSTR(...) > 0` für Teilstrings bzw. Regex-Flags.
+  - **Datumsbereichs-Grenzwerte (`date_to`)**: Schließt den vollen Tag (bis 23:59:59.999999) ein, sodass an einem gewählten Zieldatum nachmittags oder abends modifizierte Dateien nicht mehr durch ISO-Stringvergleiche (`YYYY-MM-DDTHH:MM:SS <= YYYY-MM-DD`) fälschlicherweise ausgeschlossen werden.
+  - **Automatisierte Regressionstests (`tests/test_file_index_advanced_search.py`)**: 5 neue Unittests für Regex-Muster, Case-Sensitivity, Fehlerbehandlung und Datumsbereich-Grenzwerte.
 - **Datenschutz & Privatsphäre (`src/modules/privacy/privacy_monitor.py`, `src/modules/privacy/blacklist_manager.py`)**:
   - **Span-basierte Redaktion & Substring-Schutz**: Ersetzung von fehleranfälligem `str.replace` durch atomare, interval-gemergte Zeichenspannen-Redaktion. Verhindert, dass Blacklist-Wörter (z. B. "anna" bei `whole_words=True`) innerhalb unbeteiligter Wörter (z. B. "johanna") fälschlicherweise ersetzt werden und sensible Treffer unmaskiert bleiben.
   - **Überlappende Muster-Erkennung**: Überlappende Treffer (z. B. E-Mail-Adresse und darin enthaltene Blacklist-Domain) werden sauber zu einem einzigen Platzhalter `[***]` konsolidiert.
