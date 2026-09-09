@@ -5,6 +5,14 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt / Added
+- **Tier-2 6-Sprachen-Ausbau & Lokalisierungsarchitektur (P-006)**:
+  - **Lokalisierungskatalog (`locales/translations.json`)**: Ausbau von 36 auf 154 Schlüssel mit 100% lückenloser Übersetzung über alle 6 Zielsprachen (Deutsch, Englisch, Spanisch, Chinesisch, Japanisch, Russisch).
+  - **Multi-Language-Engine (`translator.py`)**: Robuste relative Pfadauflösung (`Path(__file__).resolve().parent`), Systemsprachenerkennung ohne veraltete APIs, deterministische 4-stufige Fallback-Kette (`target -> en -> de -> key`), Klassenmethoden für UI-Display-Namen und Singleton-Zugriff `get_translator()` / `t()`.
+  - **Auto-Scanner & CI-Auditing (`manage_translations.py`)**: Erweiterte Erkennung aller GUI-Muster (`setText`, `setToolTip`, `setPlaceholderText`, `QCheckBox`, `addAction`, `addTab`), vollständige 6-Sprachen-Initialisierung neuer Schlüssel, UTF-8-Terminal-Encoding-Schutz und `--check`-Prüfmodus für CI/Dev-Pipelines.
+  - **Sprachauswahl im Einstellungsdialog (`src/core/settings_manager.py`, `src/gui/settings_dialog.py`)**: Speicherung der Sprachpräferenz in den Anwendungseinstellungen und ComboBox-Auswahl mit nativen Display-Namen im Reiter *Allgemein*.
+  - **Automatisierte I18N-Vertragstests (`tests/test_i18n.py`)**: 11 Unittests zur Verifikation von Sprachdefinitionen, Fallback-Ketten, Systemsprachenerkennung, Katalogparität, Scanner und Einstellungsdialog.
+
 ### Behoben / Fixed
 - **Erweiterte Suche & Dateiindex (`src/core/file_index.py`, `src/gui/sidebar/advanced_search_dialog.py`)**:
   - **Regex-Suche (`use_regex=True`)**: Vollständige Unterstützung für reguläre Ausdrücke über eine SQLite-Benutzerfunktion `REGEXP`. Ermöglicht komplexe Musterabfragen auf Dateinamen, Textinhalte und Pfade bei defensiver Validierung (`ValueError` bei Syntaxfehlern).

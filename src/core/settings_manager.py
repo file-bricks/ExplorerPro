@@ -23,6 +23,7 @@ class SettingsManager:
     DEFAULTS = {
         "general": {
             "start_folder": "",  # Leer = Benutzer-Home
+            "language": "de",
             "show_hidden_files": False,
             "confirm_delete": True,
             "remember_window_size": True,

@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.settings_manager import SettingsManager
+from translator import TranslationSystem
 
 
 class SettingsDialog(QDialog):
@@ -84,6 +85,12 @@ class SettingsDialog(QDialog):
         browse_btn.clicked.connect(self._choose_start_folder)
         path_row.addWidget(browse_btn)
         form.addRow("Startordner:", path_row)
+
+        self.language_cb = QComboBox()
+        self.language_cb.setAccessibleName("Sprachauswahl")
+        for code, display in TranslationSystem.get_language_display_names().items():
+            self.language_cb.addItem(display, code)
+        form.addRow("Sprache:", self.language_cb)
 
         self.show_hidden_cb = QCheckBox("Versteckte Dateien anzeigen")
         form.addRow(self.show_hidden_cb)

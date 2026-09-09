@@ -286,5 +286,949 @@
     "zh": "概览",
     "ja": "概要",
     "ru": "Обзор"
+  },
+  "Überblick": {
+    "de": "Überblick",
+    "en": "Overview",
+    "es": "Resumen",
+    "zh": "概览",
+    "ja": "概要",
+    "ru": "Обзор"
+  },
+  "&Datei": {
+    "de": "&Datei",
+    "en": "&File",
+    "es": "&Archivo",
+    "zh": "&文件",
+    "ja": "&ファイル",
+    "ru": "&Файл"
+  },
+  "&Bearbeiten": {
+    "de": "&Bearbeiten",
+    "en": "&Edit",
+    "es": "&Editar",
+    "zh": "&编辑",
+    "ja": "&編集",
+    "ru": "&Правка"
+  },
+  "&Ansicht": {
+    "de": "&Ansicht",
+    "en": "&View",
+    "es": "&Vista",
+    "zh": "&视图",
+    "ja": "&表示",
+    "ru": "&Вид"
+  },
+  "&Gehe zu": {
+    "de": "&Gehe zu",
+    "en": "&Go to",
+    "es": "&Ir a",
+    "zh": "&前往",
+    "ja": "&移動",
+    "ru": "&Перейти"
+  },
+  "&Tools": {
+    "de": "&Tools",
+    "en": "&Tools",
+    "es": "&Herramientas",
+    "zh": "&工具",
+    "ja": "&ツール",
+    "ru": "&Инструменты"
+  },
+  "&Hilfe": {
+    "de": "&Hilfe",
+    "en": "&Help",
+    "es": "&Ayuda",
+    "zh": "&帮助",
+    "ja": "&ヘルプ",
+    "ru": "&Справка"
+  },
+  "Übergeordneter Ordner (Alt+Up)": {
+    "de": "Übergeordneter Ordner (Alt+Up)",
+    "en": "Parent Folder (Alt+Up)",
+    "es": "Carpeta superior (Alt+Up)",
+    "zh": "上级文件夹 (Alt+Up)",
+    "ja": "親フォルダー (Alt+Up)",
+    "ru": "Родительская папка (Alt+Up)"
+  },
+  "Zurück (Alt+Left)": {
+    "de": "Zurück (Alt+Left)",
+    "en": "Back (Alt+Left)",
+    "es": "Atrás (Alt+Left)",
+    "zh": "后退 (Alt+Left)",
+    "ja": "戻る (Alt+Left)",
+    "ru": "Назад (Alt+Left)"
+  },
+  "Vorwärts (Alt+Right)": {
+    "de": "Vorwärts (Alt+Right)",
+    "en": "Forward (Alt+Right)",
+    "es": "Adelante (Alt+Right)",
+    "zh": "前进 (Alt+Right)",
+    "ja": "進む (Alt+Right)",
+    "ru": "Вперед (Alt+Right)"
+  },
+  "Aktualisieren": {
+    "de": "Aktualisieren",
+    "en": "Refresh",
+    "es": "Actualizar",
+    "zh": "刷新",
+    "ja": "更新",
+    "ru": "Обновить"
+  },
+  "Neuer Ordner": {
+    "de": "Neuer Ordner",
+    "en": "New Folder",
+    "es": "Nueva carpeta",
+    "zh": "新建文件夹",
+    "ja": "新規フォルダー",
+    "ru": "Новая папка"
+  },
+  "Allgemein": {
+    "de": "Allgemein",
+    "en": "General",
+    "es": "General",
+    "zh": "通用",
+    "ja": "一般",
+    "ru": "Общие"
+  },
+  "Index": {
+    "de": "Index",
+    "en": "Index",
+    "es": "Índice",
+    "zh": "索引",
+    "ja": "インデックス",
+    "ru": "Индекс"
+  },
+  "Vorschau": {
+    "de": "Vorschau",
+    "en": "Preview",
+    "es": "Vista previa",
+    "zh": "预览",
+    "ja": "プレビュー",
+    "ru": "Предпросмотр"
+  },
+  "Datenschutz": {
+    "de": "Datenschutz",
+    "en": "Privacy",
+    "es": "Privacidad",
+    "zh": "隐私",
+    "ja": "プライバシー",
+    "ru": "Конфиденциальность"
+  },
+  "Darstellung": {
+    "de": "Darstellung",
+    "en": "Appearance",
+    "es": "Apariencia",
+    "zh": "外观",
+    "ja": "外観",
+    "ru": "Оформление"
+  },
+  "Sprache:": {
+    "de": "Sprache:",
+    "en": "Language:",
+    "es": "Idioma:",
+    "zh": "语言:",
+    "ja": "言語:",
+    "ru": "Язык:"
+  },
+  "Startordner:": {
+    "de": "Startordner:",
+    "en": "Start folder:",
+    "es": "Carpeta de inicio:",
+    "zh": "启动文件夹:",
+    "ja": "開始フォルダー:",
+    "ru": "Начальная папка:"
+  },
+  "Versteckte Dateien anzeigen": {
+    "de": "Versteckte Dateien anzeigen",
+    "en": "Show hidden files",
+    "es": "Mostrar archivos ocultos",
+    "zh": "显示隐藏文件",
+    "ja": "隠しファイルを表示",
+    "ru": "Показывать скрытые файлы"
+  },
+  "Vor dem Löschen nachfragen": {
+    "de": "Vor dem Löschen nachfragen",
+    "en": "Ask before deleting",
+    "es": "Preguntar antes de eliminar",
+    "zh": "删除前确认",
+    "ja": "削除前に確認",
+    "ru": "Спрашивать перед удалением"
+  },
+  "Fenstergröße merken": {
+    "de": "Fenstergröße merken",
+    "en": "Remember window size",
+    "es": "Recordar tamaño de ventana",
+    "zh": "记住窗口大小",
+    "ja": "ウィンドウサイズを記憶",
+    "ru": "Запоминать размер окна"
+  },
+  "Ordner automatisch indizieren": {
+    "de": "Ordner automatisch indizieren",
+    "en": "Automatically index folders",
+    "es": "Indexar carpetas automáticamente",
+    "zh": "自动索引文件夹",
+    "ja": "フォルダーを自動インデックス",
+    "ru": "Автоматически индексировать папки"
+  },
+  "Beim Programmstart indizieren": {
+    "de": "Beim Programmstart indizieren",
+    "en": "Index on startup",
+    "es": "Indexar al iniciar",
+    "zh": "启动时索引",
+    "ja": "起動時にインデックス",
+    "ru": "Индексировать при запуске"
+  },
+  "Bilder in der Vorschau anzeigen": {
+    "de": "Bilder in der Vorschau anzeigen",
+    "en": "Show images in preview",
+    "es": "Mostrar imágenes en vista previa",
+    "zh": "在预览中显示图片",
+    "ja": "プレビューで画像を表示",
+    "ru": "Показывать изображения в предпросмотре"
+  },
+  "PDF-Dateien in der Vorschau anzeigen": {
+    "de": "PDF-Dateien in der Vorschau anzeigen",
+    "en": "Show PDF files in preview",
+    "es": "Mostrar archivos PDF en vista previa",
+    "zh": "在预览中显示PDF",
+    "ja": "プレビューでPDFを表示",
+    "ru": "Показывать PDF в предпросмотре"
+  },
+  "Quelltext in der Vorschau anzeigen": {
+    "de": "Quelltext in der Vorschau anzeigen",
+    "en": "Show source code in preview",
+    "es": "Mostrar código fuente en vista previa",
+    "zh": "在预览中显示源代码",
+    "ja": "プレビューでソースコードを表示",
+    "ru": "Показывать исходный код в предпросмотре"
+  },
+  "Zwischenablage überwachen": {
+    "de": "Zwischenablage überwachen",
+    "en": "Monitor clipboard",
+    "es": "Monitorear portapapeles",
+    "zh": "监控剪贴板",
+    "ja": "クリップボードを監視",
+    "ru": "Отслеживать буфер обмена"
+  },
+  "Sensible Inhalte automatisch blockieren": {
+    "de": "Sensible Inhalte automatisch blockieren",
+    "en": "Automatically block sensitive content",
+    "es": "Bloquear contenido confidencial automáticamente",
+    "zh": "自动拦截敏感内容",
+    "ja": "機密コンテンツを自動ブロック",
+    "ru": "Автоматически блокировать конфиденциальные данные"
+  },
+  "Farbschema:": {
+    "de": "Farbschema:",
+    "en": "Color theme:",
+    "es": "Tema de color:",
+    "zh": "配色方案:",
+    "ja": "配色のテーマ:",
+    "ru": "Цветовая схема:"
+  },
+  "Schriftgröße:": {
+    "de": "Schriftgröße:",
+    "en": "Font size:",
+    "es": "Tamaño de fuente:",
+    "zh": "字体大小:",
+    "ja": "フォントサイズ:",
+    "ru": "Размер шрифта:"
+  },
+  "Symbolgröße:": {
+    "de": "Symbolgröße:",
+    "en": "Icon size:",
+    "es": "Tamaño de iconos:",
+    "zh": "图标大小:",
+    "ja": "アイコンサイズ:",
+    "ru": "Размер значков:"
+  },
+  "Duplikate finden": {
+    "de": "Duplikate finden",
+    "en": "Find Duplicates",
+    "es": "Buscar duplicados",
+    "zh": "查找重复项",
+    "ja": "重複を検索",
+    "ru": "Поиск дубликатов"
+  },
+  "Erweiterte Suche": {
+    "de": "Erweiterte Suche",
+    "en": "Advanced Search",
+    "es": "Búsqueda avanzada",
+    "zh": "高级搜索",
+    "ja": "高度な検索",
+    "ru": "Расширенный поиск"
+  },
+  "Favoriten": {
+    "de": "Favoriten",
+    "en": "Favorites",
+    "es": "Favoritos",
+    "zh": "收藏夹",
+    "ja": "お気に入り",
+    "ru": "Избранное"
+  },
+  "Suchen": {
+    "de": "Suchen",
+    "en": "Search",
+    "es": "Buscar",
+    "zh": "搜索",
+    "ja": "検索",
+    "ru": "Поиск"
+  },
+  "Suchbegriff:": {
+    "de": "Suchbegriff:",
+    "en": "Search term:",
+    "es": "Término de búsqueda:",
+    "zh": "搜索词:",
+    "ja": "検索語:",
+    "ru": "Поисковый запрос:"
+  },
+  "Dateityp:": {
+    "de": "Dateityp:",
+    "en": "File type:",
+    "es": "Tipo de archivo:",
+    "zh": "文件类型:",
+    "ja": "ファイルの種類:",
+    "ru": "Тип файла:"
+  },
+  "Größe:": {
+    "de": "Größe:",
+    "en": "Size:",
+    "es": "Tamaño:",
+    "zh": "大小:",
+    "ja": "サイズ:",
+    "ru": "Размер:"
+  },
+  "Datum:": {
+    "de": "Datum:",
+    "en": "Date:",
+    "es": "Fecha:",
+    "zh": "日期:",
+    "ja": "日付:",
+    "ru": "Дата:"
+  },
+  "Geändert:": {
+    "de": "Geändert:",
+    "en": "Modified:",
+    "es": "Modificado:",
+    "zh": "修改日期:",
+    "ja": "更新日時:",
+    "ru": "Изменено:"
+  },
+  "Erstellt:": {
+    "de": "Erstellt:",
+    "en": "Created:",
+    "es": "Creado:",
+    "zh": "创建日期:",
+    "ja": "作成日時:",
+    "ru": "Создано:"
+  },
+  "Pfad:": {
+    "de": "Pfad:",
+    "en": "Path:",
+    "es": "Ruta:",
+    "zh": "路径:",
+    "ja": "パス:",
+    "ru": "Путь:"
+  },
+  "Dateiname": {
+    "de": "Dateiname",
+    "en": "Filename",
+    "es": "Nombre de archivo",
+    "zh": "文件名",
+    "ja": "ファイル名",
+    "ru": "Имя файла"
+  },
+  "Name:": {
+    "de": "Name:",
+    "en": "Name:",
+    "es": "Nombre:",
+    "zh": "名称:",
+    "ja": "名前:",
+    "ru": "Имя:"
+  },
+  "Kategorie:": {
+    "de": "Kategorie:",
+    "en": "Category:",
+    "es": "Categoría:",
+    "zh": "类别:",
+    "ja": "カテゴリ:",
+    "ru": "Категория:"
+  },
+  "Bereit": {
+    "de": "Bereit",
+    "en": "Ready",
+    "es": "Listo",
+    "zh": "就绪",
+    "ja": "準備完了",
+    "ru": "Готово"
+  },
+  "Bereit zum Scan": {
+    "de": "Bereit zum Scan",
+    "en": "Ready to scan",
+    "es": "Listo para escanear",
+    "zh": "准备扫描",
+    "ja": "スキャン準備完了",
+    "ru": "Готово к сканированию"
+  },
+  "Scan abgebrochen": {
+    "de": "Scan abgebrochen",
+    "en": "Scan cancelled",
+    "es": "Escaneo cancelado",
+    "zh": "扫描已取消",
+    "ja": "スキャンがキャンセルされました",
+    "ru": "Сканирование отменено"
+  },
+  "Scan starten": {
+    "de": "Scan starten",
+    "en": "Start scan",
+    "es": "Iniciar escaneo",
+    "zh": "开始扫描",
+    "ja": "スキャン開始",
+    "ru": "Начать сканирование"
+  },
+  "Stop": {
+    "de": "Stop",
+    "en": "Stop",
+    "es": "Detener",
+    "zh": "停止",
+    "ja": "停止",
+    "ru": "Остановить"
+  },
+  "Neueste behalten": {
+    "de": "Neueste behalten",
+    "en": "Keep newest",
+    "es": "Conservar más reciente",
+    "zh": "保留最新",
+    "ja": "最新を保持",
+    "ru": "Оставить новые"
+  },
+  "Neuere Duplikate zum Löschen markieren": {
+    "de": "Neuere Duplikate zum Löschen markieren",
+    "en": "Mark newer duplicates for deletion",
+    "es": "Marcar duplicados más recientes para eliminar",
+    "zh": "标记较新的重复项以删除",
+    "ja": "新しい重複ファイルを削除対象にマーク",
+    "ru": "Отметить новые дубликаты для удаления"
+  },
+  "Ältere Duplikate zum Löschen markieren": {
+    "de": "Ältere Duplikate zum Löschen markieren",
+    "en": "Mark older duplicates for deletion",
+    "es": "Marcar duplicados más antiguos para eliminar",
+    "zh": "标记较旧的重复项以删除",
+    "ja": "古い重複ファイルを削除対象にマーク",
+    "ru": "Отметить старые дубликаты для удаления"
+  },
+  "Alle Duplikate außer dem ersten Original jeder Gruppe auswählen": {
+    "de": "Alle Duplikate außer dem ersten Original jeder Gruppe auswählen",
+    "en": "Select all duplicates except the first original of each group",
+    "es": "Seleccionar todos los duplicados excepto el primer original de cada grupo",
+    "zh": "选择除每组第一个原件外的所有重复项",
+    "ja": "各グループの最初のオリジナルを除くすべての重複を選択",
+    "ru": "Выбрать все дубликаты, кроме первого оригинала в каждой группе"
+  },
+  "Markierte Duplikate dauerhaft löschen": {
+    "de": "Markierte Duplikate dauerhaft löschen",
+    "en": "Permanently delete marked duplicates",
+    "es": "Eliminar permanentemente los duplicados marcados",
+    "zh": "永久删除标记的重复项",
+    "ja": "マークされた重複ファイルを完全に削除",
+    "ru": "Безвозвратно удалить отмеченные дубликаты"
+  },
+  "Gefundene Dateiduplikate": {
+    "de": "Gefundene Dateiduplikate",
+    "en": "Found file duplicates",
+    "es": "Duplicados de archivos encontrados",
+    "zh": "发现的文件重复项",
+    "ja": "見つかった重複ファイル",
+    "ru": "Найденные дубликаты файлов"
+  },
+  "Groß-/Kleinschreibung beachten": {
+    "de": "Groß-/Kleinschreibung beachten",
+    "en": "Case sensitive",
+    "es": "Distinguir mayúsculas y minúsculas",
+    "zh": "区分大小写",
+    "ja": "大文字と小文字を区別",
+    "ru": "Учитывать регистр"
+  },
+  "Nur ganze Wörter": {
+    "de": "Nur ganze Wörter",
+    "en": "Match whole word only",
+    "es": "Solo palabras completas",
+    "zh": "仅全字匹配",
+    "ja": "単語全体に一致",
+    "ru": "Только слово целиком"
+  },
+  "Quick Editor": {
+    "de": "Quick Editor",
+    "en": "Quick Editor",
+    "es": "Editor rápido",
+    "zh": "快速编辑器",
+    "ja": "クイックエディター",
+    "ru": "Быстрый редактор"
+  },
+  "Speichern": {
+    "de": "Speichern",
+    "en": "Save",
+    "es": "Guardar",
+    "zh": "保存",
+    "ja": "保存",
+    "ru": "Сохранить"
+  },
+  "Datei speichern (Strg+S)": {
+    "de": "Datei speichern (Strg+S)",
+    "en": "Save file (Ctrl+S)",
+    "es": "Guardar archivo (Ctrl+S)",
+    "zh": "保存文件 (Ctrl+S)",
+    "ja": "ファイルを保存 (Ctrl+S)",
+    "ru": "Сохранить файл (Ctrl+S)"
+  },
+  "Code ausführen (F5)": {
+    "de": "Code ausführen (F5)",
+    "en": "Run code (F5)",
+    "es": "Ejecutar código (F5)",
+    "zh": "运行代码 (F5)",
+    "ja": "コードを実行 (F5)",
+    "ru": "Выполнить код (F5)"
+  },
+  "Syntax validieren (F6)": {
+    "de": "Syntax validieren (F6)",
+    "en": "Validate syntax (F6)",
+    "es": "Validar sintaxis (F6)",
+    "zh": "验证语法 (F6)",
+    "ja": "構文を検証 (F6)",
+    "ru": "Проверить синтаксис (F6)"
+  },
+  "Ausführung stoppen": {
+    "de": "Ausführung stoppen",
+    "en": "Stop execution",
+    "es": "Detener ejecución",
+    "zh": "停止执行",
+    "ja": "実行を停止",
+    "ru": "Остановить выполнение"
+  },
+  "Kopieren": {
+    "de": "Kopieren",
+    "en": "Copy",
+    "es": "Copiar",
+    "zh": "复制",
+    "ja": "コピー",
+    "ru": "Копировать"
+  },
+  "Neues Sync-Paar": {
+    "de": "Neues Sync-Paar",
+    "en": "New Sync Pair",
+    "es": "Nuevo par de sincronización",
+    "zh": "新建同步对",
+    "ja": "新しい同期ペア",
+    "ru": "Новая пара синхронизации"
+  },
+  "Jetzt synchronisieren": {
+    "de": "Jetzt synchronisieren",
+    "en": "Sync now",
+    "es": "Sincronizar ahora",
+    "zh": "立即同步",
+    "ja": "今すぐ同期",
+    "ru": "Синхронизировать сейчас"
+  },
+  "Synchronisierung läuft...": {
+    "de": "Synchronisierung läuft...",
+    "en": "Synchronization running...",
+    "es": "Sincronización en curso...",
+    "zh": "正在同步...",
+    "ja": "同期中...",
+    "ru": "Синхронизация выполняется..."
+  },
+  "Alles synchron!": {
+    "de": "Alles synchron!",
+    "en": "All synchronized!",
+    "es": "¡Todo sincronizado!",
+    "zh": "全部已同步！",
+    "ja": "すべて同期済み！",
+    "ru": "Все синхронизировано!"
+  },
+  "Quellordner auswählen": {
+    "de": "Quellordner auswählen",
+    "en": "Select source folder",
+    "es": "Seleccionar carpeta de origen",
+    "zh": "选择源文件夹",
+    "ja": "ソースフォルダーを選択",
+    "ru": "Выбрать исходную папку"
+  },
+  "Zielordner auswählen": {
+    "de": "Zielordner auswählen",
+    "en": "Select target folder",
+    "es": "Seleccionar carpeta de destino",
+    "zh": "选择目标文件夹",
+    "ja": "ターゲットフォルダーを選択",
+    "ru": "Выбрать целевую папку"
+  },
+  "Zu scannenden Ordner auswählen": {
+    "de": "Zu scannenden Ordner auswählen",
+    "en": "Select folder to scan",
+    "es": "Seleccionar carpeta para escanear",
+    "zh": "选择要扫描的文件夹",
+    "ja": "スキャンするフォルダーを選択",
+    "ru": "Выбрать папку для сканирования"
+  },
+  "Aktuellen Ordner zu Favoriten hinzufügen": {
+    "de": "Aktuellen Ordner zu Favoriten hinzufügen",
+    "en": "Add current folder to favorites",
+    "es": "Agregar carpeta actual a favoritos",
+    "zh": "将当前文件夹添加到收藏夹",
+    "ja": "現在のフォルダーをお気に入りに追加",
+    "ru": "Добавить текущую папку в избранное"
+  },
+  "Favoritenliste": {
+    "de": "Favoritenliste",
+    "en": "Favorites list",
+    "es": "Lista de favoritos",
+    "zh": "收藏列表",
+    "ja": "お気に入り一覧",
+    "ru": "Список избранного"
+  },
+  "Suchbegriff eingeben...": {
+    "de": "Suchbegriff eingeben...",
+    "en": "Enter search term...",
+    "es": "Introducir término de búsqueda...",
+    "zh": "输入搜索词...",
+    "ja": "検索語を入力...",
+    "ru": "Введите поисковый запрос..."
+  },
+  "App hinzufügen": {
+    "de": "App hinzufügen",
+    "en": "Add App",
+    "es": "Agregar aplicación",
+    "zh": "添加应用",
+    "ja": "アプリを追加",
+    "ru": "Добавить приложение"
+  },
+  "Neuen Prompt erstellen": {
+    "de": "Neuen Prompt erstellen",
+    "en": "Create New Prompt",
+    "es": "Crear nuevo prompt",
+    "zh": "创建新提示词",
+    "ja": "新規プロンプトを作成",
+    "ru": "Создать новый промпт"
+  },
+  "Hinweise anzeigen": {
+    "de": "Hinweise anzeigen",
+    "en": "Show hints",
+    "es": "Mostrar sugerencias",
+    "zh": "显示提示",
+    "ja": "ヒントを表示",
+    "ru": "Показывать подсказки"
+  },
+  "Maximale Dateigröße:": {
+    "de": "Maximale Dateigröße:",
+    "en": "Maximum file size:",
+    "es": "Tamaño máximo de archivo:",
+    "zh": "最大文件大小:",
+    "ja": "最大ファイルサイズ:",
+    "ru": "Максимальный размер файла:"
+  },
+  "Maximale Vorschaugröße:": {
+    "de": "Maximale Vorschaugröße:",
+    "en": "Maximum preview size:",
+    "es": "Tamaño máximo de vista previa:",
+    "zh": "最大预览大小:",
+    "ja": "最大プレビューサイズ:",
+    "ru": "Максимальный размер предпросмотра:"
+  },
+  "Vorschaufenster anzeigen": {
+    "de": "Vorschaufenster anzeigen",
+    "en": "Show preview panel",
+    "es": "Mostrar panel de vista previa",
+    "zh": "显示预览面板",
+    "ja": "プレビューパネルを表示",
+    "ru": "Показывать панель предпросмотра"
+  },
+  "Leeres PDF": {
+    "de": "Leeres PDF",
+    "en": "Empty PDF",
+    "es": "PDF vacío",
+    "zh": "空 PDF",
+    "ja": "空のPDF",
+    "ru": "Пустой PDF"
+  },
+  "Ausgabe wird hier angezeigt...": {
+    "de": "Ausgabe wird hier angezeigt...",
+    "en": "Output will appear here...",
+    "es": "La salida aparecerá aquí...",
+    "zh": "输出将显示在此处...",
+    "ja": "出力はここに表示されます...",
+    "ru": "Вывод появится здесь..."
+  },
+  "Aktuellen Ordnerpfad anzeigen oder direkt eingeben.": {
+    "de": "Aktuellen Ordnerpfad anzeigen oder direkt eingeben.",
+    "en": "Display or enter current folder path directly.",
+    "es": "Mostrar o introducir la ruta de la carpeta actual directamente.",
+    "zh": "显示或直接输入当前文件夹路径。",
+    "ja": "現在のフォルダーパスを表示または直接入力します。",
+    "ru": "Отобразить или ввести путь к текущей папке напрямую."
+  },
+  "Als regulären Ausdruck interpretieren": {
+    "de": "Als regulären Ausdruck interpretieren",
+    "en": "Interpret as regular expression",
+    "es": "Interpretar como expresión regular",
+    "zh": "解释为正则表达式",
+    "ja": "正規表現として解釈",
+    "ru": "Интерпретировать как регулярное выражение"
+  },
+  "Ansichten und Seitenleisten-Bereiche umschalten.": {
+    "de": "Ansichten und Seitenleisten-Bereiche umschalten.",
+    "en": "Toggle views and sidebar areas.",
+    "es": "Alternar vistas y áreas de barra lateral.",
+    "zh": "切换视图和侧边栏区域。",
+    "ja": "ビューとサイドバー領域を切り替えます。",
+    "ru": "Переключение видов и боковых панелей."
+  },
+  "Aussagekräftiger Titel...": {
+    "de": "Aussagekräftiger Titel...",
+    "en": "Meaningful title...",
+    "es": "Título descriptivo...",
+    "zh": "有意义的标题...",
+    "ja": "わかりやすいタイトル...",
+    "ru": "Понятный заголовок..."
+  },
+  "Dateien im Index suchen. Enter startet die Suche.": {
+    "de": "Dateien im Index suchen. Enter startet die Suche.",
+    "en": "Search files in index. Press Enter to search.",
+    "es": "Buscar archivos en el índice. Presione Enter para buscar.",
+    "zh": "在索引中搜索文件。按 Enter 键开始搜索。",
+    "ja": "インデックス内のファイルを検索します。Enterキーで検索を開始します。",
+    "ru": "Поиск файлов в индексе. Нажмите Enter для поиска."
+  },
+  "Dateien und Ordner im aktuellen Verzeichnis": {
+    "de": "Dateien und Ordner im aktuellen Verzeichnis",
+    "en": "Files and folders in current directory",
+    "es": "Archivos y carpetas en el directorio actual",
+    "zh": "当前目录中的文件和文件夹",
+    "ja": "現在のディレクトリ内のファイルとフォルダー",
+    "ru": "Файлы и папки в текущем каталоге"
+  },
+  "Dateikategorie für die Suche einschränken.": {
+    "de": "Dateikategorie für die Suche einschränken.",
+    "en": "Filter search by file category.",
+    "es": "Limitar la búsqueda por categoría de archivo.",
+    "zh": "按文件类别限制搜索范围。",
+    "ja": "ファイルカテゴリで検索を絞り込みます。",
+    "ru": "Ограничить поиск категорией файлов."
+  },
+  "Groß/Klein": {
+    "de": "Groß/Klein",
+    "en": "Case",
+    "es": "Mayús/Minús",
+    "zh": "大小写",
+    "ja": "大文字/小文字",
+    "ru": "Регистр"
+  },
+  "Laufenden Scan-Vorgang abbrechen": {
+    "de": "Laufenden Scan-Vorgang abbrechen",
+    "en": "Cancel ongoing scan operation",
+    "es": "Cancelar la operación de escaneo en curso",
+    "zh": "取消正在进行的扫描操作",
+    "ja": "進行中のスキャン処理をキャンセル",
+    "ru": "Отменить текущую операцию сканирования"
+  },
+  "Minimale Dateigröße in Kilobyte": {
+    "de": "Minimale Dateigröße in Kilobyte",
+    "en": "Minimum file size in kilobytes",
+    "es": "Tamaño mínimo de archivo en kilobytes",
+    "zh": "最小文件大小（KB）",
+    "ja": "最小ファイルサイズ（キロバイト）",
+    "ru": "Минимальный размер файла в килобайтах"
+  },
+  "Ordnerbaum zur Dateinavigation": {
+    "de": "Ordnerbaum zur Dateinavigation",
+    "en": "Folder tree for file navigation",
+    "es": "Árbol de carpetas para navegación de archivos",
+    "zh": "用于文件导航的文件夹树",
+    "ja": "ファイルナビゲーション用フォルダーツリー",
+    "ru": "Дерево папок для навигации по файлам"
+  },
+  "Speichergröße der Elemente": {
+    "de": "Speichergröße der Elemente",
+    "en": "Storage size of items",
+    "es": "Tamaño de almacenamiento de los elementos",
+    "zh": "项目存储大小",
+    "ja": "アイテムのストレージサイズ",
+    "ru": "Размер хранилища элементов"
+  },
+  "Suchbegriff und Suchergebnisse löschen.": {
+    "de": "Suchbegriff und Suchergebnisse löschen.",
+    "en": "Clear search term and results.",
+    "es": "Borrar término de búsqueda y resultados.",
+    "zh": "清除搜索词和搜索结果。",
+    "ja": "検索語と検索結果をクリアします。",
+    "ru": "Очистить поисковый запрос и результаты поиска."
+  },
+  "Suche mit dem eingegebenen Begriff starten.": {
+    "de": "Suche mit dem eingegebenen Begriff starten.",
+    "en": "Start search with the entered term.",
+    "es": "Iniciar búsqueda con el término introducido.",
+    "zh": "使用输入的词开始搜索。",
+    "ja": "入力した語句で検索を開始します。",
+    "ru": "Начать поиск по введенному запросу."
+  },
+  "Suche nach Dateiduplikaten starten": {
+    "de": "Suche nach Dateiduplikaten starten",
+    "en": "Start searching for file duplicates",
+    "es": "Iniciar búsqueda de duplicados de archivos",
+    "zh": "开始搜索文件重复项",
+    "ja": "ファイル重複の検索を開始",
+    "ru": "Начать поиск дубликатов файлов"
+  },
+  "Volltextsuche im Index. Mindestens zwei Zeichen eingeben.": {
+    "de": "Volltextsuche im Index. Mindestens zwei Zeichen eingeben.",
+    "en": "Full-text search in index. Enter at least two characters.",
+    "es": "Búsqueda de texto completo en el índice. Ingrese al menos dos caracteres.",
+    "zh": "索引中的全文搜索。输入至少两个字符。",
+    "ja": "インデックスのフルテキスト検索。2文字以上入力してください。",
+    "ru": "Полнотекстовый поиск в индексе. Введите не менее двух символов."
+  },
+  "Elemente im aktuellen Verzeichnis": {
+    "de": "Elemente im aktuellen Verzeichnis",
+    "en": "Items in current directory",
+    "es": "Elementos en el directorio actual",
+    "zh": "当前目录中的项目",
+    "ja": "現在のディレクトリ内のアイテム",
+    "ru": "Элементы в текущем каталоге"
+  },
+  "Versteckte Dateien einbeziehen": {
+    "de": "Versteckte Dateien einbeziehen",
+    "en": "Include hidden files",
+    "es": "Incluir archivos ocultos",
+    "zh": "包含隐藏文件",
+    "ja": "隠しファイルを含める",
+    "ru": "Включать скрытые файлы"
+  },
+  "Im Inhalt": {
+    "de": "Im Inhalt",
+    "en": "In Content",
+    "es": "En contenido",
+    "zh": "在内容中",
+    "ja": "コンテンツ内",
+    "ru": "В содержимом"
+  },
+  "Nur im Dateiinhalt suchen (nicht im Namen)": {
+    "de": "Nur im Dateiinhalt suchen (nicht im Namen)",
+    "en": "Search only in file content (not in name)",
+    "es": "Buscar solo en el contenido del archivo (no en el nombre)",
+    "zh": "仅在文件内容中搜索（不在名称中）",
+    "ja": "ファイル内容のみ検索（名前は対象外）",
+    "ru": "Искать только в содержимом файла (не в имени)"
+  },
+  "Regex": {
+    "de": "Regex",
+    "en": "Regex",
+    "es": "Regex",
+    "zh": "正则表达式",
+    "ja": "正規表現",
+    "ru": "Регулярное выражение"
+  },
+  "Richtung:": {
+    "de": "Richtung:",
+    "en": "Direction:",
+    "es": "Dirección:",
+    "zh": "方向:",
+    "ja": "方向:",
+    "ru": "Направление:"
+  },
+  "Titel:": {
+    "de": "Titel:",
+    "en": "Title:",
+    "es": "Título:",
+    "zh": "标题:",
+    "ja": "タイトル:",
+    "ru": "Заголовок:"
+  },
+  "Beschreibung:": {
+    "de": "Beschreibung:",
+    "en": "Description:",
+    "es": "Descripción:",
+    "zh": "描述:",
+    "ja": "説明:",
+    "ru": "Описание:"
+  },
+  "Arbeitsblatt:": {
+    "de": "Arbeitsblatt:",
+    "en": "Worksheet:",
+    "es": "Hoja de trabajo:",
+    "zh": "工作表:",
+    "ja": "ワークシート:",
+    "ru": "Лист:"
+  },
+  "Argumente:": {
+    "de": "Argumente:",
+    "en": "Arguments:",
+    "es": "Argumentos:",
+    "zh": "参数:",
+    "ja": "引数:",
+    "ru": "Аргументы:"
+  },
+  "👁️ Vorschau": {
+    "de": "👁️ Vorschau",
+    "en": "👁️ Preview",
+    "es": "👁️ Vista previa",
+    "zh": "👁️ 预览",
+    "ja": "👁️ プレビュー",
+    "ru": "👁️ Предпросмотр"
+  },
+  "🔍 Suchen...": {
+    "de": "🔍 Suchen...",
+    "en": "🔍 Search...",
+    "es": "🔍 Buscar...",
+    "zh": "🔍 搜索...",
+    "ja": "🔍 検索...",
+    "ru": "🔍 Поиск..."
+  },
+  "Notizen zur Datei...": {
+    "de": "Notizen zur Datei...",
+    "en": "Notes on file...",
+    "es": "Notas sobre el archivo...",
+    "zh": "文件备注...",
+    "ja": "ファイルメモ...",
+    "ru": "Заметки к файлу..."
+  },
+  "🔍 Volltextsuche...": {
+    "de": "🔍 Volltextsuche...",
+    "en": "🔍 Full text search...",
+    "es": "🔍 Búsqueda de texto completo...",
+    "zh": "🔍 全文搜索...",
+    "ja": "🔍 フルテキスト検索...",
+    "ru": "🔍 Полнотекстовый поиск..."
+  },
+  "🔍 App suchen...": {
+    "de": "🔍 App suchen...",
+    "en": "🔍 Search app...",
+    "es": "🔍 Buscar app...",
+    "zh": "🔍 搜索应用...",
+    "ja": "🔍 アプリを検索...",
+    "ru": "🔍 Поиск приложения..."
+  },
+  "🔍 Suchen": {
+    "de": "🔍 Suchen",
+    "en": "🔍 Search",
+    "es": "🔍 Buscar",
+    "zh": "🔍 搜索",
+    "ja": "🔍 検索",
+    "ru": "🔍 Поиск"
+  },
+  "Tags hinzufügen (kommagetrennt)": {
+    "de": "Tags hinzufügen (kommagetrennt)",
+    "en": "Add tags (comma separated)",
+    "es": "Agregar etiquetas (separadas por comas)",
+    "zh": "添加标签（逗号分隔）",
+    "ja": "タグを追加（カンマ区切り）",
+    "ru": "Добавить теги (через запятую)"
+  },
+  "🔍 Prompt suchen...": {
+    "de": "🔍 Prompt suchen...",
+    "en": "🔍 Search prompt...",
+    "es": "🔍 Buscar prompt...",
+    "zh": "🔍 搜索提示词...",
+    "ja": "🔍 プロンプトを検索...",
+    "ru": "🔍 Поиск промпта..."
   }
 }
