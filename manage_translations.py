@@ -24,7 +24,7 @@ if hasattr(sys.stderr, "reconfigure"):
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
-from typing import Dict, List, Set
+from typing import Set
 
 TRANSLATION_FILE = "locales/translations.json"
 SUPPORTED_LANGUAGES = ("de", "en", "es", "zh", "ja", "ru")

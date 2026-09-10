@@ -7,7 +7,8 @@ Primary UI stack: PySide6 (Qt 6)
 License: AGPL-3.0
 Microsoft Store Identity: Geiger.ExplorerPro (Store-ID: 9P0X52WSHZ3Q)
 
-Last-checked: 2026-08-24
+Last-checked: 2026-09-10
+Version: 1.0.4
 
 ## Search Phrases
 
@@ -18,6 +19,9 @@ Last-checked: 2026-08-24
 - desktop duplicate finder Python FTS5
 - Qt6 file browser preview panel
 - file explorer PySide6 AGPL
+- sqlite fts5 desktop search
+- zero-egress offline file explorer
+- universal 6-language i18n file manager
 
 ## Audience
 
@@ -33,7 +37,7 @@ ExplorerPro is a local desktop application (PySide6/Python). It is NOT:
 
 ## Summary
 
-ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, multi-format file preview (PDF, images, syntax-highlighted source code, markdown), privacy checks, SQLite FTS5 full-text indexing, duplicate detection, folder sync, app launching, prompt management, and a lightweight code editor in a single native desktop interface.
+ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, multi-format file preview (PDF, images, syntax-highlighted source code, markdown, spreadsheet), privacy checks, SQLite FTS5 full-text indexing, duplicate detection, folder sync, app launching, prompt management, and a lightweight code editor in a single native desktop interface.
 
 ## Current Scope & Architecture
 
@@ -46,19 +50,23 @@ ExplorerPro is a local-first desktop file explorer suite for power users. It com
   4. *Safety Guard Layer:* Safe File Operations (Recycle Bin), Collision-Free Paste Engine, Sanitized Workspace Exporter (`explorerpro-workspace-v1`).
   5. *Platform & Privacy Invariants:* 100% Offline Zero-Egress, Non-Elevation User Mode, Multi-OS Parity.
 - **Visual Assets & Store Showcase:** Redacted high-resolution showcase in `README/screenshots/store/` (main-window, search, duplicates, sync).
+- **Governance Invariants:** 10 canonized architectural pillars (`INV-LOCAL-01` through `INV-SLA-10`).
 
 ## Important Files
 
-- `README.md`: English GitHub entry point with badges, quick navigation, showcase gallery, dual Mermaid diagrams, and ecosystem matrix.
+- `README.md`: English GitHub entry point with badges, 15-point quick navigation, showcase gallery, dual Mermaid diagrams, 10 invariants, and ecosystem matrix.
 - `README_de.md`: German entry point with full bilingual parity.
-- `SECURITY.md`: Bilingual security policy with local-first, zero-egress, and non-elevation guarantees.
+- `THIRD_PARTY_LICENSES.md`: Complete third-party license inventory and zero-egress / RunAsInvoker guarantees.
+- `THIRD_PARTY_LICENSES.txt`: Concise plain-text runtime dependencies and licensing inventory.
+- `MARKETING-LOG.txt`: Discovery strategies, 4 target personas, high-intent keywords, and competitive matrix.
+- `SECURITY.md`: Bilingual security policy with local-first, zero-egress, non-elevation, and 48-hour response SLA.
 - `PORTIERUNGSPLAN.md`: Platform, store-readiness, and companion plan.
 - `EXPORTFORMAT.md`: Implemented `explorerpro-workspace-v1` redacted workspace exchange contract.
 - `PRIVACY_POLICY.md`: Repository privacy posture.
 - `src/main.py`: Application entry point.
 - `src/gui/`: Main UI components and PySide6 widgets.
 - `src/modules/indexer/duplicate_finder.py`: Duplicate-finder UI and actions.
-- `tests/`: Automated test suite (221+ unit, integration, accessibility, and metadata contract tests).
+- `tests/`: Automated test suite (230+ unit, integration, accessibility, and metadata contract tests).
 
 ## Verification
 

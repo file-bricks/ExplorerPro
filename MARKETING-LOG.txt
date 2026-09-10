@@ -1,0 +1,139 @@
+================================================================================
+EXPLORERPRO SUITE — MARKETING, DISCOVERY & GOVERNANCE LOG
+================================================================================
+Stand: 2026-09-10
+Repository: file-bricks/ExplorerPro
+Branch: master
+Version: 1.0.4
+Organization: file-bricks
+Umbrella Ecosystem: open-bricks
+Microsoft Store ID: 9P0X52WSHZ3Q (Package Identity: Geiger.ExplorerPro)
+Primary License: AGPL-3.0-only
+================================================================================
+
+1. EXECUTIVE VALUE PROPOSITION
+--------------------------------------------------------------------------------
+ExplorerPro Suite is a modern, high-performance desktop file manager and power-user
+explorer for Windows, Linux, and macOS. It unites multi-tab directory navigation,
+instant multi-format previews (PDF, images, syntax-highlighted code, markdown, XLSX),
+sub-second SQLite FTS5 full-text indexing, byte-exact hash-based duplicate elimination,
+continuous privacy & secret monitoring, folder synchronization, and an integrated
+code editor in a single native PySide6 (Qt 6) application with 100% local-first data
+isolation and zero cloud egress.
+
+
+2. TARGET AUDIENCE & STAKEHOLDER PERSONAS
+--------------------------------------------------------------------------------
+Persona 1: Desktop Power Users & Sysadmins
+- Context: Manage large directory hierarchies, nested project folders, and archives.
+- Pain Point: Native OS file explorers lack multi-tab workflows, comprehensive keyboard
+  shortcuts, fast multi-format previews, and built-in duplicate detection.
+- Benefit: High-efficiency tabbed navigation, collision-free pasting, keyboard-driven
+  operations, and fast byte-exact duplicate cleaning with Recycle Bin safety.
+
+Persona 2: Privacy & Compliance Officers / DSGVO & Enterprise Auditors
+- Context: Regulated industries, healthcare, legal, and privacy-critical environments.
+- Pain Point: Cloud storage clients and SaaS file viewers risk unauthorized data egress,
+  credential leaks, and compliance violations.
+- Benefit: Uncompromising 100% Local-First & Zero-Egress architecture; real-time
+  privacy watchdog detecting API keys, private certificates, and sensitive credentials;
+  strictly unprivileged RunAsInvoker execution mode.
+
+Persona 3: Software Developers & Research Analysts
+- Context: Work daily with diverse data formats (Python, C/C++, JSON, XML, Markdown,
+  CSV, Excel, PDF papers).
+- Pain Point: Constantly switching between external editors, command-line search, and
+  heavy spreadsheet applications just to inspect file contents.
+- Benefit: Instant inline PyMuPDF rendering, syntax-highlighted QuickEditor, Excel/CSV
+  tabular preview with pandas/openpyxl, and sub-second embedded SQLite FTS5 content search.
+
+Persona 4: Automation Engineers & Multi-Agent Framework Architects
+- Context: Automated workflows, desktop automation, and LLM-assisted tool pipelines.
+- Pain Point: Inconsistent file manager state, silent data overwrites, and unverified
+  external file modifications.
+- Benefit: Sanitized workspace export (`explorerpro-workspace-v1`), deterministic
+  folder synchronization with diff previews, structured `llms.txt` context, and
+  strict non-elevation safety contracts.
+
+
+3. HIGH-INTENT SEARCH QUERIES (EN & DE)
+--------------------------------------------------------------------------------
+English Search Queries:
+- python desktop file manager
+- pyside6 file explorer qt6
+- local-first file manager windows
+- sqlite fts5 desktop search file manager
+- open source duplicate finder agpl
+- privacy-first file manager zero egress
+- pdf viewer markdown preview file explorer
+- offline directory sync tool python
+- tabbed file manager windows 11
+- accessible desktop file explorer screen reader
+
+German Search Queries:
+- dateimanager windows alternative open source
+- pyside6 datei-explorer qt6
+- duplikatfinder lokal agpl
+- sqlite fts5 volltextsuche desktop
+- ordner synchronisieren offline python
+- datenschutz dateimanager zero egress
+- pdf und markdown vorschau desktop
+- mehtab dateibrowser windows 11
+- lokaler dateimanager ohne telemetrie
+
+
+4. COMPETITIVE POSITIONING & MATRIX
+--------------------------------------------------------------------------------
+Feature / Capability          | ExplorerPro   | Windows Explorer | Total Commander | Directory Opus  | Cloud SaaS Viewers
+------------------------------|---------------|------------------|-----------------|-----------------|-------------------
+Local-First Zero-Egress       | 100% Local    | Telemetry active | 100% Local      | 100% Local      | Cloud dependency
+Multi-Tab Browsing            | Built-in      | Windows 11 only  | Dual-Pane only  | Built-in (Paid) | Browser tabs
+PyMuPDF & Syntax Preview      | Instant       | Basic / Addon    | Lister plugins  | Viewer plugins  | Remote rendering
+SQLite FTS5 Full-Text Search  | Sub-second    | Slow indexer     | Filename only   | Search plugin   | Server-side search
+Hash-Based Duplicate Finder   | 2-Stage Hashing| None             | Basic           | Built-in (Paid) | None
+Privacy & Blacklist Watchdog  | Real-time     | None             | None            | None            | None
+Integrated Quick Editor       | Syntax-aware  | Notepad spawn    | External editor | External editor | Web editor
+Folder Sync & Diff Engine     | Built-in      | None             | Basic Sync      | Synchronize tool| Cloud sync only
+Universal 6-Language i18n     | DE/EN/ES/ZH/JA/RU | OS-dependent  | Many languages  | Many languages  | Limited
+Open-Source License           | AGPL-3.0 Free | Proprietary      | Shareware (Paid)| Commercial ($)  | Subscription ($)
+Store Deployment              | MS Store Live | In-OS            | Unpackaged      | Unpackaged      | Web app
+
+
+5. GOVERNANCE & RUNTIME INVARIANTS (10 PILLARS)
+--------------------------------------------------------------------------------
+INV-LOCAL-01: 100% Offline & Zero-Egress Privacy
+  Pure local runtime. Zero network sockets opened, zero analytics, zero telemetry.
+INV-SEC-02: Unprivileged RunAsInvoker Non-Elevation
+  Standard unprivileged user mode. Never prompts for UAC elevation or root rights.
+INV-SAFE-03: Destructive Safety Guard & Non-Destructive In-Place Recycling
+  Deletions delegate to OS Recycle Bin; permanent deletion requires explicit modal consent.
+INV-PASTE-04: Collision-Free Paste & Non-Overwriting Guard
+  File collisions automatically receive non-colliding suffixes (_copy, _copy_2).
+INV-INDEX-05: Sub-Second Embedded SQLite FTS5 Search & WAL Mode
+  Embedded tokenized SQLite FTS5 index enables instant filename and content queries.
+INV-HASH-06: 2-Phase MD5/SHA-256 Chunk Hashing for Duplicate Elimination
+  Fast file size grouping followed by chunk hashing eliminates duplicate disk clutter.
+INV-PRIV-07: Proactive Regex Privacy & Sensitive Pattern Watchdog
+  Real-time regex scanning warns when API keys, credentials, or blacklisted files appear.
+INV-I18N-08: Universal 6-Language Native Parity (EN, DE, ES, ZH, JA, RU)
+  154 translation keys complete across 6 target languages with dynamic UI switching.
+INV-EXP-09: Sanitized Workspace Export (explorerpro-workspace-v1)
+  Exported settings redact absolute system paths, usernames, and private credentials.
+INV-SLA-10: 48-Hour Security Response & 5-Day Triage SLA
+  Documented bilingual vulnerability response with GitHub Security Advisories integration.
+
+
+6. ECOSYSTEM SYNERGIES & CROSS-PROMOTION CHANNELS
+--------------------------------------------------------------------------------
+- file-bricks/ProFiler: Advanced batch metadata categorization companion.
+- file-bricks/ProSync: Dedicated high-volume enterprise folder synchronization.
+- file-bricks/SQLiteViewer: Direct visual inspector for ExplorerPro's FTS5 index databases.
+- file-bricks/SoftwareCenter: Local desktop software inventory, launcher, and update hub.
+- file-bricks/CloudLockFixer: Unlocks cloud-locked files before indexing or moving.
+- file-bricks/WinStorePackager: Automated toolchain for Microsoft Store MSIX packaging.
+- doc-bricks/DokuZen & FormularErstellen: Complementary document management & PDF form tooling.
+- dev-bricks/CodeBox: Full-fledged multi-language developer IDE companion.
+- ellmos-ai/ellmos-controlcenter-mcp: Model Context Protocol bridge for AI tool orchestration.
+- open-bricks: Central umbrella portal linking all local-first open-source utilities.
+- Microsoft Store: Verified production listing under package identity Geiger.ExplorerPro (9P0X52WSHZ3Q).
+================================================================================

@@ -1230,5 +1230,69 @@
     "zh": "🔍 搜索提示词...",
     "ja": "🔍 プロンプトを検索...",
     "ru": "🔍 Поиск промпта..."
+  },
+  "Berechnung läuft...": {
+    "de": "Berechnung läuft...",
+    "en": "Calculating...",
+    "es": "Calculando...",
+    "zh": "正在计算...",
+    "ja": "計算中...",
+    "ru": "Вычисление..."
+  },
+  "Bereit zur Verifikation.": {
+    "de": "Bereit zur Verifikation.",
+    "en": "Ready for verification.",
+    "es": "Listo para verificación.",
+    "zh": "准备验证。",
+    "ja": "検証の準備ができました。",
+    "ru": "Готово к проверке."
+  },
+  "Erwarteten Hash hier einfügen...": {
+    "de": "Erwarteten Hash hier einfügen...",
+    "en": "Paste expected hash here...",
+    "es": "Pegue el hash esperado aquí...",
+    "zh": "在此粘贴预期哈希...",
+    "ja": "期待されるハッシュをここに貼り付け...",
+    "ru": "Вставьте ожидаемый хеш сюда..."
+  },
+  "Fehler: Datei existiert nicht mehr.": {
+    "de": "Fehler: Datei existiert nicht mehr.",
+    "en": "Error: File no longer exists.",
+    "es": "Error: El archivo ya no existe.",
+    "zh": "错误：文件已不存在。",
+    "ja": "エラー：ファイルが存在しません。",
+    "ru": "Ошибка: Файл больше не существует."
+  },
+  "Fügen Sie einen erwarteten Hash-Wert ein, um die Integrität zu prüfen:": {
+    "de": "Fügen Sie einen erwarteten Hash-Wert ein, um die Integrität zu prüfen:",
+    "en": "Paste an expected hash value to verify integrity:",
+    "es": "Pegue un valor hash esperado para verificar la integridad:",
+    "zh": "粘贴预期哈希值以验证完整性：",
+    "ja": "整合性を検証するために期待されるハッシュ値を貼り付けてください：",
+    "ru": "Вставьте ожидаемое значение хеша для проверки целостности:"
+  },
+  "Prüfsummen (MD5, SHA-1, SHA-256) anzeigen und verifizieren": {
+    "de": "Prüfsummen (MD5, SHA-1, SHA-256) anzeigen und verifizieren",
+    "en": "Display and verify checksums (MD5, SHA-1, SHA-256)",
+    "es": "Mostrar y verificar sumas de comprobación (MD5, SHA-1, SHA-256)",
+    "zh": "显示并验证校验和 (MD5, SHA-1, SHA-256)",
+    "ja": "チェックサム (MD5, SHA-1, SHA-256) を表示および検証",
+    "ru": "Показать и проверить контрольные суммы (MD5, SHA-1, SHA-256)"
+  },
+  "✗ Keine Übereinstimmung mit berechneten Prüfsummen.": {
+    "de": "✗ Keine Übereinstimmung mit berechneten Prüfsummen.",
+    "en": "✗ No match with calculated checksums.",
+    "es": "✗ Sin coincidencia con las sumas de comprobación calculadas.",
+    "zh": "✗ 与计算出的校验和不匹配。",
+    "ja": "✗ 計算されたチェックサムと一致しません。",
+    "ru": "✗ Нет совпадений с вычисленными контрольными суммами."
+  },
+  "📋 Alle Prüfsummen kopieren": {
+    "de": "📋 Alle Prüfsummen kopieren",
+    "en": "📋 Copy All Checksums",
+    "es": "📋 Copiar todas las sumas de comprobación",
+    "zh": "📋 复制所有校验和",
+    "ja": "📋 すべてのチェックサムをコピー",
+    "ru": "📋 Скопировать все контрольные суммы"
   }
 }

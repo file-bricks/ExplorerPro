@@ -7,15 +7,9 @@ test_i18n.py - Vertragstests für die Tier-2 6-Sprachen-Lokalisierung (P-006)
 import json
 from pathlib import Path
 
-import pytest
-
 import manage_translations
 from core.settings_manager import SettingsManager
 from translator import (
-    DEFAULT_LANGUAGE,
-    LANGUAGE_DISPLAY_NAMES,
-    LANGUAGE_NAMES,
-    SUPPORTED_LANGUAGES,
     TranslationSystem,
     detect_system_language,
     get_translator,
@@ -146,7 +140,7 @@ def test_settings_manager_language_integration():
 def test_settings_dialog_language_dropdown():
     """Prüft, dass SettingsDialog die Sprachauswahl mit allen 6 Sprachen anbietet."""
     from PySide6.QtWidgets import QApplication
-    app = QApplication.instance() or QApplication([])
+    _ = QApplication.instance() or QApplication([])
     from gui.settings_dialog import SettingsDialog
     dlg = SettingsDialog()
     assert hasattr(dlg, "language_cb")

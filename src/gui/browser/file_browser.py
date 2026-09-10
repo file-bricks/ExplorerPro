@@ -315,12 +315,16 @@ class FileBrowser(QWidget):
             open_action.triggered.connect(lambda: self._open_file(file_path))
             menu.addAction(open_action)
 
-            # In Editor öffnen (nur für Code-Dateien)
             if is_file and ext in EDITOR_EXTENSIONS:
                 edit_action = QAction("✏️ In Editor öffnen", self)
                 edit_action.setShortcut("F4")
                 edit_action.triggered.connect(lambda: self._edit_file(file_path))
                 menu.addAction(edit_action)
+
+            if is_file:
+                checksum_action = QAction("🔑 Prüfsummen berechnen...", self)
+                checksum_action.triggered.connect(lambda: self._show_checksums(file_path))
+                menu.addAction(checksum_action)
 
             menu.addSeparator()
 
@@ -418,6 +422,15 @@ class FileBrowser(QWidget):
 
         editor = QuickEditorDialog(path, self.window())
         editor.exec()
+
+    def _show_checksums(self, path: str):
+        """Öffnet den Prüfsummen-Dialog für eine Datei"""
+        if not os.path.isfile(path):
+            return
+        from gui.checksum_dialog import ChecksumDialog
+
+        dialog = ChecksumDialog(path, self.window())
+        dialog.exec()
 
     def _check_privacy(self, path: str):
         """Prüft Datei auf sensible Daten"""

@@ -90,6 +90,8 @@ class ImagePreview(QLabel):
 
     def load_image(self, path: str):
         """Lädt und zeigt ein Bild"""
+        self._original_pixmap = None
+        self.clear()
         try:
             pixmap = QPixmap(path)
             if pixmap.isNull():
@@ -99,16 +101,19 @@ class ImagePreview(QLabel):
             self._original_pixmap = pixmap
             self._scale_to_fit()
         except Exception as e:
+            self._original_pixmap = None
             self.setText(f"Fehler: {e}")
 
     def _scale_to_fit(self):
-        if self._original_pixmap:
-            scaled = self._original_pixmap.scaled(
-                self.size(),
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation
-            )
-            self.setPixmap(scaled)
+        if self._original_pixmap and not self._original_pixmap.isNull():
+            sz = self.size()
+            if sz.width() > 0 and sz.height() > 0:
+                scaled = self._original_pixmap.scaled(
+                    sz,
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation
+                )
+                self.setPixmap(scaled)
 
     def resizeEvent(self, event):
         self._scale_to_fit()
@@ -130,22 +135,52 @@ class TextPreview(QPlainTextEdit):
 
     def load_file(self, path: str):
         """Lädt eine Textdatei"""
+        # Altes Highlighting sicher lösen
+        if self._highlighter is not None:
+            self._highlighter.setDocument(None)
+            self._highlighter = None
+
         try:
-            with open(path, 'r', encoding='utf-8', errors='ignore') as f:
-                content = f.read(100000)  # Max 100KB
+            with open(path, 'rb') as f:
+                raw = f.read(100000)  # Max 100KB
+
+            # Robuste Erkennung verschiedener Text-Encodings (BOMs & Fallbacks)
+            if raw.startswith(b'\xff\xfe'):
+                content = raw.decode('utf-16-le', errors='replace')
+            elif raw.startswith(b'\xfe\xff'):
+                content = raw.decode('utf-16-be', errors='replace')
+            elif raw.startswith(b'\xef\xbb\xbf'):
+                content = raw.decode('utf-8-sig', errors='replace')
+            elif b'\x00' in raw:
+                try:
+                    content = raw.decode('utf-16-le')
+                except UnicodeDecodeError:
+                    try:
+                        content = raw.decode('utf-16-be')
+                    except UnicodeDecodeError:
+                        content = raw.decode('utf-8', errors='replace')
+            else:
+                try:
+                    content = raw.decode('utf-8')
+                except UnicodeDecodeError:
+                    try:
+                        content = raw.decode('cp1252')
+                    except UnicodeDecodeError:
+                        content = raw.decode('utf-8', errors='replace')
 
             self.setPlainText(content)
-
-            # Altes Highlighting sicher lösen
-            if self._highlighter is not None:
-                self._highlighter.setDocument(None)
-                self._highlighter = None
 
             # Syntax-Highlighting
             ext = os.path.splitext(path)[1].lower()
             try:
                 from modules.editor.syntax_highlighter import get_lexer_for_extension
-                self._highlighter = get_lexer_for_extension(ext, self.document())
+                lexer_cls = get_lexer_for_extension(ext)
+                if lexer_cls:
+                    self._highlighter = lexer_cls(self.document())
+                elif ext == '.py':
+                    self._highlighter = PythonHighlighter(self.document())
+                else:
+                    self._highlighter = None
             except Exception:
                 if ext == '.py':
                     self._highlighter = PythonHighlighter(self.document())
@@ -153,6 +188,9 @@ class TextPreview(QPlainTextEdit):
                     self._highlighter = None
 
         except Exception as e:
+            if self._highlighter is not None:
+                self._highlighter.setDocument(None)
+                self._highlighter = None
             self.setPlainText(f"Fehler beim Laden: {e}")
 
 
@@ -263,6 +301,11 @@ class MetadataPanel(QWidget):
         self.created_label = QLabel("-")
         info_layout.addRow("Erstellt:", self.created_label)
 
+        self.checksum_btn = QPushButton("🔑 Berechnen...")
+        self.checksum_btn.setToolTip("Prüfsummen (MD5, SHA-1, SHA-256) anzeigen und verifizieren")
+        self.checksum_btn.clicked.connect(self._open_checksums)
+        info_layout.addRow("Prüfsummen:", self.checksum_btn)
+
         layout.addWidget(info_group)
 
         # Tags
@@ -288,12 +331,33 @@ class MetadataPanel(QWidget):
 
         layout.addStretch()
 
+    def clear_metadata(self):
+        """Setzt die Metadaten-Anzeige vollständig zurück."""
+        self.name_label.setText("-")
+        self.type_label.setText("-")
+        self.size_label.setText("-")
+        self.modified_label.setText("-")
+        self.created_label.setText("-")
+        self.tags_edit.clear()
+        self.notes_edit.clear()
+        self._current_path = None
+        if hasattr(self, "checksum_btn"):
+            self.checksum_btn.setEnabled(False)
+
     def show_metadata(self, path: str):
         """Zeigt Metadaten einer Datei"""
-        if not os.path.exists(path):
+        if not path or not os.path.exists(path):
+            self.clear_metadata()
             return
 
-        stat = os.stat(path)
+        try:
+            stat = os.stat(path)
+        except OSError:
+            self.clear_metadata()
+            self.name_label.setText(os.path.basename(path))
+            self.type_label.setText("Nicht lesbar")
+            return
+
         name = os.path.basename(path)
         ext = os.path.splitext(name)[1].lower()
 
@@ -312,12 +376,36 @@ class MetadataPanel(QWidget):
             size_str = f"{size / (1024*1024*1024):.2f} GB"
         self.size_label.setText(size_str)
 
-        # Zeitstempel
-        modified = datetime.fromtimestamp(stat.st_mtime)
-        created = datetime.fromtimestamp(stat.st_ctime)
+        # Zeitstempel sicher formatieren (resistent gegen negative Zeitstempel auf Windows)
+        try:
+            if stat.st_mtime >= 0:
+                modified = datetime.fromtimestamp(stat.st_mtime)
+                self.modified_label.setText(modified.strftime("%d.%m.%Y %H:%M"))
+            else:
+                self.modified_label.setText("-")
+        except (OSError, ValueError, OverflowError):
+            self.modified_label.setText("-")
 
-        self.modified_label.setText(modified.strftime("%d.%m.%Y %H:%M"))
-        self.created_label.setText(created.strftime("%d.%m.%Y %H:%M"))
+        try:
+            if stat.st_ctime >= 0:
+                created = datetime.fromtimestamp(stat.st_ctime)
+                self.created_label.setText(created.strftime("%d.%m.%Y %H:%M"))
+            else:
+                self.created_label.setText("-")
+        except (OSError, ValueError, OverflowError):
+            self.created_label.setText("-")
+
+        self._current_path = path
+        if hasattr(self, "checksum_btn"):
+            self.checksum_btn.setEnabled(os.path.isfile(path))
+
+    def _open_checksums(self):
+        """Öffnet den Prüfsummen-Dialog für die aktuell angezeigte Datei."""
+        if hasattr(self, "_current_path") and self._current_path and os.path.isfile(self._current_path):
+            from gui.checksum_dialog import ChecksumDialog
+
+            dlg = ChecksumDialog(self._current_path, self.window())
+            dlg.exec()
 
 
 class ExcelPreview(QWidget):
@@ -440,12 +528,16 @@ class ExcelPreview(QWidget):
         import subprocess
         import sys as _sys
 
-        if _sys.platform == "win32":
-            os.startfile(self._path)  # type: ignore[attr-defined]
-        elif _sys.platform == "darwin":
-            subprocess.Popen(["open", self._path])
-        else:
-            subprocess.Popen(["xdg-open", self._path])
+        try:
+            if _sys.platform == "win32":
+                os.startfile(self._path)  # type: ignore[attr-defined]
+            elif _sys.platform == "darwin":
+                subprocess.Popen(["open", self._path])
+            else:
+                subprocess.Popen(["xdg-open", self._path])
+        except Exception as exc:
+            self.status_label.setText(f"Externes Öffnen fehlgeschlagen: {exc}")
+            self.status_label.setVisible(True)
 
 
 class PreviewPanel(QWidget):
@@ -511,10 +603,16 @@ class PreviewPanel(QWidget):
         self.metadata_panel = MetadataPanel()
         layout.addWidget(self.metadata_panel, 1)
 
+    def clear_preview(self):
+        """Setzt die Vorschau und Metadaten zurück."""
+        self._current_path = None
+        self.preview_stack.setCurrentIndex(0)
+        self.metadata_panel.clear_metadata()
+
     def show_preview(self, path: str):
         """Zeigt Vorschau für eine Datei"""
-        if not os.path.exists(path):
-            self.preview_stack.setCurrentIndex(0)
+        if not path or not os.path.exists(path):
+            self.clear_preview()
             return
 
         self._current_path = path

@@ -1,6 +1,6 @@
 [project]
 name = "explorer-pro-suite"
-version = "1.0.3"
+version = "1.0.4"
 description = "Datei-Explorer-Suite mit Editor, PDF-Viewer und Datenanalyse"
 authors = [{ name = "Lukas Geiger", email = "lukasgeiger@googlemail.com" }]
 requires-python = ">=3.10"
@@ -55,7 +55,11 @@ Issues = "https://github.com/file-bricks/ExplorerPro/issues"
 "Bug Tracker" = "https://github.com/file-bricks/ExplorerPro/issues"
 Changelog = "https://github.com/file-bricks/ExplorerPro/blob/master/CHANGELOG.md"
 Security = "https://github.com/file-bricks/ExplorerPro/blob/master/SECURITY.md"
+"Third-Party Licenses" = "https://github.com/file-bricks/ExplorerPro/blob/master/THIRD_PARTY_LICENSES.md"
+"Marketing Log" = "https://github.com/file-bricks/ExplorerPro/blob/master/MARKETING-LOG.txt"
+"Parent Organization" = "https://github.com/file-bricks"
 Umbrella = "https://github.com/open-bricks"
+"Umbrella Ecosystem" = "https://github.com/open-bricks"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.5"]

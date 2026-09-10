@@ -351,6 +351,10 @@ class MainWindow(QMainWindow):
         duplicates_action.triggered.connect(self._find_duplicates)
         tools_menu.addAction(duplicates_action)
 
+        checksum_action = QAction("🔑 Prüfsummen berechnen...", self)
+        checksum_action.triggered.connect(self._calculate_checksums)
+        tools_menu.addAction(checksum_action)
+
         tools_menu.addSeparator()
 
         editor_action = QAction("✏️ Editor öffnen", self)
@@ -556,6 +560,24 @@ class MainWindow(QMainWindow):
             self.show_duplicate_finder()
         else:
             self.statusBar().showMessage("Duplikate-Finder: In app.py verfügbar", 3000)
+
+    def _calculate_checksums(self):
+        """Öffnet den Prüfsummen-Dialog für die ausgewählte Datei oder fordert zur Dateiauswahl auf."""
+        selected = self.file_browser.get_selected_files()
+        target_path = None
+        if selected and os.path.isfile(selected[0]):
+            target_path = selected[0]
+        else:
+            file_path, _ = QFileDialog.getOpenFileName(
+                self, "Datei für Prüfsummenberechnung auswählen"
+            )
+            if file_path and os.path.isfile(file_path):
+                target_path = file_path
+
+        if target_path:
+            from .checksum_dialog import ChecksumDialog
+            dlg = ChecksumDialog(target_path, self)
+            dlg.exec()
 
     def _open_editor(self):
         """Öffnet Editor für ausgewählte Datei"""

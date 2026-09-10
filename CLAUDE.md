@@ -2,11 +2,11 @@
 name: ExplorerPro
 type: project-docs
 profile: STANDARD
-version: 1.0.3
+version: 1.0.4
 created: 2026-07-22
-updated: 2026-08-24
-reason_last_change: "Path B Marketing & Discoverability: Dual Mermaid Diagrams, Showcase Gallery, Capability & Sibling Matrix, Contract Tests"
-last_verified: 2026-08-24
+updated: 2026-09-10
+reason_last_change: "Path B Marketing & Discoverability: 15-Point Quick Navigation, 10 Governance Invariants, Third-Party License Inventory, Marketing Log, Contract Tests"
+last_verified: 2026-09-10
 author: Lukas Geiger
 anthropic_compatible: true
 description: |

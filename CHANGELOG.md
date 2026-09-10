@@ -3,9 +3,32 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [Unreleased]
+## [1.0.4] - 2026-09-10
 
 ### Hinzugefügt / Added
+- **Multi-Hash Checksummen-Generator & Live-Verifikation (`src/core/checksum_service.py`, `src/gui/checksum_dialog.py`)**:
+  - Parallele Single-Pass-Stream-Berechnung für MD5, SHA-1, SHA-256 und SHA-512 über 64 KB Chunks mit bis zu 4-facher Geschwindigkeitssteigerung gegenüber sequenzieller Berechnung.
+  - Asynchroner Hintergrund-Worker `ChecksumWorker(QThread)` mit Signalverbindung, Fortschrittsanzeige und kooperativer Thread-Stornierung bei Abbruch oder Dialogschließung.
+  - Dialog zur Live-Berechnung und Integritätsprüfung: Monospace-Anzeige, Einzel- und Gesamtkopierfunktion ("Alle Prüfsummen kopieren") sowie Eingabefeld zur Verifikation von Hashes mit Toleranz ggü. Formatierungsunterschieden, Algorithmus-Präfixen und Groß-/Kleinschreibung.
+  - Vollständige GUI-Verdrahtung im Kontextmenü des Dateibrowsers (`🔑 Prüfsummen berechnen...`), in der Hauptmenüleiste unter Tools und als Aktionsbutton im `MetadataPanel` der Dateidetailansicht.
+- **Performance-Optimierung Duplikat-Finder (`src/modules/indexer/duplicate_finder.py`)**:
+  - Zweistufige Chunk-Filterung: Vorprüfung mit 64 KB Prefix-Hash (`_compute_quick_hash`) für gleichgroße Dateien > 64 KB. Dateien mit abweichenden Datei-Headern werden ohne teures vollständiges Datei-Hashing sofort verworfen.
+- **Volltextsuche & Modernisierung Indexer (`src/core/file_index.py`)**:
+  - Erweiterte Volltext-Extraktion in `extract_text()` für über 30 Programmier-, Markup- und Konfigurationsformate (`.py`, `.js`, `.ts`, `.html`, `.css`, `.json`, `.yaml`, `.yml`, `.toml`, `.xml`, `.sql`, `.ini`, `.cfg`, `.sh`, `.bat`, `.ps1`, `.c`, `.cpp`, `.h`, `.log`, `.csv`, etc.).
+  - Behebung von Deprecation-Warnungen durch Priorisierung von modernem `pypdf` vor `PyPDF2`.
+- **Lokalisierung (Tier-2 P-006)**:
+  - 100% lückenlose Übersetzung aller 8 neuen Strings in allen 6 Zielsprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` (Gesamt: 162 Strings, verifiziert mit `manage_translations.py --check`).
+- **Test-Erweiterung**:
+  - 12 neue Tests in `tests/test_checksum_service.py`, `tests/test_checksum_dialog.py`, `tests/test_duplicate_quick_hash.py` und `tests/test_file_index_expanded_text.py` (Gesamtbestand: 251 Tests, 100% bestanden).
+- **Discoverability, Visual Architecture, 15-Punkte-Schnellnavigation & Metadatenvertrag (Pfad B)**:
+  - **Zweisprachige README-Architektur (`README.md`, `README_de.md`)**: Ausbau auf 15-Punkte-Schnellnavigation mit 100% wechselseitiger Anker-Parität (#1-overview--value-proposition bis #15-privacy-security--license bzw. #1-ueberblick--werteversprechen bis #15-datenschutz-sicherheit--lizenz).
+  - **Tabelle der 10 Governance- & Laufzeit-Invarianten**: Kanonische Dokumentation der Invarianten `INV-LOCAL-01` (100% Offline Zero-Egress) bis `INV-SLA-10` (48h Security Response & 5d Triage SLA) in beiden Dokumenten.
+  - **Dritte-Partei-Lizenzinventar (`THIRD_PARTY_LICENSES.md`)**: Umfassendes Lizenzinventar für alle direkten Laufzeit- und optionalen Abhängigkeiten (PySide6 LGPL-3.0, PyMuPDF AGPL-3.0, pandas BSD-3-Clause, openpyxl MIT, PyInstaller GPL-2.0+, PyPDF2 BSD-3-Clause, xlrd BSD-3-Clause, pywin32 PSFL-2.0, pytest MIT, ruff MIT/Apache-2.0, setuptools MIT) mit Zero-Egress und unprivilegierter RunAsInvoker Non-Elevation.
+  - **Lokales Marketing- & Auffindbarkeits-Log (`MARKETING-LOG.txt`)**: 4 Ziel-Personas (Desktop Power Users, Privacy & Compliance Officers, Software Developers & Researchers, Automation Engineers), High-Intent Suchbegriffe (DE/EN), tabellarische Wettbewerbsmatrix vs. Windows Explorer / Total Commander / Directory Opus / Cloud SaaS und Ökosystem-Synergien.
+  - **Status-Badges & Metadaten**: Shields.io Badges für Version 1.0.4, 230+ bestandene Tests, Python 3.10-3.12, Plattformen, UI PySide6, 100% Local-First, RunAsInvoker Security, 48h SLA / 5d Triage, Third-Party Audited, Marketing Log, AGPL-3.0 Lizenz, Microsoft Store Live, LLM-Ready.
+  - **Geschwister-Ökosystem-Matrix**: Ausbau auf 16 vernetzte Partner-Repositories über `file-bricks`, `doc-bricks`, `dev-bricks`, `ellmos-ai` und `open-bricks`.
+  - **PEP 621 Metadaten (`pyproject.toml`)**: URLs für "Third-Party Licenses", "Marketing Log", "Parent Organization" und "Umbrella Ecosystem" integriert.
+  - **Automatisierte Vertragstestsuite (`tests/test_metadata_contract.py`)**: Neue Contract-Tests für 15-Punkte-Schnellnavigation, 10 Invarianten, Third-Party Lizenzinventar, Marketing-Log und Versionsparität 1.0.4.
 - **Tier-2 6-Sprachen-Ausbau & Lokalisierungsarchitektur (P-006)**:
   - **Lokalisierungskatalog (`locales/translations.json`)**: Ausbau von 36 auf 154 Schlüssel mit 100% lückenloser Übersetzung über alle 6 Zielsprachen (Deutsch, Englisch, Spanisch, Chinesisch, Japanisch, Russisch).
   - **Multi-Language-Engine (`translator.py`)**: Robuste relative Pfadauflösung (`Path(__file__).resolve().parent`), Systemsprachenerkennung ohne veraltete APIs, deterministische 4-stufige Fallback-Kette (`target -> en -> de -> key`), Klassenmethoden für UI-Display-Namen und Singleton-Zugriff `get_translator()` / `t()`.

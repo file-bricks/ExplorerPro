@@ -200,7 +200,19 @@ def test_pyproject_pep621_classifiers_and_urls():
     ]:
         assert classifier in content, f"pyproject.toml must include classifier '{classifier}'"
 
-    for url_key in ["Homepage", "Repository", "Issues", "Documentation", "Changelog", "Security", "Umbrella"]:
+    for url_key in [
+        "Homepage",
+        "Repository",
+        "Issues",
+        "Documentation",
+        "Changelog",
+        "Security",
+        "Umbrella",
+        "Third-Party Licenses",
+        "Marketing Log",
+        "Parent Organization",
+        "Umbrella Ecosystem",
+    ]:
         assert f"{url_key} =" in content or f'"{url_key}" =' in content, f"pyproject.toml must include URL '{url_key}'"
 
 
@@ -210,7 +222,8 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-08-24" in content
+    assert "Last-checked: 2026-09-10" in content
+    assert "1.0.4" in content
     assert "ci.yml" in content
 
 
@@ -252,9 +265,85 @@ def test_version_parity():
     claude_text = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
-    assert 'version = "1.0.3"' in pyproject_text
-    assert "version: 1.0.3" in claude_text
-    assert "## [1.0.3]" in changelog_text
+    assert 'version = "1.0.4"' in pyproject_text
+    assert "version: 1.0.4" in claude_text
+    assert "## [1.0.4]" in changelog_text
+
+
+def test_readme_15_point_navigation_parity():
+    en_content = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    de_content = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    assert "## Quick Navigation" in en_content
+    assert "## Schnellnavigation" in de_content
+
+    for section_idx in range(1, 16):
+        prefix = f"{section_idx}. ["
+        heading = f"## {section_idx}. "
+        assert prefix in en_content, f"Missing navigation item {prefix} in README.md"
+        assert prefix in de_content, f"Missing navigation item {prefix} in README_de.md"
+        assert heading in en_content, f"Missing section heading {heading} in README.md"
+        assert heading in de_content, f"Missing section heading {heading} in README_de.md"
+
+
+def test_governance_invariants_table_ten_points():
+    expected_invariants = [
+        "INV-LOCAL-01",
+        "INV-SEC-02",
+        "INV-SAFE-03",
+        "INV-PASTE-04",
+        "INV-INDEX-05",
+        "INV-HASH-06",
+        "INV-PRIV-07",
+        "INV-I18N-08",
+        "INV-EXP-09",
+        "INV-SLA-10",
+    ]
+    for filename in ["README.md", "README_de.md", "MARKETING-LOG.txt"]:
+        content = (REPO_ROOT / filename).read_text(encoding="utf-8")
+        for inv_id in expected_invariants:
+            assert inv_id in content, f"Invariant {inv_id} missing in {filename}"
+
+
+def test_third_party_licenses_md_and_transparency():
+    path = REPO_ROOT / "THIRD_PARTY_LICENSES.md"
+    assert path.exists(), "THIRD_PARTY_LICENSES.md must exist in repo root"
+    content = path.read_text(encoding="utf-8")
+
+    for keyword in [
+        "PySide6",
+        "LGPL-3.0",
+        "PyMuPDF",
+        "AGPL-3.0",
+        "pandas",
+        "BSD-3-Clause",
+        "openpyxl",
+        "MIT",
+        "pytest",
+        "ruff",
+        "RunAsInvoker",
+        "Zero-Egress",
+    ]:
+        assert keyword in content, f"Keyword '{keyword}' missing in THIRD_PARTY_LICENSES.md"
+
+
+def test_marketing_log_and_personas():
+    path = REPO_ROOT / "MARKETING-LOG.txt"
+    assert path.exists(), "MARKETING-LOG.txt must exist in repo root"
+    content = path.read_text(encoding="utf-8")
+
+    for section in [
+        "TARGET AUDIENCE & STAKEHOLDER PERSONAS",
+        "Desktop Power Users",
+        "Privacy & Compliance Officers",
+        "Software Developers",
+        "HIGH-INTENT SEARCH QUERIES",
+        "COMPETITIVE POSITIONING & MATRIX",
+        "Windows Explorer",
+        "Total Commander",
+        "GOVERNANCE & RUNTIME INVARIANTS",
+    ]:
+        assert section in content, f"Section '{section}' missing in MARKETING-LOG.txt"
 
 
 def test_offline_zero_egress_and_privacy_invariants():

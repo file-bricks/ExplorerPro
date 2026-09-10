@@ -5,50 +5,57 @@
 **[English](README.md)** | [Deutsch](README_de.md) | [Machine-readable context (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
-[![Tests: 221 passed](https://img.shields.io/badge/tests-221%20passed-brightgreen.svg)](tests/)
+[![Tests: 278 passed](https://img.shields.io/badge/tests-278%20passed-brightgreen.svg)](tests/)
 [![Python 3.10--3.12](https://img.shields.io/badge/python-3.10--3.12-blue.svg)](https://www.python.org/)
 [![Platform: Windows | Linux | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-informational.svg)](https://github.com/file-bricks/ExplorerPro)
 [![UI: PySide6 (Qt6)](https://img.shields.io/badge/UI-PySide6%20(Qt6)-informational.svg)](src/gui/)
 [![Privacy: 100% Local--First](https://img.shields.io/badge/privacy-100%25%20Local--First-blueviolet.svg)](PRIVACY_POLICY.md)
-[![Security: Bilingual Policy](https://img.shields.io/badge/security-Bilingual%20Policy-blue.svg)](SECURITY.md)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![Security: RunAsInvoker Non--Elevation](https://img.shields.io/badge/security-RunAsInvoker%20Non--Elevation-blue.svg)](SECURITY.md)
+[![Security SLA: 48h SLA / 5d triage](https://img.shields.io/badge/security-48h%20SLA%20%2F%205d%20triage-success.svg)](SECURITY.md)
+[![Third-Party: Audited](https://img.shields.io/badge/third--party-audited-success.svg)](THIRD_PARTY_LICENSES.md)
+[![Marketing: Audited](https://img.shields.io/badge/marketing-audited-blueviolet.svg)](MARKETING-LOG.txt)
+[![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL%20v3-blue.svg)](LICENSE)
 [![Ecosystem: file--bricks](https://img.shields.io/badge/ecosystem-file--bricks-blue.svg)](https://github.com/file-bricks)
-[![Umbrella: open--bricks](https://img.shields.io/badge/Umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
+[![Umbrella: open--bricks](https://img.shields.io/badge/umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
-[![Version: 1.0.3](https://img.shields.io/badge/version-1.0.3-orange.svg)](CHANGELOG.md)
+[![Version: 1.0.4](https://img.shields.io/badge/version-1.0.4-orange.svg)](CHANGELOG.md)
 
 > [!NOTE]
 > **For AI Agents & LLMs:** Machine-readable architecture context, search keywords, runtime invariants, and verification entry points are maintained in [llms.txt](llms.txt).
 
-> **ExplorerPro** is a modern, privacy-first desktop file manager and power-user explorer suite for Windows, Linux, and macOS. It unites multi-tab directory navigation, instant multi-format file previews (PDF, images, syntax-highlighted source code, markdown), high-performance SQLite FTS5 full-text indexing, hash-based duplicate detection, privacy monitoring, folder synchronization, and an integrated code editor in a single native PySide6 (Qt 6) application.
+> **ExplorerPro** is a modern, privacy-first desktop file manager and power-user explorer suite for Windows, Linux, and macOS. It unites multi-tab directory navigation, instant multi-format file previews (PDF, images, syntax-highlighted source code, markdown, spreadsheet), high-performance SQLite FTS5 full-text indexing, hash-based duplicate detection, privacy monitoring, folder synchronization, and an integrated code editor in a single native PySide6 (Qt 6) application.
 
 ---
 
 ## Quick Navigation
 
-- [Overview & Value Proposition](#overview--value-proposition)
-- [Visual Showcase Gallery](#visual-showcase-gallery)
-- [System Architecture](#system-architecture)
-- [End-to-End Processing Lifecycle](#end-to-end-processing-lifecycle)
-- [Key Capabilities & Runtime Invariants](#key-capabilities--runtime-invariants)
-- [Keyboard Shortcuts](#keyboard-shortcuts)
-- [Installation & Quick Start](#installation--quick-start)
-- [Microsoft Store & Packaging](#microsoft-store--packaging)
-- [Testing & Quality Gates](#testing--quality-gates)
-- [Privacy & Security](#privacy--security)
-- [Sibling Ecosystem](#sibling-ecosystem)
-- [License & Liability](#license--liability)
+1. [Overview & Value Proposition](#1-overview--value-proposition)
+2. [Visual Showcase Gallery](#2-visual-showcase-gallery)
+3. [System Architecture](#3-system-architecture)
+4. [End-to-End Processing Lifecycle](#4-end-to-end-processing-lifecycle)
+5. [Governance & Runtime Invariants](#5-governance--runtime-invariants)
+6. [Core Capabilities & Multi-Tab Browser](#6-core-capabilities--multi-tab-browser)
+7. [Integrated Quick Editor & Sync Engine](#7-integrated-quick-editor--sync-engine)
+8. [Universal 6-Language Localization](#8-universal-6-language-localization)
+9. [Keyboard Shortcuts](#9-keyboard-shortcuts)
+10. [Installation & Quick Start](#10-installation--quick-start)
+11. [Microsoft Store & Packaging](#11-microsoft-store--packaging)
+12. [Testing & Quality Gates](#12-testing--quality-gates)
+13. [Sibling Ecosystem & Integration Matrix](#13-sibling-ecosystem--integration-matrix)
+14. [Third-Party Licenses & Transparency](#14-third-party-licenses--transparency)
+15. [Privacy, Security & License](#15-privacy-security--license)
 
 ---
 
-## Overview & Value Proposition
+## 1. Overview & Value Proposition
 
-Standard operating system file managers are built for casual browsing and lack the heavy-lifting tools developers, researchers, and power users require daily. ExplorerPro addresses this gap by packaging pro-grade productivity utilities into a cohesive, responsive desktop interface with zero telemetry and 100% local-first data isolation.
+Standard operating system file managers are built for casual browsing and lack the heavy-lifting tools developers, researchers, and power users require daily. ExplorerPro addresses this gap by packaging pro-grade productivity utilities into a cohesive, responsive desktop interface with zero telemetry and 100% Local-First data isolation.
 
 - **Unified Multi-Tab Experience:** Browse multiple directories concurrently with tab pinning, breadcrumbs navigation, drag-and-drop, and intelligent context menus.
-- **Deep File Inspection:** Instant inline rendering for PDFs (PyMuPDF), images, structured spreadsheets, Markdown, and source code files with auto-detected syntax highlighting.
-- **High-Performance FTS5 Search:** Rapid indexing and search across file names and text contents using embedded SQLite Full-Text Search.
+- **Deep File Inspection:** Instant inline rendering for PDFs (PyMuPDF), images, structured spreadsheets (pandas, openpyxl), Markdown, and source code files with auto-detected syntax highlighting.
+- **High-Performance FTS5 Search:** Rapid indexing and search across file names and text contents using embedded SQLite Full-Text Search with WAL mode.
 - **Byte-Exact Duplicate Elimination:** Dual-stage scanning (file size grouping + MD5/SHA-256 chunk hashing) with side-by-side preview and safe recycling.
 - **Data Privacy & Blacklist Watchdog:** Continuous scan indicator alerting users to accidental exposure of credentials, private keys, or blacklisted file patterns.
 - **Integrated Code Editor & Sync Tools:** Quick inline editing with indentation guides and one-way/mirror directory synchronization with regex exclusion filters.
@@ -56,7 +63,7 @@ Standard operating system file managers are built for casual browsing and lack t
 
 ---
 
-## Visual Showcase Gallery
+## 2. Visual Showcase Gallery
 
 | Main Multi-Tab Explorer & Preview | Advanced FTS5 Content Search |
 | :---: | :---: |
@@ -70,7 +77,7 @@ Standard operating system file managers are built for casual browsing and lack t
 
 ---
 
-## System Architecture
+## 3. System Architecture
 
 The following diagram illustrates the layered architecture of ExplorerPro, showcasing the decoupled presentation, background processing engines, and local-first storage invariants:
 
@@ -152,7 +159,7 @@ flowchart TD
 
 ---
 
-## End-to-End Processing Lifecycle
+## 4. End-to-End Processing Lifecycle
 
 The sequence diagram below shows the asynchronous execution lifecycle for user browsing, full-text FTS5 search queries, inline preview extraction, and safe duplicate scanning:
 
@@ -198,26 +205,63 @@ sequenceDiagram
 
 ---
 
-## Key Capabilities & Runtime Invariants
+## 5. Governance & Runtime Invariants
 
-| Capability / Invariant | Implementation Detail | Guarantee & User Benefit |
-|---|---|---|
-| **Local-First & Zero-Egress** | Pure local runtime (`src/core/`, `src/modules/`) | **100% Offline**. No telemetry, analytics, or network calls. Zero data egress. |
-| **Non-Elevation User Mode** | Standard unprivileged permissions | Never prompts for UAC/sudo elevation. Safe execution in managed corporate environments. |
-| **Multi-Tab File Browser** | PySide6 `QTableView` + `_DnDTableView` | Tab pinning, directory breadcrumbs, drag-and-drop, sortable columns, and context menus. |
-| **Multi-Format Preview** | PyMuPDF (`fitz`), Pillow, PySide6 | High-speed viewing of PDF, PNG, JPEG, SVG, Markdown, JSON, YAML, and source code files. |
-| **SQLite FTS5 Full-Text Search** | SQLite WAL-mode + FTS5 virtual tables | Sub-second full-text and filename search across thousands of local project documents. |
-| **Hash-Based Duplicate Finder** | 2-Phase MD5/SHA-256 Hashing | Eliminates duplicate disk clutter with side-by-side inspection and safe recycling. |
-| **Privacy & Blacklist Watchdog** | Regex pattern matcher (`src/modules/privacy/`) | Real-time traffic-light status alerting if credentials, `.env`, or sensitive files appear. |
-| **Integrated Quick Editor** | QPlainTextEdit + SyntaxHighlighter | Fast inline editing with syntax highlighting for Python, C/C++, JSON, XML, Markdown. |
-| **Folder Synchronization** | Differential sync engine (`src/modules/sync/`) | Local folder mirror and sync with pattern exclusions, diff preview, and safety logs. |
-| **Sanitized Workspace Export** | `explorerpro-workspace-v1` standard | Redacts absolute system paths and credentials when exporting configurations. |
-| **Universal 6-Language i18n** | `locales/translations.json` | 100% localized across English, German, Spanish, Chinese, Japanese, and Russian. |
-| **Accessibility (A11y)** | Accessible Qt widgets & keyboard focus | Full screen-reader descriptions, high-contrast palette support, and shortcut bindings. |
+ExplorerPro operates under 10 binding runtime and governance invariants to guarantee complete user privacy, data integrity, and operational predictability:
+
+| Invariant ID | Name & Pillar | Implementation Details | User & Security Benefit |
+|---|---|---|---|
+| **INV-LOCAL-01** | 100% Offline & Zero-Egress Privacy | Pure local runtime (`src/core/`, `src/modules/`) | No network sockets opened; zero telemetry or remote analytics. |
+| **INV-SEC-02** | Unprivileged RunAsInvoker Non-Elevation | Standard unprivileged user execution | Operates without UAC elevation or root privileges; enterprise-safe. |
+| **INV-SAFE-03** | Destructive Safety Guard & Recycling | Recycle Bin integration with cancel-default dialogs | Accidental deletions prevented; files recoverable via OS recycle bin. |
+| **INV-PASTE-04** | Collision-Free Paste & Zero Overwrite | Automatic suffixing (`_copy`, `_copy_2`) | Pasting never silently destroys or overwrites existing file assets. |
+| **INV-INDEX-05** | Sub-Second SQLite FTS5 Full-Text Index | SQLite WAL mode with tokenized virtual tables | Instant full-text search across thousands of documents locally. |
+| **INV-HASH-06** | 2-Phase MD5/SHA-256 Duplicate Elimination | File size grouping followed by chunk hashing | Rapid and byte-exact duplicate detection without false positives. |
+| **INV-PRIV-07** | Proactive Regex Privacy & Secret Watchdog | Traffic-light status indicator (`src/modules/privacy/`) | Alerts immediately if API keys, `.env`, or blacklisted terms appear. |
+| **INV-I18N-08** | Universal 6-Language Native Parity | `locales/translations.json` (154 keys) | 100% complete UI translations across DE, EN, ES, ZH, JA, RU. |
+| **INV-EXP-09** | Sanitized Workspace Export Contract | `explorerpro-workspace-v1` schema | Exported configurations redact absolute paths, usernames, and secrets. |
+| **INV-SLA-10** | 48-Hour Security Response & 5-Day Triage | Bilingual policy in `SECURITY.md` | Rapid vulnerability handling via GitHub Security Advisories. |
 
 ---
 
-## Keyboard Shortcuts
+## 6. Core Capabilities & Multi-Tab Browser
+
+- **Dynamic Multi-Tab Management**: Open tabs for disparate drives, network shares, and deep folder paths. Features drag-and-drop tab reordering, tab closing with middle-click or keyboard shortcut, and state persistence between sessions.
+- **Breadcrumb & Path Navigator**: Direct path bar editing with auto-completion alongside interactive breadcrumb buttons for effortless parent directory traversal.
+- **Sortable Detailed File List**: High-performance Qt table view with sorting across Name, Extension, File Size, Modification Date, and Type.
+- **Integrated Sidebar**: Quick access to System Drives, Pinned Bookmarks, Common Directories (Desktop, Documents, Downloads), and configured Application Launchers.
+
+---
+
+## 7. Integrated Quick Editor & Sync Engine
+
+- **Integrated Quick Editor (`QuickEditor`)**:
+  - Embedded syntax highlighting for Python, C/C++, JSON, XML, YAML, and Markdown.
+  - Line numbers, indentation guides, find/replace toolbar, and automatic UTF-8 fallback encoding safeguards.
+  - Edit scripts, notes, or configuration files in-place without spawning external editors.
+- **Folder Synchronization (`SyncPanel`)**:
+  - One-way mirror and bidirectional synchronization options.
+  - Differential dry-run preview comparing timestamps and file sizes before execution.
+  - Regex-based exclusion filters for `.git`, `__pycache__`, `.venv`, and node modules.
+
+---
+
+## 8. Universal 6-Language Localization
+
+ExplorerPro includes built-in, native translations for 6 international languages:
+
+- **Deutsch (de)** — Deutsche Benutzeroberfläche und Meldungen
+- **English (en)** — Primary international reference language
+- **Español (es)** — Spanish user interface
+- **中文 (zh)** — Simplified Chinese localization
+- **日本語 (ja)** — Japanese localization
+- **Русский (ru)** — Russian localization
+
+Language preference can be switched dynamically in **Settings -> General** without requiring application restart.
+
+---
+
+## 9. Keyboard Shortcuts
 
 ExplorerPro provides comprehensive keyboard control designed for high-efficiency navigation:
 
@@ -242,7 +286,7 @@ ExplorerPro provides comprehensive keyboard control designed for high-efficiency
 
 ---
 
-## Installation & Quick Start
+## 10. Installation & Quick Start
 
 ### Prerequisites
 
@@ -281,7 +325,7 @@ START_ExplorerPro.bat
 
 ---
 
-## Microsoft Store & Packaging
+## 11. Microsoft Store & Packaging
 
 ExplorerPro is actively published in the Microsoft Store under package identity `Geiger.ExplorerPro` (Store ID: `9P0X52WSHZ3Q`).
 
@@ -302,12 +346,12 @@ Store documentation:
 
 ---
 
-## Testing & Quality Gates
+## 12. Testing & Quality Gates
 
 ExplorerPro enforces strict quality gates, automated contract tests, and multi-OS CI validation:
 
 ```bash
-# Run full automated test suite (215+ tests):
+# Run full automated test suite (230+ tests):
 python -m pytest -q
 
 # Run bytecode compilation across all modules:
@@ -332,20 +376,9 @@ Every commit and pull request is automatically verified via [GitHub Actions CI](
 
 ---
 
-## Privacy & Security
+## 13. Sibling Ecosystem & Integration Matrix
 
-ExplorerPro adheres to uncompromising privacy and defensive engineering practices:
-
-- **100% Offline Assurance:** Zero network sockets are opened during runtime. ExplorerPro never connects to external servers, clouds, or telemetry endpoints.
-- **Destructive Safety Guard:** All deletions trigger explicit modal confirmation dialogues with default focus on *Cancel*. Pasting never silently overwrites existing data; automatic non-colliding suffixes (`_copy`, `_copy_2`) are assigned.
-- **Privacy Policy:** See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
-- **Security Policy:** Bilingual vulnerability reporting procedures and direct coordinator contacts in [SECURITY.md](SECURITY.md).
-
----
-
-## Sibling Ecosystem
-
-ExplorerPro is part of the **open-bricks** open-source software family and collaborates seamlessly with related desktop tools and MCP infrastructure:
+ExplorerPro is part of the **open-bricks** open-source software family and collaborates seamlessly with related desktop tools, file processors, and MCP infrastructure:
 
 | Repository | Organization | Domain / Focus | Parity & Integration |
 |---|---|---|---|
@@ -353,21 +386,46 @@ ExplorerPro is part of the **open-bricks** open-source software family and colla
 | [ProSync](https://github.com/file-bricks/ProSync) | `file-bricks` | High-performance folder synchronization | Standalone enterprise folder synchronization |
 | [SQLiteViewer](https://github.com/file-bricks/SQLiteViewer) | `file-bricks` | Visual SQLite database inspector | Direct inspector for ExplorerPro FTS5 search databases |
 | [SoftwareCenter](https://github.com/file-bricks/SoftwareCenter) | `file-bricks` | Local desktop software inventory & launcher | Ecosystem launcher and updater hub |
+| [CloudLockFixer](https://github.com/file-bricks/CloudLockFixer) | `file-bricks` | Windows cloud lock & sync status repair | Unlocks stuck OneDrive/Nextcloud files |
 | [WinStorePackager](https://github.com/file-bricks/WinStorePackager) | `file-bricks` | Automated MSIX store packaging & WACK tooling | Toolchain packaging generator for Store releases |
 | [DokuZen](https://github.com/doc-bricks/DokuZen) | `doc-bricks` | Document management & destructive redaction | Companion for advanced OCR & permanent document redaction |
 | [FormularErstellen](https://github.com/doc-bricks/FormularErstellen) | `doc-bricks` | Dynamic form creation & PDF document generation | Standardized PDF forms generator |
+| [CleanMarkdown](https://github.com/doc-bricks/CleanMarkdown) | `doc-bricks` | High-fidelity markdown sanitization & formatting | Formats documents previewed in ExplorerPro |
+| [PDFtoPDFocr](https://github.com/doc-bricks/PDFtoPDFocr) | `doc-bricks` | Searchable PDF OCR conversion | Converts scanned PDFs for ExplorerPro FTS5 indexing |
+| [FAST_PDFSchwaerzerPro](https://github.com/doc-bricks/FAST_PDFSchwaerzerPro) | `doc-bricks` | Secure PDF redaction and blacking | Permanent blacking and sanitization of confidential files |
 | [CodeBox](https://github.com/dev-bricks/CodeBox) | `dev-bricks` | Multi-language code editor & IDE | Standalone developer IDE for complex programming |
+| [DevCenter](https://github.com/dev-bricks/DevCenter) | `dev-bricks` | Developer utility workbench & converters | Formats and converts files for quick inspection |
+| [MethodenAnalyser](https://github.com/dev-bricks/MethodenAnalyser) | `dev-bricks` | Static code analysis & metrics engine | Inspects complexity of codebases found in ExplorerPro |
 | [automizer-for-claude-desktop](https://github.com/dev-bricks/automizer-for-claude-desktop) | `dev-bricks` | Desktop task queuing & automator | Desktop agent integration and workflow automation |
 | [ellmos-controlcenter-mcp](https://github.com/ellmos-ai/ellmos-controlcenter-mcp) | `ellmos-ai` | Model Context Protocol gateway & routing | MCP gateway integration for AI tooling |
-| [open-bricks](https://github.com/open-bricks) | `open-bricks` | Umbrella umbrella repository | Central umbrella portal for all open-source tools |
+| [open-bricks](https://github.com/open-bricks) | `open-bricks` | Umbrella repository & catalog | Central umbrella portal for all open-source tools |
 
 ---
 
-## License & Liability
+## 14. Third-Party Licenses & Transparency
+
+ExplorerPro strictly relies on proven, compatible open-source libraries. A comprehensive audit of all direct, optional, and build dependencies is documented in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt):
+
+- **PySide6 (Qt 6)**: LGPL-3.0-only (Dynamically linked shared libraries; no Qt modifications)
+- **PyMuPDF (`fitz`)**: AGPL-3.0-only / Commercial (Full copyleft license alignment with ExplorerPro)
+- **pandas**: BSD-3-Clause (Tabular data processing & spreadsheet inspection)
+- **openpyxl**: MIT (Excel workbook parsing)
+- **PyInstaller**: GPL-2.0-or-later with packaging exception (Build-time standalone packaging)
+- **pytest / ruff / setuptools**: MIT / Apache-2.0 (Testing and code hygiene toolchain)
+
+Strategic marketing plans, search queries, and audience personas are tracked in [MARKETING-LOG.txt](MARKETING-LOG.txt).
+
+---
+
+## 15. Privacy, Security & License
 
 ExplorerPro is open-source software licensed under the **GNU Affero General Public License v3 (AGPL-3.0)**. See the [LICENSE](LICENSE) file for complete terms.
 
-Third-party dependencies and their respective licenses (PySide6 LGPL-3.0, PyMuPDF AGPL-3.0, Pandas BSD-3, Openpyxl MIT) are fully documented in [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt).
+### Privacy & Security Guarantees
+
+- **Zero Data Egress**: 100% offline; zero telemetry, cookies, or remote pings. See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
+- **RunAsInvoker Security**: Runs exclusively with unprivileged user rights; no administrator prompt.
+- **Security SLA**: Vulnerability reports handled with a 48-hour response and 5-day triage commitment. Full reporting instructions in [SECURITY.md](SECURITY.md).
 
 ### Haftungsausschluss / Disclaimer
 

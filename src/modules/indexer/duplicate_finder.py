@@ -149,14 +149,33 @@ class DuplicateScanWorker(QThread):
         if self._cancelled:
             return {}
 
-        # 2. Phase 1: Nach Größe gruppieren (Vorfilter)
+        # 2. Phase 1: Nach Größe gruppieren (Vorfilter 1)
         size_groups = defaultdict(list)
         for path, size in all_files:
             size_groups[size].append(path)
 
-        # Nur Gruppen mit > 1 Datei betrachten
-        candidate_paths_by_size = [paths for paths in size_groups.values() if len(paths) > 1]
-        if not candidate_paths_by_size:
+        # Vorfilter 2: Bei Dateien > 64KB mit gleicher Größe zuerst 64KB-Prefix-Hash prüfen
+        candidate_paths_by_size = []
+        for size, paths in size_groups.items():
+            if len(paths) <= 1:
+                continue
+            if size <= 65536:
+                candidate_paths_by_size.append(paths)
+            else:
+                quick_groups = defaultdict(list)
+                for p in paths:
+                    if self._cancelled:
+                        break
+                    try:
+                        qh = self._compute_quick_hash(p)
+                        quick_groups[qh].append(p)
+                    except (OSError, IOError):
+                        pass
+                for qpaths in quick_groups.values():
+                    if len(qpaths) > 1:
+                        candidate_paths_by_size.append(qpaths)
+
+        if not candidate_paths_by_size or self._cancelled:
             return {}
 
         # 3. Phase 2: Sample-Hash (Head + Tail) für Kandidaten
@@ -211,6 +230,14 @@ class DuplicateScanWorker(QThread):
                 pass
 
         return dict(duplicates)
+
+    def _compute_quick_hash(self, path: str, chunk_size: int = 65536) -> str:
+        """Berechnet schnellen Prefix-Hash (erste 64KB) als Vorfilter für große Dateien."""
+        hasher = hashlib.sha256()
+        with open(path, 'rb') as f:
+            chunk = f.read(chunk_size)
+            hasher.update(chunk)
+        return hasher.hexdigest()
 
     def _compute_hash(self, path: str, block_size: int = 65536) -> str:
         """Berechnet SHA-256 Hash einer Datei mit kooperativer Abbruchprüfung"""

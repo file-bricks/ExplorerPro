@@ -22,10 +22,14 @@ sqlite3.register_adapter(datetime, _adapt_datetime_iso)
 
 # Optionale Imports
 try:
-    from PyPDF2 import PdfReader
+    from pypdf import PdfReader
     HAS_PDF = True
 except ImportError:
-    HAS_PDF = False
+    try:
+        from PyPDF2 import PdfReader
+        HAS_PDF = True
+    except ImportError:
+        HAS_PDF = False
 
 try:
     import fitz  # PyMuPDF
@@ -201,8 +205,20 @@ class FileIndex:
         """Extrahiert Text aus Dateien (PDF, TXT, etc.)"""
         ext = os.path.splitext(filepath)[1].lower()
 
+        TEXT_EXTENSIONS = {
+            '.txt', '.md', '.markdown', '.rst',
+            '.py', '.pyw', '.js', '.jsx', '.ts', '.tsx',
+            '.html', '.htm', '.css', '.scss', '.less',
+            '.json', '.xml', '.yaml', '.yml', '.toml',
+            '.ini', '.cfg', '.conf', '.env',
+            '.sql', '.sh', '.bash', '.bat', '.ps1', '.cmd',
+            '.c', '.cpp', '.h', '.hpp', '.java', '.cs',
+            '.rb', '.php', '.go', '.rs', '.swift', '.kt',
+            '.csv', '.tsv', '.log',
+        }
+
         try:
-            if ext == '.txt' or ext == '.md':
+            if ext in TEXT_EXTENSIONS:
                 with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
                     return f.read()[:50000]  # Max 50KB Text
 
