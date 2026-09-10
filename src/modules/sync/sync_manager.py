@@ -304,24 +304,51 @@ class SyncWorker(QThread):
                         self.actions.append(action)
                         self.action_found.emit(action)
 
-    def _get_files(self, folder: Path) -> Dict[str, dict]:
-        """Sammelt alle Dateien in einem Ordner"""
+    def _get_files(self, folder: Path) -> Dict[Path, dict]:
+        """Sammelt alle Dateien in einem Ordner mit In-Place Directory-Pruning"""
         files = {}
+        folder_path = Path(folder)
 
-        for path in folder.rglob('*'):
-            if path.is_file():
-                rel_path = path.relative_to(folder)
+        for root, dirs, filenames in os.walk(str(folder_path)):
+            if self._cancelled:
+                break
 
-                # Exclude-Patterns prüfen
-                if self._should_exclude(path.name):
+            # In-place Pruning von Verzeichnissen
+            pruned_dirs = []
+            for d in dirs:
+                # Hidden directories
+                if not self.sync_pair.include_hidden and d.startswith('.'):
                     continue
+                # Exclude-Patterns für Ordner prüfen
+                dir_full = Path(root) / d
+                try:
+                    rel_dir = dir_full.relative_to(folder_path)
+                except ValueError:
+                    rel_dir = Path(d)
+                rel_dir_posix = str(rel_dir).replace('\\', '/')
+                if self._should_exclude(d) or self._should_exclude(rel_dir_posix):
+                    continue
+                pruned_dirs.append(d)
+            dirs[:] = pruned_dirs
 
-                # Hidden-Files/-Folders prüfen
-                if not self.sync_pair.include_hidden and any(part.startswith('.') for part in rel_path.parts):
+            # Dateien im aktuellen Verzeichnis
+            for filename in filenames:
+                if self._cancelled:
+                    break
+                if not self.sync_pair.include_hidden and filename.startswith('.'):
+                    continue
+                file_full = Path(root) / filename
+                try:
+                    rel_path = file_full.relative_to(folder_path)
+                except ValueError:
+                    rel_path = Path(filename)
+
+                rel_file_posix = str(rel_path).replace('\\', '/')
+                if self._should_exclude(filename) or self._should_exclude(rel_file_posix):
                     continue
 
                 try:
-                    stat = path.stat()
+                    stat = file_full.stat()
                     files[rel_path] = {
                         'size': stat.st_size,
                         'mtime': stat.st_mtime
@@ -331,11 +358,14 @@ class SyncWorker(QThread):
 
         return files
 
-    def _should_exclude(self, filename: str) -> bool:
-        """Prüft ob Datei ausgeschlossen werden soll"""
+    def _should_exclude(self, name_or_path: str) -> bool:
+        """Prüft ob Datei oder Pfad ausgeschlossen werden soll"""
         import fnmatch
+        normalized = name_or_path.replace('\\', '/')
+        basename = os.path.basename(normalized)
         for pattern in self.sync_pair.exclude_patterns:
-            if fnmatch.fnmatch(filename, pattern):
+            pat_normalized = pattern.replace('\\', '/')
+            if fnmatch.fnmatch(basename, pattern) or fnmatch.fnmatch(normalized, pat_normalized):
                 return True
         return False
 

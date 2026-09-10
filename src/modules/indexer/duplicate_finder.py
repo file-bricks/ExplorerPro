@@ -46,8 +46,10 @@ class DuplicateScanWorker(QThread):
         try:
             if self.use_index and self.index:
                 duplicates = self._find_from_index()
+                scanned_total = getattr(self, '_total_scanned_index', sum(len(p) for p in duplicates.values()))
             elif self.scan_path:
                 duplicates = self._scan_directory()
+                scanned_total = getattr(self, '_total_scanned_dir', sum(len(p) for p in duplicates.values()))
             else:
                 self.error.emit("Kein Index oder Pfad angegeben")
                 return
@@ -57,27 +59,41 @@ class DuplicateScanWorker(QThread):
                 filtered = {h: paths for h, paths in duplicates.items() if len(paths) > 1}
                 self.duplicates_found.emit(filtered)
                 self.finished_scan.emit(
-                    sum(len(p) for p in duplicates.values()),
+                    scanned_total,
                     len(filtered)
                 )
         except Exception as e:
             self.error.emit(str(e))
 
     def _find_from_index(self) -> Dict[str, List[str]]:
-        """Findet Duplikate aus dem Index"""
+        """Findet Duplikate aus dem Index mittels optimierter SQL-Gruppierung"""
         duplicates = defaultdict(list)
 
         conn = sqlite3.connect(self.index.db_path)
         try:
             cursor = conn.cursor()
+            # Gesamtanzahl indizierter Dateien ermitteln
             cursor.execute('''
-                SELECT hash, path, size
+                SELECT COUNT(*)
                 FROM files
                 WHERE hash IS NOT NULL
                 AND hash != ''
                 AND size >= ?
-                ORDER BY hash
             ''', (self.min_size,))
+            count_row = cursor.fetchone()
+            self._total_scanned_index = count_row[0] if count_row else 0
+
+            # Nur Duplikate abfragen (effiziente SQL-Filterung)
+            cursor.execute('''
+                SELECT hash, path, size
+                FROM files
+                WHERE hash IN (
+                    SELECT hash FROM files
+                    WHERE hash IS NOT NULL AND hash != '' AND size >= ?
+                    GROUP BY hash HAVING COUNT(*) > 1
+                ) AND size >= ?
+                ORDER BY hash
+            ''', (self.min_size, self.min_size))
 
             rows = cursor.fetchall()
         finally:
@@ -89,26 +105,36 @@ class DuplicateScanWorker(QThread):
             if self._cancelled:
                 break
 
-            duplicates[file_hash].append({
-                'path': path,
-                'size': size
-            })
+            duplicates[file_hash].append(path)
 
             if i % 100 == 0:
                 self.progress.emit(i, total, path)
 
-        return {
-            h: [d['path'] for d in paths]
-            for h, paths in duplicates.items()
-        }
+        return dict(duplicates)
+
+    def _compute_sample_hash(self, path: str, sample_size: int = 16384) -> str:
+        """Berechnet schnellen Hash von Kopf- und End-Bytes zur Vorab-Eliminierung ungleicher Dateien"""
+        hasher = hashlib.sha256()
+        with open(path, 'rb') as f:
+            head = f.read(sample_size)
+            hasher.update(head)
+            f.seek(0, os.SEEK_END)
+            size = f.tell()
+            if size > sample_size * 2:
+                f.seek(-sample_size, os.SEEK_END)
+                tail = f.read(sample_size)
+                hasher.update(tail)
+        return hasher.hexdigest()
 
     def _scan_directory(self) -> Dict[str, List[str]]:
-        """Scannt Verzeichnis live nach Duplikaten"""
+        """Scannt Verzeichnis live nach Duplikaten mit Zwei-Phasen-Hashing"""
         duplicates = defaultdict(list)
 
-        # Erst alle Dateien sammeln
+        # 1. Alle Dateien sammeln
         all_files = []
         for root, dirs, files in os.walk(self.scan_path):
+            if self._cancelled:
+                break
             for f in files:
                 path = os.path.join(root, f)
                 try:
@@ -118,41 +144,81 @@ class DuplicateScanWorker(QThread):
                 except (OSError, IOError):
                     pass
 
-            if self._cancelled:
-                break
+        self._total_scanned_dir = len(all_files)
 
-        # Nach Größe gruppieren (Vorfilter)
+        if self._cancelled:
+            return {}
+
+        # 2. Phase 1: Nach Größe gruppieren (Vorfilter)
         size_groups = defaultdict(list)
         for path, size in all_files:
             size_groups[size].append(path)
 
-        # Nur Gruppen mit > 1 Datei hashen
-        files_to_hash = []
-        for size, paths in size_groups.items():
-            if len(paths) > 1:
-                files_to_hash.extend(paths)
+        # Nur Gruppen mit > 1 Datei betrachten
+        candidate_paths_by_size = [paths for paths in size_groups.values() if len(paths) > 1]
+        if not candidate_paths_by_size:
+            return {}
 
-        total = len(files_to_hash)
+        # 3. Phase 2: Sample-Hash (Head + Tail) für Kandidaten
+        # Bei Dateien <= 32 KB direkt Vollhash berechnen
+        sample_groups = defaultdict(list)
+        SAMPLE_THRESHOLD = 32768
 
-        for i, path in enumerate(files_to_hash):
+        total_candidates = sum(len(p) for p in candidate_paths_by_size)
+        curr_candidate = 0
+
+        for paths in candidate_paths_by_size:
             if self._cancelled:
                 break
+            for path in paths:
+                if self._cancelled:
+                    break
+                curr_candidate += 1
+                self.progress.emit(curr_candidate, total_candidates, os.path.basename(path))
+                try:
+                    size = os.path.getsize(path)
+                    if size <= SAMPLE_THRESHOLD:
+                        # Klein genug für direkten Vollhash
+                        full_h = self._compute_hash(path)
+                        sample_groups[(size, full_h, True)].append(path)
+                    else:
+                        sample_h = self._compute_sample_hash(path)
+                        sample_groups[(size, sample_h, False)].append(path)
+                except (OSError, IOError):
+                    pass
 
-            self.progress.emit(i, total, os.path.basename(path))
+        if self._cancelled:
+            return {}
 
+        # 4. Phase 3: Vollhash nur für Gruppen mit übereinstimmendem Sample-Hash
+        files_for_full_hash = []
+        for (size, h, is_full), paths in sample_groups.items():
+            if len(paths) > 1:
+                if is_full:
+                    duplicates[h].extend(paths)
+                else:
+                    files_for_full_hash.extend(paths)
+
+        total_full = len(files_for_full_hash)
+        for i, path in enumerate(files_for_full_hash):
+            if self._cancelled:
+                break
+            self.progress.emit(i, total_full, os.path.basename(path))
             try:
-                file_hash = self._compute_hash(path)
-                duplicates[file_hash].append(path)
+                full_hash = self._compute_hash(path)
+                duplicates[full_hash].append(path)
             except (OSError, IOError):
                 pass
 
         return dict(duplicates)
 
     def _compute_hash(self, path: str, block_size: int = 65536) -> str:
-        """Berechnet SHA-256 Hash einer Datei"""
+        """Berechnet SHA-256 Hash einer Datei mit kooperativer Abbruchprüfung"""
         hasher = hashlib.sha256()
         with open(path, 'rb') as f:
             for block in iter(lambda: f.read(block_size), b''):
+                if self._cancelled:
+                    break
                 hasher.update(block)
         return hasher.hexdigest()
 

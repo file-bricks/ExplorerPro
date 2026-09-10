@@ -165,6 +165,8 @@ class FileIndex:
 
             # Indizes
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_hash ON files(hash)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_hash_size ON files(hash, size)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_size ON files(size)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_category ON files(category)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_files_extension ON files(extension)')
 
@@ -571,8 +573,8 @@ class FileIndex:
             conn.close()
         return results
 
-    def find_duplicates(self) -> List[Tuple[str, List[str]]]:
-        """Findet Duplikate basierend auf Hash"""
+    def find_duplicates(self, min_size: int = 0) -> List[Tuple[str, List[str]]]:
+        """Findet Duplikate basierend auf Hash und optionaler Mindestgröße"""
         conn = sqlite3.connect(self.db_path)
         try:
             cursor = conn.cursor()
@@ -581,9 +583,11 @@ class FileIndex:
                 SELECT hash, GROUP_CONCAT(path, '|||') as paths
                 FROM files
                 WHERE hash IS NOT NULL
+                AND hash != ''
+                AND size >= ?
                 GROUP BY hash
                 HAVING COUNT(*) > 1
-            ''')
+            ''', (min_size,))
 
             results = []
             for row in cursor.fetchall():
