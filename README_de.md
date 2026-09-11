@@ -20,7 +20,7 @@
 [![Dachverband: open--bricks](https://img.shields.io/badge/Dachverband-open--bricks-blue.svg)](https://github.com/open-bricks)
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
-[![Version: 1.0.4](https://img.shields.io/badge/Version-1.0.4-orange.svg)](CHANGELOG.md)
+[![Version: 1.0.5](https://img.shields.io/badge/Version-1.0.5-orange.svg)](CHANGELOG.md)
 
 > [!NOTE]
 > **Für KI-Agenten & LLMs:** Maschinenlesbarer Architekturkontext, Suchbegriffe, Laufzeitinvarianten und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt.

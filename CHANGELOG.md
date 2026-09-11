@@ -3,6 +3,32 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [1.0.5] - 2026-09-12
+
+### Hinzugefügt / Added
+- **Batch-Renamer Suite (`src/core/batch_rename_service.py`, `src/gui/batch_rename_dialog.py`) (TW-EP-10)**:
+  - Vollwertige Datei-Umbenennungs-Engine mit regulären Ausdrücken (Regex) und Literal-Ersetzung (`search_str`, `replace_str`).
+  - Text-Transformationen: Groß-/Kleinschreibung (`lower`, `upper`, `title`, `sentence`), Präfix- und Suffix-Steuerung.
+  - Intelligente Nummerierung: Startindex, Schrittweite, konfigurierbare Nullauffüllung (Padding) und variable Positionierung (`prefix`, `suffix`, `replace`).
+  - Robuste Kollisionserkennung: Zweistufige Erkennung von internen Kollisionen innerhalb des aktuellen Batches sowie Konflikten mit bestehenden Dateien auf dem Dateisystem mit Farbcodierung (grün = bereit, rot = Kollision, grau = unverändert).
+  - Transaktionale Ausführung mit atomarem 1-Klick-Rollback (`rollback_rename`).
+  - Interaktiver PySide6-Dialog mit Echtzeit-Live-Vorschautabelle, Validierung und Bestätigungsdialogen.
+- **Side-by-Side Datei-Vergleich (Diff Viewer) (`src/core/diff_service.py`, `src/gui/diff_dialog.py`) (TW-EP-10)**:
+  - Hochperformante Textvergleichs-Engine auf Basis von `difflib.SequenceMatcher` mit vollständiger Zeilen- und Status-Aufschlüsselung (`equal`, `insert`, `delete`).
+  - Automatische Binärdateien-Erkennung über Nullbyte-Inspektion mit Fallback auf SHA-256 Checksummenvergleich.
+  - Statistiken zu Änderungen: Anzahl hinzugefügter, gelöschter und identischer Zeilen.
+  - Generierung standardkonformer Unified-Diff-Texte (`generate_unified_diff_text`) mit 1-Klick-Export in die Zwischenablage.
+  - Visualisierender PySide6-Dialog mit Monospace-Schriftart, farblicher Syntaxhervorhebung (grün für Einfügungen, rot für Löschungen) und Dateipfadauswahl.
+- **Dateibrowser-Erweiterungen & Schnellaktionen (`src/gui/browser/file_browser.py`, `src/gui/main_window.py`) (TW-EP-10)**:
+  - "Neue Datei erstellen..." (`create_new_file`): Kollisionssichere Erstellung neuer Textdateien im aktuellen Ordner via atomarem Modus `'x'` mit Direktselektion im Browser.
+  - Kontextmenü-Integration: "Mehrfach umbenennen..." (bei Auswahl > 1), "Dateien vergleichen (Diff)..." (bei Auswahl von genau 2 Dateien) sowie "Neue Datei..." im Hintergrund.
+  - Menü-Verdrahtung in der Hauptmenüleiste: "Neue Datei..." (Ctrl+Shift+T) und "Mehrfach umbenennen..." (Ctrl+M) unter *Bearbeiten*; "Dateien vergleichen (Diff)..." und "Mehrfach umbenennen..." unter *Tools*.
+- **Lokalisierung (Tier-2 P-006)**:
+  - 71 neue UI- und Dialogschlüssel lückenlos über alle 6 Sprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` gepflegt (Gesamtkatalog auf 233 Einträge ausgebaut, 100% Parität bestätigt mit `manage_translations.py --check`).
+- **Test-Erweiterung**:
+  - 20 neue automatisierte Tests in `tests/test_batch_renamer.py`, `tests/test_diff_service.py`, `tests/test_batch_rename_and_diff_dialogs.py` und `tests/test_file_actions.py`.
+  - Gesamter Testbestand auf 306 Tests erweitert (100% grün, 0 Fehler).
+
 ## [1.0.4] - 2026-09-10
 
 ### Hinzugefügt / Added

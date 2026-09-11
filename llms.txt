@@ -7,8 +7,8 @@ Primary UI stack: PySide6 (Qt 6)
 License: AGPL-3.0
 Microsoft Store Identity: Geiger.ExplorerPro (Store-ID: 9P0X52WSHZ3Q)
 
-Last-checked: 2026-09-10
-Version: 1.0.4
+Last-checked: 2026-09-12
+Version: 1.0.5
 
 ## Search Phrases
 
@@ -22,6 +22,8 @@ Version: 1.0.4
 - sqlite fts5 desktop search
 - zero-egress offline file explorer
 - universal 6-language i18n file manager
+- batch rename file manager
+- diff viewer side by side desktop
 
 ## Audience
 

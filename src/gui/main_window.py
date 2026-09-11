@@ -296,6 +296,18 @@ class MainWindow(QMainWindow):
         new_folder_action.triggered.connect(self._create_new_folder)
         edit_menu.addAction(new_folder_action)
 
+        new_file_action = QAction("Neue Datei...", self)
+        new_file_action.setShortcut(QKeySequence("Ctrl+Shift+T"))
+        new_file_action.triggered.connect(self._create_new_file)
+        edit_menu.addAction(new_file_action)
+
+        edit_menu.addSeparator()
+
+        batch_rename_action = QAction("Mehrfach umbenennen...", self)
+        batch_rename_action.setShortcut(QKeySequence("Ctrl+M"))
+        batch_rename_action.triggered.connect(self._batch_rename)
+        edit_menu.addAction(batch_rename_action)
+
         # ===== Ansicht-Menü =====
         view_menu = menubar.addMenu("&Ansicht")
 
@@ -354,6 +366,16 @@ class MainWindow(QMainWindow):
         checksum_action = QAction("🔑 Prüfsummen berechnen...", self)
         checksum_action.triggered.connect(self._calculate_checksums)
         tools_menu.addAction(checksum_action)
+
+        tools_menu.addSeparator()
+
+        batch_rename_tool = QAction("✏️ Mehrfach umbenennen...", self)
+        batch_rename_tool.triggered.connect(self._batch_rename)
+        tools_menu.addAction(batch_rename_tool)
+
+        diff_action = QAction("⚖️ Dateien vergleichen (Diff)...", self)
+        diff_action.triggered.connect(self._compare_files)
+        tools_menu.addAction(diff_action)
 
         tools_menu.addSeparator()
 
@@ -642,6 +664,36 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage(
                 "Keine Dateien in der Zwischenablage", 3000
             )
+
+    def _create_new_folder(self):
+        """Erstellt einen neuen Unterordner im aktuellen Verzeichnis."""
+        self.file_browser.create_new_folder()
+
+    def _create_new_file(self):
+        """Erstellt eine neue leere Datei im aktuellen Verzeichnis."""
+        self.file_browser.create_new_file()
+
+    def _batch_rename(self):
+        """Öffnet den Mehrfachumbenennungs-Dialog."""
+        selected = self.file_browser.get_selected_files()
+        if not selected and self.file_browser.current_path and os.path.exists(self.file_browser.current_path):
+            try:
+                folder_items = [
+                    os.path.join(self.file_browser.current_path, f)
+                    for f in os.listdir(self.file_browser.current_path)
+                    if os.path.isfile(os.path.join(self.file_browser.current_path, f))
+                ]
+                selected = folder_items[:50]
+            except OSError:
+                selected = []
+        self.file_browser._show_batch_rename(selected)
+
+    def _compare_files(self):
+        """Öffnet den Datei-Vergleichs-Dialog."""
+        selected = self.file_browser.get_selected_files()
+        f1 = selected[0] if len(selected) > 0 and os.path.isfile(selected[0]) else ""
+        f2 = selected[1] if len(selected) > 1 and os.path.isfile(selected[1]) else ""
+        self.file_browser._show_diff(f1, f2)
 
     def _show_settings(self):
         """Öffnet das Einstellungsfenster."""

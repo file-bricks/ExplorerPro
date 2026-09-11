@@ -1,10 +1,10 @@
 ================================================================================
 EXPLORERPRO SUITE — MARKETING, DISCOVERY & GOVERNANCE LOG
 ================================================================================
-Stand: 2026-09-10
+Stand: 2026-09-12
 Repository: file-bricks/ExplorerPro
 Branch: master
-Version: 1.0.4
+Version: 1.0.5
 Organization: file-bricks
 Umbrella Ecosystem: open-bricks
 Microsoft Store ID: 9P0X52WSHZ3Q (Package Identity: Geiger.ExplorerPro)

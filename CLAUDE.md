@@ -2,11 +2,11 @@
 name: ExplorerPro
 type: project-docs
 profile: STANDARD
-version: 1.0.4
+version: 1.0.5
 created: 2026-07-22
-updated: 2026-09-10
-reason_last_change: "Path B Marketing & Discoverability: 15-Point Quick Navigation, 10 Governance Invariants, Third-Party License Inventory, Marketing Log, Contract Tests"
-last_verified: 2026-09-10
+updated: 2026-09-12
+reason_last_change: "TW-EP-10: Batch-Renamer & Datei-Vergleich (Diff Viewer) Suite, New File Actions, P-006 Tier-2 i18n, 306 Tests"
+last_verified: 2026-09-12
 author: Lukas Geiger
 anthropic_compatible: true
 description: |

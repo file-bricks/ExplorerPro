@@ -222,8 +222,8 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-09-10" in content
-    assert "1.0.4" in content
+    assert "Last-checked: 2026-09-12" in content
+    assert "1.0.5" in content
     assert "ci.yml" in content
 
 
@@ -265,9 +265,9 @@ def test_version_parity():
     claude_text = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
-    assert 'version = "1.0.4"' in pyproject_text
-    assert "version: 1.0.4" in claude_text
-    assert "## [1.0.4]" in changelog_text
+    assert 'version = "1.0.5"' in pyproject_text
+    assert "version: 1.0.5" in claude_text
+    assert "## [1.0.5]" in changelog_text
 
 
 def test_readme_15_point_navigation_parity():

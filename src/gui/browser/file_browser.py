@@ -7,7 +7,7 @@ FileBrowser - Dateilisten-Ansicht mit QuickEditor-Integration
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableView, QHeaderView,
     QMenu, QAbstractItemView, QMessageBox, QFileSystemModel,
-    QApplication, QInputDialog
+    QApplication, QInputDialog, QDialog
 )
 from PySide6.QtCore import (
     Qt, Signal, QDir, QModelIndex, QSortFilterProxyModel,
@@ -366,6 +366,17 @@ class FileBrowser(QWidget):
             menu.addSeparator()
 
             # Standard-Aktionen
+            selected = self.get_selected_files()
+            if len(selected) > 1:
+                batch_action = QAction("✏️ Mehrfach umbenennen...", self)
+                batch_action.triggered.connect(lambda: self._show_batch_rename(selected))
+                menu.addAction(batch_action)
+
+            if len(selected) == 2:
+                diff_action = QAction("⚖️ Dateien vergleichen (Diff)...", self)
+                diff_action.triggered.connect(lambda: self._show_diff(selected[0], selected[1]))
+                menu.addAction(diff_action)
+
             copy_action = QAction("Kopieren", self)
             copy_action.setShortcut("Ctrl+C")
             copy_action.triggered.connect(self.copy_selection)
@@ -373,7 +384,7 @@ class FileBrowser(QWidget):
 
             delete_action = QAction("Löschen", self)
             delete_action.setShortcut("Delete")
-            delete_action.triggered.connect(lambda: self.delete_selection([file_path]))
+            delete_action.triggered.connect(lambda: self.delete_selection(selected if selected else [file_path]))
             menu.addAction(delete_action)
 
             rename_action = QAction("Umbenennen", self)
@@ -383,9 +394,19 @@ class FileBrowser(QWidget):
 
         else:
             # Leer-Bereich-Menü
+            new_file = QAction("📄 Neue Datei...", self)
+            new_file.triggered.connect(self.create_new_file)
+            menu.addAction(new_file)
+
             new_folder = QAction("📁 Neuer Ordner", self)
             new_folder.triggered.connect(self.create_new_folder)
             menu.addAction(new_folder)
+
+            diff_action = QAction("⚖️ Dateien vergleichen...", self)
+            diff_action.triggered.connect(lambda: self._show_diff())
+            menu.addAction(diff_action)
+
+            menu.addSeparator()
 
             paste_action = QAction("Einfügen", self)
             paste_action.setShortcut("Ctrl+V")
@@ -547,10 +568,45 @@ class FileBrowser(QWidget):
             )
             return False
 
+    def create_new_file(self) -> bool:
+        """Erstellt eine neue leere Datei im aktuellen Verzeichnis."""
+        if not self._current_path or not os.path.exists(self._current_path):
+            return False
+        default_name = "neue_datei.txt"
+        name, ok = QInputDialog.getText(
+            self, "Neue Datei", "Dateiname:", text=default_name
+        )
+        if not ok or not name or not name.strip():
+            return False
+        name = name.strip()
+        new_path = os.path.join(self._current_path, name)
+        try:
+            # Datei atomar mit Modus 'x' anlegen (verhindert Überschreiben)
+            with open(new_path, "x", encoding="utf-8"):
+                pass
+            self.refresh()
+            self.file_selected.emit(new_path)
+            return True
+        except FileExistsError:
+            QMessageBox.warning(
+                self, "Neue Datei",
+                f"Ein Element namens '{name}' existiert bereits in diesem Verzeichnis."
+            )
+            return False
+        except OSError as exc:
+            QMessageBox.warning(
+                self, "Neue Datei",
+                f"Konnte Datei nicht erstellen:\n{exc}"
+            )
+            return False
+
     def rename_selection(self, target_path: str = None) -> bool:
         """Benennt die ausgewählte Datei oder den ausgewählten Ordner um."""
+        selected = self.get_selected_files()
+        if not target_path and len(selected) > 1:
+            return self._show_batch_rename(selected)
+
         if not target_path:
-            selected = self.get_selected_files()
             if not selected:
                 return False
             target_path = selected[0]
@@ -586,6 +642,28 @@ class FileBrowser(QWidget):
                 f"Konnte Element nicht umbenennen:\n{exc}"
             )
             return False
+
+    def _show_batch_rename(self, file_paths: list = None) -> bool:
+        """Öffnet den Batch-Rename-Dialog."""
+        if not file_paths:
+            file_paths = self.get_selected_files()
+        if not file_paths:
+            QMessageBox.information(
+                self, "Mehrfach umbenennen",
+                "Bitte wählen Sie mindestens eine Datei zum Umbenennen aus."
+            )
+            return False
+        from gui.batch_rename_dialog import BatchRenameDialog
+        dialog = BatchRenameDialog(file_paths, self.window())
+        res = dialog.exec()
+        self.refresh()
+        return res == QDialog.DialogCode.Accepted
+
+    def _show_diff(self, file1: str = "", file2: str = ""):
+        """Öffnet den Datei-Vergleichs-Dialog."""
+        from gui.diff_dialog import DiffDialog
+        dialog = DiffDialog(file1, file2, self.window())
+        dialog.exec()
 
     def delete_selection(self, target_paths: list = None) -> bool:
         """Löscht ausgewählte Dateien oder Ordner nach Bestätigung."""

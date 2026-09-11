@@ -1294,5 +1294,573 @@
     "zh": "📋 复制所有校验和",
     "ja": "📋 すべてのチェックサムをコピー",
     "ru": "📋 Скопировать все контрольные суммы"
+  },
+  "Mehrfach umbenennen": {
+    "de": "Mehrfach umbenennen",
+    "en": "Batch Rename",
+    "es": "Renombrar por lotes",
+    "zh": "批量重命名",
+    "ja": "一括リネーム",
+    "ru": "Пакетное переименование"
+  },
+  "Dateien ausgewählt": {
+    "de": "Dateien ausgewählt",
+    "en": "Files selected",
+    "es": "Archivos seleccionados",
+    "zh": "已选择文件",
+    "ja": "選択されたファイル",
+    "ru": "Файлов выбрано"
+  },
+  "Suchen & Ersetzen": {
+    "de": "Suchen & Ersetzen",
+    "en": "Find & Replace",
+    "es": "Buscar y reemplazar",
+    "zh": "查找与替换",
+    "ja": "検索と置換",
+    "ru": "Найти и заменить"
+  },
+  "Suchen:": {
+    "de": "Suchen:",
+    "en": "Find:",
+    "es": "Buscar:",
+    "zh": "查找:",
+    "ja": "検索:",
+    "ru": "Найти:"
+  },
+  "Ersetzen:": {
+    "de": "Ersetzen:",
+    "en": "Replace:",
+    "es": "Reemplazar:",
+    "zh": "替换:",
+    "ja": "置換:",
+    "ru": "Заменить:"
+  },
+  "Reguläre Ausdrücke (Regex)": {
+    "de": "Reguläre Ausdrücke (Regex)",
+    "en": "Regular expressions (Regex)",
+    "es": "Expresiones regulares (Regex)",
+    "zh": "正则表达式 (Regex)",
+    "ja": "正規表現 (Regex)",
+    "ru": "Регулярные выражения (Regex)"
+  },
+  "Präfix & Suffix": {
+    "de": "Präfix & Suffix",
+    "en": "Prefix & Suffix",
+    "es": "Prefijo y sufijo",
+    "zh": "前缀与后缀",
+    "ja": "プレフィックスとサフィックス",
+    "ru": "Префикс и суффикс"
+  },
+  "Präfix:": {
+    "de": "Präfix:",
+    "en": "Prefix:",
+    "es": "Prefijo:",
+    "zh": "前缀:",
+    "ja": "プレフィックス:",
+    "ru": "Префикс:"
+  },
+  "Suffix:": {
+    "de": "Suffix:",
+    "en": "Suffix:",
+    "es": "Sufijo:",
+    "zh": "后缀:",
+    "ja": "サフィックス:",
+    "ru": "Суффикс:"
+  },
+  "Groß-/Klein:": {
+    "de": "Groß-/Klein:",
+    "en": "Case:",
+    "es": "Mayús./minús.:",
+    "zh": "大小写:",
+    "ja": "大文字/小文字:",
+    "ru": "Регистр:"
+  },
+  "Unverändert": {
+    "de": "Unverändert",
+    "en": "Unchanged",
+    "es": "Sin cambios",
+    "zh": "不变",
+    "ja": "変更なし",
+    "ru": "Без изменений"
+  },
+  "kleinbuchstaben": {
+    "de": "kleinbuchstaben",
+    "en": "lowercase",
+    "es": "minúsculas",
+    "zh": "全小写",
+    "ja": "小文字",
+    "ru": "строчные буквы"
+  },
+  "GROSSBUCHSTABEN": {
+    "de": "GROSSBUCHSTABEN",
+    "en": "UPPERCASE",
+    "es": "MAYÚSCULAS",
+    "zh": "全大写",
+    "ja": "大文字",
+    "ru": "ПРОПИСНЫЕ БУКВЫ"
+  },
+  "Wortanfang Groß": {
+    "de": "Wortanfang Groß",
+    "en": "Title Case",
+    "es": "Tipo Título",
+    "zh": "首字母大写",
+    "ja": "タイトルケース",
+    "ru": "Первая Буква Каждого Слова Прописная"
+  },
+  "Satzanfang groß": {
+    "de": "Satzanfang groß",
+    "en": "Sentence case",
+    "es": "Tipo oración",
+    "zh": "句首大写",
+    "ja": "文頭のみ大文字",
+    "ru": "Как в предложениях"
+  },
+  "Dateiendung:": {
+    "de": "Dateiendung:",
+    "en": "File extension:",
+    "es": "Extensión de archivo:",
+    "zh": "文件扩展名:",
+    "ja": "拡張子:",
+    "ru": "Расширение файла:"
+  },
+  "z. B. .txt (leer = beibehalten)": {
+    "de": "z. B. .txt (leer = beibehalten)",
+    "en": "e.g. .txt (empty = keep)",
+    "es": "ej. .txt (vacío = conservar)",
+    "zh": "例如 .txt (留空 = 保留)",
+    "ja": "例: .txt (空 = 保持)",
+    "ru": "напр. .txt (пусто = сохранить)"
+  },
+  "Nummerierung": {
+    "de": "Nummerierung",
+    "en": "Numbering",
+    "es": "Numeración",
+    "zh": "编号",
+    "ja": "ナンバリング",
+    "ru": "Нумерация"
+  },
+  "Nummerierung aktivieren": {
+    "de": "Nummerierung aktivieren",
+    "en": "Enable numbering",
+    "es": "Activar numeración",
+    "zh": "启用编号",
+    "ja": "ナンバリングを有効にする",
+    "ru": "Включить нумерацию"
+  },
+  "Startwert:": {
+    "de": "Startwert:",
+    "en": "Start value:",
+    "es": "Valor inicial:",
+    "zh": "起始值:",
+    "ja": "開始値:",
+    "ru": "Начальное значение:"
+  },
+  "Schrittweite:": {
+    "de": "Schrittweite:",
+    "en": "Step:",
+    "es": "Paso:",
+    "zh": "步长:",
+    "ja": "ステップ:",
+    "ru": "Шаг:"
+  },
+  "Stellen (Padding):": {
+    "de": "Stellen (Padding):",
+    "en": "Digits (Padding):",
+    "es": "Dígitos (Padding):",
+    "zh": "位数 (填充):",
+    "ja": "桁数 (パディング):",
+    "ru": "Разряды (Заполнение):"
+  },
+  "Position:": {
+    "de": "Position:",
+    "en": "Position:",
+    "es": "Posición:",
+    "zh": "位置:",
+    "ja": "位置:",
+    "ru": "Положение:"
+  },
+  "Am Ende (Suffix)": {
+    "de": "Am Ende (Suffix)",
+    "en": "At end (Suffix)",
+    "es": "Al final (Sufijo)",
+    "zh": "末尾 (后缀)",
+    "ja": "末尾 (サフィックス)",
+    "ru": "В конце (Суффикс)"
+  },
+  "Am Anfang (Präfix)": {
+    "de": "Am Anfang (Präfix)",
+    "en": "At start (Prefix)",
+    "es": "Al principio (Prefijo)",
+    "zh": "开头 (前缀)",
+    "ja": "先頭 (プレフィックス)",
+    "ru": "В начале (Префикс)"
+  },
+  "Ersetzen": {
+    "de": "Ersetzen",
+    "en": "Replace",
+    "es": "Reemplazar",
+    "zh": "替换",
+    "ja": "置換",
+    "ru": "Заменить"
+  },
+  "Originalname": {
+    "de": "Originalname",
+    "en": "Original Name",
+    "es": "Nombre original",
+    "zh": "原名称",
+    "ja": "元の名前",
+    "ru": "Исходное имя"
+  },
+  "Neuer Name": {
+    "de": "Neuer Name",
+    "en": "New Name",
+    "es": "Nuevo nombre",
+    "zh": "新名称",
+    "ja": "新しい名前",
+    "ru": "Новое имя"
+  },
+  "Rückgängig": {
+    "de": "Rückgängig",
+    "en": "Undo",
+    "es": "Deshacer",
+    "zh": "撤销",
+    "ja": "元に戻す",
+    "ru": "Отменить"
+  },
+  "Kollision": {
+    "de": "Kollision",
+    "en": "Collision",
+    "es": "Colisión",
+    "zh": "冲突",
+    "ja": "競合",
+    "ru": "Коллизия"
+  },
+  "Ungültig": {
+    "de": "Ungültig",
+    "en": "Invalid",
+    "es": "Inválido",
+    "zh": "无效",
+    "ja": "無効",
+    "ru": "Недействительно"
+  },
+  "zu ändern, Konflikte oder ungültige Namen gefunden!": {
+    "de": "zu ändern, Konflikte oder ungültige Namen gefunden!",
+    "en": "to change, conflicts or invalid names found!",
+    "es": "para cambiar, se encontraron conflictos o nombres inválidos.",
+    "zh": "项待更改，发现冲突或无效名称！",
+    "ja": "件変更予定、競合または無効な名前が見つかりました！",
+    "ru": "для изменения, обнаружены конфликты или недопустимые имена!"
+  },
+  "Keine Änderungen an den Dateinamen.": {
+    "de": "Keine Änderungen an den Dateinamen.",
+    "en": "No changes to file names.",
+    "es": "Sin cambios en los nombres de archivo.",
+    "zh": "文件名无更改。",
+    "ja": "ファイル名に変更はありません。",
+    "ru": "Имена файлов не изменились."
+  },
+  "Dateien werden umbenannt.": {
+    "de": "Dateien werden umbenannt.",
+    "en": "files will be renamed.",
+    "es": "archivos serán renombrados.",
+    "zh": "个文件将被重命名。",
+    "ja": "件のファイルが名前変更されます。",
+    "ru": "файлов будут переименованы."
+  },
+  "Fehler beim Umbenennen": {
+    "de": "Fehler beim Umbenennen",
+    "en": "Error renaming files",
+    "es": "Error al renombrar",
+    "zh": "重命名时出错",
+    "ja": "リネームエラー",
+    "ru": "Ошибка переименования"
+  },
+  "Dateien umbenannt, aber Fehler aufgetreten:\n\n": {
+    "de": "Dateien umbenannt, aber Fehler aufgetreten:\n\n",
+    "en": "files renamed, but errors occurred:\n\n",
+    "es": "archivos renombrados, pero ocurrieron errores:\n\n",
+    "zh": "个文件已重命名，但发生错误:\n\n",
+    "ja": "件のファイルが名前変更されましたが、エラーが発生しました:\n\n",
+    "ru": "файлов переименовано, но возникли ошибки:\n\n"
+  },
+  "Dateien erfolgreich umbenannt.": {
+    "de": "Dateien erfolgreich umbenannt.",
+    "en": "files successfully renamed.",
+    "es": "archivos renombrados con éxito.",
+    "zh": "个文件重命名成功。",
+    "ja": "件のファイルが正常に名前変更されました。",
+    "ru": "файлов успешно переименовано."
+  },
+  "Rollback unvollständig": {
+    "de": "Rollback unvollständig",
+    "en": "Rollback incomplete",
+    "es": "Reversión incompleta",
+    "zh": "回滚未完成",
+    "ja": "ロールバック不完全",
+    "ru": "Откат не завершен"
+  },
+  "Dateien zurückgesetzt, Fehler:\n": {
+    "de": "Dateien zurückgesetzt, Fehler:\n",
+    "en": "files restored, errors:\n",
+    "es": "archivos restaurados, errores:\n",
+    "zh": "个文件已恢复，错误:\n",
+    "ja": "件のファイルが復元されました、エラー:\n",
+    "ru": "файлов восстановлено, ошибки:\n"
+  },
+  "Rollback erfolgreich": {
+    "de": "Rollback erfolgreich",
+    "en": "Rollback successful",
+    "es": "Reversión exitosa",
+    "zh": "回滚成功",
+    "ja": "ロールバック成功",
+    "ru": "Откат выполнен успешно"
+  },
+  "Dateien wurden auf die ursprünglichen Namen zurückgesetzt.": {
+    "de": "Dateien wurden auf die ursprünglichen Namen zurückgesetzt.",
+    "en": "Files were restored to their original names.",
+    "es": "Los archivos fueron restaurados a sus nombres originales.",
+    "zh": "文件已恢复为原始名称。",
+    "ja": "ファイルは元の名前に復元されました。",
+    "ru": "Файлы возвращены к исходным именам."
+  },
+  "Dateien vergleichen (Diff)": {
+    "de": "Dateien vergleichen (Diff)",
+    "en": "Compare Files (Diff)",
+    "es": "Comparar archivos (Diff)",
+    "zh": "比较文件 (Diff)",
+    "ja": "ファイル比較 (Diff)",
+    "ru": "Сравнить файлы (Diff)"
+  },
+  "Zu vergleichende Dateien": {
+    "de": "Zu vergleichende Dateien",
+    "en": "Files to compare",
+    "es": "Archivos a comparar",
+    "zh": "要比较的文件",
+    "ja": "比較するファイル",
+    "ru": "Файлы для сравнения"
+  },
+  "Datei 1 (Basis):": {
+    "de": "Datei 1 (Basis):",
+    "en": "File 1 (Base):",
+    "es": "Archivo 1 (Base):",
+    "zh": "文件 1 (基础):",
+    "ja": "ファイル 1 (ベース):",
+    "ru": "Файл 1 (Базовый):"
+  },
+  "Pfad zu Datei 1...": {
+    "de": "Pfad zu Datei 1...",
+    "en": "Path to file 1...",
+    "es": "Ruta al archivo 1...",
+    "zh": "文件 1 路径...",
+    "ja": "ファイル 1 のパス...",
+    "ru": "Путь к файлу 1..."
+  },
+  "Datei 2 (Vergleich):": {
+    "de": "Datei 2 (Vergleich):",
+    "en": "File 2 (Comparison):",
+    "es": "Archivo 2 (Comparación):",
+    "zh": "文件 2 (比较):",
+    "ja": "ファイル 2 (比較):",
+    "ru": "Файл 2 (Сравнение):"
+  },
+  "Pfad zu Datei 2...": {
+    "de": "Pfad zu Datei 2...",
+    "en": "Path to file 2...",
+    "es": "Ruta al archivo 2...",
+    "zh": "文件 2 路径...",
+    "ja": "ファイル 2 のパス...",
+    "ru": "Путь к файлу 2..."
+  },
+  "Vergleichen": {
+    "de": "Vergleichen",
+    "en": "Compare",
+    "es": "Comparar",
+    "zh": "比较",
+    "ja": "比較",
+    "ru": "Сравнить"
+  },
+  "Vergleichs-Status": {
+    "de": "Vergleichs-Status",
+    "en": "Comparison Status",
+    "es": "Estado de comparación",
+    "zh": "比较状态",
+    "ja": "比較ステータス",
+    "ru": "Статус сравнения"
+  },
+  "Wählen Sie zwei Dateien aus und klicken Sie auf 'Vergleichen'.": {
+    "de": "Wählen Sie zwei Dateien aus und klicken Sie auf 'Vergleichen'.",
+    "en": "Select two files and click 'Compare'.",
+    "es": "Seleccione dos archivos y haga clic en 'Comparar'.",
+    "zh": "选择两个文件并点击“比较”。",
+    "ja": "2つのファイルを選択し、「比較」をクリックしてください。",
+    "ru": "Выберите два файла и нажмите «Сравнить»."
+  },
+  "Zeile 1": {
+    "de": "Zeile 1",
+    "en": "Line 1",
+    "es": "Línea 1",
+    "zh": "行 1",
+    "ja": "行 1",
+    "ru": "Строка 1"
+  },
+  "Zeile 2": {
+    "de": "Zeile 2",
+    "en": "Line 2",
+    "es": "Línea 2",
+    "zh": "行 2",
+    "ja": "行 2",
+    "ru": "Строка 2"
+  },
+  "Unified-Diff kopieren": {
+    "de": "Unified-Diff kopieren",
+    "en": "Copy Unified Diff",
+    "es": "Copiar Unified Diff",
+    "zh": "复制统一对比 (Diff)",
+    "ja": "Unified Diff をコピー",
+    "ru": "Копировать Unified Diff"
+  },
+  "Datei 1 auswählen": {
+    "de": "Datei 1 auswählen",
+    "en": "Select File 1",
+    "es": "Seleccionar archivo 1",
+    "zh": "选择文件 1",
+    "ja": "ファイル 1 を選択",
+    "ru": "Выбрать файл 1"
+  },
+  "Datei 2 auswählen": {
+    "de": "Datei 2 auswählen",
+    "en": "Select File 2",
+    "es": "Seleccionar archivo 2",
+    "zh": "选择文件 2",
+    "ja": "ファイル 2 を選択",
+    "ru": "Выбрать файл 2"
+  },
+  "Fehlende Angabe": {
+    "de": "Fehlende Angabe",
+    "en": "Missing Input",
+    "es": "Dato faltante",
+    "zh": "缺少输入",
+    "ja": "入力不足",
+    "ru": "Не указаны данные"
+  },
+  "Bitte wählen Sie zwei Dateien zum Vergleichen aus.": {
+    "de": "Bitte wählen Sie zwei Dateien zum Vergleichen aus.",
+    "en": "Please select two files to compare.",
+    "es": "Por favor, seleccione dos archivos para comparar.",
+    "zh": "请选择两个要比较的文件。",
+    "ja": "比較するファイルを2つ選択してください。",
+    "ru": "Пожалуйста, выберите два файла для сравнения."
+  },
+  "Fehler beim Dateivergleich": {
+    "de": "Fehler beim Dateivergleich",
+    "en": "Error during file comparison",
+    "es": "Error en la comparación de archivos",
+    "zh": "文件比较时出错",
+    "ja": "ファイル比較エラー",
+    "ru": "Ошибка сравнения файлов"
+  },
+  "Dateien sind absolut identisch": {
+    "de": "Dateien sind absolut identisch",
+    "en": "Files are completely identical",
+    "es": "Los archivos son absolutamente idénticos",
+    "zh": "文件完全相同",
+    "ja": "ファイルは完全に同一です",
+    "ru": "Файлы абсолютно идентичны"
+  },
+  "Dateien weisen Unterschiede auf": {
+    "de": "Dateien weisen Unterschiede auf",
+    "en": "Files contain differences",
+    "es": "Los archivos presentan diferencias",
+    "zh": "文件存在差异",
+    "ja": "ファイルに相違があります",
+    "ru": "В файлах есть различия"
+  },
+  "Binärvergleich": {
+    "de": "Binärvergleich",
+    "en": "Binary comparison",
+    "es": "Comparación binaria",
+    "zh": "二进制比较",
+    "ja": "バイナリ比較",
+    "ru": "Бинарное сравнение"
+  },
+  "hinzugefügt": {
+    "de": "hinzugefügt",
+    "en": "added",
+    "es": "añadido",
+    "zh": "新增",
+    "ja": "追加",
+    "ru": "добавлено"
+  },
+  "entfernt": {
+    "de": "entfernt",
+    "en": "deleted",
+    "es": "eliminado",
+    "zh": "删除",
+    "ja": "削除",
+    "ru": "удалено"
+  },
+  "identisch": {
+    "de": "identisch",
+    "en": "identical",
+    "es": "idéntico",
+    "zh": "相同",
+    "ja": "一致",
+    "ru": "идентично"
+  },
+  "Kopiert": {
+    "de": "Kopiert",
+    "en": "Copied",
+    "es": "Copiado",
+    "zh": "已复制",
+    "ja": "コピー完了",
+    "ru": "Скопировано"
+  },
+  "Unified-Diff wurde in die Zwischenablage kopiert.": {
+    "de": "Unified-Diff wurde in die Zwischenablage kopiert.",
+    "en": "Unified diff was copied to the clipboard.",
+    "es": "Unified diff copiado al portapapeles.",
+    "zh": "统一对比 (Diff) 已复制到剪贴板。",
+    "ja": "Unified Diff をクリップボードにコピーしました。",
+    "ru": "Unified diff скопирован в буфер обмена."
+  },
+  "Diff": {
+    "de": "Diff",
+    "en": "Diff",
+    "es": "Diff",
+    "zh": "差异",
+    "ja": "Diff",
+    "ru": "Различия"
+  },
+  "Keine Text-Unterschiede zum Kopieren vorhanden.": {
+    "de": "Keine Text-Unterschiede zum Kopieren vorhanden.",
+    "en": "No text differences to copy.",
+    "es": "No hay diferencias de texto para copiar.",
+    "zh": "没有可复制的文本差异。",
+    "ja": "コピーするテキストの差分がありません。",
+    "ru": "Нет текстовых различий для копирования."
+  },
+  "Dateiname:": {
+    "de": "Dateiname:",
+    "en": "Filename:",
+    "es": "Nombre de archivo:",
+    "zh": "文件名:",
+    "ja": "ファイル名:",
+    "ru": "Имя файла:"
+  },
+  "Bitte wählen Sie mindestens eine Datei zum Umbenennen aus.": {
+    "de": "Bitte wählen Sie mindestens eine Datei zum Umbenennen aus.",
+    "en": "Please select at least one file to rename.",
+    "es": "Por favor, seleccione al menos un archivo para renombrar.",
+    "zh": "请选择至少一个文件进行重命名。",
+    "ja": "リネームするファイルを1つ以上選択してください。",
+    "ru": "Пожалуйста, выберите хотя бы один файл для переименования."
+  },
+  "Durchsuchen...": {
+    "de": "Durchsuchen...",
+    "en": "Browse...",
+    "es": "Examinar...",
+    "zh": "浏览...",
+    "ja": "参照...",
+    "ru": "Обзор..."
   }
 }
