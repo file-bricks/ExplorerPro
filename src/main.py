@@ -29,14 +29,23 @@ from app import ExplorerProApp
 
 
 def load_app_icon() -> QIcon:
+    base_dir = Path(__file__).resolve().parent.parent
     candidates = [
         Path(sys.executable).with_name("ExplorerPro.ico") if getattr(sys, "frozen", False) else None,
-        Path(__file__).resolve().parent.parent / "ExplorerPro.ico",
+        base_dir / "ExplorerPro.ico",
+        base_dir / "assets" / "ExplorerPro.ico",
+        base_dir / "assets" / "icon.ico",
+        base_dir / "DesktopIcon.ico",
+        base_dir / "icon.ico",
+        base_dir / "assets" / "icon.png",
+        base_dir / "icon.png",
         Path(__file__).resolve().parent / "ExplorerPro.ico",
     ]
     for candidate in candidates:
         if candidate and candidate.exists():
-            return QIcon(str(candidate))
+            icon = QIcon(str(candidate))
+            if not icon.isNull():
+                return icon
     return QIcon()
 
 

@@ -25,9 +25,16 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
   - Menü-Verdrahtung in der Hauptmenüleiste: "Neue Datei..." (Ctrl+Shift+T) und "Mehrfach umbenennen..." (Ctrl+M) unter *Bearbeiten*; "Dateien vergleichen (Diff)..." und "Mehrfach umbenennen..." unter *Tools*.
 - **Lokalisierung (Tier-2 P-006)**:
   - 71 neue UI- und Dialogschlüssel lückenlos über alle 6 Sprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` gepflegt (Gesamtkatalog auf 233 Einträge ausgebaut, 100% Parität bestätigt mit `manage_translations.py --check`).
+- **Multi-Resolution Desktop-, Web- und Mobile-Icon-Suite (TW-EP-11)**:
+  - 1024x1024 RGBA Master-Icons (`DesktopIcon.png`, `icon.png`, `assets/icon.png`, `assets/ExplorerPro.png`, `assets/DesktopIcon.png`).
+  - Standardisierte 7-Layer Windows-ICOs (16x16, 24x24, 32x32, 48x48, 64x64, 128x128, 256x256, 32bpp) für Root (`ExplorerPro.ico`, `DesktopIcon.ico`, `icon.ico`) und `assets/`.
+  - Vollständige Web- und Mobile/PWA-Icon-Suite in `mobile_icons/` (192x192, 512x512, maskierbar mit 80% Safe-Zone auf Slate-Theme `#0b0f19`, Apple-Touch-Icon 180x180, Favicons) und W3C-Manifest `manifest.json`.
+  - Microsoft Store-Asset-Kacheln in `store_assets/` um standardisierte Pipeline-Icons (`icon_44x44.png`, `icon_50x50.png`, `icon_150x150.png`, `icon_310x150.png`, `icon_310x310.png`) erweitert bei vollständigem Erhalt der MSIX-Kacheln (`Square*Logo.png`).
+  - Härtung von `src/main.py`: `load_app_icon()` mit robustem Fallback-Pfad über Root-, Assets- und Desktop-Icons.
+  - PyInstaller-Spec (`ExplorerPro.spec`): Bündelung des `assets/`-Verzeichnisses in `datas`.
 - **Test-Erweiterung**:
-  - 20 neue automatisierte Tests in `tests/test_batch_renamer.py`, `tests/test_diff_service.py`, `tests/test_batch_rename_and_diff_dialogs.py` und `tests/test_file_actions.py`.
-  - Gesamter Testbestand auf 306 Tests erweitert (100% grün, 0 Fehler).
+  - 25 neue automatisierte Tests (inkl. 5 Vertragstests in `tests/test_assets_and_icons.py` für 7-Layer-ICOs, Master-PNGs, PWA-Suite, Store-Tiles und Icon-Loader).
+  - Gesamter Testbestand auf 311 Tests erweitert (100% grün, 0 Fehler).
 
 ## [1.0.4] - 2026-09-10
 

@@ -98,15 +98,13 @@ TODO.md
 DONE.md
 pytest_res.txt
 
-# ---- Lokale Workflow- und nicht verwendete Web-Assets ----
+# ---- Lokale Workflow- und temporäre Assets ----
 LOCK*.txt
 _backups/
 assets/_agy_instructions.txt
 assets/android-icon-background.png
 assets/android-icon-foreground.png
 assets/android-icon-monochrome.png
-assets/favicon.png
-assets/icon.png
 assets/splash-icon.png
 
 dist_clean/
