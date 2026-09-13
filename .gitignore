@@ -44,8 +44,13 @@ _USER/
 credentials.json
 client_secret*.json
 token.json
+secrets.*
 *.pem
 *.key
+*.pfx
+*.p12
+*.cer
+*.crt
 keyring/
 
 # ---- Build-Artefakte & Releases ----
@@ -100,11 +105,25 @@ pytest_res.txt
 
 # ---- Lokale Workflow- und temporäre Assets ----
 LOCK*.txt
+LOCK.*
+*.lock
 _backups/
 assets/_agy_instructions.txt
 assets/android-icon-background.png
 assets/android-icon-foreground.png
 assets/android-icon-monochrome.png
 assets/splash-icon.png
+
+# ---- Multi-Host Sync-Konflikt-Muster (Cloud-Sync-Hygiene) ----
+*-WORKSTATION-LG*
+*-ASUS-GEI*
+*.sync-conflict-*
+*.conflict
+*-CONFLIT-*
+*-conflict-*
+
+# ---- Web / Node Caches ----
+node_modules/
+.nyc_output/
 
 dist_clean/

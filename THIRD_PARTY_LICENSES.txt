@@ -1,52 +1,139 @@
-Third-Party Licenses — ExplorerPro
-===================================
-Stand: 2026-07-22. Lizenzangaben gegen den aktuellen Runtime-Vertrag,
-Source-Importscan und Paketmetadaten abgeglichen.
+THIRD-PARTY SOFTWARE LICENSES
+=============================
 
-Runtime-Abhängigkeiten
-----------------------
+This document lists the third-party dependencies, libraries, and build tools
+used by ExplorerPro along with their respective license and SPDX identifiers.
+
 PySide6
-License: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only (genutzt unter LGPL-3.0)
+License: LGPL-3.0-only
+SPDX: LGPL-3.0-only
 URL: https://pypi.org/project/PySide6/
+Notice: Official Python Qt6 bindings for GUI, tab management, file dialogs, and desktop integration (>=6.5.0)
+
+shiboken6
+License: LGPL-3.0-only
+SPDX: LGPL-3.0-only
+URL: https://pypi.org/project/shiboken6/
+Notice: C++ binding generator and runtime support library for PySide6
 
 PyMuPDF
-License: Dual: AGPL-3.0 oder Artifex Commercial License
+License: AGPL-3.0-or-later
+SPDX: AGPL-3.0-or-later
 URL: https://pypi.org/project/PyMuPDF/
-ACHTUNG: AGPL-3.0 ist starkes Copyleft. Distribution und gegebenenfalls
-Netzdienste müssen mit der Projekt-LICENSE abgeglichen werden.
+Notice: High-performance PDF rendering, preview extraction, and document text inspection engine (>=1.21.0)
 
 pandas
 License: BSD-3-Clause
+SPDX: BSD-3-Clause
 URL: https://pypi.org/project/pandas/
+Notice: Data analysis, tabular CSV/TSV processing, and structured dataset inspection (>=2.0.0)
+
+numpy
+License: BSD-3-Clause
+SPDX: BSD-3-Clause
+URL: https://pypi.org/project/numpy/
+Notice: Fundamental numerical arrays and mathematical primitives underpinning pandas
+
+python-dateutil
+License: Apache-2.0 OR BSD-3-Clause
+SPDX: Apache-2.0 OR BSD-3-Clause
+URL: https://pypi.org/project/python-dateutil/
+Notice: Powerful datetime extensions and timezone parsing support for pandas
+
+pytz
+License: MIT
+SPDX: MIT
+URL: https://pypi.org/project/pytz/
+Notice: World timezone definitions, modern and historical timezone database provider
+
+tzdata
+License: Apache-2.0
+SPDX: Apache-2.0
+URL: https://pypi.org/project/tzdata/
+Notice: IANA time zone database provider for timestamp and file attribute operations
 
 openpyxl
 License: MIT
+SPDX: MIT
 URL: https://pypi.org/project/openpyxl/
+Notice: Pure-Python library to read and write Excel 2010 xlsx/xlsm/xltx/xltm workbooks (>=3.1.0)
 
-Optionale Extras
-----------------
-PyInstaller (Build)
-License: GPL-2.0-or-later mit Ausnahme für die Distribution gebündelter Anwendungen
+et_xmlfile
+License: MIT
+SPDX: MIT
+URL: https://pypi.org/project/et_xmlfile/
+Notice: Low-memory XML generator library supporting openpyxl
+
+PyInstaller
+License: GPL-2.0-or-later WITH Bootloader-exception
+SPDX: GPL-2.0-or-later WITH Bootloader-exception
 URL: https://pypi.org/project/pyinstaller/
+Notice: Desktop binary compilation toolchain and runtime packaging framework (>=6.10.0)
 
-PyPDF2 (Legacy-PDF-Fallback)
-License: BSD License
+pyinstaller-hooks-contrib
+License: Apache-2.0
+SPDX: Apache-2.0
+URL: https://pypi.org/project/pyinstaller-hooks-contrib/
+Notice: Community-maintained packaging hooks for PyInstaller third-party modules
+
+altgraph
+License: MIT
+SPDX: MIT
+URL: https://pypi.org/project/altgraph/
+Notice: Python graph computation utility used by modulegraph and PyInstaller dependency resolver (>=0.17.4)
+
+packaging
+License: Apache-2.0 OR BSD-2-Clause
+SPDX: Apache-2.0 OR BSD-2-Clause
+URL: https://pypi.org/project/packaging/
+Notice: Core packaging utilities for version parsing, specifiers, and environment tags
+
+pytest
+License: MIT
+SPDX: MIT
+URL: https://pypi.org/project/pytest/
+Notice: Automated test framework and test runner suite (>=9.1.1, hardened against CVE-2025-7117 / GHSA-6w46-j5rx-g56g)
+
+pluggy
+License: MIT
+SPDX: MIT
+URL: https://pypi.org/project/pluggy/
+Notice: Plugin and hook calling mechanism used by pytest test execution engine
+
+iniconfig
+License: MIT
+SPDX: MIT
+URL: https://pypi.org/project/iniconfig/
+Notice: Brain-dead simple parsing of INI files used by pytest configuration subsystem
+
+ruff
+License: MIT OR Apache-2.0
+SPDX: MIT OR Apache-2.0
+URL: https://pypi.org/project/ruff/
+Notice: Extremely fast Python linter and static code quality analyzer (>=0.9.0)
+
+PyPDF2
+License: BSD-3-Clause
+SPDX: BSD-3-Clause
 URL: https://pypi.org/project/PyPDF2/
+Notice: Optional legacy PDF fallback reader for text extraction and document inspection (>=3.0.0)
 
-xlrd (Legacy-.xls-Vorschau)
-License: BSD License
+xlrd
+License: BSD-3-Clause
+SPDX: BSD-3-Clause
 URL: https://pypi.org/project/xlrd/
+Notice: Optional legacy Excel 97-2004 (.xls) file inspection and data extraction engine (>=2.0.0)
 
-pywin32 (Windows-Verknüpfungen)
-License: Python Software Foundation License; enthält gemischt lizenzierte Bestandteile,
-deren Quellen-Lizenzdateien bei einer Bündelung maßgeblich sind.
+pywin32
+License: PSF-2.0
+SPDX: PSF-2.0
 URL: https://pypi.org/project/pywin32/
+Notice: Optional Windows COM and shell extensions for native shortcut (.lnk) resolution (>=306)
 
-Hinweise
---------
-- QScintilla, Pygments und watchdog sind keine Runtime- oder optionalen
-  Release-Abhängigkeiten des aktuellen Source-Vertrags und werden nicht gebündelt.
-- PySide6 wird unter LGPL-3.0 verwendet; die Qt-Bibliotheken werden nicht
-  statisch gelinkt und nicht modifiziert.
-- Vor einem Release-Build muss die tatsächlich gebündelte Paketliste gegen diese
-  Datei und die Projekt-LICENSE abgeglichen werden.
+License Compatibility & Verification Notes
+-------------------------------------------
+1. Main Project License: ExplorerPro is distributed under the GNU Affero General Public License v3 (AGPLv3).
+2. LGPL-3.0 (PySide6, shiboken6): Used dynamically as shared libraries without modification. Compatible with AGPLv3.
+3. Permissive Licenses (MIT, BSD-2-Clause, BSD-3-Clause, Apache-2.0, PSF-2.0): Fully compatible with AGPLv3.
+4. PyInstaller: GPL-2.0-or-later with Bootloader-exception permits binary distribution of packaged applications.
+5. PyMuPDF: Dual-licensed (AGPLv3 or Artifex Commercial). Used under AGPLv3, in full harmony with ExplorerPro's AGPLv3 license.

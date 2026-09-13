@@ -2,7 +2,7 @@
 name = "explorerpro"
 version = "1.0.5"
 description = "Datei-Explorer-Suite mit Editor, PDF-Viewer und Datenanalyse"
-authors = [{ name = "Lukas Geiger", email = "lukasgeiger@googlemail.com" }]
+authors = [{ name = "Lukas Geiger", email = "support@lukasgeiger.com" }]
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 readme = "README.md"
@@ -55,15 +55,27 @@ Issues = "https://github.com/file-bricks/ExplorerPro/issues"
 "Bug Tracker" = "https://github.com/file-bricks/ExplorerPro/issues"
 Changelog = "https://github.com/file-bricks/ExplorerPro/blob/master/CHANGELOG.md"
 Security = "https://github.com/file-bricks/ExplorerPro/blob/master/SECURITY.md"
-"Third-Party Licenses" = "https://github.com/file-bricks/ExplorerPro/blob/master/THIRD_PARTY_LICENSES.md"
+"Security Policy" = "https://github.com/file-bricks/ExplorerPro/blob/master/SECURITY.md"
+"Third-Party Licenses" = "https://github.com/file-bricks/ExplorerPro/blob/master/THIRD_PARTY_LICENSES.txt"
 "Marketing Log" = "https://github.com/file-bricks/ExplorerPro/blob/master/MARKETING-LOG.txt"
 "Parent Organization" = "https://github.com/file-bricks"
 Umbrella = "https://github.com/open-bricks"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.5"]
-build = ["PyInstaller>=6.0.0,<7.0.0"]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.9.0",
+    "altgraph>=0.17.4",
+]
+test = [
+    "pytest>=9.1.1",
+]
+build = [
+    "PyInstaller>=6.10.0,<7.0.0",
+    "pyinstaller-hooks-contrib>=2024.7",
+    "altgraph>=0.17.4",
+]
 legacy-pdf = ["PyPDF2>=3.0.0,<4.0.0"]
 legacy-excel = ["xlrd>=2.0.0,<3.0.0"]
 windows-shortcuts = ["pywin32>=306; platform_system == 'Windows'"]

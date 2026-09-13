@@ -37,6 +37,10 @@ Wenn Sie eine Sicherheitslücke oder ein kritisches Integritätsproblem in Explo
 
 Bitte öffnen Sie für Sicherheitslücken **keine öffentlichen Issues** und veröffentlichen Sie keine sensiblen Dateiinhalte oder Pfade. Bestätigte Sicherheitsprobleme werden mit höchster Priorität behoben.
 
+### Reaktionszeit & SLA
+
+Wir bestätigen den Eingang jeder Sicherheitsmeldung innerhalb von **48 Stunden** und streben eine erste Bewertung / Triage innerhalb von **5 Werktagen** an. Bestätigte Sicherheitsprobleme werden mit höchster Priorität behoben.
+
 ---
 
 ## English
@@ -75,3 +79,7 @@ If you discover a security vulnerability or privacy exposure in ExplorerPro:
    - `lukas@open-bricks.org`
 
 Please **do not disclose vulnerabilities in public issues**. Confirmed security patches are prioritized and released promptly.
+
+### Response Time & SLA
+
+We acknowledge receipt of any security vulnerability report within **48 hours** and aim for an initial assessment/triage within **5 business days**. Confirmed security patches are prioritized and released promptly.

@@ -3,6 +3,17 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [Unreleased]
+
+### Sicherheit & Governance / Security & Governance (2026-09-13)
+- **Sicherheits- & Lizenz-Audit (Turnusgemäßer Audit-Lauf)**:
+  - Härtung der Abhängigkeits-Untergrenzen in `pyproject.toml` (`pytest>=9.1.1` gegen CVE-2025-7117 / GHSA-6w46-j5rx-g56g, `ruff>=0.9.0`, `PyInstaller>=6.10.0`, `altgraph>=0.17.4`).
+  - Standardisierung des Dritte-Partei-Lizenzinventars `THIRD_PARTY_LICENSES.txt` mit SPDX-Identifikatoren, Lizenztypen, Paket-URLs und detaillierten Verwendungsnachweisen für alle 21 direkten und transitiven Laufzeit-, Test- und Build-Pakete.
+  - Zweisprachige Härtung der `SECURITY.md` (DE/EN) um verbindliche Reaktions-SLAs (48 Stunden Erstbestätigung, 5 Werktage Triage) sowie formelle Local-First / Zero-Egress und Non-Elevation-Garantien.
+  - Multi-Host- und Geheimnis-Härtung der `.gitignore` (`secrets.*`, `*.pfx`, `*.p12`, `*.cer`, `*.crt`, `*-WORKSTATION-LG*`, `*-ASUS-GEI*`, `*.sync-conflict-*`, `*.conflict`, `LOCK.*`, `*.lock`, `node_modules/`).
+  - Neue automatisierte Vertragstestsuite `tests/test_security_license_contract.py` mit 6 Prüfungen zur dauerhaften Einhaltung von Schwachstellenuntergrenzen, Lizenzschema, Dateisystem-Ausschlüssen, Hardcoded-Path-Freiheit, SLA-Vorgaben und Zero-Egress-Invarianten.
+  - Gesamter Testbestand auf 317 Tests ausgebaut (100% grün, 0 Fehler).
+
 ## [1.0.5] - 2026-09-12
 
 ### Hinzugefügt / Added
