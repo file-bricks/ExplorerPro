@@ -104,9 +104,12 @@ DONE.md
 pytest_res.txt
 
 # ---- Lokale Workflow- und temporäre Assets ----
+LOCK
 LOCK*.txt
 LOCK.*
 *.lock
+uv.lock
+!package-lock.json
 _backups/
 assets/_agy_instructions.txt
 assets/android-icon-background.png
@@ -115,12 +118,31 @@ assets/android-icon-monochrome.png
 assets/splash-icon.png
 
 # ---- Multi-Host Sync-Konflikt-Muster (Cloud-Sync-Hygiene) ----
+* (copy)*
+* (Copy)*
+* (kopie)*
+* (Kopie)*
+*conflicted copy*
+*-WORKSTATION*
 *-WORKSTATION-LG*
+*-ASUS*
 *-ASUS-GEI*
+*-LAPTOP*
+*-Mac Studio*
 *.sync-conflict-*
+*.sync-temp-*
 *.conflict
 *-CONFLIT-*
 *-conflict-*
+*.orig
+*.rej
+
+# ---- Test, Coverage & Build Caches ----
+.coverage.*
+.hypothesis/
+.turbo/
+wheelhouse/
+.wheel-smoke/
 
 # ---- Web / Node Caches ----
 node_modules/

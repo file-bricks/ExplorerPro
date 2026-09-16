@@ -212,6 +212,7 @@ def test_pyproject_pep621_classifiers_and_urls():
         "Marketing Log",
         "Parent Organization",
         "Umbrella Ecosystem",
+        "LLM Ready",
     ]:
         assert f"{url_key} =" in content or f'"{url_key}" =' in content, f"pyproject.toml must include URL '{url_key}'"
 
@@ -222,7 +223,7 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-09-12" in content
+    assert "Last-checked: 2026-09-16" in content
     assert "1.0.5" in content
     assert "ci.yml" in content
 

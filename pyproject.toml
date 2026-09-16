@@ -61,6 +61,7 @@ Security = "https://github.com/file-bricks/ExplorerPro/blob/master/SECURITY.md"
 "Parent Organization" = "https://github.com/file-bricks"
 Umbrella = "https://github.com/open-bricks"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
+"LLM Ready" = "https://github.com/file-bricks/ExplorerPro/blob/master/llms.txt"
 
 [project.optional-dependencies]
 dev = [
@@ -81,8 +82,11 @@ legacy-excel = ["xlrd>=2.0.0,<3.0.0"]
 windows-shortcuts = ["pywin32>=306; platform_system == 'Windows'"]
 
 [tool.pytest.ini_options]
+minversion = "7.0"
 testpaths = ["tests"]
 pythonpath = [".", "src"]
+norecursedirs = [".git", ".pytest_cache", "__pycache__", "build", "dist", "releases", "_archiv"]
+addopts = "-ra -v"
 
 [tool.ruff]
 target-version = "py310"

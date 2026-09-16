@@ -176,3 +176,85 @@ def test_local_first_and_offline_invariants() -> None:
         text = core_file.read_text(encoding="utf-8")
         for pat in disallowed_patterns:
             assert not pat.search(text), f"Disallowed telemetry pattern {pat.pattern} found in {core_file.name}"
+
+
+def test_ci_workflow_timeouts_and_concurrency() -> None:
+    """Verify GitHub Actions workflows define concurrency controls and bounded job timeouts."""
+    workflows_dir = ROOT / ".github" / "workflows"
+    assert workflows_dir.is_dir(), ".github/workflows must exist"
+
+    expected_workflows = {
+        "ci.yml": 15,
+        "stale.yml": 10,
+        "welcome.yml": 5,
+    }
+
+    for wf_name, expected_timeout in expected_workflows.items():
+        wf_path = workflows_dir / wf_name
+        assert wf_path.is_file(), f"{wf_name} must exist in .github/workflows"
+        content = wf_path.read_text(encoding="utf-8")
+
+        assert "concurrency:" in content, f"{wf_name} must define top-level concurrency"
+        assert "cancel-in-progress: true" in content, f"{wf_name} must enable cancel-in-progress"
+        assert f"timeout-minutes: {expected_timeout}" in content, (
+            f"{wf_name} must specify timeout-minutes: {expected_timeout}"
+        )
+
+
+def test_gitignore_comprehensive_multi_host_and_locks() -> None:
+    """Verify .gitignore covers cloud sync copies, lock files, and test/build artifacts."""
+    gitignore_file = ROOT / ".gitignore"
+    assert gitignore_file.is_file(), ".gitignore must exist"
+    content = gitignore_file.read_text(encoding="utf-8")
+
+    required_patterns = [
+        "LOCK",
+        "uv.lock",
+        "!package-lock.json",
+        "* (copy)*",
+        "* (Copy)*",
+        "* (kopie)*",
+        "* (Kopie)*",
+        "*conflicted copy*",
+        "*-WORKSTATION*",
+        "*-ASUS*",
+        "*-LAPTOP*",
+        "*-Mac Studio*",
+        "*.sync-temp-*",
+        "*.orig",
+        "*.rej",
+        ".coverage.*",
+        ".hypothesis/",
+        ".turbo/",
+        "wheelhouse/",
+        ".wheel-smoke/",
+    ]
+
+    for pat in required_patterns:
+        assert pat in content, f"Pattern {pat} missing from .gitignore"
+
+
+def test_pep621_urls_and_pytest_options() -> None:
+    """Verify pyproject.toml defines required URLs and standard pytest runner options."""
+    pyproject_file = ROOT / "pyproject.toml"
+    assert pyproject_file.is_file(), "pyproject.toml must exist"
+    content = pyproject_file.read_text(encoding="utf-8")
+
+    assert '"LLM Ready" =' in content or 'LLM Ready =' in content, (
+        "pyproject.toml must define LLM Ready URL"
+    )
+    assert "minversion = " in content, "pyproject.toml pytest section must specify minversion"
+    assert 'addopts = "-ra -v"' in content, "pyproject.toml pytest section must specify addopts = '-ra -v'"
+
+
+def test_marketing_log_hygiene_recency() -> None:
+    """Verify MARKETING-LOG.txt documents the latest Pfad A repository hygiene audit."""
+    mkt_file = ROOT / "MARKETING-LOG.txt"
+    assert mkt_file.is_file(), "MARKETING-LOG.txt must exist"
+    content = mkt_file.read_text(encoding="utf-8")
+
+    assert "7. REPOSITORY HYGIENE & CI CONTRACT AUDIT" in content, (
+        "MARKETING-LOG.txt must include Section 7 for repository hygiene"
+    )
+    assert "2026-09-16" in content, "MARKETING-LOG.txt must record the 2026-09-16 audit date"
+    assert "PASS" in content, "MARKETING-LOG.txt must record PASS status"

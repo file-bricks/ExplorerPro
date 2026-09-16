@@ -5,7 +5,7 @@
 [English](README.md) | **[Deutsch](README_de.md)** | [Maschinenlesbarer Kontext (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
-[![Tests: 286 bestanden](https://img.shields.io/badge/Tests-286%20bestanden-brightgreen.svg)](tests/)
+[![Tests: 320+ bestanden](https://img.shields.io/badge/Tests-320%2B%20bestanden-brightgreen.svg)](tests/)
 [![Python 3.10--3.12](https://img.shields.io/badge/Python-3.10--3.12-blue.svg)](https://www.python.org/)
 [![Plattform: Windows | Linux | macOS](https://img.shields.io/badge/Plattform-Windows%20%7C%20Linux%20%7C%20macOS-informational.svg)](https://github.com/file-bricks/ExplorerPro)
 [![UI: PySide6 (Qt6)](https://img.shields.io/badge/UI-PySide6%20(Qt6)-informational.svg)](src/gui/)
@@ -363,8 +363,8 @@ Store-Dokumentation:
 ExplorerPro setzt auf strikte automatisierte Vertragstests und Multi-OS CI-Validierung:
 
 ```bash
-# Komplette automatisierte Testsuite ausführen (230+ Tests):
-python -m pytest -q
+# Komplette automatisierte Testsuite ausführen (320+ Tests):
+python -m pytest -ra -v
 
 # Bytecode-Kompilierung über alle Module verifizieren:
 python -m compileall -q src tests manage_translations.py translator.py

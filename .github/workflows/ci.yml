@@ -10,10 +10,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test (Python ${{ matrix.python-version }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -54,4 +59,4 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
           QT_QPA_PLATFORM: offscreen
         run: |
-          pytest -q
+          python -m pytest -ra -v

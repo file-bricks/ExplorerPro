@@ -137,3 +137,26 @@ INV-SLA-10: 48-Hour Security Response & 5-Day Triage SLA
 - open-bricks: Central umbrella portal linking all local-first open-source utilities.
 - Microsoft Store: Verified production listing under package identity Geiger.ExplorerPro (9P0X52WSHZ3Q).
 ================================================================================
+
+7. REPOSITORY HYGIENE & CI CONTRACT AUDIT (2026-09-16, Pfad A)
+--------------------------------------------------------------------------------
+- Audit-Metadaten:
+  - Audit-Datum: 2026-09-16
+  - Prüfer: Antigravity AI Engine (Automated Repository Cleaner / Pfad A)
+  - Ziel-Repository: file-bricks/ExplorerPro (Branch: master)
+  - Status: PASS (320+ automatisierte Tests 100% grün, compileall sauber, ruff check sauber, git diff --check sauber)
+- Continuous Integration Härtung (.github/workflows/):
+  - Top-Level Concurrency mit `cancel-in-progress: true` in `ci.yml`, `stale.yml` und `welcome.yml` hinterlegt.
+  - Job-Level Timeouts: `ci.yml` (15m), `stale.yml` (10m), `welcome.yml` (5m).
+  - Standardisierter Testrunner-Aufruf mit `python -m pytest -ra -v`.
+- Multi-Host Cloud-Sync & Lock-Verteidigung (.gitignore):
+  - Strikte Lock-Muster: `LOCK`, `LOCK.*`, `*.lock`, `uv.lock`, `!package-lock.json`.
+  - Multi-Host-Konfliktmasken: `* (copy)*`, `* (Copy)*`, `* (kopie)*`, `* (Kopie)*`, `*conflicted copy*`, `*-WORKSTATION*`, `*-ASUS*`, `*-LAPTOP*`, `*-Mac Studio*`, `*.sync-conflict-*`, `*.sync-temp-*`, `*.orig`, `*.rej`.
+  - Test- und Cache-Verzeichnisse: `.coverage.*`, `.hypothesis/`, `.turbo/`, `wheelhouse/`, `.wheel-smoke/`.
+- Paketierungs- & Tooling-Standardisierung (pyproject.toml):
+  - `[project.urls]` um `"LLM Ready"` ergänzt (Verweis auf kanonische `llms.txt`).
+  - `[tool.pytest.ini_options]` um `minversion = "7.0"` und `addopts = "-ra -v"` erweitert.
+  - Vollständige Einhaltung aller Qualitäts- und Linting-Standards (Ruff, Compileall).
+- Automatisierte Vertragstestsuite:
+  - Neue Vertragstests zur kontinuierlichen Verifikation von CI-Guardrails, Multi-Host-Ausschlüssen, PEP 621 URLs und Audit-Protokoll-Aktualität.
+================================================================================

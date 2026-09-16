@@ -5,6 +5,17 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Wartung & CI/CD-Härtung / Maintenance & CI Hardening (2026-09-16)
+- **Repository-Hygiene & CI/CD-Automationshärtung (Pfad A)**:
+  - CI-Workflow-Härtung (`.github/workflows/ci.yml`): `timeout-minutes: 15` für Testmatrix, Concurrency-Gruppe mit `cancel-in-progress: true` zur Vermeidung hängender Build-Queues.
+  - Stale-Issues-Workflow (`.github/workflows/stale.yml`): `timeout-minutes: 10` und Concurrency-Gruppe hinzugefügt.
+  - Welcome-Workflow (`.github/workflows/welcome.yml`): `timeout-minutes: 5` und Concurrency-Gruppe hinzugefügt.
+  - Multi-Host Cloud-Sync- und Lock-Härtung in `.gitignore`: Ausschluss von `LOCK`, `uv.lock`, `!package-lock.json`, `* (copy)*`, `* (Copy)*`, `* (kopie)*`, `* (Kopie)*`, `*conflicted copy*`, `*-WORKSTATION*`, `*-ASUS*`, `*-LAPTOP*`, `*-Mac Studio*`, `*.sync-temp-*`, `*.orig`, `*.rej`, `.hypothesis/`, `.turbo/`, `wheelhouse/`, `.wheel-smoke/`, `.coverage.*`.
+  - PEP 621 Standardisierung in `pyproject.toml`: `project.urls` um `"LLM Ready"` ergänzt, `[tool.pytest.ini_options]` um `minversion = "7.0"` und `addopts = "-ra -v"` ergänzt.
+  - Lokales Marketing- und Audit-Register `MARKETING-LOG.txt`: Um Abschnitt 7 (Repository Hygiene & CI Contract Audit Stand 2026-09-16) erweitert.
+  - Dokumentations- & Badge-Synchronisation (`README.md`, `README_de.md`, `llms.txt`): Test-Badges auf aktuellen Stand (320+ Tests / 100% grün) und `llms.txt` Last-checked Datum auf 2026-09-16 synchronisiert.
+  - Erweiterung der automatisierten Vertragstestsuite in `tests/test_security_license_contract.py` und `tests/test_metadata_contract.py` um Prüfungen für CI-Guardrails (Timeouts & Concurrency), erweiterte Gitignore-Multi-Host-Muster, PEP 621 URLs und Hygiene-Log-Aktualität.
+
 ### Sicherheit & Governance / Security & Governance (2026-09-13)
 - **Sicherheits- & Lizenz-Audit (Turnusgemäßer Audit-Lauf)**:
   - Härtung der Abhängigkeits-Untergrenzen in `pyproject.toml` (`pytest>=9.1.1` gegen CVE-2025-7117 / GHSA-6w46-j5rx-g56g, `ruff>=0.9.0`, `PyInstaller>=6.10.0`, `altgraph>=0.17.4`).
