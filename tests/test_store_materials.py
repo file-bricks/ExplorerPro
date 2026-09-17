@@ -64,3 +64,17 @@ def test_store_screenshot_set_is_present() -> None:
     store_dir = PROJECT_ROOT / "README" / "screenshots" / "store"
     for filename in ("main-window.png", "search.png", "duplicates.png", "sync.png"):
         assert (store_dir / filename).exists()
+
+
+def test_pyinstaller_spec_includes_project_and_license_notices() -> None:
+    spec = (PROJECT_ROOT / "ExplorerPro.spec").read_text(encoding="utf-8")
+
+    for filename in ("LICENSE", "THIRD_PARTY_LICENSES.txt", "PRIVACY_POLICY.md", "SUPPORT.md"):
+        assert f"project_root / '{filename}'" in spec
+
+
+def test_build_script_promotes_notices_to_bundle_root() -> None:
+    build_script = (PROJECT_ROOT / "build_exe.bat").read_text(encoding="utf-8")
+
+    assert "for %%F in (LICENSE THIRD_PARTY_LICENSES.txt PRIVACY_POLICY.md SUPPORT.md)" in build_script
+    assert 'copy /Y "%CD%\\%%F" "%CD%\\dist\\ExplorerPro\\%%F"' in build_script

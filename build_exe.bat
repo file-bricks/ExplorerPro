@@ -22,5 +22,13 @@ if not exist "%CD%\dist\ExplorerPro\ExplorerPro.exe" (
     exit /b 1
 )
 
+for %%F in (LICENSE THIRD_PARTY_LICENSES.txt PRIVACY_POLICY.md SUPPORT.md) do (
+    copy /Y "%CD%\%%F" "%CD%\dist\ExplorerPro\%%F" >nul
+    if errorlevel 1 (
+        echo [FEHLER] Notice-Datei konnte nicht ins Bundle kopiert werden: %%F
+        exit /b 1
+    )
+)
+
 echo [OK] EXE erstellt: dist\ExplorerPro\ExplorerPro.exe
 endlocal
