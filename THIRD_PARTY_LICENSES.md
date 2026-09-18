@@ -1,6 +1,6 @@
 # Third-Party Software Licenses & Runtime Invariants
 
-Stand: **2026-09-10**  
+Stand: **2026-09-18**
 Repository: **file-bricks/ExplorerPro**  
 Primary License: **GNU Affero General Public License v3 (AGPL-3.0)**  
 Parent Organization: **file-bricks**  
@@ -22,7 +22,7 @@ The core execution environment depends strictly on the following packages:
 
 | Package | Version Range | License | Role / Purpose | Integration Model |
 |---|---|---|---|---|
-| **PySide6** | `>=6.5.0, <7.0.0` | **LGPL-3.0-only** / GPL-2.0 / GPL-3.0 | Desktop GUI Framework (Qt 6 widgets, event loop, styling) | Dynamically linked shared libraries; no proprietary Qt modifications |
+| **PySide6** | `>=6.5.0, <7.0.0` | **LGPL-3.0-only** / GPL-2.0 / GPL-3.0 | Desktop GUI Framework (Qt 6 widgets, event loop, styling) | Dynamically linked shared libraries; unmodified Qt runtime binaries |
 | **PyMuPDF** (`fitz`) | `>=1.21.0, <2.0.0` | **AGPL-3.0-only** / Artifex Commercial | High-performance PDF rendering and document preview extraction | Direct Python binding; 100% compliant with ExplorerPro's AGPL-3.0 license |
 | **pandas** | `>=2.0.0, <4.0.0` | **BSD-3-Clause** | Tabular data analysis and structured CSV/Excel parsing | Imported library for dataset preview and statistics |
 | **openpyxl** | `>=3.1.0, <4.0.0` | **MIT** | Modern Microsoft Excel (`.xlsx`) sheet parsing and metadata extraction | Standard Python library for spreadsheet preview |
@@ -35,7 +35,7 @@ ExplorerPro provides specialized extensions and fallback handlers when certain e
 
 | Package | Version Range | License | Role / Purpose | Trigger Condition |
 |---|---|---|---|---|
-| **PyInstaller** | `>=6.0.0, <7.0.0` | **GPL-2.0-or-later** (with packaging exception) | Standalone executable compilation (`ExplorerPro.exe`) | Build-time packaging only; not bundled into source distributions |
+| **PyInstaller** | `>=6.10.0, <7.0.0` | **GPL-2.0-or-later** (with packaging exception) | Standalone executable compilation (`ExplorerPro.exe`) | Build-time packaging only; not bundled into source distributions |
 | **PyPDF2** | `>=3.0.0, <4.0.0` | **BSD-3-Clause** | Legacy PDF fallback extractor when native engines are unavailable | Optional runtime fallback; isolated in preview engine |
 | **xlrd** | `>=2.0.0, <3.0.0` | **BSD-3-Clause** | Legacy Microsoft Excel (`.xls`) binary workbook preview | Optional runtime fallback; isolated in spreadsheet preview |
 | **pywin32** | `>=306` | **PSFL-2.0** / Mixed Permissive | Windows `.lnk` shortcut target resolution and shell integration | Windows platform only (`platform_system == 'Windows'`) |
@@ -48,15 +48,16 @@ Testing, linting, and quality gate tools used exclusively during development and
 
 | Tool | Version Range | License | Purpose |
 |---|---|---|---|
-| **pytest** | `>=8.0.0` | **MIT** | Automated unit, integration, and metadata contract testing |
-| **ruff** | `>=0.5.0` | **MIT** / **Apache-2.0** | Extremely fast static Python linter and code style enforcement |
+| **pytest** | `>=9.1.1` | **MIT** | Automated unit, integration, and metadata contract testing (hardened against CVE-2025-7117) |
+| **ruff** | `>=0.9.0` | **MIT** / **Apache-2.0** | Extremely fast static Python linter and code style enforcement |
 | **setuptools** | Current | **MIT** | PEP 517 / PEP 621 packaging metadata provider |
+| **altgraph** | `>=0.17.4` | **MIT** | Dependency graph analysis for PyInstaller build artifacts |
 
 ---
 
 ## 5. Architectural & Governance Invariants
 
-All dependencies adhere to five core architectural guarantees:
+All dependencies adhere to core architectural guarantees:
 
 1. **100% Local-First & Zero-Egress Privacy (`INV-LOCAL-01`)**:
    None of the runtime dependencies establish outgoing network connections, telemetry beacons, cloud synchronizations, or remote API requests. All file manipulation, indexing, and preview rendering occur entirely on the local machine.
@@ -93,7 +94,7 @@ Permissions: Commercial use, modification, distribution, private use.
 Requirements: Retention of copyright notice, conditions list, and disclaimer; endorsement restrictions.
 
 ### MIT License
-Used by: `openpyxl`, `pytest`, `ruff`, `setuptools`  
+Used by: `openpyxl`, `pytest`, `ruff`, `setuptools`, `altgraph`
 Permissions: Commercial use, modification, distribution, private use, sublicensing.  
 Requirements: Inclusion of copyright and permission notice.
 

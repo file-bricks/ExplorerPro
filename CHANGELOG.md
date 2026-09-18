@@ -5,6 +5,17 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Marketing & Visuelle Architektur / Marketing & Visual Architecture (2026-09-18)
+- **Pfad B: Discoverability, visuelle Architektur & Metadaten-Vertrag**:
+  - **18-Punkte Schnellnavigations-Parität (`README.md` & `README_de.md`)**: Vollständige zweisprachige Parität über alle 18 Abschnitte mit dualen reziproken HTML-Ankern (`<a id="..."></a>`) für lückenlose Verlinkbarkeit.
+  - **Zielgruppen- & Intent-Modellierung**: 4 dedizierte Personas (`[PERSONA-01]` bis `[PERSONA-04]`) sowie zweisprachige High-Intent-Suchbegriffkataloge für maximale Auffindbarkeit.
+  - **Vergleichsmatrix gegenüber Alternativen**: 10-dimensionale Matrix gegen Windows File Explorer, Total Commander, Directory Opus, OneCommander und Cloud SaaS Viewer, kartiert auf die 10 Invarianten (`INV-LOCAL-01` bis `INV-SLA-10`).
+  - **Duale Mermaid-Diagramme**: Ausbau der Architektur-Topologie (`flowchart TD`) und des End-to-End Verarbeitungs- und Such-Lebenszyklus (`sequenceDiagram` mit `autonumber` und null Semikolons).
+  - **Rechtlicher Hinweis (§ 521 BGB Gefälligkeitsrecht)** in `README_de.md` verbindlich verankert.
+  - **Metadaten- & Kontext-Aktualisierung**: `THIRD_PARTY_LICENSES.md` und `MARKETING-LOG.txt` (Abschnitt 8) auf Stand 2026-09-18 gehärtet; `llms.txt` auf Stand 2026-09-18 mit 323+ Tests und 18-Punkte-Index synchronisiert.
+  - **Automatisierte Vertragstests**: `tests/test_metadata_contract.py` um 18-Punkte Schnellnavigationsprüfung und reziproke HTML-Anker-Validierung erweitert.
+
+
 ### Wartung & CI/CD-Härtung / Maintenance & CI Hardening (2026-09-16)
 - **Repository-Hygiene & CI/CD-Automationshärtung (Pfad A)**:
   - CI-Workflow-Härtung (`.github/workflows/ci.yml`): `timeout-minutes: 15` für Testmatrix, Concurrency-Gruppe mit `cancel-in-progress: true` zur Vermeidung hängender Build-Queues.

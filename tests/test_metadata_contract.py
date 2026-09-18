@@ -223,7 +223,7 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-09-16" in content
+    assert "Last-checked: 2026-09-18" in content
     assert "1.0.5" in content
     assert "ci.yml" in content
 
@@ -271,20 +271,34 @@ def test_version_parity():
     assert "## [1.0.5]" in changelog_text
 
 
-def test_readme_15_point_navigation_parity():
+def test_readme_18_point_navigation_parity():
     en_content = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
     de_content = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
 
     assert "## Quick Navigation" in en_content
     assert "## Schnellnavigation" in de_content
 
-    for section_idx in range(1, 16):
+    for section_idx in range(1, 19):
         prefix = f"{section_idx}. ["
         heading = f"## {section_idx}. "
         assert prefix in en_content, f"Missing navigation item {prefix} in README.md"
         assert prefix in de_content, f"Missing navigation item {prefix} in README_de.md"
         assert heading in en_content, f"Missing section heading {heading} in README.md"
         assert heading in de_content, f"Missing section heading {heading} in README_de.md"
+
+    # Verify reciprocal anchors for cross-linking
+    assert '<a id="1-features"></a>' in en_content and '<a id="1-features"></a>' in de_content
+    assert '<a id="1-funktionen"></a>' in en_content and '<a id="1-funktionen"></a>' in de_content
+    assert '<a id="18-security-policy--sibling-ecosystem"></a>' in en_content and '<a id="18-security-policy--sibling-ecosystem"></a>' in de_content
+    assert '<a id="18-sicherheitsrichtlinie--geschwister-oekosystem"></a>' in en_content and '<a id="18-sicherheitsrichtlinie--geschwister-oekosystem"></a>' in de_content
+
+    # Verify target personas
+    for persona_id in ["[PERSONA-01]", "[PERSONA-02]", "[PERSONA-03]", "[PERSONA-04]"]:
+        assert persona_id in en_content, f"Missing {persona_id} in README.md"
+        assert persona_id in de_content, f"Missing {persona_id} in README_de.md"
+
+    # Verify German statutory notice (§ 521 BGB Gefälligkeitsrecht)
+    assert "§ 521 BGB Gefälligkeitsrecht" in de_content
 
 
 def test_governance_invariants_table_ten_points():
@@ -343,6 +357,7 @@ def test_marketing_log_and_personas():
         "Windows Explorer",
         "Total Commander",
         "GOVERNANCE & RUNTIME INVARIANTS",
+        "8. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & METADATA AUDIT",
     ]:
         assert section in content, f"Section '{section}' missing in MARKETING-LOG.txt"
 

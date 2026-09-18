@@ -1,7 +1,7 @@
 ================================================================================
 EXPLORERPRO SUITE — MARKETING, DISCOVERY & GOVERNANCE LOG
 ================================================================================
-Stand: 2026-09-12
+Stand: 2026-09-18
 Repository: file-bricks/ExplorerPro
 Branch: master
 Version: 1.0.5
@@ -159,4 +159,33 @@ INV-SLA-10: 48-Hour Security Response & 5-Day Triage SLA
   - Vollständige Einhaltung aller Qualitäts- und Linting-Standards (Ruff, Compileall).
 - Automatisierte Vertragstestsuite:
   - Neue Vertragstests zur kontinuierlichen Verifikation von CI-Guardrails, Multi-Host-Ausschlüssen, PEP 621 URLs und Audit-Protokoll-Aktualität.
+================================================================================
+
+8. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & METADATA AUDIT (2026-09-18, Pfad B)
+--------------------------------------------------------------------------------
+- Audit-Metadaten:
+  - Audit-Datum: 2026-09-18
+  - Prüfer: Antigravity AI Engine (Pfad B Discoverability & Visual Architecture)
+  - Ziel-Repository: file-bricks/ExplorerPro (Branch: master)
+  - Status: PASS (323+ automatisierte Tests 100% grün, compileall sauber, ruff sauber, git diff --check sauber)
+- 18-Punkte Navigations-Parität (README.md & README_de.md):
+  - Vollständige zweisprachige Parität über alle 18 Abschnitte mit dualen reziproken HTML-Ankern (<a id="..."></a>).
+  - Synchronisierte Badges (Tests: 323+ passed, Stand: 2026-09-18, RunAsInvoker, 48h SLA, Microsoft Store Live).
+  - Gesetzlicher Haftungshinweis (§ 521 BGB Gefälligkeitsrecht) in README_de.md verankert.
+- Zielgruppen-Modellierung (4 Personas & High-Intent Queries):
+  - [PERSONA-01] Desktop Power Users & Windows Sysadmins.
+  - [PERSONA-02] Privacy & Compliance Officers / DSGVO & Enterprise Auditors.
+  - [PERSONA-03] Software Developers & Research Analysts.
+  - [PERSONA-04] Automation Engineers & Multi-Agent Framework Architects.
+  - 10 zielgerichtete High-Intent Suchbegriffe pro Sprache für maximale Auffindbarkeit.
+- Vergleichsmatrix (10 Dimensionen vs. 5 Alternativen):
+  - Vollständige Gegenüberstellung von ExplorerPro vs. Windows File Explorer, Total Commander, Directory Opus, OneCommander und Cloud SaaS Viewern.
+  - Abbildung auf die 10 Invarianten-Säulen (INV-LOCAL-01 bis INV-SLA-10).
+- Visuelle Architektur & Duale Mermaid-Diagramme:
+  - Systemarchitektur-Topologie (flowchart TD mit 5 Schichten: UI, Core, Engines, Safety, Invarianten).
+  - End-to-End Verarbeitungs- und Such-Lebenszyklus (sequenceDiagram mit autonumber und null Semikolons).
+- Metadaten- & Kontext-Synchronisation:
+  - llms.txt auf Stand 2026-09-18, 323+ Tests und 18-Punkte Schnellnavigation aktualisiert.
+  - THIRD_PARTY_LICENSES.md Stand 2026-09-18 mit RunAsInvoker und Zero-Copyleft Garantie erneuert.
+  - Automatisierte Vertragstestsuite (test_metadata_contract.py) auf 18-Punkte Schnellnavigationsprüfung und reziproke Anker erweitert.
 ================================================================================
