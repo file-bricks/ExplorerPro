@@ -51,8 +51,13 @@ class AppButton(QPushButton):
 
     def _setup_ui(self):
         self.setFixedSize(80, 80)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setToolTip(f"{self.app.name}\n{self.app.path}")
+        self.setAccessibleName(f"App {self.app.name}")
+        self.setAccessibleDescription(
+            f"Startet die Anwendung {self.app.name}. Dateipfad: {self.app.path}"
+        )
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
@@ -123,6 +128,10 @@ class AppEditDialog(QDialog):
         self.app = app or AppEntry(name="", path="")
         self.setWindowTitle("App bearbeiten" if app else "Neue App")
         self.setMinimumWidth(450)
+        self.setAccessibleName("App bearbeiten" if app else "Neue App")
+        self.setAccessibleDescription(
+            "Konfigurationsdialog für Name, Programmpfad, Kategorie, Beschreibung und Startargumente."
+        )
         self._setup_ui()
         self._load_data()
 
@@ -131,12 +140,20 @@ class AppEditDialog(QDialog):
         form = QFormLayout()
 
         self.name_edit = QLineEdit()
+        self.name_edit.setAccessibleName("Anwendungsname")
+        self.name_edit.setAccessibleDescription("Anzeigename der Anwendung im Schnellstarter.")
+        self.name_edit.setToolTip("Name der Anwendung eingeben")
         form.addRow("Name:", self.name_edit)
 
         path_layout = QHBoxLayout()
         self.path_edit = QLineEdit()
+        self.path_edit.setAccessibleName("Programmpfad")
+        self.path_edit.setAccessibleDescription("Dateipfad zur ausführbaren Datei oder zum Skript.")
+        self.path_edit.setToolTip("Pfad zur ausführbaren Datei")
         path_btn = QPushButton("...")
         path_btn.setFixedWidth(30)
+        path_btn.setAccessibleName("Programmdatei durchsuchen")
+        path_btn.setToolTip("Dateiauswahldialog öffnen")
         path_btn.clicked.connect(self._browse_path)
         path_layout.addWidget(self.path_edit)
         path_layout.addWidget(path_btn)
@@ -144,6 +161,9 @@ class AppEditDialog(QDialog):
 
         self.category_combo = QComboBox()
         self.category_combo.setEditable(True)
+        self.category_combo.setAccessibleName("Kategorie")
+        self.category_combo.setAccessibleDescription("Kategorie zur Gruppierung im Schnellstarter.")
+        self.category_combo.setToolTip("Kategorie auswählen oder neu eingeben")
         self.category_combo.addItems([
             "Allgemein", "Entwicklung", "Office", "Grafik",
             "Multimedia", "Internet", "System", "Spiele"
@@ -151,10 +171,16 @@ class AppEditDialog(QDialog):
         form.addRow("Kategorie:", self.category_combo)
 
         self.desc_edit = QLineEdit()
+        self.desc_edit.setAccessibleName("Beschreibung")
+        self.desc_edit.setAccessibleDescription("Optionale Beschreibung der Anwendung.")
+        self.desc_edit.setToolTip("Optionale Beschreibung")
         form.addRow("Beschreibung:", self.desc_edit)
 
         self.args_edit = QLineEdit()
         self.args_edit.setPlaceholderText("z.B. --verbose --config=config.ini")
+        self.args_edit.setAccessibleName("Startargumente")
+        self.args_edit.setAccessibleDescription("Zusätzliche Befehlszeilenargumente für den Programmaufruf.")
+        self.args_edit.setToolTip("Kommandozeilenparameter")
         form.addRow("Argumente:", self.args_edit)
 
         layout.addLayout(form)
@@ -163,6 +189,14 @@ class AppEditDialog(QDialog):
             QDialogButtonBox.StandardButton.Ok |
             QDialogButtonBox.StandardButton.Cancel
         )
+        ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_btn:
+            ok_btn.setAccessibleName("App speichern")
+            ok_btn.setToolTip("Speichert die Anwendungseinstellungen (Enter)")
+        cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
+        if cancel_btn:
+            cancel_btn.setAccessibleName("Abbrechen")
+            cancel_btn.setToolTip("Bricht die Bearbeitung ab (Esc)")
         buttons.accepted.connect(self._save_and_accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -225,11 +259,16 @@ class AppsPanel(QWidget):
         header = QHBoxLayout()
         self.search_edit = QLineEdit()
         self.search_edit.setPlaceholderText("🔍 App suchen...")
+        self.search_edit.setAccessibleName("Apps durchsuchen")
+        self.search_edit.setAccessibleDescription("Filtert die Anwendungsliste nach Name.")
+        self.search_edit.setToolTip("Apps durchsuchen")
         self.search_edit.textChanged.connect(self._filter_apps)
         header.addWidget(self.search_edit)
 
         add_btn = QToolButton()
         add_btn.setText("➕")
+        add_btn.setAccessibleName("Neue App hinzufügen")
+        add_btn.setAccessibleDescription("Öffnet den Dialog zum Hinzufügen einer Anwendung zum Starter.")
         add_btn.setToolTip("App hinzufügen")
         add_btn.clicked.connect(self._add_app)
         header.addWidget(add_btn)
@@ -237,6 +276,7 @@ class AppsPanel(QWidget):
 
         # Tabs
         self.tabs = QTabWidget()
+        self.tabs.setAccessibleName("App-Kategorien")
         self.tabs.setDocumentMode(True)
         layout.addWidget(self.tabs)
 

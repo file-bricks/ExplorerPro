@@ -40,6 +40,10 @@ class DiffDialog(QDialog):
         self.setWindowTitle(t("Dateien vergleichen (Diff)"))
         self.resize(1000, 700)
         self.setMinimumSize(800, 500)
+        self.setAccessibleName("Datei-Vergleichs-Dialog")
+        self.setAccessibleDescription(
+            "Vergleicht zwei Dateien zeilenweise mit visueller Gegenüberstellung und Syntax-Hervorhebung."
+        )
 
         self._setup_ui()
         if self.file1 and self.file2 and os.path.exists(self.file1) and os.path.exists(self.file2):
@@ -53,26 +57,42 @@ class DiffDialog(QDialog):
         files_group = QGroupBox(t("Zu vergleichende Dateien"))
         files_grid = QGridLayout(files_group)
 
-        files_grid.addWidget(QLabel(t("Datei 1 (Basis):")), 0, 0)
+        lbl1 = QLabel(t("Datei 1 (Basis):"))
+        files_grid.addWidget(lbl1, 0, 0)
         self.file1_edit = QLineEdit(self.file1)
         self.file1_edit.setPlaceholderText(t("Pfad zu Datei 1..."))
+        self.file1_edit.setAccessibleName("Pfad zu Datei 1 (Basis)")
+        self.file1_edit.setAccessibleDescription("Dateipfad der ersten Datei (Basis) für den Vergleich.")
+        lbl1.setBuddy(self.file1_edit)
         files_grid.addWidget(self.file1_edit, 0, 1)
         browse1_btn = QPushButton(t("Durchsuchen..."))
+        browse1_btn.setAccessibleName("Datei 1 durchsuchen")
+        browse1_btn.setToolTip("Öffnet die Dateiauswahl für Datei 1 (Basis)")
         browse1_btn.clicked.connect(self._browse_file1)
         files_grid.addWidget(browse1_btn, 0, 2)
 
-        files_grid.addWidget(QLabel(t("Datei 2 (Vergleich):")), 1, 0)
+        lbl2 = QLabel(t("Datei 2 (Vergleich):"))
+        files_grid.addWidget(lbl2, 1, 0)
         self.file2_edit = QLineEdit(self.file2)
         self.file2_edit.setPlaceholderText(t("Pfad zu Datei 2..."))
+        self.file2_edit.setAccessibleName("Pfad zu Datei 2 (Vergleich)")
+        self.file2_edit.setAccessibleDescription("Dateipfad der zweiten Datei für den Vergleich.")
+        lbl2.setBuddy(self.file2_edit)
         files_grid.addWidget(self.file2_edit, 1, 1)
         browse2_btn = QPushButton(t("Durchsuchen..."))
+        browse2_btn.setAccessibleName("Datei 2 durchsuchen")
+        browse2_btn.setToolTip("Öffnet die Dateiauswahl für Datei 2 (Vergleich)")
         browse2_btn.clicked.connect(self._browse_file2)
         files_grid.addWidget(browse2_btn, 1, 2)
 
-        compare_btn = QPushButton("🔍 " + t("Vergleichen"))
-        compare_btn.setStyleSheet("font-weight: bold; padding: 5px;")
-        compare_btn.clicked.connect(self._do_compare)
-        files_grid.addWidget(compare_btn, 2, 1, 1, 2)
+        self.compare_btn = QPushButton("🔍 " + t("Vergleichen"))
+        self.compare_btn.setStyleSheet("font-weight: bold; padding: 5px;")
+        self.compare_btn.setAccessibleName("Dateien vergleichen")
+        self.compare_btn.setAccessibleDescription("Startet die Differenzanalyse zwischen Datei 1 und Datei 2.")
+        self.compare_btn.setToolTip("Dateivergleich starten (Strg+Enter)")
+        self.compare_btn.setShortcut("Ctrl+Return")
+        self.compare_btn.clicked.connect(self._do_compare)
+        files_grid.addWidget(self.compare_btn, 2, 1, 1, 2)
 
         main_layout.addWidget(files_group)
 
@@ -84,10 +104,12 @@ class DiffDialog(QDialog):
         font = self.status_label.font()
         font.setBold(True)
         self.status_label.setFont(font)
+        self.status_label.setAccessibleName("Vergleichsstatus")
         status_layout.addWidget(self.status_label)
 
         self.meta_label = QLabel("")
         self.meta_label.setStyleSheet("color: #616161;")
+        self.meta_label.setAccessibleName("Vergleichsstatistik")
         status_layout.addWidget(self.meta_label)
 
         main_layout.addWidget(self.status_group)
@@ -103,21 +125,30 @@ class DiffDialog(QDialog):
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(False)
         self.table.verticalHeader().setVisible(False)
+        self.table.setAccessibleName("Diff-Ergebnistabelle")
+        self.table.setAccessibleDescription("Zeilenweiser Vergleich beider Dateien: Grün = hinzugefügt, Rot = entfernt.")
+        self.table.setToolTip("Zeilenweiser Vergleich der beiden Dateien")
         main_layout.addWidget(self.table)
 
-        # 4. Button-Leiste
+        # 4. Buttons
         btn_layout = QHBoxLayout()
 
-        self.copy_btn = QPushButton("📋 " + t("Unified-Diff kopieren"))
+        self.copy_btn = QPushButton("📋 " + t("Diff kopieren"))
+        self.copy_btn.setAccessibleName("Diff in Zwischenablage kopieren")
+        self.copy_btn.setToolTip("Kopiert den Unified Diff in die Zwischenablage")
         self.copy_btn.setEnabled(False)
         self.copy_btn.clicked.connect(self._copy_unified_diff)
         btn_layout.addWidget(self.copy_btn)
 
         btn_layout.addStretch()
 
-        close_btn = QPushButton(t("Schließen"))
-        close_btn.clicked.connect(self.accept)
-        btn_layout.addWidget(close_btn)
+        self.close_btn = QPushButton(t("Schließen"))
+        self.close_btn.setAccessibleName("Dialog schließen")
+        self.close_btn.setToolTip("Schließt den Vergleichs-Dialog (Esc)")
+        self.close_btn.setShortcut("Escape")
+        self.close_btn.setDefault(True)
+        self.close_btn.clicked.connect(self.accept)
+        btn_layout.addWidget(self.close_btn)
 
         main_layout.addLayout(btn_layout)
 

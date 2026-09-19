@@ -88,6 +88,10 @@ class AdvancedSearchDialog(QDialog):
         self.setWindowTitle("Erweiterte Suche")
         self.setMinimumSize(800, 600)
         self.resize(900, 700)
+        self.setAccessibleName("Erweiterte Dateisuche")
+        self.setAccessibleDescription(
+            "Detaillierte Dateisuche mit Filtern für Suchbereich, Dateityp, Änderungsdatum, Dateigröße und Tags."
+        )
 
         self._setup_ui()
 
@@ -102,14 +106,19 @@ class AdvancedSearchDialog(QDialog):
         search_layout = QHBoxLayout()
         self.query_input = QLineEdit()
         self.query_input.setPlaceholderText("Suchbegriff eingeben...")
+        self.query_input.setAccessibleName("Suchbegriff")
+        self.query_input.setAccessibleDescription("Suchbegriff für Dateiname, Inhalt oder Pfad.")
+        self.query_input.setToolTip("Suchbegriff eingeben (Enter startet die Suche)")
         self.query_input.returnPressed.connect(self._do_search)
         search_layout.addWidget(self.query_input)
 
         self.regex_cb = QCheckBox("Regex")
+        self.regex_cb.setAccessibleName("Reguläre Ausdrücke")
         self.regex_cb.setToolTip("Als regulären Ausdruck interpretieren")
         search_layout.addWidget(self.regex_cb)
 
         self.case_cb = QCheckBox("Groß/Klein")
+        self.case_cb.setAccessibleName("Groß- und Kleinschreibung beachten")
         self.case_cb.setToolTip("Groß-/Kleinschreibung beachten")
         search_layout.addWidget(self.case_cb)
 
@@ -119,9 +128,18 @@ class AdvancedSearchDialog(QDialog):
         scope_layout = QHBoxLayout()
         self.search_name_cb = QCheckBox("Dateiname")
         self.search_name_cb.setChecked(True)
+        self.search_name_cb.setAccessibleName("Im Dateinamen suchen")
+        self.search_name_cb.setToolTip("Dateinamen durchsuchen")
+
         self.search_content_cb = QCheckBox("Inhalt")
         self.search_content_cb.setChecked(True)
+        self.search_content_cb.setAccessibleName("Im Dateiinhalt suchen")
+        self.search_content_cb.setToolTip("Volltextinhalte durchsuchen")
+
         self.search_path_cb = QCheckBox("Pfad")
+        self.search_path_cb.setAccessibleName("Im Pfad suchen")
+        self.search_path_cb.setToolTip("Vollständigen Dateipfad durchsuchen")
+
         scope_layout.addWidget(self.search_name_cb)
         scope_layout.addWidget(self.search_content_cb)
         scope_layout.addWidget(self.search_path_cb)
@@ -133,11 +151,15 @@ class AdvancedSearchDialog(QDialog):
         self.type_combo = QComboBox()
         for name, _ in self.FILE_TYPES:
             self.type_combo.addItem(name)
+        self.type_combo.setAccessibleName("Dateityp-Filter")
+        self.type_combo.setToolTip("Auf bestimmte Dateitypen einschränken")
         self.type_combo.currentIndexChanged.connect(self._on_type_changed)
         type_layout.addWidget(self.type_combo)
 
         self.custom_ext_input = QLineEdit()
         self.custom_ext_input.setPlaceholderText(".py, .txt, ...")
+        self.custom_ext_input.setAccessibleName("Benutzerdefinierte Dateiendungen")
+        self.custom_ext_input.setToolTip("Dateiendungen kommagetrennt eingeben")
         self.custom_ext_input.hide()
         type_layout.addWidget(self.custom_ext_input)
 
@@ -148,6 +170,8 @@ class AdvancedSearchDialog(QDialog):
         self.date_preset_combo = QComboBox()
         for name, _, _ in self.DATE_PRESETS:
             self.date_preset_combo.addItem(name)
+        self.date_preset_combo.setAccessibleName("Änderungszeitraum")
+        self.date_preset_combo.setToolTip("Zeitraum der letzten Änderung auswählen")
         self.date_preset_combo.currentIndexChanged.connect(self._on_date_preset_changed)
         date_layout.addWidget(self.date_preset_combo)
 
@@ -156,6 +180,7 @@ class AdvancedSearchDialog(QDialog):
         self.date_from.setCalendarPopup(True)
         self.date_from.setDate(QDate.currentDate().addYears(-1))
         self.date_from.setEnabled(False)
+        self.date_from.setAccessibleName("Geändert von Datum")
         date_layout.addWidget(self.date_from)
 
         date_layout.addWidget(QLabel("Bis:"))
@@ -163,6 +188,7 @@ class AdvancedSearchDialog(QDialog):
         self.date_to.setCalendarPopup(True)
         self.date_to.setDate(QDate.currentDate())
         self.date_to.setEnabled(False)
+        self.date_to.setAccessibleName("Geändert bis Datum")
         date_layout.addWidget(self.date_to)
 
         criteria_layout.addRow("Geändert:", date_layout)
@@ -173,6 +199,7 @@ class AdvancedSearchDialog(QDialog):
         self.size_min.setRange(0, 100000)
         self.size_min.setSuffix(" KB")
         self.size_min.setSpecialValueText("Keine Grenze")
+        self.size_min.setAccessibleName("Minimale Dateigröße in Kilobyte")
         size_layout.addWidget(QLabel("Min:"))
         size_layout.addWidget(self.size_min)
 
@@ -180,6 +207,7 @@ class AdvancedSearchDialog(QDialog):
         self.size_max.setRange(0, 100000)
         self.size_max.setSuffix(" KB")
         self.size_max.setSpecialValueText("Keine Grenze")
+        self.size_max.setAccessibleName("Maximale Dateigröße in Kilobyte")
         size_layout.addWidget(QLabel("Max:"))
         size_layout.addWidget(self.size_max)
         size_layout.addStretch()
@@ -189,6 +217,8 @@ class AdvancedSearchDialog(QDialog):
         # Tags
         self.tags_input = QLineEdit()
         self.tags_input.setPlaceholderText("tag1, tag2, ... (mit Komma trennen)")
+        self.tags_input.setAccessibleName("Datei-Tags filtern")
+        self.tags_input.setToolTip("Kommagetrennte Tags filtern")
         criteria_layout.addRow("Tags:", self.tags_input)
 
         layout.addWidget(criteria_group)
@@ -198,10 +228,14 @@ class AdvancedSearchDialog(QDialog):
 
         self.search_btn = QPushButton("🔍 Suchen")
         self.search_btn.setDefault(True)
+        self.search_btn.setAccessibleName("Suche ausführen")
+        self.search_btn.setToolTip("Startet die erweiterte Suche (Enter)")
         self.search_btn.clicked.connect(self._do_search)
         button_layout.addWidget(self.search_btn)
 
         self.clear_btn = QPushButton("Zurücksetzen")
+        self.clear_btn.setAccessibleName("Suchfilter zurücksetzen")
+        self.clear_btn.setToolTip("Setzt alle Kriterien und Filter auf Standardwerte zurück")
         self.clear_btn.clicked.connect(self._reset_form)
         button_layout.addWidget(self.clear_btn)
 
@@ -209,6 +243,7 @@ class AdvancedSearchDialog(QDialog):
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setMaximumWidth(200)
+        self.progress_bar.setAccessibleName("Suchfortschritt")
         self.progress_bar.hide()
         button_layout.addWidget(self.progress_bar)
 
@@ -228,6 +263,9 @@ class AdvancedSearchDialog(QDialog):
         )
         self.results_table.setAlternatingRowColors(True)
         self.results_table.setSortingEnabled(True)
+        self.results_table.setAccessibleName("Suchergebnisse")
+        self.results_table.setAccessibleDescription("Liste gefundener Dateien mit Pfad, Typ, Größe und Datum.")
+        self.results_table.setToolTip("Ergebnistabelle (Doppelklick oder Enter zum Öffnen)")
         self.results_table.doubleClicked.connect(self._on_result_double_clicked)
 
         # Spaltenbreiten
@@ -244,15 +282,20 @@ class AdvancedSearchDialog(QDialog):
         # Status
         status_layout = QHBoxLayout()
         self.status_label = QLabel("Bereit")
+        self.status_label.setAccessibleName("Suchstatus")
         status_layout.addWidget(self.status_label)
         status_layout.addStretch()
 
         self.open_btn = QPushButton("Öffnen")
+        self.open_btn.setAccessibleName("Ausgewählte Datei öffnen")
+        self.open_btn.setToolTip("Öffnet die ausgewählte Datei")
         self.open_btn.clicked.connect(self._open_selected)
         self.open_btn.setEnabled(False)
         status_layout.addWidget(self.open_btn)
 
         self.open_folder_btn = QPushButton("Ordner öffnen")
+        self.open_folder_btn.setAccessibleName("Enthaltenden Ordner öffnen")
+        self.open_folder_btn.setToolTip("Öffnet den Ordner der ausgewählten Datei")
         self.open_folder_btn.clicked.connect(self._open_folder)
         self.open_folder_btn.setEnabled(False)
         status_layout.addWidget(self.open_folder_btn)
@@ -263,17 +306,39 @@ class AdvancedSearchDialog(QDialog):
 
         # ===== Dialog-Buttons =====
         dialog_buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
+        close_btn = dialog_buttons.button(QDialogButtonBox.StandardButton.Close)
+        if close_btn:
+            close_btn.setAccessibleName("Dialog schließen")
+            close_btn.setToolTip("Schließt das Dialogfenster (Esc)")
         dialog_buttons.rejected.connect(self.reject)
         layout.addWidget(dialog_buttons)
 
         # Verbindungen
         self.results_table.itemSelectionChanged.connect(self._on_selection_changed)
 
+        def _table_key_press(event):
+            if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                if self.open_btn.isEnabled():
+                    self._open_selected()
+                    event.accept()
+                    return
+            QTableWidget.keyPressEvent(self.results_table, event)
+
+        self.results_table.keyPressEvent = _table_key_press
+
     def closeEvent(self, event):
         if self.search_worker and self.search_worker.isRunning():
             self.search_worker.cancel()
             self.search_worker.wait(3000)
         super().closeEvent(event)
+
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            if self.results_table.hasFocus() and self.open_btn.isEnabled():
+                self._open_selected()
+                event.accept()
+                return
+        super().keyPressEvent(event)
 
     def set_index(self, file_index):
         """Setzt den Datei-Index"""

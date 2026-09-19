@@ -145,6 +145,10 @@ class PrivacySettingsDialog(QDialog):
         self.privacy_monitor = privacy_monitor
         self.setWindowTitle("Datenschutz-Einstellungen")
         self.setMinimumWidth(450)
+        self.setAccessibleName("Datenschutz-Einstellungen")
+        self.setAccessibleDescription(
+            "Konfiguration von Erkennungsmustern, automatischer Bereinigung und Datenschutzkriterien."
+        )
         self._setup_ui()
         self._load_settings()
 
@@ -160,7 +164,9 @@ class PrivacySettingsDialog(QDialog):
 
         for key, info in BUILTIN_PATTERNS.items():
             cb = QCheckBox(f"{info['name']} - {info['description']}")
-            cb.setToolTip(f"Severity: {info['severity']}")
+            cb.setAccessibleName(f"{info['name']} Erkennungsmuster")
+            cb.setAccessibleDescription(info['description'])
+            cb.setToolTip(f"Schweregrad: {info['severity']}")
             self.pattern_checks[key] = cb
             pattern_layout.addWidget(cb)
 
@@ -171,12 +177,18 @@ class PrivacySettingsDialog(QDialog):
         options_layout = QVBox(options_group)
 
         self.case_sensitive_cb = QCheckBox("Groß-/Kleinschreibung beachten")
+        self.case_sensitive_cb.setAccessibleName("Groß- und Kleinschreibung beachten")
+        self.case_sensitive_cb.setToolTip("Groß-/Kleinschreibung bei der Mustersuche berücksichtigen")
         options_layout.addWidget(self.case_sensitive_cb)
 
         self.whole_words_cb = QCheckBox("Nur ganze Wörter")
+        self.whole_words_cb.setAccessibleName("Nur ganze Wörter")
+        self.whole_words_cb.setToolTip("Nur eigenständige Wörter als Treffer werten")
         options_layout.addWidget(self.whole_words_cb)
 
         self.auto_clear_cb = QCheckBox("Clipboard bei ROT automatisch leeren")
+        self.auto_clear_cb.setAccessibleName("Clipboard bei Alarm automatisch leeren")
+        self.auto_clear_cb.setToolTip("Zwischenablage automatisch leeren, wenn sensible Daten erkannt werden")
         options_layout.addWidget(self.auto_clear_cb)
 
         layout.addWidget(options_group)
@@ -197,6 +209,14 @@ class PrivacySettingsDialog(QDialog):
             QDialogButtonBox.StandardButton.Ok |
             QDialogButtonBox.StandardButton.Cancel
         )
+        ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_btn:
+            ok_btn.setAccessibleName("Einstellungen speichern")
+            ok_btn.setToolTip("Speichert die Datenschutz-Einstellungen (Enter)")
+        cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
+        if cancel_btn:
+            cancel_btn.setAccessibleName("Abbrechen")
+            cancel_btn.setToolTip("Verwirft Änderungen (Esc)")
         buttons.accepted.connect(self._save_and_close)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)

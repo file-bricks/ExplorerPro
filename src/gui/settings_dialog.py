@@ -79,26 +79,37 @@ class SettingsDialog(QDialog):
         self.start_folder_edit = QLineEdit()
         self.start_folder_edit.setPlaceholderText("Leer = Benutzerordner")
         self.start_folder_edit.setAccessibleName("Startordner")
+        self.start_folder_edit.setAccessibleDescription("Standardordner, der beim Start der Anwendung geöffnet wird.")
+        self.start_folder_edit.setToolTip("Standardverzeichnis beim Programmstart")
         path_row.addWidget(self.start_folder_edit)
         browse_btn = QPushButton("Auswählen...")
         browse_btn.setAccessibleName("Startordner auswählen")
+        browse_btn.setToolTip("Dateidialog zur Auswahl des Startordners öffnen")
         browse_btn.clicked.connect(self._choose_start_folder)
         path_row.addWidget(browse_btn)
         form.addRow("Startordner:", path_row)
 
         self.language_cb = QComboBox()
         self.language_cb.setAccessibleName("Sprachauswahl")
+        self.language_cb.setAccessibleDescription("Auswahl der Benutzeroberflächensprache.")
+        self.language_cb.setToolTip("Programmsprache für Menüs und Dialoge")
         for code, display in TranslationSystem.get_language_display_names().items():
             self.language_cb.addItem(display, code)
         form.addRow("Sprache:", self.language_cb)
 
         self.show_hidden_cb = QCheckBox("Versteckte Dateien anzeigen")
+        self.show_hidden_cb.setAccessibleName("Versteckte Dateien anzeigen")
+        self.show_hidden_cb.setToolTip("Versteckte Dateien und Systemordner im Dateibrowser anzeigen")
         form.addRow(self.show_hidden_cb)
 
         self.confirm_delete_cb = QCheckBox("Vor dem Löschen nachfragen")
+        self.confirm_delete_cb.setAccessibleName("Vor dem Löschen nachfragen")
+        self.confirm_delete_cb.setToolTip("Sicherheitsabfrage vor dem unwiderruflichen Löschen einblenden")
         form.addRow(self.confirm_delete_cb)
 
         self.remember_size_cb = QCheckBox("Fenstergröße merken")
+        self.remember_size_cb.setAccessibleName("Fenstergröße merken")
+        self.remember_size_cb.setToolTip("Fenstergröße und Position beim Beenden speichern")
         form.addRow(self.remember_size_cb)
 
         return page
@@ -108,15 +119,20 @@ class SettingsDialog(QDialog):
         form = QFormLayout(page)
 
         self.auto_index_cb = QCheckBox("Ordner automatisch indizieren")
+        self.auto_index_cb.setAccessibleName("Ordner automatisch indizieren")
+        self.auto_index_cb.setToolTip("Verzeichnisse im Hintergrund automatisch für die Schnellsuche indizieren")
         form.addRow(self.auto_index_cb)
 
         self.index_startup_cb = QCheckBox("Beim Programmstart indizieren")
+        self.index_startup_cb.setAccessibleName("Beim Programmstart indizieren")
+        self.index_startup_cb.setToolTip("Indexprüfung direkt beim Start von ExplorerPro durchführen")
         form.addRow(self.index_startup_cb)
 
         self.max_file_size_spin = QSpinBox()
         self.max_file_size_spin.setRange(1, 10000)
         self.max_file_size_spin.setSuffix(" MB")
         self.max_file_size_spin.setAccessibleName("Maximale Dateigröße für den Index")
+        self.max_file_size_spin.setToolTip("Dateien über dieser Größe werden nicht indiziert")
         form.addRow("Maximale Dateigröße:", self.max_file_size_spin)
 
         return page
@@ -126,21 +142,30 @@ class SettingsDialog(QDialog):
         form = QFormLayout(page)
 
         self.show_preview_cb = QCheckBox("Vorschaufenster anzeigen")
+        self.show_preview_cb.setAccessibleName("Vorschaufenster anzeigen")
+        self.show_preview_cb.setToolTip("Vorschauleiste auf der rechten Seite einblenden")
         form.addRow(self.show_preview_cb)
 
         self.preview_images_cb = QCheckBox("Bilder in der Vorschau anzeigen")
+        self.preview_images_cb.setAccessibleName("Bilder in der Vorschau anzeigen")
+        self.preview_images_cb.setToolTip("Miniaturansichten für Grafikdateien rendern")
         form.addRow(self.preview_images_cb)
 
         self.preview_pdfs_cb = QCheckBox("PDF-Dateien in der Vorschau anzeigen")
+        self.preview_pdfs_cb.setAccessibleName("PDF-Dateien in der Vorschau anzeigen")
+        self.preview_pdfs_cb.setToolTip("Erste Seite von PDF-Dokumenten im Vorschaufenster darstellen")
         form.addRow(self.preview_pdfs_cb)
 
         self.preview_code_cb = QCheckBox("Quelltext in der Vorschau anzeigen")
+        self.preview_code_cb.setAccessibleName("Quelltext in der Vorschau anzeigen")
+        self.preview_code_cb.setToolTip("Syntaxhervorhebung für Quellcode und Textdateien nutzen")
         form.addRow(self.preview_code_cb)
 
         self.max_preview_spin = QSpinBox()
         self.max_preview_spin.setRange(1, 1000)
         self.max_preview_spin.setSuffix(" MB")
         self.max_preview_spin.setAccessibleName("Maximale Dateigröße für die Vorschau")
+        self.max_preview_spin.setToolTip("Maximale Dateigröße für generierte Vorschauen")
         form.addRow("Maximale Vorschaugröße:", self.max_preview_spin)
 
         return page
@@ -150,12 +175,18 @@ class SettingsDialog(QDialog):
         form = QFormLayout(page)
 
         self.clipboard_monitor_cb = QCheckBox("Zwischenablage überwachen")
+        self.clipboard_monitor_cb.setAccessibleName("Zwischenablage überwachen")
+        self.clipboard_monitor_cb.setToolTip("Zwischenablage kontinuierlich auf schutzwürdige Muster überwachen")
         form.addRow(self.clipboard_monitor_cb)
 
         self.auto_block_cb = QCheckBox("Sensible Inhalte automatisch blockieren")
+        self.auto_block_cb.setAccessibleName("Sensible Inhalte automatisch blockieren")
+        self.auto_block_cb.setToolTip("Kopieren hochsensibler Daten wie Passwörter und API-Keys blockieren")
         form.addRow(self.auto_block_cb)
 
         self.notifications_cb = QCheckBox("Hinweise anzeigen")
+        self.notifications_cb.setAccessibleName("Hinweise anzeigen")
+        self.notifications_cb.setToolTip("Benachrichtigung bei erkannten Datenschutz-Mustern einblenden")
         form.addRow(self.notifications_cb)
 
         note = QLabel(
@@ -173,6 +204,7 @@ class SettingsDialog(QDialog):
 
         self.theme_combo = QComboBox()
         self.theme_combo.setAccessibleName("Farbschema")
+        self.theme_combo.setToolTip("Farbschema der Benutzeroberfläche")
         for value, label in self.THEMES:
             self.theme_combo.addItem(label, value)
         form.addRow("Farbschema:", self.theme_combo)
@@ -180,12 +212,14 @@ class SettingsDialog(QDialog):
         self.font_size_spin = QSpinBox()
         self.font_size_spin.setRange(6, 32)
         self.font_size_spin.setAccessibleName("Schriftgröße")
+        self.font_size_spin.setToolTip("Basisschriftgröße in Punkten")
         form.addRow("Schriftgröße:", self.font_size_spin)
 
         self.icon_size_spin = QSpinBox()
         self.icon_size_spin.setRange(12, 64)
         self.icon_size_spin.setSuffix(" px")
         self.icon_size_spin.setAccessibleName("Symbolgröße")
+        self.icon_size_spin.setToolTip("Größe der Dateisymbole in Pixeln")
         form.addRow("Symbolgröße:", self.icon_size_spin)
 
         return page

@@ -67,6 +67,8 @@ class ChecksumDialog(QDialog):
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
         self.progress_bar.setTextVisible(True)
+        self.progress_bar.setAccessibleName("Berechnungsfortschritt")
+        self.progress_bar.setAccessibleDescription("Fortschritt der Prüfsummenberechnung in Prozent.")
         layout.addWidget(self.progress_bar)
 
         # Prüfsummen-Gruppe
@@ -84,11 +86,14 @@ class ChecksumDialog(QDialog):
             edit.setFont(mono_font)
             edit.setPlaceholderText("Wird berechnet...")
             edit.setAccessibleName(f"{algo.upper()} Prüfsumme")
+            edit.setAccessibleDescription(f"Berechnete {algo.upper()}-Prüfsumme für die ausgewählte Datei.")
             self.hash_edits[algo] = edit
             row_layout.addWidget(edit, 1)
 
             btn = QPushButton("Kopieren")
-            btn.setToolTip(f"{algo.upper()} in Zwischenablage kopieren")
+            btn.setAccessibleName(f"{algo.upper()} Prüfsumme kopieren")
+            btn.setAccessibleDescription(f"Kopiert die berechnete {algo.upper()}-Prüfsumme in die Zwischenablage.")
+            btn.setToolTip(f"{algo.upper()}-Prüfsumme in die Zwischenablage kopieren")
             btn.clicked.connect(lambda checked=False, a=algo: self._copy_hash(a))
             row_layout.addWidget(btn)
 
@@ -97,6 +102,9 @@ class ChecksumDialog(QDialog):
 
         # Alle Kopieren Button
         self.copy_all_btn = QPushButton("📋 Alle Prüfsummen kopieren")
+        self.copy_all_btn.setAccessibleName("Alle Prüfsummen kopieren")
+        self.copy_all_btn.setAccessibleDescription("Kopiert alle berechneten Hash-Werte strukturiert in die Zwischenablage.")
+        self.copy_all_btn.setToolTip("Alle berechneten Prüfsummen (MD5, SHA-1, SHA-256, SHA-512) in die Zwischenablage kopieren")
         self.copy_all_btn.clicked.connect(self._copy_all_hashes)
         self.copy_all_btn.setEnabled(False)
         hashes_layout.addRow("", self.copy_all_btn)
@@ -114,11 +122,15 @@ class ChecksumDialog(QDialog):
         self.verify_edit.setFont(mono_font)
         self.verify_edit.setPlaceholderText("Erwarteten Hash hier einfügen...")
         self.verify_edit.setClearButtonEnabled(True)
+        self.verify_edit.setAccessibleName("Erwartete Prüfsumme zur Verifikation")
+        self.verify_edit.setAccessibleDescription("Eingabefeld für den Vergleichs-Hash. Erkennt automatisch den passenden Prüfsummen-Algorithmus.")
+        self.verify_edit.setToolTip("Geben Sie hier einen Hash ein, um die Integrität automatisch zu überprüfen")
         self.verify_edit.textChanged.connect(self._on_verify_text_changed)
         verify_layout.addWidget(self.verify_edit)
 
         self.verify_result_label = QLabel("Berechnung läuft...")
         self.verify_result_label.setStyleSheet("font-weight: bold; padding: 4px;")
+        self.verify_result_label.setAccessibleName("Verifikationsergebnis")
         verify_layout.addWidget(self.verify_result_label)
 
         layout.addWidget(verify_group)
@@ -128,6 +140,10 @@ class ChecksumDialog(QDialog):
         btn_layout.addStretch()
 
         self.close_btn = QPushButton("Schließen")
+        self.close_btn.setAccessibleName("Dialog schließen")
+        self.close_btn.setToolTip("Schließt das Prüfsummen-Fenster (Esc)")
+        self.close_btn.setShortcut("Escape")
+        self.close_btn.setDefault(True)
         self.close_btn.clicked.connect(self.accept)
         btn_layout.addWidget(self.close_btn)
 

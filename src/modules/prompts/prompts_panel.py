@@ -52,6 +52,10 @@ class PromptEditDialog(QDialog):
 
         self.setWindowTitle("Prompt bearbeiten" if prompt else "Neuer Prompt")
         self.setMinimumSize(500, 400)
+        self.setAccessibleName("Prompt bearbeiten" if prompt else "Neuer Prompt")
+        self.setAccessibleDescription(
+            "Dialog zur Konfiguration von Prompt-Titel, Kategorie, Tags und Vorlagentext mit Variablen."
+        )
         self._setup_ui()
         self._load_data()
 
@@ -63,17 +67,24 @@ class PromptEditDialog(QDialog):
         # Titel
         self.title_edit = QLineEdit()
         self.title_edit.setPlaceholderText("Aussagekräftiger Titel...")
+        self.title_edit.setAccessibleName("Prompt-Titel")
+        self.title_edit.setAccessibleDescription("Aussagekräftiger Name der Prompt-Vorlage.")
+        self.title_edit.setToolTip("Titel der Vorlage eingeben")
         form.addRow("Titel:", self.title_edit)
 
         # Kategorie
         self.category_combo = QComboBox()
         self.category_combo.setEditable(True)
+        self.category_combo.setAccessibleName("Prompt-Kategorie")
+        self.category_combo.setToolTip("Kategorie für die Einordnung des Prompts")
         self.category_combo.addItems(self.categories)
         form.addRow("Kategorie:", self.category_combo)
 
         # Tags
         self.tags_edit = QLineEdit()
         self.tags_edit.setPlaceholderText("tag1, tag2, tag3 (mit Komma trennen)")
+        self.tags_edit.setAccessibleName("Prompt-Tags")
+        self.tags_edit.setToolTip("Schlagwörter zur Filterung, kommagetrennt")
         form.addRow("Tags:", self.tags_edit)
 
         layout.addLayout(form)
@@ -83,6 +94,11 @@ class PromptEditDialog(QDialog):
         self.content_edit = QTextEdit()
         self.content_edit.setPlaceholderText("Prompt-Text hier eingeben...\n\nVariablen: {{variable}} werden beim Kopieren abgefragt")
         self.content_edit.setMinimumHeight(200)
+        self.content_edit.setAccessibleName("Prompt-Inhaltstext")
+        self.content_edit.setAccessibleDescription(
+            "Text der Prompt-Vorlage. Variablen in doppelten geschweiften Klammern werden beim Verwenden abgefragt."
+        )
+        self.content_edit.setToolTip("Vollständiger Prompt-Text")
         layout.addWidget(self.content_edit)
 
         # Variablen-Hinweis
@@ -95,6 +111,14 @@ class PromptEditDialog(QDialog):
             QDialogButtonBox.StandardButton.Ok |
             QDialogButtonBox.StandardButton.Cancel
         )
+        ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_btn:
+            ok_btn.setAccessibleName("Prompt speichern")
+            ok_btn.setToolTip("Speichert den Prompt (Enter)")
+        cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
+        if cancel_btn:
+            cancel_btn.setAccessibleName("Abbrechen")
+            cancel_btn.setToolTip("Bricht die Bearbeitung ab (Esc)")
         buttons.accepted.connect(self._save_and_accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -195,11 +219,16 @@ class PromptsPanel(QWidget):
 
         self.search_edit = QLineEdit()
         self.search_edit.setPlaceholderText("🔍 Prompt suchen...")
+        self.search_edit.setAccessibleName("Prompts durchsuchen")
+        self.search_edit.setAccessibleDescription("Filtert gespeicherte Prompts nach Titel, Kategorie oder Tags.")
+        self.search_edit.setToolTip("Suchbegriff eingeben")
         self.search_edit.textChanged.connect(self._filter_prompts)
         header.addWidget(self.search_edit)
 
         add_btn = QToolButton()
         add_btn.setText("➕")
+        add_btn.setAccessibleName("Neuen Prompt erstellen")
+        add_btn.setAccessibleDescription("Öffnet den Dialog zum Erstellen einer neuen Prompt-Vorlage.")
         add_btn.setToolTip("Neuen Prompt erstellen")
         add_btn.clicked.connect(self._add_prompt)
         header.addWidget(add_btn)
@@ -210,6 +239,7 @@ class PromptsPanel(QWidget):
         self.category_tabs = QTabWidget()
         self.category_tabs.setTabPosition(QTabWidget.TabPosition.North)
         self.category_tabs.setDocumentMode(True)
+        self.category_tabs.setAccessibleName("Prompt-Kategorien")
         self.category_tabs.currentChanged.connect(self._on_category_changed)
 
         # "Alle" Tab
@@ -231,6 +261,9 @@ class PromptsPanel(QWidget):
         # Prompt-Liste
         self.prompt_list = QListWidget()
         self.prompt_list.setAlternatingRowColors(True)
+        self.prompt_list.setAccessibleName("Prompt-Liste")
+        self.prompt_list.setAccessibleDescription("Liste aller gespeicherten Prompts der ausgewählten Kategorie.")
+        self.prompt_list.setToolTip("Prompts (Doppelklick zum Kopieren)")
         self.prompt_list.itemClicked.connect(self._on_item_clicked)
         self.prompt_list.itemDoubleClicked.connect(self._copy_prompt)
         self.prompt_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -244,22 +277,29 @@ class PromptsPanel(QWidget):
 
         self.preview_label = QLabel("Prompt auswählen...")
         self.preview_label.setStyleSheet("font-weight: bold;")
+        self.preview_label.setAccessibleName("Titel des ausgewählten Prompts")
         preview_layout.addWidget(self.preview_label)
 
         self.preview_text = QTextEdit()
         self.preview_text.setReadOnly(True)
         self.preview_text.setMaximumHeight(100)
+        self.preview_text.setAccessibleName("Prompt-Vorschautext")
+        self.preview_text.setToolTip("Vorschau des ausgewählten Prompts")
         preview_layout.addWidget(self.preview_text)
 
         # Aktions-Buttons
         btn_layout = QHBoxLayout()
 
         self.copy_btn = QPushButton("📋 Kopieren")
+        self.copy_btn.setAccessibleName("Ausgewählten Prompt kopieren")
+        self.copy_btn.setToolTip("Kopiert den Prompt in die Zwischenablage")
         self.copy_btn.clicked.connect(self._copy_selected)
         self.copy_btn.setEnabled(False)
         btn_layout.addWidget(self.copy_btn)
 
         self.edit_btn = QPushButton("✏️ Bearbeiten")
+        self.edit_btn.setAccessibleName("Ausgewählten Prompt bearbeiten")
+        self.edit_btn.setToolTip("Öffnet den Bearbeitungsdialog für den Prompt")
         self.edit_btn.clicked.connect(self._edit_selected)
         self.edit_btn.setEnabled(False)
         btn_layout.addWidget(self.edit_btn)
