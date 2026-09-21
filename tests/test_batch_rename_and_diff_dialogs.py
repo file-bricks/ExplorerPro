@@ -50,6 +50,30 @@ def test_batch_rename_dialog_ui(tmp_path: Path):
     dlg.close()
 
 
+def test_batch_rename_dialog_case_mode_and_execution(tmp_path: Path):
+    _ensure_app()
+    f1 = tmp_path / "document.txt"
+    f1.write_text("hello", encoding="utf-8")
+
+    dlg = BatchRenameDialog([str(f1)])
+    # Großbuchstaben über Case-Combo auswählen
+    for i in range(dlg.case_combo.count()):
+        if dlg.case_combo.itemData(i) == "upper":
+            dlg.case_combo.setCurrentIndex(i)
+            break
+    QApplication.processEvents()
+
+    assert dlg.table.item(0, 1).text() == "DOCUMENT.txt"
+    assert dlg.rename_btn.isEnabled() is True
+
+    with patch("PySide6.QtWidgets.QMessageBox.information"):
+        dlg._do_rename()
+
+    assert (tmp_path / "DOCUMENT.txt").exists()
+    assert not (tmp_path / "document.txt").exists() or (tmp_path / "DOCUMENT.txt").name == "DOCUMENT.txt"
+    dlg.close()
+
+
 def test_diff_dialog_ui(tmp_path: Path):
     _ensure_app()
     f1 = tmp_path / "text_a.txt"

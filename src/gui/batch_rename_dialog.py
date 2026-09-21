@@ -381,7 +381,8 @@ class BatchRenameDialog(QDialog):
         self.file_paths = updated_paths
 
         self._update_preview()
-        self.accept()
+        if not errors:
+            self.accept()
 
     def _do_rollback(self):
         if not self.history:
