@@ -150,9 +150,14 @@ class ChecksumDialog(QDialog):
         layout.addLayout(btn_layout)
 
     def _start_calculation(self):
-        if not os.path.isfile(self.filepath):
+        if not os.path.exists(self.filepath):
             self.progress_bar.setVisible(False)
             self.verify_result_label.setText("Fehler: Datei existiert nicht mehr.")
+            self.verify_result_label.setStyleSheet("color: red; font-weight: bold;")
+            return
+        if not os.path.isfile(self.filepath):
+            self.progress_bar.setVisible(False)
+            self.verify_result_label.setText("Fehler: Pfad ist ein Verzeichnis, keine Datei.")
             self.verify_result_label.setStyleSheet("color: red; font-weight: bold;")
             return
 
@@ -196,10 +201,11 @@ class ChecksumDialog(QDialog):
         if not self._calculated_hashes:
             return
         filename = os.path.basename(self.filepath)
+        size_str = self.size_label.text() if hasattr(self, "size_label") else ""
         lines = [
             f"Datei: {filename}",
             f"Pfad:  {self.filepath}",
-            f"Größe: {os.path.getsize(self.filepath):,} Bytes",
+            f"Größe: {size_str}",
             "-" * 40,
         ]
         for algo in ("md5", "sha1", "sha256", "sha512"):
@@ -236,8 +242,14 @@ class ChecksumDialog(QDialog):
             self.verify_result_label.setText("✗ Keine Übereinstimmung mit berechneten Prüfsummen.")
             self.verify_result_label.setStyleSheet("color: #c00000; font-weight: bold;")
 
+    def done(self, result: int):
+        if self.worker and self.worker.isRunning():
+            self.worker.cancel()
+            self.worker.wait(1000)
+        super().done(result)
+
     def closeEvent(self, event):
         if self.worker and self.worker.isRunning():
             self.worker.cancel()
-            self.worker.wait(500)
+            self.worker.wait(1000)
         super().closeEvent(event)

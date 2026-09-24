@@ -50,26 +50,34 @@ class DiffResult:
 
 def is_binary_file(filepath: str, sample_size: int = 8192) -> bool:
     """
-    Prüft heuristisch, ob eine Datei binär ist (Präsenz von Null-Bytes).
+    Prüft heuristisch, ob eine Datei binär ist (Präsenz von Null-Bytes oder Kontrollzeichen-Dichte).
     """
     if not os.path.isfile(filepath):
         return False
     try:
         with open(filepath, "rb") as f:
             chunk = f.read(sample_size)
+            if not chunk:
+                return False
             if b"\x00" in chunk:
+                return True
+            # Prüfe auf Steuerzeichen (außer Tab \t, Newline \n, CR \r)
+            control_chars = bytearray({1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31})
+            control_count = sum(b in control_chars for b in chunk)
+            if (control_count / len(chunk)) > 0.05:
                 return True
             # Versuche als UTF-8 zu decodieren
             try:
                 chunk.decode("utf-8")
                 return False
             except UnicodeDecodeError:
-                # Prüfe lateinische Encodings
-                try:
-                    chunk.decode("latin-1")
-                    return False
-                except UnicodeDecodeError:
-                    return True
+                pass
+            # Prüfe gängige Windows ANSI Codepage (cp1252)
+            try:
+                chunk.decode("cp1252")
+                return False
+            except UnicodeDecodeError:
+                return True
     except OSError:
         return True
 
@@ -96,6 +104,10 @@ def compare_files(file1: str, file2: str, max_lines: int = 15000) -> DiffResult:
         raise FileNotFoundError(f"Datei nicht gefunden: {file1}")
     if not os.path.exists(file2):
         raise FileNotFoundError(f"Datei nicht gefunden: {file2}")
+    if not os.path.isfile(file1):
+        raise ValueError(f"Pfad ist keine reguläre Datei: {file1}")
+    if not os.path.isfile(file2):
+        raise ValueError(f"Pfad ist keine reguläre Datei: {file2}")
 
     size1 = os.path.getsize(file1)
     size2 = os.path.getsize(file2)
@@ -234,9 +246,9 @@ def generate_unified_diff_text(file1: str, file2: str) -> str:
         return f"Binary files differ:\n  {file1} (SHA256: {h1})\n  {file2} (SHA256: {h2})"
 
     with open(file1, "r", encoding="utf-8", errors="replace") as f1:
-        lines1 = f1.readlines()
+        lines1 = f1.read().splitlines()
     with open(file2, "r", encoding="utf-8", errors="replace") as f2:
-        lines2 = f2.readlines()
+        lines2 = f2.read().splitlines()
 
     diff = difflib.unified_diff(
         lines1,

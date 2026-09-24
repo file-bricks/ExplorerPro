@@ -5,6 +5,16 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben / Fixed (Bugsearch 2026-09-24)
+- **Datei-Integritäts- & Prüfsummen-Dienst, Verifikations-Parsing und Datei-Vergleich (`src/core/checksum_service.py`, `src/gui/checksum_dialog.py`, `src/core/diff_service.py`, `src/gui/diff_dialog.py`)**:
+  - **Multi-Format Hash-Verifikation (`core/checksum_service.py: verify_hash`)**: Unterstützung für GNU coreutils Prüfsummen (`sha256sum`/`md5sum` mit Dateinamen und Asterisk), BSD-Formate (`SHA256 (file) = hash`), Key-Value-Paare mit Gleichheitszeichen (`SHA256 = hash`), formatiertes Hex mit Trennzeichen (`XX-XX-XX...`, `XX XX XX...` aus Windows CertUtil und PowerShell), Anführungszeichen sowie mehrzeilige Prüfsummen-Dateien implementiert.
+  - **Doppel-Newline-Bug im Unified Diff (`core/diff_service.py: generate_unified_diff_text`)**: `readlines()` durch `read().splitlines()` ersetzt; verhindert das Einfügen störender Leerzeilen nach jeder Diff-Zeile und erzeugt strikt standardkonforme Unified Diffs für `patch` und Zwischenablage.
+  - **Verzeichnis-Validierung (`core/diff_service.py: compare_files`, `gui/diff_dialog.py`)**: Verzeichnispfade werden vor Leseversuchen defensiv mit `os.path.isfile` geprüft und mit klarer Fehlermeldung abgewiesen, statt mit ungefangenem `PermissionError: [Errno 13]` abzustürzen.
+  - **Heuristik für Binärdateien (`core/diff_service.py: is_binary_file`)**: Erkennung von Binärdateien ohne Nullbytes über Kontrollzeichen-Dichte (>5%) implementiert und toten Ausnahme-Code in `latin-1`-Decodierung beseitigt.
+  - **Worker-Thread-Lebenszyklus (`gui/checksum_dialog.py`)**: `done()` überschrieben, sodass beim Schließen via "Schließen"-Button oder `Esc` (`accept()`) der Hintergrund-Worker `ChecksumWorker` zuverlässig abgebrochen und gewartet wird, statt im Hintergrund weiterzulaufen.
+  - **Resiliente Größenanzeige (`gui/checksum_dialog.py: _copy_all_hashes`)**: Wiederverwendung der bereits ermittelten Dateigröße statt fehleranfälligem Re-Read via `os.path.getsize`.
+  - **10 neue automatisierte Regressionstests**: Vollständige Testabdeckung in `tests/test_bugsweep_checksum_and_diff_20260924.py` (Vollsuite auf 350 Tests ausgebaut, 100% grün).
+
 ### Marketing & Visuelle Architektur / Marketing & Visual Architecture (2026-09-18)
 - **Pfad B: Discoverability, visuelle Architektur & Metadaten-Vertrag**:
   - **18-Punkte Schnellnavigations-Parität (`README.md` & `README_de.md`)**: Vollständige zweisprachige Parität über alle 18 Abschnitte mit dualen reziproken HTML-Ankern (`<a id="..."></a>`) für lückenlose Verlinkbarkeit.

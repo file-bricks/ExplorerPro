@@ -177,6 +177,13 @@ class DiffDialog(QDialog):
             QMessageBox.warning(self, t("Datei nicht gefunden"), f"{t('Datei nicht gefunden')}:\n{f2}")
             return
 
+        if not os.path.isfile(f1):
+            QMessageBox.warning(self, t("Ungültiger Pfad"), f"{t('Pfad ist keine Datei')}:\n{f1}")
+            return
+        if not os.path.isfile(f2):
+            QMessageBox.warning(self, t("Ungültiger Pfad"), f"{t('Pfad ist keine Datei')}:\n{f2}")
+            return
+
         try:
             self.current_diff = compare_files(f1, f2)
         except Exception as exc:

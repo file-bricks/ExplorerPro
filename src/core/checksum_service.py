@@ -8,6 +8,7 @@ inklusive QThread-Background-Worker und Hash-Verifikation.
 
 import hashlib
 import os
+import re
 from typing import Callable, Dict, Optional, Tuple
 from PySide6.QtCore import QThread, Signal
 
@@ -63,22 +64,58 @@ def compute_file_hashes(
     return {algo: hasher.hexdigest() for algo, hasher in hashers.items()}
 
 
+HEX_TOKEN_PATTERN = re.compile(r"\b([0-9a-fA-F]{32}|[0-9a-fA-F]{40}|[0-9a-fA-F]{64}|[0-9a-fA-F]{128})\b")
+
+
 def verify_hash(calculated_hashes: Dict[str, str], expected_hash: str) -> Optional[Tuple[str, str]]:
     """
     Prüft, ob der erwartete Hash mit einer der berechneten Prüfsummen übereinstimmt.
-    Normalisiert Whitespace und Groß-/Kleinschreibung.
+    Unterstützt Roh-Hashes, Key-Value-Paare (SHA256: ... / SHA256 = ...),
+    GNU coreutils Prüfsummenzeilen (sha256sum / md5sum mit Dateinamen),
+    BSD-Prüfsummenformate (SHA256 (datei) = ...), formatierte Hex-Strings mit
+    Bindestrichen/Leerzeichen (z. B. Windows CertUtil) sowie mehrzeilige Textblöcke.
     Gibt (algorithm_name, calculated_hash) zurück oder None bei keiner Übereinstimmung.
     """
     if not expected_hash:
         return None
 
-    cleaned = expected_hash.strip().lower()
-    if ":" in cleaned:
-        cleaned = cleaned.split(":", 1)[1].strip()
+    # Normalisiere berechnete Hashes für schnellen Lookup
+    lookup = {val.lower(): (algo, val) for algo, val in calculated_hashes.items()}
 
-    for algo, val in calculated_hashes.items():
-        if val.lower() == cleaned:
-            return (algo, val)
+    lines = expected_hash.strip().splitlines()
+    for raw_line in lines:
+        line = raw_line.strip().strip("\"'")
+        if not line or line.startswith("#"):
+            continue
+
+        # 1. Direkte Hex-Token im Wortgrenzen-Regex suchen
+        tokens = HEX_TOKEN_PATTERN.findall(line)
+        for tok in tokens:
+            match = lookup.get(tok.lower())
+            if match:
+                return match
+
+        # 2. Key-Value Bereinigung bei ':' oder '=' (z. B. "SHA256: abc...", "SHA256 = abc...")
+        candidate = line
+        if "=" in candidate:
+            candidate = candidate.split("=")[-1].strip()
+        elif ":" in candidate:
+            candidate = candidate.split(":", 1)[1].strip()
+
+        # Whitespace/Quotes nach Key-Value-Split
+        candidate = candidate.strip("\"' ")
+        match = lookup.get(candidate.lower())
+        if match:
+            return match
+
+        # 3. Delimiter-Bereinigung für formatiertes Hex (Bindestriche, Doppelpunkte, Leerzeichen)
+        # z. B. CertUtil: "9F-86-D0-81-..." oder "9f 86 d0 81 ..."
+        delims_removed = re.sub(r"[\s\-:]", "", line)
+        cleaned_tokens = HEX_TOKEN_PATTERN.findall(delims_removed)
+        for tok in cleaned_tokens:
+            match = lookup.get(tok.lower())
+            if match:
+                return match
 
     return None
 
