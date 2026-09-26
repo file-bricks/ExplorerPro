@@ -11,7 +11,8 @@ liess genau dieses Pixel unverarbeitet (voll opak, urspruengliche helle
 Mischfarbe) zurueck: ein 1px heller Saum auf dunklem Grund. 150 hat sich
 als sicherer Wert erwiesen (deutlich unter der Distanz zur soliden
 Motivfarbe von >300, deutlich ueber der gemessenen Uebergangsdistanz)."""
-import sys, math
+import sys
+import math
 from collections import deque
 from PIL import Image
 
