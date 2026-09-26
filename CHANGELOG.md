@@ -5,6 +5,14 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-09-26
+
+### Behoben / Fixed (Store-Icon weißer Rand — T-20260820-729932431)
+- **Store-Kachel-Icons mit sichtbarem weißen Rand (`store_assets/Square44x44Logo.png`, `Square150x150Logo.png`, `Square310x310Logo.png`, `StoreLogo.png`, `Wide310x150Logo.png`)**: Diese Dateien hatten trotz RGBA-Modus einen opaken (nicht transparenten) Canvas-Hintergrund gebacken (Alpha 255 statt 0 rund um das Motiv, bei `Wide310x150Logo.png` im eingebetteten 150px-Mittelfeld) — sichtbar als weißer Kasten/Halo um das Icon-Motiv in Kachel, Startmenü, Taskleiste und Store-Listing.
+  - **Nachreview (merge-reviewer, claude-opus, Commit `aee6401`) fand einen Mangel** in einem ersten, per Direkt-Push auf `master` eingespielten Versuch (in 1.0.6 nicht mehr zurückgenommen, siehe unten): Die dort verwendeten Ersatzdateien (`icon_44x44.png` u. a.) zeigen eine ANDERE Gestaltung (gerahmte Variante mit cyanfarbenem Rahmen und weißer Sichel am Rand, kleineres Motiv) statt des ursprünglichen Vollflächen-Motivs — und `Wide310x150Logo.png` blieb dabei unentdeckt defekt.
+  - **Erster Korrekturversuch (PR #3, `edcb8fa`) noch nicht sauber:** Ursprüngliches Vollflächen-Motiv per Flood-Fill-Matting freigestellt, aber mit zu kleinem Farbdistanz-Schwellwert (60) — die eigentliche Antialiasing-Übergangszone am Rand der abgerundeten Ecke war nur 1 Pixel breit, hatte aber eine Farbdistanz von ~97 zum Hintergrund und blieb dadurch unverarbeitet: ein 1px heller Saum auf dunklem Grund (gemessen: bis zu 204 Randpixel mit Alpha ≥ 192 und Luminanz auf Schwarz bis 216, je nach Kachelgröße).
+  - **Korrigierter Fix (dieser Release):** Farbdistanz-Schwellwert auf 150 angehoben (deutlich über der gemessenen Übergangsdistanz von ~97, deutlich unter der Distanz zur soliden Motivfarbe von >300) — damit erfasst das Un-Premultiply die komplette Antialiasing-Übergangszone, kein Fransensaum mehr. Motiv unverändert (keine Neugestaltung). `icon_310x150.png` ist ein separates Marketing-Banner (nicht vom AppxManifest referenziert) und bleibt unverändert. Regressionstest `test_store_tiles_have_transparent_corners` um eine Luminanz-Prüfung auf Schwarz-Komposit erweitert, damit dieser Fehler künftig auffällt. Verifiziert per Kontaktbogen (5 Größen × Weiß/Schwarz/Grau/Akzentgrün) und Vergrößerung der abgerundeten Ecke: kein Halo, kein Fransensaum, keine hellen Randflächen. Per Pull Request gegen `master` (kein Direkt-Push).
+
 ## [1.0.6] - 2026-09-26
 
 ### Behoben / Fixed (Kontextmenü, Editor-Dirty-Flag, Qt-Übersetzung — T-20260926-912169808)
@@ -14,9 +22,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - **Speichern/Verwerfen-Dialog auf Englisch in der deutschen Version (`src/main.py`)**: Kein Qt-eigener Übersetzer installiert. `QTranslator` mit `qtbase_<lang>.qm` ergänzt (unabhängig von der App-eigenen `TranslationSystem`, kein Overwrite).
 - **Mehrfach-Umbenennen/Diff/Einstellungen stürzen im Quellstart ab (`src/main.py`, `ExplorerPro.spec`)**: `translator.py` (Projektwurzel) fehlte auf `sys.path`; Spec um `pathex`/`datas` für Projektwurzel und `locales/` ergänzt.
 - **9 neue automatisierte Regressionstests** (`tests/test_context_menu_actions.py`), Vollsuite 359 passed / 2 skipped. Review/Merge als zweites Modell: Repo `file-bricks/ExplorerPro#1`, Squash `264aa6eae60055f1ffb4ff041025920738c6ead2`.
-
-### Behoben / Fixed (Store-Icon weißer Rand — T-20260820-729932431)
-- **Store-Kachel-Icons mit sichtbarem weißen Rand (`store_assets/Square44x44Logo.png`, `Square150x150Logo.png`, `Square310x310Logo.png`, `StoreLogo.png`)**: Diese vier Dateien hatten trotz RGBA-Modus einen opaken (nicht transparenten) Canvas-Hintergrund gebacken (Alpha 255 an den Ecken statt 0) — sichtbar als weißer Kasten/Halo um das Icon-Motiv in Kachel, Startmenü und Store-Listing. Die im selben Ordner bereits korrekt transparenten Gegenstücke gleicher Größe und gleichen Motivs (`icon_44x44.png`, `icon_150x150.png`, `icon_310x310.png`, `icon_50x50.png`) haben die vier defekten Dateien ersetzt — Motiv unverändert (kein Redesign), nur echte Transparenz statt gebackenem Hintergrund. `Wide310x150Logo.png` war bereits korrekt; `icon_310x150.png` ist ein separates Marketing-Banner (nicht vom AppxManifest referenziert) und unverändert. Verifiziert per Kontaktbogen auf Weiß/Schwarz/Grau/Akzentgrün (kein Halo, keine hellen Ränder auf allen vier Hintergründen).
+- **Bekannter Mangel dieses Releases:** Der ebenfalls in 1.0.6 enthaltene Icon-Fix-Versuch (direkt gepusht, `aee6401`) hatte das falsche Motiv und einen unentdeckt gebliebenen Defekt in `Wide310x150Logo.png` — die Store-Submission dieser Version läuft dennoch durch, weil die Kontextmenü-Fixes ankommen sollen; der korrigierte Icon-Fix folgt in 1.0.7.
 
 ### Behoben / Fixed (Bugsearch 2026-09-26)
 - **Batch-Renamer, Kaskadierende Kollisionserkennung, Windows-Gerätenamens-Schutz und Nummerierungs-Affix-Integrität (`src/core/batch_rename_service.py`)**:

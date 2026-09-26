@@ -172,6 +172,79 @@ def test_store_assets_integrity():
             assert img.size == size, f"{name} size {img.size} != {size}"
 
 
+def _composited_on_black_luminance(rgba_pixel):
+    """Luminanz eines RGBA-Pixels, wenn er auf Schwarz kompositiert wird.
+    Ein teilweise opakes, aber urspruenglich helles Randpixel (unverarbeitete
+    Antialiasing-Uebergangsfarbe) faellt hier auf, auch wenn sein Alpha
+    nicht extrem hoch ist -- genau der T-20260820-729932431-Regressionsfall."""
+    r, g, b, a = rgba_pixel
+    cr, cg, cb = r * a / 255.0, g * a / 255.0, b * a / 255.0
+    return 0.299 * cr + 0.587 * cg + 0.114 * cb
+
+
+def test_store_tiles_have_transparent_corners():
+    """Regression fuer T-20260820-729932431: die vom AppxManifest referenzierten
+    Kacheln duerfen keinen gebackenen opaken Hintergrund haben (weisser Halo),
+    und der Antialiasing-Uebergang am Rand darf keinen hellen Fransensaum
+    hinterlassen (auf Schwarz kompositiert gemessen -- der urspruengliche Fix
+    liess genau ein 1px breites, zu schmal geschwellwertetes Uebergangspixel
+    unverarbeitet und damit sichtbar hell zurueck)."""
+    store_dir = REPO_ROOT / "store_assets"
+    manifest_tiles = [
+        "Square44x44Logo.png",
+        "Square150x150Logo.png",
+        "Square310x310Logo.png",
+        "StoreLogo.png",
+    ]
+    max_ring_luminance = 200.0
+    for name in manifest_tiles:
+        with Image.open(store_dir / name).convert("RGBA") as img:
+            w, h = img.size
+            corner_alpha = img.getpixel((0, 0))[3]
+            assert corner_alpha < 30, (
+                f"{name}: Ecke (0,0) ist fast opak (Alpha {corner_alpha}) -- "
+                "gebackener Hintergrund statt Transparenz (weisser Halo)."
+            )
+            for y in range(h):
+                for x in range(w):
+                    px = img.getpixel((x, y))
+                    if px[3] == 0 or px[3] == 255:
+                        continue  # nicht Teil des Antialiasing-Uebergangs
+                    lum = _composited_on_black_luminance(px)
+                    assert lum <= max_ring_luminance, (
+                        f"{name}: Uebergangspixel bei ({x},{y}) hat auf Schwarz "
+                        f"kompositiert Luminanz {lum:.1f} (> {max_ring_luminance}) "
+                        f"-- heller Fransensaum am Rand."
+                    )
+
+    # Wide310x150Logo bettet das Motiv mittig in ein 310x150-Canvas ein;
+    # sowohl der aeussere Rand als auch das eingebettete Quadrat muessen
+    # an ihren Ecken transparent sein (der Halo im Mittelfeld war 2026-09-26
+    # zunaechst unentdeckt geblieben, weil nur die Aussen-Ecken geprueft wurden).
+    with Image.open(store_dir / "Wide310x150Logo.png").convert("RGBA") as wide:
+        w, h = wide.size
+        assert wide.getpixel((0, 0))[3] < 30, "Wide310x150Logo: aeussere Ecke nicht transparent"
+        square_left = (w - h) // 2
+        for x_offset in (2, h - 3):
+            for y_offset in (2, h - 3):
+                a = wide.getpixel((square_left + x_offset, y_offset))[3]
+                assert a < 30, (
+                    f"Wide310x150Logo: Ecke des eingebetteten Quadrats bei "
+                    f"({square_left + x_offset},{y_offset}) ist fast opak (Alpha {a})."
+                )
+        for y in range(h):
+            for x in range(w):
+                px = wide.getpixel((x, y))
+                if px[3] == 0 or px[3] == 255:
+                    continue
+                lum = _composited_on_black_luminance(px)
+                assert lum <= max_ring_luminance, (
+                    f"Wide310x150Logo: Uebergangspixel bei ({x},{y}) hat auf Schwarz "
+                    f"kompositiert Luminanz {lum:.1f} (> {max_ring_luminance}) "
+                    f"-- heller Fransensaum am Rand."
+                )
+
+
 def test_app_icon_loader_returns_valid_icon():
     """Verify src.main.load_app_icon() returns a valid, non-null QIcon."""
     from PySide6.QtWidgets import QApplication
