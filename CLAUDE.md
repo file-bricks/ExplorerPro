@@ -2,7 +2,7 @@
 name: ExplorerPro
 type: project-docs
 profile: STANDARD
-version: 1.0.6
+version: 1.0.7
 created: 2026-07-22
 updated: 2026-09-26
 reason_last_change: "T-20260926-912169808: Kontextmenü-Tags/Metadaten, Editor-Dirty-Flag (modificationChanged), qtbase-Übersetzung, 359 Tests"
