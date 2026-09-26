@@ -5,6 +5,15 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben / Fixed (Bugsearch 2026-09-26)
+- **Batch-Renamer, Kaskadierende Kollisionserkennung, Windows-Gerätenamens-Schutz und Nummerierungs-Affix-Integrität (`src/core/batch_rename_service.py`)**:
+  - **Kaskadierende Kollisionserkennung (`generate_preview`)**: Fixpunkt-Iteration implementiert, die Abhängigkeitsketten und Kaskaden (Datei A will Dateiname B übernehmen, Datei B kann wegen eines externen oder internen Konflikts nicht verschoben werden) vollständig und deterministisch auflöst; verhindert, dass blockierte Zieldateien fälschlich als "Bereit" (`status="ok"`) markiert werden und schützt vor `WinError 183` auf Windows sowie stillem Datenverlust durch Überschreiben auf POSIX.
+  - **Präfix- & Suffix-Erhalt bei Namensersetzung (`compute_new_name`)**: Nummerierung wird nun vor dem Hinzufügen von Präfix und Suffix auf den Stamm angewendet, sodass bei `number_position="replace"` die Nummer den Basisstamm ersetzt, konfigurierte Präfixe und Suffixe (z. B. `IMG_001_RAW.jpg`) jedoch vollständig erhalten bleiben.
+  - **Windows-reservierte Gerätenamen (`compute_new_name`)**: Ungültige Windows-Gerätenamen (`CON`, `PRN`, `AUX`, `NUL`, `COM1-9`, `LPT1-9`) werden sowohl als Stamm als auch als Gesamtname mit klarer Fehlermeldung defensiv abgewiesen.
+  - **Ressourcen- und I/O-Schutz bei fehlender Quelle (`execute_rename`)**: Phase 1 bricht bei fehlender Quelldatei sofort per `break` ab und rollt bereinigt zurück, statt unnötige Temp-Dateien für nachfolgende Dateien auf die Festplatte zu schreiben.
+  - **Zielbelegungs-Schutz (`execute_rename`)**: Phase 2 prüft vor jedem `os.rename(temp_path, dst)` defensiv auf bereits belegte Zielpfade (`if os.path.exists(dst): raise OSError(...)`).
+  - **5 neue automatisierte Regressionstests**: Vollständige Testabdeckung in `tests/test_batch_renamer_regressions.py` hinzugefügt (Vollsuite auf 357 Tests ausgebaut).
+
 ### Wartung & CI-Matrix-Härtung / Maintenance & CI Hardening (2026-09-26, Pfad A)
 - **Repository-Hygiene, CI-Lifecycle-Härtung & PEP 621 Metadaten-Parität (Pfad A)**:
   - **CI-Workflow-Härtung (.github/workflows/ci.yml)**: Bytecode-Kompilierungsgate auf python -m compileall -q . für das gesamte Projektverzeichnis erweitert; Concurrency mit cancel-in-progress: true und Timeouts auf Multi-OS-Matrix verifiziert.

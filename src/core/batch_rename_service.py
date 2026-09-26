@@ -22,6 +22,13 @@ from typing import List, Optional, Tuple, Dict
 # Ungültige Dateinamenzeichen auf gängigen Betriebssystemen
 INVALID_FILENAME_CHARS = set(r'<>:"/\|?*')
 
+# Windows-reservierte Gerätenamen (dürfen weder als Stamm noch als ganzer Name vorkommen)
+WINDOWS_RESERVED_NAMES = {
+    "CON", "PRN", "AUX", "NUL",
+    *(f"COM{i}" for i in range(1, 10)),
+    *(f"LPT{i}" for i in range(1, 10)),
+}
+
 
 @dataclass
 class RenameRules:
@@ -110,13 +117,7 @@ def compute_new_name(
     # 2. Groß-/Kleinschreibung
     new_stem = apply_case_mode(new_stem, rules.case_mode)
 
-    # 3. Präfix und Suffix
-    if rules.prefix:
-        new_stem = rules.prefix + new_stem
-    if rules.suffix:
-        new_stem = new_stem + rules.suffix
-
-    # 4. Nummerierung
+    # 3. Nummerierung (formt oder ersetzt den Basis-Stamm)
     if rules.numbering_enabled:
         num_val = rules.start_num + (index * rules.step_num)
         formatted_num = str(num_val).zfill(max(1, rules.padding))
@@ -126,6 +127,12 @@ def compute_new_name(
             new_stem = formatted_num
         else:  # "suffix"
             new_stem = f"{new_stem}_{formatted_num}"
+
+    # 4. Präfix und Suffix (rahmen den Stamm inkl. evtl. Ersetzungs-Nummerierung ein)
+    if rules.prefix:
+        new_stem = rules.prefix + new_stem
+    if rules.suffix:
+        new_stem = new_stem + rules.suffix
 
     # 5. Dateiendung
     if rules.change_extension is not None:
@@ -145,6 +152,11 @@ def compute_new_name(
     for ch in final_name:
         if ch in INVALID_FILENAME_CHARS or ord(ch) < 32:
             return final_name, f"Ungültiges Zeichen im Dateinamen: '{ch}'"
+
+    # Windows-reservierte Namen prüfen (Stamm vor erstem Punkt sowie ganzer Name)
+    check_stem = final_name.split(".")[0].strip().upper()
+    if check_stem in WINDOWS_RESERVED_NAMES or final_name.strip().upper() in WINDOWS_RESERVED_NAMES:
+        return final_name, f"Dateiname '{final_name}' ist ein unter Windows reservierter Gerätename"
 
     return final_name, None
 
@@ -183,54 +195,68 @@ def generate_preview(
 
         items.append(item)
 
-    # 2. Zweiter Durchlauf: Kollisionsanalyse
-    # Jedes Element belegt am Ende einen Pfad:
-    # - 'ok': will new_path belegen
-    # - 'unchanged' oder 'invalid': belegt weiterhin original_path
-    target_usage: Dict[str, List[int]] = {}
-    for idx, item in enumerate(items):
-        target = item.new_path if item.status == "ok" else item.original_path
-        norm_t = os.path.normcase(os.path.abspath(target))
-        target_usage.setdefault(norm_t, []).append(idx)
+    # 2. Zweiter Durchlauf: Kaskadierende Kollisionsanalyse (Fixpunkt-Iteration)
+    # Normierte Originalpfade aller Eingabedateien
+    norm_inputs_map = {
+        os.path.normcase(os.path.abspath(it.original_path)): i
+        for i, it in enumerate(items)
+    }
 
-    norm_original_inputs = {os.path.normcase(os.path.abspath(p)) for p in file_paths}
+    changed = True
+    while changed:
+        changed = False
 
-    for idx, item in enumerate(items):
-        if item.status != "ok":
-            continue
+        # a) Chargen-interne Mehrfachzuweisung prüfen (mehrere 'ok'-Elemente wollen denselben new_path)
+        target_usage: Dict[str, List[int]] = {}
+        for idx, item in enumerate(items):
+            if item.status == "ok":
+                norm_t = os.path.normcase(os.path.abspath(item.new_path))
+                target_usage.setdefault(norm_t, []).append(idx)
 
-        norm_target = os.path.normcase(os.path.abspath(item.new_path))
-        norm_src = os.path.normcase(os.path.abspath(item.original_path))
+        for norm_t, users in target_usage.items():
+            if len(users) > 1:
+                for u in users:
+                    items[u].status = "collision"
+                    items[u].error_message = "Kollision: Mehrere Dateien erhalten denselben Namen"
+                    changed = True
 
-        # Prüfung 1: Kollision innerhalb des aktuellen Batches
-        users = target_usage.get(norm_target, [])
-        if len(users) > 1:
-            item.status = "collision"
-            if any(items[u].status in ("unchanged", "invalid") for u in users if u != idx):
-                item.error_message = "Kollision: Zieldatei bleibt im selben Ordner unverändert bestehen"
-            else:
-                item.error_message = "Kollision: Mehrere Dateien erhalten denselben Namen"
-            continue
+        # b) Belegte Originalpfade im Batch ermitteln:
+        # Eine Datei im Batch, die NICHT 'ok' ist, bleibt unverändert auf ihrem original_path liegen!
+        blocked_original_paths: Dict[str, int] = {
+            os.path.normcase(os.path.abspath(it.original_path)): i
+            for i, it in enumerate(items)
+            if it.status != "ok"
+        }
 
-        # Prüfung 2: Kollision mit einer existierenden Datei auf der Festplatte
-        # Wenn norm_target == norm_src handelt es sich um einen Case-Only Rename der eigenen Datei.
-        if norm_target != norm_src:
-            if os.path.exists(item.new_path):
-                if norm_target not in norm_original_inputs:
-                    item.status = "collision"
-                    item.error_message = "Kollision: Datei existiert bereits im Zielverzeichnis"
-                    continue
-                # Gehört zu einer anderen Datei im Batch. Zieht diese Datei sicher weg?
-                other_idx = next(
-                    (i for i, it in enumerate(items) if os.path.normcase(os.path.abspath(it.original_path)) == norm_target),
-                    None
-                )
-                if other_idx is not None:
-                    other_item = items[other_idx]
-                    if other_item.status != "ok":
-                        item.status = "collision"
-                        item.error_message = "Kollision: Datei existiert bereits im Zielverzeichnis"
-                        continue
+        # c) Für jedes 'ok'-Element prüfen, ob das Ziel belegt oder blockiert ist
+        for idx, item in enumerate(items):
+            if item.status != "ok":
+                continue
+
+            norm_target = os.path.normcase(os.path.abspath(item.new_path))
+            norm_src = os.path.normcase(os.path.abspath(item.original_path))
+
+            # Case-Only Rename der eigenen Datei ist zulässig
+            if norm_target == norm_src:
+                continue
+
+            # Ziel wird von einer anderen, nicht wegziehenden Batch-Datei blockiert
+            if norm_target in blocked_original_paths:
+                item.status = "collision"
+                blocked_item = items[blocked_original_paths[norm_target]]
+                if blocked_item.status == "unchanged":
+                    item.error_message = "Kollision: Zieldatei bleibt im selben Ordner unverändert bestehen"
+                else:
+                    item.error_message = "Kollision: Zieldatei im Batch kann wegen eines Konflikts nicht verschoben werden"
+                changed = True
+                continue
+
+            # Ziel existiert auf der Festplatte und gehört überhaupt nicht zum Batch
+            if norm_target not in norm_inputs_map and os.path.exists(item.new_path):
+                item.status = "collision"
+                item.error_message = "Kollision: Datei existiert bereits im Zielverzeichnis"
+                changed = True
+                continue
 
     return items
 
@@ -267,7 +293,7 @@ def execute_rename(
 
         if not os.path.exists(src):
             errors.append(f"Quelle nicht gefunden: {src}")
-            continue
+            break
 
         parent_dir = os.path.dirname(src)
         temp_name = f".__ep_tmp_{uuid.uuid4().hex}__"
@@ -296,6 +322,8 @@ def execute_rename(
 
     for temp_path, orig_path, dst, item in temp_stage:
         try:
+            if os.path.exists(dst):
+                raise OSError(f"Zielpfad ist bereits belegt: {dst}")
             os.rename(temp_path, dst)
             phase2_done.append((dst, orig_path))
             history.append((dst, orig_path))
