@@ -5,6 +5,19 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-09-26
+
+### Behoben / Fixed (Kontextmenü, Editor-Dirty-Flag, Qt-Übersetzung — T-20260926-912169808)
+- **Kontextmenü-Aktionen "Metadaten anzeigen"/"Tags bearbeiten" (`src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**: Beide Aktionen aktualisierten nur das ggf. ausgeblendete Vorschaupanel und zeigten dadurch scheinbar keine Wirkung. `MainWindow.show_file_metadata()` blendet das Panel jetzt ein und fokussiert bei "Tags bearbeiten" direkt das Tag-Feld.
+- **Tags/Notizen ohne dauerhafte Wirkung (`src/core/file_index.py`, `src/gui/preview/preview_panel.py`)**: Tag- und Notizfelder wurden nirgends gespeichert. `FileIndex.get_tags`/`set_tags`/`get_note`/`set_note` ergänzt, `MetadataPanel` lädt/speichert beim Anzeigen, Wechseln und Schließen. `index_file` von `INSERT OR REPLACE` auf echtes UPSERT (`ON CONFLICT DO UPDATE`) umgestellt, damit ein Reindex die `files.id` erhält und bestehende Tags/Notizen (referenziert über `ON DELETE CASCADE`) nicht verwaist.
+- **Editor meldet Änderungen nach bloßem Öffnen (`src/modules/editor/quick_editor.py`)**: Verzögertes Syntax-Rehighlighting löste `textChanged` aus und markierte frisch geöffnete Dateien fälschlich als ungespeichert. Dirty-Flag jetzt über `QTextDocument.modificationChanged` statt `textChanged`.
+- **Speichern/Verwerfen-Dialog auf Englisch in der deutschen Version (`src/main.py`)**: Kein Qt-eigener Übersetzer installiert. `QTranslator` mit `qtbase_<lang>.qm` ergänzt (unabhängig von der App-eigenen `TranslationSystem`, kein Overwrite).
+- **Mehrfach-Umbenennen/Diff/Einstellungen stürzen im Quellstart ab (`src/main.py`, `ExplorerPro.spec`)**: `translator.py` (Projektwurzel) fehlte auf `sys.path`; Spec um `pathex`/`datas` für Projektwurzel und `locales/` ergänzt.
+- **9 neue automatisierte Regressionstests** (`tests/test_context_menu_actions.py`), Vollsuite 359 passed / 2 skipped. Review/Merge als zweites Modell: Repo `file-bricks/ExplorerPro#1`, Squash `264aa6eae60055f1ffb4ff041025920738c6ead2`.
+
+### Behoben / Fixed (Store-Icon weißer Rand — T-20260820-729932431)
+- **Store-Kachel-Icons mit sichtbarem weißen Rand (`store_assets/Square44x44Logo.png`, `Square150x150Logo.png`, `Square310x310Logo.png`, `StoreLogo.png`)**: Diese vier Dateien hatten trotz RGBA-Modus einen opaken (nicht transparenten) Canvas-Hintergrund gebacken (Alpha 255 an den Ecken statt 0) — sichtbar als weißer Kasten/Halo um das Icon-Motiv in Kachel, Startmenü und Store-Listing. Die im selben Ordner bereits korrekt transparenten Gegenstücke gleicher Größe und gleichen Motivs (`icon_44x44.png`, `icon_150x150.png`, `icon_310x310.png`, `icon_50x50.png`) haben die vier defekten Dateien ersetzt — Motiv unverändert (kein Redesign), nur echte Transparenz statt gebackenem Hintergrund. `Wide310x150Logo.png` war bereits korrekt; `icon_310x150.png` ist ein separates Marketing-Banner (nicht vom AppxManifest referenziert) und unverändert. Verifiziert per Kontaktbogen auf Weiß/Schwarz/Grau/Akzentgrün (kein Halo, keine hellen Ränder auf allen vier Hintergründen).
+
 ### Behoben / Fixed (Bugsearch 2026-09-26)
 - **Batch-Renamer, Kaskadierende Kollisionserkennung, Windows-Gerätenamens-Schutz und Nummerierungs-Affix-Integrität (`src/core/batch_rename_service.py`)**:
   - **Kaskadierende Kollisionserkennung (`generate_preview`)**: Fixpunkt-Iteration implementiert, die Abhängigkeitsketten und Kaskaden (Datei A will Dateiname B übernehmen, Datei B kann wegen eines externen oder internen Konflikts nicht verschoben werden) vollständig und deterministisch auflöst; verhindert, dass blockierte Zieldateien fälschlich als "Bereit" (`status="ok"`) markiert werden und schützt vor `WinError 183` auf Windows sowie stillem Datenverlust durch Überschreiben auf POSIX.

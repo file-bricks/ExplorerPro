@@ -1,6 +1,6 @@
 [project]
 name = "explorerpro"
-version = "1.0.5"
+version = "1.0.6"
 description = "Datei-Explorer-Suite mit Editor, PDF-Viewer und Datenanalyse"
 authors = [{ name = "Lukas Geiger", email = "support@lukasgeiger.com" }]
 requires-python = ">=3.10"

@@ -2,11 +2,11 @@
 name: ExplorerPro
 type: project-docs
 profile: STANDARD
-version: 1.0.5
+version: 1.0.6
 created: 2026-07-22
-updated: 2026-09-12
-reason_last_change: "TW-EP-10: Batch-Renamer & Datei-Vergleich (Diff Viewer) Suite, New File Actions, P-006 Tier-2 i18n, 306 Tests"
-last_verified: 2026-09-12
+updated: 2026-09-26
+reason_last_change: "T-20260926-912169808: Kontextmenü-Tags/Metadaten, Editor-Dirty-Flag (modificationChanged), qtbase-Übersetzung, 359 Tests"
+last_verified: 2026-09-26
 author: Lukas Geiger
 anthropic_compatible: true
 description: |
