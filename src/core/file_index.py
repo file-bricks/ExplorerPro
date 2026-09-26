@@ -269,9 +269,15 @@ class FileIndex:
                 cursor = conn.cursor()
 
                 cursor.execute('''
-                    INSERT OR REPLACE INTO files
+                    INSERT INTO files
                     (path, filename, extension, size, modified, created, hash, category, text_content, indexed_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(path) DO UPDATE SET
+                        filename = excluded.filename, extension = excluded.extension,
+                        size = excluded.size, modified = excluded.modified,
+                        created = excluded.created, hash = excluded.hash,
+                        category = excluded.category, text_content = excluded.text_content,
+                        indexed_at = excluded.indexed_at
                 ''', (
                     filepath,
                     filename,
@@ -302,6 +308,82 @@ class FileIndex:
             cursor.execute('DELETE FROM files WHERE path = ?', (filepath,))
             conn.commit()
             return cursor.rowcount > 0
+        finally:
+            conn.close()
+
+    def _ensure_file_id(self, cursor, filepath: str) -> int:
+        """Liefert die files.id eines Pfads und legt bei Bedarf einen Minimaleintrag an."""
+        filepath = os.path.normpath(filepath)
+        filename = os.path.basename(filepath)
+        cursor.execute(
+            'INSERT INTO files (path, filename, extension, category) VALUES (?, ?, ?, ?) '
+            'ON CONFLICT(path) DO NOTHING',
+            (filepath, filename, os.path.splitext(filename)[1].lower(), self.get_category(filename)),
+        )
+        cursor.execute('SELECT id FROM files WHERE path = ?', (filepath,))
+        return cursor.fetchone()[0]
+
+    def get_tags(self, filepath: str) -> List[str]:
+        """Gibt die Tags einer Datei alphabetisch zurück."""
+        filepath = os.path.normpath(filepath)  # Browser liefert Slash, os.walk Backslash
+        conn = sqlite3.connect(self.db_path)
+        try:
+            rows = conn.execute(
+                'SELECT t.name FROM tags t JOIN file_tags ft ON ft.tag_id = t.id '
+                'JOIN files f ON f.id = ft.file_id WHERE f.path = ? ORDER BY t.name',
+                (filepath,),
+            ).fetchall()
+            return [r[0] for r in rows]
+        finally:
+            conn.close()
+
+    def set_tags(self, filepath: str, tags: List[str]) -> None:
+        """Ersetzt die Tags einer Datei (leere Liste entfernt alle Tags)."""
+        clean = sorted({t.strip() for t in tags if t and t.strip()})
+        conn = sqlite3.connect(self.db_path)
+        try:
+            cursor = conn.cursor()
+            file_id = self._ensure_file_id(cursor, filepath)
+            cursor.execute('DELETE FROM file_tags WHERE file_id = ?', (file_id,))
+            for name in clean:
+                cursor.execute('INSERT OR IGNORE INTO tags (name) VALUES (?)', (name,))
+                cursor.execute(
+                    'INSERT OR IGNORE INTO file_tags (file_id, tag_id) '
+                    'SELECT ?, id FROM tags WHERE name = ?',
+                    (file_id, name),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_note(self, filepath: str) -> str:
+        """Gibt die Notiz zu einer Datei zurück (leer, wenn keine existiert)."""
+        filepath = os.path.normpath(filepath)
+        conn = sqlite3.connect(self.db_path)
+        try:
+            row = conn.execute(
+                'SELECT n.content FROM notes n JOIN files f ON f.id = n.file_id WHERE f.path = ?',
+                (filepath,),
+            ).fetchone()
+            return (row[0] or "") if row else ""
+        finally:
+            conn.close()
+
+    def set_note(self, filepath: str, content: str) -> None:
+        """Speichert die Notiz zu einer Datei; leerer Text löscht sie."""
+        conn = sqlite3.connect(self.db_path)
+        try:
+            cursor = conn.cursor()
+            file_id = self._ensure_file_id(cursor, filepath)
+            if content.strip():
+                cursor.execute(
+                    'INSERT INTO notes (file_id, content) VALUES (?, ?) ON CONFLICT(file_id) '
+                    'DO UPDATE SET content = excluded.content, updated_at = CURRENT_TIMESTAMP',
+                    (file_id, content),
+                )
+            else:
+                cursor.execute('DELETE FROM notes WHERE file_id = ?', (file_id,))
+            conn.commit()
         finally:
             conn.close()
 

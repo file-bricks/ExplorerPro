@@ -8,11 +8,13 @@ icon_file = project_root / 'ExplorerPro.ico'
 
 a = Analysis(
     [str(src_dir / 'main.py')],
-    pathex=[str(src_dir)],
+    # project_root: translator.py liegt neben src/ (gui/batch_rename_dialog, diff_dialog, settings_dialog)
+    pathex=[str(src_dir), str(project_root)],
     binaries=[],
     datas=[
         (str(icon_file), '.'),
         (str(project_root / 'assets'), 'assets'),
+        (str(project_root / 'locales'), 'locales'),
         (str(project_root / 'LICENSE'), '.'),
         (str(project_root / 'THIRD_PARTY_LICENSES.txt'), '.'),
         (str(project_root / 'PRIVACY_POLICY.md'), '.'),

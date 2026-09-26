@@ -18,11 +18,12 @@ if sys.platform == 'win32':
     if hasattr(sys.stderr, 'reconfigure'):
         sys.stderr.reconfigure(encoding='utf-8')
 
-# Pfad hinzufügen
+# Pfad hinzufügen (src/ und Projektwurzel mit translator.py)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTranslator, QLibraryInfo
 from PySide6.QtGui import QIcon
 
 from app import ExplorerProApp
@@ -49,6 +50,17 @@ def load_app_icon() -> QIcon:
     return QIcon()
 
 
+def install_qt_translations(app: QApplication, lang: str):
+    """Lädt Qts eigene Übersetzung (qtbase_<lang>.qm), damit Standard-Buttons
+    wie Ja/Nein, Speichern/Verwerfen/Abbrechen in der UI-Sprache erscheinen."""
+    translator = QTranslator(app)
+    path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+    if translator.load(f"qtbase_{lang}", path):
+        app.installTranslator(translator)
+        return translator
+    return None
+
+
 def main():
     """Haupteinstiegspunkt für ExplorerPro"""
     # High DPI Support
@@ -59,6 +71,8 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("ExplorerPro")
     app.setOrganizationName("ExplorerPro")
+    from translator import get_translator
+    install_qt_translations(app, get_translator().get_language())
     app.setApplicationVersion("0.1.0")
     icon = load_app_icon()
     if not icon.isNull():
