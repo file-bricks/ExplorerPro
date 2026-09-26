@@ -82,6 +82,7 @@ dev = [
 ]
 test = [
     "pytest>=9.1.1",
+    "Pillow>=10.0",
 ]
 build = [
     "PyInstaller>=6.10.0,<7.0.0",
