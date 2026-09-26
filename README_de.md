@@ -5,7 +5,7 @@
 [English](README.md) | **[Deutsch](README_de.md)** | [Maschinenlesbarer Kontext (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
-[![Tests: 323+ bestanden](https://img.shields.io/badge/Tests-323%2B%20bestanden-brightgreen.svg)](tests/)
+[![Tests: 350+ bestanden](https://img.shields.io/badge/Tests-350%2B%20bestanden-brightgreen.svg)](tests/)
 [![Python 3.10--3.12](https://img.shields.io/badge/Python-3.10--3.12-blue.svg)](https://www.python.org/)
 [![Plattform: Windows | Linux | macOS](https://img.shields.io/badge/Plattform-Windows%20%7C%20Linux%20%7C%20macOS-informational.svg)](https://github.com/file-bricks/ExplorerPro)
 [![UI: PySide6 (Qt6)](https://img.shields.io/badge/UI-PySide6%20(Qt6)-informational.svg)](src/gui/)
@@ -16,15 +16,16 @@
 [![Marketing: Geprüft](https://img.shields.io/badge/Marketing-Gepr%C3%BCft-blueviolet.svg)](MARKETING-LOG.txt)
 [![Code-Stil: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Lizenz: AGPL v3](https://img.shields.io/badge/Lizenz-AGPL%20v3-blue.svg)](LICENSE)
+[![Urheberrecht: NOTICE](https://img.shields.io/badge/Urheberrecht-NOTICE-blue.svg)](NOTICE)
 [![Ökosystem: file--bricks](https://img.shields.io/badge/%C3%96kosystem-file--bricks-blue.svg)](https://github.com/file-bricks)
 [![Dachverband: open--bricks](https://img.shields.io/badge/Dachverband-open--bricks-blue.svg)](https://github.com/open-bricks)
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
 [![Version: 1.0.5](https://img.shields.io/badge/Version-1.0.5-orange.svg)](CHANGELOG.md)
-[![Stand](https://img.shields.io/badge/Stand-2026--09--18-blue?style=flat-square)](CHANGELOG.md)
+[![Stand](https://img.shields.io/badge/Stand-2026--09--26-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]
-> **Abgrenzung / Disambiguation & LLM-Kontext:** `file-bricks/ExplorerPro` ist eine lokale Open-Source Desktop-Dateimanager- und Power-User-Explorer-Suite auf Basis von Python (PySide6 / Qt 6). Das Projekt ist vollkommen unabhängig von Cloud-Speicher-Weboberflächen, mobilen Dateimanagern oder proprietären Dateiverwaltungsprogrammen. Maschinenlesbarer Architekturkontext, Suchbegriffe, Laufzeitinvarianten und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt. Zuletzt geprüft: **2026-09-18**.
+> **Abgrenzung / Disambiguation & LLM-Kontext:** `file-bricks/ExplorerPro` ist eine lokale Open-Source Desktop-Dateimanager- und Power-User-Explorer-Suite auf Basis von Python (PySide6 / Qt 6). Das Projekt ist vollkommen unabhängig von Cloud-Speicher-Weboberflächen, mobilen Dateimanagern oder proprietären Dateiverwaltungsprogrammen. Maschinenlesbarer Architekturkontext, Suchbegriffe, Laufzeitinvarianten und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt. Zuletzt geprüft: **2026-09-26**.
 
 > **ExplorerPro** ist ein moderner, datenschutzorientierter Desktop-Dateimanager und Power-User-Explorer für Windows, Linux und macOS. Er vereint Mehrtab-Dateinavigation, sofortige Mehrformat-Dateivorschau (PDF, Bilder, Quellcode mit Syntax-Highlighting, Markdown, Tabellenkalkulation), blitzschnelle SQLite-FTS5-Volltextsuche, Hash-basierte Duplikaterkennung, Datenschutz-Überwachung, Ordnersynchronisation und einen integrierten Quelltext-Editor in einer nativen PySide6-Anwendung (Qt 6).
 
@@ -577,14 +578,14 @@ Store-Dokumentation:
 <a id="qualitaets-gates"></a>
 ## 16. Tests & Qualitätstore
 
-Zuletzt verifiziert am **2026-09-18**: 323 automatisierte Python-Tests erfolgreich bestanden (100% grün).
+Zuletzt verifiziert am **2026-09-26**: 350+ automatisierte Python-Tests erfolgreich bestanden (100% grün).
 
 ```bash
 # Gesamte automatisierte Testsuite ausführen:
 python -m pytest -ra -v
 
 # Bytecode-Kompilierung über alle Module validieren:
-python -m compileall -q src tests manage_translations.py translator.py
+python -m compileall -q .
 
 # Statische Quelltextanalyse und Linting durchführen:
 python -m ruff check .

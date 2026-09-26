@@ -220,14 +220,18 @@ def test_gitignore_comprehensive_multi_host_and_locks() -> None:
         "*-ASUS*",
         "*-LAPTOP*",
         "*-Mac Studio*",
+        "*-MacBook*",
+        "*-IDEAPAD*",
         "*.sync-temp-*",
         "*.orig",
         "*.rej",
+        ".automation-lock",
         ".coverage.*",
         ".hypothesis/",
         ".turbo/",
         "wheelhouse/",
         ".wheel-smoke/",
+        ".pytest_temp/",
     ]
 
     for pat in required_patterns:
@@ -243,6 +247,10 @@ def test_pep621_urls_and_pytest_options() -> None:
     assert '"LLM Ready" =' in content or 'LLM Ready =' in content, (
         "pyproject.toml must define LLM Ready URL"
     )
+    assert 'Notice =' in content or '"Notice" =' in content, (
+        "pyproject.toml must define Notice URL"
+    )
+    assert "license-files =" in content, "pyproject.toml must define license-files whitelist"
     assert "minversion = " in content, "pyproject.toml pytest section must specify minversion"
     assert 'addopts = "-ra -v"' in content, "pyproject.toml pytest section must specify addopts = '-ra -v'"
 
@@ -253,8 +261,59 @@ def test_marketing_log_hygiene_recency() -> None:
     assert mkt_file.is_file(), "MARKETING-LOG.txt must exist"
     content = mkt_file.read_text(encoding="utf-8")
 
-    assert "7. REPOSITORY HYGIENE & CI CONTRACT AUDIT" in content, (
-        "MARKETING-LOG.txt must include Section 7 for repository hygiene"
+    assert "9. REPOSITORY HYGIENE, CI-MATRIX HARDENING & METADATA CONTRACT AUDIT" in content, (
+        "MARKETING-LOG.txt must include Section 9 for repository hygiene"
     )
-    assert "2026-09-16" in content, "MARKETING-LOG.txt must record the 2026-09-16 audit date"
+    assert "2026-09-26" in content, "MARKETING-LOG.txt must record the 2026-09-26 audit date"
     assert "PASS" in content, "MARKETING-LOG.txt must record PASS status"
+
+
+def test_notice_attribution_contract() -> None:
+    """Verify canonical NOTICE attribution file exists, mentions Lukas Geiger, file-bricks and open-bricks."""
+    notice_file = ROOT / "NOTICE"
+    assert notice_file.is_file(), "NOTICE file must exist in repository root"
+    content = notice_file.read_text(encoding="utf-8")
+    assert "ExplorerPro" in content
+    assert "Lukas Geiger" in content
+    assert "file-bricks" in content
+    assert "open-bricks" in content
+    assert "THIRD_PARTY_LICENSES.md" in content
+
+
+def test_ci_workflow_compileall_gate() -> None:
+    """Verify CI workflow includes whole-repository compileall bytecode verification gate."""
+    ci_file = ROOT / ".github" / "workflows" / "ci.yml"
+    assert ci_file.is_file(), "ci.yml must exist"
+    content = ci_file.read_text(encoding="utf-8")
+    assert "python -m compileall -q ." in content, "ci.yml must enforce 'python -m compileall -q .'"
+
+
+def test_pyproject_saturated_keywords() -> None:
+    """Verify pyproject.toml keywords are saturated with 20 curated topics aligned with GitHub Topics."""
+    pyproject_file = ROOT / "pyproject.toml"
+    assert pyproject_file.is_file(), "pyproject.toml must exist"
+    content = pyproject_file.read_text(encoding="utf-8")
+    expected_keywords = [
+        "desktop-app",
+        "duplicate-files",
+        "duplicate-finder",
+        "file-browser",
+        "file-explorer",
+        "file-management",
+        "file-manager",
+        "fts5",
+        "local-first",
+        "offline-first",
+        "open-bricks",
+        "pdf-viewer",
+        "privacy",
+        "privacy-first",
+        "pyside6",
+        "python",
+        "qt6",
+        "suite",
+        "windows-desktop",
+        "zero-egress",
+    ]
+    for kw in expected_keywords:
+        assert f'"{kw}"' in content, f'Keyword "{kw}" missing in pyproject.toml'

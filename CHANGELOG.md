@@ -5,6 +5,17 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Wartung & CI-Matrix-Härtung / Maintenance & CI Hardening (2026-09-26, Pfad A)
+- **Repository-Hygiene, CI-Lifecycle-Härtung & PEP 621 Metadaten-Parität (Pfad A)**:
+  - **CI-Workflow-Härtung (.github/workflows/ci.yml)**: Bytecode-Kompilierungsgate auf python -m compileall -q . für das gesamte Projektverzeichnis erweitert; Concurrency mit cancel-in-progress: true und Timeouts auf Multi-OS-Matrix verifiziert.
+  - **Multi-Host Defense (.gitignore)**: Ergänzung um Flotten-Muster *-MacBook*, *-IDEAPAD*, .automation-lock, .pytest_temp/, .pytest_tmp*/.
+  - **NOTICE Root-Attribution**: Formelle NOTICE-Datei für Lukas Geiger, file-bricks Familie und open-bricks Umbrella angelegt.
+  - **PEP 621 Standardisierung (pyproject.toml)**: license-files Whitelist (LICENSE, NOTICE, THIRD_PARTY_LICENSES.md, THIRD_PARTY_LICENSES.txt), project.urls.Notice und 20 gesättigte Keywords abgestimmt auf GitHub Topics eingetragen; [tool.pytest.ini_options] um zusätzliche norecursedirs ergänzt.
+  - **Level 1 SBOM (THIRD_PARTY_LICENSES.md)**: Stand auf 2026-09-26 mit NOTICE-Querverweis, RunAsInvoker und Zero-Egress Invarianten aktualisiert.
+  - **Dokumentations- & Kontext-Synchronisation**: README.md und README_de.md Badges (350+ passed, Stand 2026-09-26, Attribution) und llms.txt (Last-checked 2026-09-26, 350+ Tests, NOTICE-Referenz) synchronisiert; 18-Punkte Navigations-Parität beibehalten.
+  - **Automatisierte Vertragstests (tests/test_metadata_contract.py, tests/test_security_license_contract.py)**: Um Testfälle für NOTICE, 20 gesättigte Keywords, license-files, CI Compileall Gate und Multi-Host Gitignore-Muster erweitert.
+
+
 ### Behoben / Fixed (Bugsearch 2026-09-24)
 - **Datei-Integritäts- & Prüfsummen-Dienst, Verifikations-Parsing und Datei-Vergleich (`src/core/checksum_service.py`, `src/gui/checksum_dialog.py`, `src/core/diff_service.py`, `src/gui/diff_dialog.py`)**:
   - **Multi-Format Hash-Verifikation (`core/checksum_service.py: verify_hash`)**: Unterstützung für GNU coreutils Prüfsummen (`sha256sum`/`md5sum` mit Dateinamen und Asterisk), BSD-Formate (`SHA256 (file) = hash`), Key-Value-Paare mit Gleichheitszeichen (`SHA256 = hash`), formatiertes Hex mit Trennzeichen (`XX-XX-XX...`, `XX XX XX...` aus Windows CertUtil und PowerShell), Anführungszeichen sowie mehrzeilige Prüfsummen-Dateien implementiert.

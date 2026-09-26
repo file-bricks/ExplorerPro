@@ -1,16 +1,17 @@
 # Third-Party Software Licenses & Runtime Invariants
 
-Stand: **2026-09-18**
+Stand: **2026-09-26**
 Repository: **file-bricks/ExplorerPro**  
 Primary License: **GNU Affero General Public License v3 (AGPL-3.0)**  
 Parent Organization: **file-bricks**  
 Umbrella Ecosystem: **open-bricks**
+Attribution Notice: **[NOTICE](NOTICE)**
 
 ---
 
 ## 1. Overview & Licensing Policy
 
-ExplorerPro is a 100% local-first, privacy-aware desktop file manager and power-user explorer suite. The application itself is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)**.
+ExplorerPro is a 100% local-first, privacy-aware desktop file manager and power-user explorer suite. The application itself is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)**. Formal attribution and organizational provenance are declared in [NOTICE](NOTICE).
 
 To maintain absolute software integrity, zero-egress security, and compliance with open-source licensing standards, all direct runtime, optional, and build dependencies have been audited. ExplorerPro utilizes only components with compatible permissive or copyleft licenses (LGPL-3.0, AGPL-3.0, BSD-3-Clause, MIT, PSFL-2.0).
 

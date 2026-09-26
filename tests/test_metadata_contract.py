@@ -213,6 +213,7 @@ def test_pyproject_pep621_classifiers_and_urls():
         "Parent Organization",
         "Umbrella Ecosystem",
         "LLM Ready",
+        "Notice",
     ]:
         assert f"{url_key} =" in content or f'"{url_key}" =' in content, f"pyproject.toml must include URL '{url_key}'"
 
@@ -223,7 +224,7 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-09-18" in content
+    assert "Last-checked: 2026-09-26" in content
     assert "1.0.5" in content
     assert "ci.yml" in content
 
@@ -338,8 +339,29 @@ def test_third_party_licenses_md_and_transparency():
         "ruff",
         "RunAsInvoker",
         "Zero-Egress",
+        "NOTICE",
+        "2026-09-26",
     ]:
         assert keyword in content, f"Keyword '{keyword}' missing in THIRD_PARTY_LICENSES.md"
+
+
+def test_notice_and_unreleased_changelog():
+    notice_path = REPO_ROOT / "NOTICE"
+    assert notice_path.exists(), "NOTICE must exist"
+    notice_text = notice_path.read_text(encoding="utf-8")
+    assert "ExplorerPro" in notice_text
+    assert "Lukas Geiger" in notice_text
+    assert "file-bricks" in notice_text
+    assert "open-bricks" in notice_text
+
+    llms_text = (REPO_ROOT / "llms.txt").read_text(encoding="utf-8")
+    assert "Last-checked: 2026-09-26" in llms_text
+    assert "NOTICE" in llms_text
+
+    changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    assert "## [Unreleased]" in changelog_text
+    assert "Pfad A" in changelog_text
+    assert "2026-09-26" in changelog_text
 
 
 def test_marketing_log_and_personas():

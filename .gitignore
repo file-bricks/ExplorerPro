@@ -129,6 +129,8 @@ assets/splash-icon.png
 *-ASUS-GEI*
 *-LAPTOP*
 *-Mac Studio*
+*-MacBook*
+*-IDEAPAD*
 *.sync-conflict-*
 *.sync-temp-*
 *.conflict
@@ -136,6 +138,7 @@ assets/splash-icon.png
 *-conflict-*
 *.orig
 *.rej
+.automation-lock
 
 # ---- Test, Coverage & Build Caches ----
 .coverage.*
@@ -143,6 +146,8 @@ assets/splash-icon.png
 .turbo/
 wheelhouse/
 .wheel-smoke/
+.pytest_temp/
+.pytest_tmp*/
 
 # ---- Web / Node Caches ----
 node_modules/

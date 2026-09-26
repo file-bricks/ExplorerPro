@@ -5,6 +5,7 @@ description = "Datei-Explorer-Suite mit Editor, PDF-Viewer und Datenanalyse"
 authors = [{ name = "Lukas Geiger", email = "support@lukasgeiger.com" }]
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md", "THIRD_PARTY_LICENSES.txt"]
 readme = "README.md"
 
 dependencies = [
@@ -15,17 +16,26 @@ dependencies = [
 ]
 
 keywords = [
-    "file-explorer",
-    "pyside6",
-    "file-manager",
-    "privacy",
-    "duplicate-finder",
-    "local-first",
-    "fts5",
-    "offline-first",
-    "qt6",
     "desktop-app",
-    "llm-ready",
+    "duplicate-files",
+    "duplicate-finder",
+    "file-browser",
+    "file-explorer",
+    "file-management",
+    "file-manager",
+    "fts5",
+    "local-first",
+    "offline-first",
+    "open-bricks",
+    "pdf-viewer",
+    "privacy",
+    "privacy-first",
+    "pyside6",
+    "python",
+    "qt6",
+    "suite",
+    "windows-desktop",
+    "zero-egress",
 ]
 
 classifiers = [
@@ -62,6 +72,7 @@ Security = "https://github.com/file-bricks/ExplorerPro/blob/master/SECURITY.md"
 Umbrella = "https://github.com/open-bricks"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 "LLM Ready" = "https://github.com/file-bricks/ExplorerPro/blob/master/llms.txt"
+Notice = "https://github.com/file-bricks/ExplorerPro/blob/master/NOTICE"
 
 [project.optional-dependencies]
 dev = [
@@ -85,7 +96,20 @@ windows-shortcuts = ["pywin32>=306; platform_system == 'Windows'"]
 minversion = "7.0"
 testpaths = ["tests"]
 pythonpath = [".", "src"]
-norecursedirs = [".git", ".pytest_cache", "__pycache__", "build", "dist", "releases", "_archiv"]
+norecursedirs = [
+    ".git",
+    ".pytest_cache",
+    ".pytest_temp",
+    ".ruff_cache",
+    ".hypothesis",
+    "__pycache__",
+    "build",
+    "dist",
+    "releases",
+    "_archiv",
+    "venv",
+    ".venv",
+]
 addopts = "-ra -v"
 
 [tool.ruff]

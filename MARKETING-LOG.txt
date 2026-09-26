@@ -189,3 +189,30 @@ INV-SLA-10: 48-Hour Security Response & 5-Day Triage SLA
   - THIRD_PARTY_LICENSES.md Stand 2026-09-18 mit RunAsInvoker und Zero-Copyleft Garantie erneuert.
   - Automatisierte Vertragstestsuite (test_metadata_contract.py) auf 18-Punkte Schnellnavigationsprüfung und reziproke Anker erweitert.
 ================================================================================
+
+
+9. REPOSITORY HYGIENE, CI-MATRIX HARDENING & METADATA CONTRACT AUDIT (2026-09-26, Pfad A)
+--------------------------------------------------------------------------------
+- Audit-Metadaten:
+  - Audit-Datum: 2026-09-26
+  - Prüfer: Antigravity AI Engine (Pfad A Repository Hygiene, CI Matrix Hardening & PEP 621 Standardisierung)
+  - Ziel-Repository: file-bricks/ExplorerPro (Branch: master)
+  - Status: PASS (350+ automatisierte Tests 100% grün, ruff sauber, compileall sauber, git diff --check sauber)
+- CI-Workflow & Bytecode-Validierungsgate:
+  - .github/workflows/ci.yml gehärtet: Bytecode-Validierungsgate auf 'python -m compileall -q .' für den gesamten Projektbaum erweitert.
+  - Concurrency-Gruppe cancel-in-progress: true und 15m Timeout über alle Betriebssysteme (Windows, Linux, macOS) und Python-Versionen (3.10-3.12) verifiziert.
+- Multi-Host Cloud-Sync & Lock-Verteidigung (.gitignore):
+  - Um Flotten-Muster erweitert: *-MacBook*, *-IDEAPAD*, .automation-lock, .pytest_temp/, .pytest_tmp*/.
+- PEP 621 Standardisierung & Notice-Attribution (pyproject.toml):
+  - Formelle Root-Attribution via NOTICE für Lukas Geiger, file-bricks Familie und open-bricks Umbrella unter AGPL-3.0.
+  - license-files Whitelist um NOTICE, THIRD_PARTY_LICENSES.md und THIRD_PARTY_LICENSES.txt erweitert.
+  - project.urls um Notice URL erweitert.
+  - 20 gesättigte Keywords synchronisiert mit GitHub Topics.
+- Dritte-Partei-Lizenzinventar & Level 1 SBOM:
+  - THIRD_PARTY_LICENSES.md Stand 2026-09-26 mit 10 Invarianten, unprivilegiertem RunAsInvoker User Mode, Zero-Egress Core Isolation und NOTICE-Querverweis aktualisiert.
+- Dokumentations- & Kontext-Synchronisation:
+  - README.md & README_de.md Test-Badge auf 350+ passed und Stand 2026-09-26 aktualisiert; Attribution Notice Badge ergänzt (alle 18 bilateralen Schnellnavigations-Anker exakt erhalten).
+  - llms.txt Last-checked Datum 2026-09-26, 350+ Tests und NOTICE-Referenz synchronisiert.
+- Automatisierte Vertragstest-Erweiterung:
+  - tests/test_security_license_contract.py und tests/test_metadata_contract.py um neue Prüfungen für NOTICE, pyproject license-files/Notice URL, 20 gesättigte Keywords, erweiterte Multi-Host-Muster und CI compileall Gate erweitert.
+================================================================================

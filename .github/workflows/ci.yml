@@ -48,7 +48,7 @@ jobs:
 
       - name: Compile sources
         run: |
-          python -m compileall -q src tests manage_translations.py translator.py
+          python -m compileall -q .
 
       - name: Run Ruff Linting
         run: |
