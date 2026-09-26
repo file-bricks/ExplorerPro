@@ -147,12 +147,22 @@ class TestMetadataPanelAndPreviewReset:
 
 class TestExcelPreviewExternalLaunch:
     def test_open_extern_handles_os_error_gracefully(self, tmp_path):
+        """_open_extern() waehlt den Aufruf je nach sys.platform (os.startfile
+        unter Windows, subprocess.Popen("open"/"xdg-open") sonst) -- os.startfile
+        existiert unter Linux/macOS gar nicht, patch() darauf wuerde dort mit
+        AttributeError abbrechen. Der passende Aufrufpfad fuer die aktuelle
+        Plattform wird stattdessen gemockt."""
         from gui.preview.preview_panel import ExcelPreview
 
         widget = ExcelPreview()
         widget._path = str(tmp_path / "fake.xlsx")
 
-        with patch("os.startfile", side_effect=OSError("No application associated")):
+        if sys.platform == "win32":
+            target, kwargs = "os.startfile", {"side_effect": OSError("No application associated")}
+        else:
+            target, kwargs = "subprocess.Popen", {"side_effect": OSError("No application associated")}
+
+        with patch(target, **kwargs):
             widget._open_extern()
 
         assert not widget.status_label.isHidden()
