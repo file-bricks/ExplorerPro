@@ -172,6 +172,42 @@ def test_store_assets_integrity():
             assert img.size == size, f"{name} size {img.size} != {size}"
 
 
+def test_store_tiles_have_transparent_corners():
+    """Regression fuer T-20260820-729932431: die vom AppxManifest referenzierten
+    Kacheln duerfen keinen gebackenen opaken Hintergrund haben (weisser Halo)."""
+    store_dir = REPO_ROOT / "store_assets"
+    manifest_tiles = [
+        "Square44x44Logo.png",
+        "Square150x150Logo.png",
+        "Square310x310Logo.png",
+        "StoreLogo.png",
+    ]
+    for name in manifest_tiles:
+        with Image.open(store_dir / name).convert("RGBA") as img:
+            w, h = img.size
+            corner_alpha = img.getpixel((0, 0))[3]
+            assert corner_alpha < 30, (
+                f"{name}: Ecke (0,0) ist fast opak (Alpha {corner_alpha}) -- "
+                "gebackener Hintergrund statt Transparenz (weisser Halo)."
+            )
+
+    # Wide310x150Logo bettet das Motiv mittig in ein 310x150-Canvas ein;
+    # sowohl der aeussere Rand als auch das eingebettete Quadrat muessen
+    # an ihren Ecken transparent sein (der Halo im Mittelfeld war 2026-09-26
+    # zunaechst unentdeckt geblieben, weil nur die Aussen-Ecken geprueft wurden).
+    with Image.open(store_dir / "Wide310x150Logo.png").convert("RGBA") as wide:
+        w, h = wide.size
+        assert wide.getpixel((0, 0))[3] < 30, "Wide310x150Logo: aeussere Ecke nicht transparent"
+        square_left = (w - h) // 2
+        for x_offset in (2, h - 3):
+            for y_offset in (2, h - 3):
+                a = wide.getpixel((square_left + x_offset, y_offset))[3]
+                assert a < 30, (
+                    f"Wide310x150Logo: Ecke des eingebetteten Quadrats bei "
+                    f"({square_left + x_offset},{y_offset}) ist fast opak (Alpha {a})."
+                )
+
+
 def test_app_icon_loader_returns_valid_icon():
     """Verify src.main.load_app_icon() returns a valid, non-null QIcon."""
     from PySide6.QtWidgets import QApplication
