@@ -545,6 +545,16 @@ class MainWindow(QMainWindow):
         """Preview ein-/ausblenden"""
         self.preview_panel.setVisible(self.toggle_preview.isChecked())
 
+    def show_file_metadata(self, path: str, focus_tags: bool = False):
+        """Blendet das Vorschau-/Metadaten-Panel ein und zeigt die Datei dort an."""
+        self.toggle_preview.setChecked(True)
+        self.preview_panel.setVisible(True)
+        self.preview_panel.show_preview(path)
+        if focus_tags:
+            tags_edit = self.preview_panel.metadata_panel.tags_edit
+            tags_edit.setFocus()
+            tags_edit.selectAll()
+
     def _go_home(self):
         """Zum Home-Verzeichnis"""
         home = QStandardPaths.writableLocation(

@@ -334,11 +334,11 @@ class FileBrowser(QWidget):
             menu.addAction(index_action)
 
             meta_action = QAction("📊 Metadaten anzeigen", self)
-            meta_action.triggered.connect(lambda: self.file_selected.emit(file_path))
+            meta_action.triggered.connect(lambda: self._show_metadata(file_path))
             menu.addAction(meta_action)
 
             tags_action = QAction("🏷️ Tags bearbeiten", self)
-            tags_action.triggered.connect(lambda: self.file_selected.emit(file_path))
+            tags_action.triggered.connect(lambda: self._show_metadata(file_path, focus_tags=True))
             menu.addAction(tags_action)
 
             menu.addSeparator()
@@ -443,6 +443,14 @@ class FileBrowser(QWidget):
 
         editor = QuickEditorDialog(path, self.window())
         editor.exec()
+
+    def _show_metadata(self, path: str, focus_tags: bool = False):
+        """Zeigt Metadaten/Tags im (ggf. ausgeblendeten) Vorschau-Panel des Hauptfensters."""
+        main_win = self.window()
+        if hasattr(main_win, "show_file_metadata"):
+            main_win.show_file_metadata(path, focus_tags=focus_tags)
+        else:
+            self.file_selected.emit(path)
 
     def _show_checksums(self, path: str):
         """Öffnet den Prüfsummen-Dialog für eine Datei"""

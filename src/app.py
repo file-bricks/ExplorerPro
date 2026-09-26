@@ -68,8 +68,9 @@ class ExplorerProApp(MainWindow):
         db_path = config_dir / "fileindex.db"
         self.file_index = FileIndex(str(db_path))
 
-        # Index an Sidebar weitergeben
+        # Index an Sidebar und Metadaten-Panel (Tags/Notizen) weitergeben
         self.sidebar.set_file_index(self.file_index)
+        self.preview_panel.metadata_panel.set_file_index(self.file_index)
 
         logging.info("FileIndex initialisiert")
 
@@ -234,6 +235,9 @@ class ExplorerProApp(MainWindow):
             if sp.search_worker and sp.search_worker.isRunning():
                 sp.search_worker.cancel()
                 sp.search_worker.wait(3000)
+
+        # Offene Tag-/Notiz-Eingaben sichern
+        self.preview_panel.metadata_panel.save_user_data()
 
         # Einstellungen speichern
         settings = QSettings()

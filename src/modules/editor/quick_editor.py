@@ -331,7 +331,10 @@ class QuickEditorDialog(QDialog):
         self.editor.setAccessibleDescription(
             "Mehrzeiliger Quelltext-Editor mit Zeilennummern und Syntax-Hervorhebung."
         )
-        self.editor.textChanged.connect(self._on_text_changed)
+        # modificationChanged statt textChanged: der Syntax-Highlighter formatiert
+        # verzögert nach dem Laden und löst dabei textChanged aus, ohne den Text
+        # zu ändern -> sonst wäre jede frisch geöffnete Datei "ungespeichert".
+        self.editor.document().modificationChanged.connect(self._on_modification_changed)
         splitter.addWidget(self.editor)
 
         # Output Panel
@@ -401,6 +404,7 @@ class QuickEditorDialog(QDialog):
             self.file_label.setText(path.name)
             self.setWindowTitle(f"Quick Editor - {path.name}")
 
+            self.editor.document().setModified(False)
             self._modified = False
             self.modified_label.setText("")
 
@@ -427,6 +431,7 @@ class QuickEditorDialog(QDialog):
             with open(self.filepath, 'w', encoding='utf-8') as f:
                 f.write(self.editor.toPlainText())
 
+            self.editor.document().setModified(False)
             self._modified = False
             self.modified_label.setText("")
             self.file_label.setText(Path(self.filepath).name)
@@ -460,11 +465,10 @@ class QuickEditorDialog(QDialog):
         color = "#4EC9B0" if ok else "#F14C4C"
         self._add_output(msg + "\n", color)
 
-    def _on_text_changed(self):
-        """Handler für Textänderungen"""
-        if not self._modified:
-            self._modified = True
-            self.modified_label.setText("●")
+    def _on_modification_changed(self, modified: bool):
+        """Handler für den Änderungsstatus des Dokuments"""
+        self._modified = modified
+        self.modified_label.setText("●" if modified else "")
 
     def _update_cursor_position(self):
         """Aktualisiert die Cursor-Position in der Statusbar"""
@@ -590,7 +594,7 @@ class QuickEditorDialog(QDialog):
         if self._modified:
             reply = QMessageBox.question(
                 self, "Ungespeicherte Änderungen",
-                "Es gibt ungespeicherte Änderungen.\nTrotzdem schließen?",
+                "Es gibt ungespeicherte Änderungen.\nMöchten Sie die Änderungen speichern?",
                 QMessageBox.StandardButton.Save |
                 QMessageBox.StandardButton.Discard |
                 QMessageBox.StandardButton.Cancel

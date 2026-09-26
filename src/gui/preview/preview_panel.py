@@ -276,7 +276,37 @@ class MetadataPanel(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._current_path = None
+        self._file_index = None
+        self._loaded_user_data = ("", "")
         self._setup_ui()
+
+    def set_file_index(self, file_index):
+        """Verbindet das Panel mit dem Index, in dem Tags und Notizen gespeichert werden."""
+        self._file_index = file_index
+
+    def _user_data(self) -> tuple:
+        return (self.tags_edit.text().strip(), self.notes_edit.toPlainText())
+
+    def save_user_data(self):
+        """Speichert geänderte Tags/Notizen der angezeigten Datei im Index."""
+        if not self._file_index or not self._current_path:
+            return
+        tags, notes = self._user_data()
+        if (tags, notes) == self._loaded_user_data:
+            return
+        self._file_index.set_tags(self._current_path, tags.split(","))
+        self._file_index.set_note(self._current_path, notes)
+        self._loaded_user_data = (tags, notes)
+
+    def _load_user_data(self, path: str):
+        tags, notes = "", ""
+        if self._file_index:
+            tags = ", ".join(self._file_index.get_tags(path))
+            notes = self._file_index.get_note(path)
+        self.tags_edit.setText(tags)
+        self.notes_edit.setPlainText(notes)
+        self._loaded_user_data = self._user_data()
 
     def _setup_ui(self):
         layout = QVBoxLayout(self)
@@ -318,6 +348,7 @@ class MetadataPanel(QWidget):
         self.tags_edit.setPlaceholderText("Tags hinzufügen (kommagetrennt)")
         self.tags_edit.setAccessibleName("Metadaten-Tags")
         self.tags_edit.setToolTip("Kommagetrennte Tags für die Datei eingeben")
+        self.tags_edit.editingFinished.connect(self.save_user_data)
         tags_layout.addWidget(self.tags_edit)
 
         layout.addWidget(tags_group)
@@ -339,6 +370,7 @@ class MetadataPanel(QWidget):
 
     def clear_metadata(self):
         """Setzt die Metadaten-Anzeige vollständig zurück."""
+        self.save_user_data()
         self.name_label.setText("-")
         self.type_label.setText("-")
         self.size_label.setText("-")
@@ -352,6 +384,7 @@ class MetadataPanel(QWidget):
 
     def show_metadata(self, path: str):
         """Zeigt Metadaten einer Datei"""
+        self.save_user_data()
         if not path or not os.path.exists(path):
             self.clear_metadata()
             return
@@ -402,6 +435,7 @@ class MetadataPanel(QWidget):
             self.created_label.setText("-")
 
         self._current_path = path
+        self._load_user_data(path)
         if hasattr(self, "checksum_btn"):
             self.checksum_btn.setEnabled(os.path.isfile(path))
 
