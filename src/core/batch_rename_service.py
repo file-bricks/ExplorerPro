@@ -236,9 +236,23 @@ def generate_preview(
             norm_target = os.path.normcase(os.path.abspath(item.new_path))
             norm_src = os.path.normcase(os.path.abspath(item.original_path))
 
-            # Case-Only Rename der eigenen Datei ist zulässig
+            # Case-Only Rename der eigenen Datei ist zulässig. os.path.normcase()
+            # allein reicht dafür nicht: normcase folgt der Pfad-STRING-Konvention
+            # des Betriebssystems (Windows -> lowercase, POSIX -> No-Op) und weiß
+            # nichts über das tatsächliche Dateisystem. Unter macOS ist die
+            # Pfadkonvention case-sensitiv (normcase verändert nichts), das dort
+            # standardmäßige APFS aber case-insensitiv -- "sample.txt" und
+            # "SAMPLE.txt" sind auf Dateisystemebene dieselbe Datei, obwohl ihre
+            # normcase-Strings sich unterscheiden. os.path.samefile() vergleicht
+            # dagegen tatsächliche Inode/Device-Identität und erkennt das korrekt.
             if norm_target == norm_src:
                 continue
+            if os.path.exists(item.new_path) and os.path.exists(item.original_path):
+                try:
+                    if os.path.samefile(item.new_path, item.original_path):
+                        continue
+                except OSError:
+                    pass
 
             # Ziel wird von einer anderen, nicht wegziehenden Batch-Datei blockiert
             if norm_target in blocked_original_paths:
