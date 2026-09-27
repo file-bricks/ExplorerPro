@@ -87,13 +87,23 @@ class ExplorerProApp(MainWindow):
             self.center_on_screen()
 
         # Splitter-Größen
-        main_sizes = settings.value("splitter/main")
-        if main_sizes:
-            self.main_splitter.setSizes([int(s) for s in main_sizes])
+        for key, splitter in (
+            ("splitter/main", self.main_splitter),
+            ("splitter/right", self.right_splitter),
+        ):
+            saved = settings.value(key)
+            try:
+                sizes = [int(size) for size in saved]
+            except (TypeError, ValueError):
+                continue
+            # Qt saves a hidden splitter child as size 0. Restoring that value
+            # collapses the panel even though its View action remains checked.
+            if len(sizes) == splitter.count() and all(size > 0 for size in sizes):
+                splitter.setSizes(sizes)
 
-        right_sizes = settings.value("splitter/right")
-        if right_sizes:
-            self.right_splitter.setSizes([int(s) for s in right_sizes])
+        # Older sessions saved zero-width panels while their menu actions stayed checked.
+        self._toggle_sidebar()
+        self._toggle_preview()
 
     def _setup_connections(self):
         """Verbindet Signale und Slots"""
@@ -242,8 +252,13 @@ class ExplorerProApp(MainWindow):
         # Einstellungen speichern
         settings = QSettings()
         settings.setValue("window/geometry", self.saveGeometry())
-        settings.setValue("splitter/main", self.main_splitter.sizes())
-        settings.setValue("splitter/right", self.right_splitter.sizes())
+        for key, splitter in (
+            ("splitter/main", self.main_splitter),
+            ("splitter/right", self.right_splitter),
+        ):
+            sizes = splitter.sizes()
+            if all(size > 0 for size in sizes):
+                settings.setValue(key, sizes)
 
         logging.info("ExplorerPro beendet")
         super().closeEvent(event)

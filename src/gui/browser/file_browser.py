@@ -116,7 +116,6 @@ class FileBrowser(QWidget):
 
         # Datei-System-Model
         self.model = QFileSystemModel()
-        self.model.setRootPath("")
         self.model.setFilter(
             QDir.Filter.AllEntries |
             QDir.Filter.NoDotAndDotDot
@@ -131,9 +130,6 @@ class FileBrowser(QWidget):
         # Tabellen-View (DnD-fähige Unterklasse für startDrag-Override)
         self.table = _DnDTableView(self)
         self.table.setModel(self.proxy)
-        self.table.setRootIndex(self.proxy.mapFromSource(
-            self.model.index(QDir.rootPath())
-        ))
 
         # Spalten konfigurieren
         self.table.setSelectionBehavior(
@@ -219,7 +215,9 @@ class FileBrowser(QWidget):
 
         self._current_path = path
 
-        source_index = self.model.index(path)
+        # QFileSystemModel loads directories asynchronously. index(path) alone
+        # can point at a valid directory while its rows remain empty forever.
+        source_index = self.model.setRootPath(path)
         proxy_index = self.proxy.mapFromSource(source_index)
         self.table.setRootIndex(proxy_index)
 
@@ -235,7 +233,7 @@ class FileBrowser(QWidget):
             self._history_index -= 1
             path = self._history[self._history_index]
             self._current_path = path
-            source_index = self.model.index(path)
+            source_index = self.model.setRootPath(path)
             proxy_index = self.proxy.mapFromSource(source_index)
             self.table.setRootIndex(proxy_index)
             self._update_file_count()
@@ -248,7 +246,7 @@ class FileBrowser(QWidget):
             self._history_index += 1
             path = self._history[self._history_index]
             self._current_path = path
-            source_index = self.model.index(path)
+            source_index = self.model.setRootPath(path)
             proxy_index = self.proxy.mapFromSource(source_index)
             self.table.setRootIndex(proxy_index)
             self._update_file_count()
@@ -265,8 +263,8 @@ class FileBrowser(QWidget):
     def refresh(self):
         """Aktualisiert die Ansicht"""
         if self._current_path:
-            self.model.setRootPath("")
-            self.model.setRootPath(self._current_path)
+            source_index = self.model.setRootPath(self._current_path)
+            self.table.setRootIndex(self.proxy.mapFromSource(source_index))
             self._update_file_count()
 
     def set_show_hidden_files(self, show: bool):
@@ -305,6 +303,9 @@ class FileBrowser(QWidget):
         menu = QMenu(self)
 
         if index.isValid():
+            # A right click on another row must act on that row, not on an old selection.
+            if not self.table.selectionModel().isRowSelected(index.row(), index.parent()):
+                self.table.selectRow(index.row())
             source_index = self.proxy.mapToSource(index)
             file_path = self.model.filePath(source_index)
             is_file = os.path.isfile(file_path)
