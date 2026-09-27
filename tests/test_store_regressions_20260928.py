@@ -8,7 +8,7 @@ from unittest.mock import Mock
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QItemSelectionModel
 from PySide6.QtGui import QContextMenuEvent
 from PySide6.QtWidgets import QApplication, QInputDialog, QMenu
 
@@ -46,6 +46,23 @@ def _actions_from_real_context_event(browser, path, monkeypatch):
     )
     QApplication.sendEvent(browser.table.viewport(), event)
     assert len(menus) == 1, "The viewport must deliver the real context menu event"
+    return {action.text(): action for action in menus[0].actions() if action.text()}
+
+
+def _blank_actions_from_real_context_event(browser, monkeypatch):
+    menus = []
+
+    class CapturingMenu(QMenu):
+        def exec(self, *args):
+            menus.append(self)
+
+    monkeypatch.setattr(browser_module, "QMenu", CapturingMenu)
+    pos = browser.table.viewport().rect().bottomRight()
+    event = QContextMenuEvent(
+        QContextMenuEvent.Reason.Mouse, pos, browser.table.viewport().mapToGlobal(pos)
+    )
+    QApplication.sendEvent(browser.table.viewport(), event)
+    assert len(menus) == 1
     return {action.text(): action for action in menus[0].actions() if action.text()}
 
 
@@ -135,6 +152,63 @@ def test_real_context_event_executes_each_file_action_and_rename(tmp_path, monke
     actions["Umbenennen"].trigger()
     assert not target.exists()
     assert (tmp_path / "neu.txt").exists()
+    browser.close()
+
+
+def test_real_context_event_executes_multi_selection_actions(tmp_path, monkeypatch):
+    _app()
+    first = tmp_path / "a.txt"
+    second = tmp_path / "b.txt"
+    first.write_text("a", encoding="utf-8")
+    second.write_text("b", encoding="utf-8")
+    browser = FileBrowser()
+    browser.resize(800, 500)
+    browser.show()
+    browser.navigate_to(str(tmp_path))
+    for _ in range(100):
+        _app().processEvents()
+        if browser.proxy.rowCount(browser.table.rootIndex()) == 2:
+            break
+        time.sleep(.01)
+    for path in (first, second):
+        index = browser.proxy.mapFromSource(browser.model.index(str(path)))
+        browser.table.selectionModel().select(
+            index, QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows
+        )
+    batch = Mock()
+    diff = Mock()
+    monkeypatch.setattr(browser, "_show_batch_rename", batch)
+    monkeypatch.setattr(browser, "_show_diff", diff)
+    actions = _actions_from_real_context_event(browser, first, monkeypatch)
+    actions["✏️ Mehrfach umbenennen..."].trigger()
+    actions["⚖️ Dateien vergleichen (Diff)..."].trigger()
+    batch.assert_called_once()
+    diff.assert_called_once()
+    browser.close()
+
+
+def test_real_context_event_executes_blank_area_actions(tmp_path, monkeypatch):
+    _app()
+    browser = FileBrowser()
+    browser.resize(800, 500)
+    browser.show()
+    browser.navigate_to(str(tmp_path))
+    methods = {
+        "📄 Neue Datei...": "create_new_file",
+        "📁 Neuer Ordner": "create_new_folder",
+        "⚖️ Dateien vergleichen...": "_show_diff",
+        "Einfügen": "paste_from_clipboard",
+        "Aktualisieren": "refresh",
+    }
+    calls = {}
+    for method in set(methods.values()):
+        calls[method] = Mock()
+        monkeypatch.setattr(browser, method, calls[method])
+    actions = _blank_actions_from_real_context_event(browser, monkeypatch)
+    for label, method in methods.items():
+        assert label in actions
+        actions[label].trigger()
+        calls[method].assert_called_once()
     browser.close()
 
 
