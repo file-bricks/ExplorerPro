@@ -185,6 +185,8 @@ def test_real_context_event_executes_multi_selection_actions(tmp_path, monkeypat
     batch.assert_called_once()
     diff.assert_called_once()
     browser.close()
+    browser.deleteLater()
+    _app().processEvents()
 
 
 def test_real_context_event_executes_blank_area_actions(tmp_path, monkeypatch):
@@ -210,6 +212,8 @@ def test_real_context_event_executes_blank_area_actions(tmp_path, monkeypatch):
         actions[label].trigger()
         calls[method].assert_called_once()
     browser.close()
+    browser.deleteLater()
+    _app().processEvents()
 
 
 def test_frozen_editor_uses_real_python_and_rejects_alias(tmp_path, monkeypatch):
