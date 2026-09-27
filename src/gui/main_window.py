@@ -539,16 +539,37 @@ class MainWindow(QMainWindow):
 
     def _toggle_sidebar(self):
         """Sidebar ein-/ausblenden"""
-        self.sidebar.setVisible(self.toggle_sidebar.isChecked())
+        self._set_splitter_panel_visible(
+            self.main_splitter, self.sidebar, self.toggle_sidebar.isChecked(), 250
+        )
 
     def _toggle_preview(self):
         """Preview ein-/ausblenden"""
-        self.preview_panel.setVisible(self.toggle_preview.isChecked())
+        self._set_splitter_panel_visible(
+            self.right_splitter, self.preview_panel, self.toggle_preview.isChecked(), 350
+        )
+
+    @staticmethod
+    def _set_splitter_panel_visible(splitter, panel, visible: bool, preferred_width: int):
+        """Restore a panel collapsed to zero by a persisted splitter state."""
+        panel.setVisible(visible)
+        if not visible:
+            return
+        sizes = splitter.sizes()
+        index = splitter.indexOf(panel)
+        if index < 0 or sizes[index] > 0:
+            return
+        other = 1 - index
+        total = sum(sizes) or splitter.width() or preferred_width * 3
+        panel_width = min(preferred_width, max(1, total // 3))
+        sizes[index] = panel_width
+        sizes[other] = max(1, total - panel_width)
+        splitter.setSizes(sizes)
 
     def show_file_metadata(self, path: str, focus_tags: bool = False):
         """Blendet das Vorschau-/Metadaten-Panel ein und zeigt die Datei dort an."""
         self.toggle_preview.setChecked(True)
-        self.preview_panel.setVisible(True)
+        self._toggle_preview()
         self.preview_panel.show_preview(path)
         if focus_tags:
             tags_edit = self.preview_panel.metadata_panel.tags_edit

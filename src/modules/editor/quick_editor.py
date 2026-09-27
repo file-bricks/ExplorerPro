@@ -6,6 +6,8 @@ Basiert auf PythonBox
 """
 
 import json
+import os
+import shutil
 import sys
 from pathlib import Path
 from typing import Optional
@@ -22,6 +24,31 @@ from PySide6.QtGui import (
 )
 
 from .syntax_highlighter import get_lexer_for_extension
+
+
+def find_python_interpreter() -> str | None:
+    """Return a real Python executable, never the frozen ExplorerPro executable."""
+    if not getattr(sys, "frozen", False):
+        return sys.executable
+
+    configured = os.environ.get("EXPLORERPRO_PYTHON", "").strip().strip('"')
+    candidates = [configured] if configured else [shutil.which(name) for name in ("py", "python", "python3")]
+    for candidate in candidates:
+        if not candidate:
+            continue
+        path = Path(candidate)
+        if not path.is_absolute():
+            resolved = shutil.which(candidate)
+            if not resolved:
+                continue
+            path = Path(resolved)
+        try:
+            if (path.is_file() and path.stat().st_size > 0
+                    and path.resolve() != Path(sys.executable).resolve()):
+                return str(path)
+        except OSError:
+            continue
+    return None
 
 
 def _validate_json(text: str) -> tuple:
@@ -500,7 +527,14 @@ class QuickEditorDialog(QDialog):
         self._process.finished.connect(self._process_finished)
 
         if ext == '.py':
-            self._process.start(sys.executable, [self.filepath])
+            python = find_python_interpreter()
+            if python is None:
+                message = ("Kein Python-Interpreter gefunden. Installieren Sie Python oder "
+                           "setzen Sie EXPLORERPRO_PYTHON auf die echte python.exe.")
+                self._add_output(message + "\n", "#F14C4C")
+                QMessageBox.warning(self, "Python-Skript ausführen", message)
+                return
+            self._process.start(python, [self.filepath])
         elif ext == '.js':
             self._process.start('node', [self.filepath])
         else:
