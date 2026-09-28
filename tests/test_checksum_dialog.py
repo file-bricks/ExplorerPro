@@ -71,10 +71,13 @@ def test_checksum_dialog_non_existent_file(tmp_path: Path):
 
 def test_checksum_dialog_close_cancels_worker(tmp_path: Path):
     """Prüft, dass closeEvent den Worker sauber abbricht."""
-    _ensure_app()
+    app = _ensure_app()
     sample = tmp_path / "cancel_test.txt"
     sample.write_bytes(b"X" * (500 * 1024))
 
     dlg = ChecksumDialog(str(sample))
     dlg.closeEvent(QCloseEvent())
     assert dlg.worker is not None
+    dlg.close()
+    dlg.deleteLater()
+    app.processEvents()
