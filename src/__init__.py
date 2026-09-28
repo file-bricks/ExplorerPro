@@ -6,7 +6,7 @@ Fusion aus: ProFiler, PythonBox, ProSync, AmpelTool, SoftwareCenter, ProfiPrompt
 
 """
 
-from .version import __version__
+from .version import __version__ as __version__
 __author__ = "ExplorerPro Team"
 
 from .app import ExplorerProApp
