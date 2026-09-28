@@ -8,10 +8,11 @@ Lokaler Paketbefund vom 28.09.2026: `Geiger.ExplorerPro_1.0.0.0_neutral__9jp3kxz
 
 | Ticket | Schwere | Beschreibung | Fundort | Status |
 |---|---|---|---|---|
-| T-20260928-288887892 | P1 | Sidebar und Vorschau können nach einem Neustart trotz aktivierter Ansicht auf Breite null bleiben. | `src/app.py`, `src/gui/main_window.py` | IN ARBEIT |
-| T-20260928-288887892 | P1 | Ein Ordnerwechsel aktualisiert den Pfad, lädt aber keine Dateizeilen; dadurch bleiben Vorschau, Umbenennen und Dateiaktionen unerreichbar. | `src/gui/browser/file_browser.py` | IN ARBEIT |
-| T-20260928-288887892 | P1 | Umbenennen und Kontextmenü-Aktionen müssen am installierten Paket und am neuen Build tatsächlich ausgelöst werden; der installierte Binärstand enthält den Fix vom 26.09.2026 nicht. | `src/gui/browser/file_browser.py`, Paketversion | IN ARBEIT |
-| T-20260928-288887892 | P1 | „Python-Skript ausführen“ startet im gefrorenen Build erneut ExplorerPro statt eines Python-Interpreters. | `src/modules/editor/quick_editor.py` | IN ARBEIT |
+| T-20260928-288887892 | P1 | Sidebar und Vorschau können nach einem Neustart trotz aktivierter Ansicht auf Breite null bleiben. | `src/app.py`, `src/gui/main_window.py` | GEFIXT (GitHub); Pakettest grün, Store nicht eingereicht |
+| T-20260928-288887892 | P1 | Ein Ordnerwechsel aktualisiert den Pfad, lädt aber keine Dateizeilen; dadurch bleiben Vorschau, Umbenennen und Dateiaktionen unerreichbar. | `src/gui/browser/file_browser.py` | GEFIXT (GitHub); Pakettest grün, Store nicht eingereicht |
+| T-20260928-288887892 | P1 | Umbenennen und Kontextmenü-Aktionen müssen am installierten Paket und am neuen Build tatsächlich ausgelöst werden; der installierte Binärstand enthält den Fix vom 26.09.2026 nicht. | `src/gui/browser/file_browser.py`, Paketversion | GEFIXT (GitHub); Pakettest grün, Store nicht eingereicht |
+| T-20260928-288887892 | P1 | „Python-Skript ausführen“ startet im gefrorenen Build erneut ExplorerPro statt eines Python-Interpreters. | `src/modules/editor/quick_editor.py` | GEFIXT (GitHub); Pakettest grün, Store nicht eingereicht |
+| T-20260928-288887892 | P1 | Desktop- und EXE-Icon weichen vom neuen Store-Motiv ab; im Paket fehlt `resources.pri`. | `scripts/gen_store_icons.py`, `scripts/build_store_msix.ps1`, `store_assets/` | GEFIXT (GitHub); Paket-Gate grün, Store nicht eingereicht |
 
 ## Geplanter nächster Build: 1.0.7.0
 

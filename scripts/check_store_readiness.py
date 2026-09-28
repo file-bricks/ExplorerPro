@@ -103,11 +103,20 @@ def check_store_icon_assets(project_root: Path) -> List[str]:
 
 def check_msix_package(project_root: Path) -> List[str]:
     errors = []
-    msix_path = project_root / "releases" / "ExplorerPro.msix"
+    config_path = project_root / "store_package.json"
+    if not config_path.is_file():
+        return errors  # The missing metadata is reported by check_store_package_json.
+    try:
+        version = json.loads(config_path.read_text(encoding="utf-8")).get("version", "").removesuffix(".0")
+    except (ValueError, AttributeError):
+        return errors  # Invalid metadata is reported by check_store_package_json.
+    if not version:
+        return errors
+    msix_path = project_root / "releases" / "windowsstore" / f"v{version}" / "ExplorerPro.msix"
     if not msix_path.exists():
-        errors.append("releases/ExplorerPro.msix is missing.")
+        errors.append(f"{msix_path.relative_to(project_root)} is missing.")
     elif msix_path.stat().st_size < 1_000_000:
-        errors.append(f"releases/ExplorerPro.msix is suspiciously small ({msix_path.stat().st_size} bytes).")
+        errors.append(f"{msix_path.relative_to(project_root)} is suspiciously small ({msix_path.stat().st_size} bytes).")
     return errors
 
 
