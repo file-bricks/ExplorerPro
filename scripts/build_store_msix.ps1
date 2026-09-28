@@ -24,6 +24,10 @@ if ($CheckToolsOnly) {
 }
 $config = Get-Content (Join-Path $projectRoot 'store_package.json') -Raw | ConvertFrom-Json
 $releaseVersion = $config.version -replace '\.0$', ''
+$projectVersion = & python -c "import sys; sys.path.insert(0, r'$projectRoot\src'); from version import __version__; print(__version__)"
+if ($LASTEXITCODE -ne 0 -or $releaseVersion -ne $projectVersion) {
+    throw "Store package version $($config.version) differs from pyproject.toml version $projectVersion."
+}
 $output = Join-Path $projectRoot "releases\windowsstore\v$releaseVersion\ExplorerPro.msix"
 $exe = Join-Path $projectRoot 'dist\ExplorerPro\ExplorerPro.exe'
 

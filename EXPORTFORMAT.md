@@ -36,7 +36,7 @@ Nicht exportieren:
   "created_at": "2026-07-22T00:00:00+00:00",
   "app": {
     "name": "ExplorerPro",
-    "version": "1.0.0",
+    "version": "1.0.7",
     "platform": "windows"
   },
   "export_options": {

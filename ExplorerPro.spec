@@ -12,6 +12,7 @@ a = Analysis(
     pathex=[str(src_dir), str(project_root)],
     binaries=[],
     datas=[
+        (str(project_root / 'pyproject.toml'), '.'),
         (str(icon_file), '.'),
         (str(project_root / 'assets'), 'assets'),
         (str(project_root / 'locales'), 'locales'),

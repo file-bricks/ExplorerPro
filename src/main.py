@@ -4,7 +4,6 @@
 ExplorerPro - Ein intelligenter Datei-Explorer
 Fusion aus ProFiler, PythonBox, ProSync, AmpelTool, SoftwareCenter, ProfiPrompt
 
-Version: 0.1.0
 """
 
 import sys
@@ -27,6 +26,7 @@ from PySide6.QtCore import Qt, QTranslator, QLibraryInfo
 from PySide6.QtGui import QIcon
 
 from app import ExplorerProApp
+from version import __version__
 
 
 def load_app_icon() -> QIcon:
@@ -61,6 +61,10 @@ def install_qt_translations(app: QApplication, lang: str):
     return None
 
 
+def set_application_version(app: QApplication) -> None:
+    app.setApplicationVersion(__version__)
+
+
 def main():
     """Haupteinstiegspunkt für ExplorerPro"""
     # High DPI Support
@@ -73,7 +77,7 @@ def main():
     app.setOrganizationName("ExplorerPro")
     from translator import get_translator
     install_qt_translations(app, get_translator().get_language())
-    app.setApplicationVersion("0.1.0")
+    set_application_version(app)
     icon = load_app_icon()
     if not icon.isNull():
         app.setWindowIcon(icon)

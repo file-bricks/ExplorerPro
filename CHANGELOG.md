@@ -6,6 +6,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ## [Unreleased]
 
 ### Store-Paket 1.0.7.0 (T-20260928-288887892, 2026-09-28)
+- Laufzeit, Über-Dialog und Workspace-Export lesen die Version jetzt aus `pyproject.toml`; der Paketbau prüft die Übereinstimmung mit `store_package.json`.
 - Desktop-, Fenster-, EXE-, Mobile- und Legacy-Icons nutzen jetzt das vom Nutzer ausgewählte neue Store-Kachelmotiv. `scripts/gen_store_icons.py` erzeugt daraus alle benötigten Größen einschließlich der MSIX-`targetsize`- und `altform`-Varianten.
 - `scripts/build_store_msix.ps1` erzeugt die Icons vor dem PyInstaller-Build, prüft den Quellbaum und ruft den Store-Builder mit Paket-Gate auf. Dadurch wird `resources.pri` in das MSIX aufgenommen.
 - Der Store-Readiness-Check prüft jetzt den versionierten Paketpfad `releases/windowsstore/v1.0.7/ExplorerPro.msix`.
