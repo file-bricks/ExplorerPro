@@ -21,6 +21,7 @@ from .sidebar import Sidebar
 from .browser.file_browser import FileBrowser
 from .preview.preview_panel import PreviewPanel
 from .status_bar import StatusBarWidget
+from version import __version__
 
 
 class SearchToolBar(QToolBar):
@@ -776,8 +777,8 @@ class MainWindow(QMainWindow):
         QMessageBox.about(
             self,
             "Über ExplorerPro",
-            """<h2>ExplorerPro</h2>
-            <p>Version 1.0.0</p>
+            f"""<h2>ExplorerPro</h2>
+            <p>Version {__version__}</p>
             <p>Ein intelligenter Datei-Explorer mit:</p>
             <ul>
                 <li>Datenbank-gestützter Volltextsuche</li>

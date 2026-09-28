@@ -4,10 +4,9 @@
 ExplorerPro - Intelligenter Datei-Explorer
 Fusion aus: ProFiler, PythonBox, ProSync, AmpelTool, SoftwareCenter, ProfiPrompt
 
-Version: 0.1.0
 """
 
-__version__ = "0.1.0"
+from .version import __version__
 __author__ = "ExplorerPro Team"
 
 from .app import ExplorerProApp

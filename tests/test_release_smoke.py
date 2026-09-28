@@ -10,7 +10,7 @@ import pytest
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-RELEASE_EXE = PROJECT_ROOT / "releases" / "v1.0.0" / "ExplorerPro" / "ExplorerPro.exe"
+RELEASE_EXE = PROJECT_ROOT / "dist" / "ExplorerPro" / "ExplorerPro.exe"
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="Release-EXE-Smoke ist Windows-spezifisch")

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-APP_VERSION = "1.0.0"
+from version import __version__
 SCHEMA = "explorerpro-workspace-v1"
 
 # Nur Muster die standardmäßig aktiv sind (default=True in privacy_monitor.py)
@@ -46,7 +46,7 @@ class WorkspaceExporter:
             "created_at": datetime.now(timezone.utc).isoformat(),
             "app": {
                 "name": "ExplorerPro",
-                "version": APP_VERSION,
+                "version": __version__,
                 "platform": platform.system().lower(),
             },
             "export_options": {
