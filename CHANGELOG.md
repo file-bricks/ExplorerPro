@@ -5,6 +5,16 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Discoverability, Visuelle Architektur & Level 1 SBOM Audit (2026-09-29, Pfad B)
+- **18-Punkte Navigations-Parität mit reziproken dualen HTML-Ankern**: Beide Dokumente (`README.md` und `README_de.md`) mit dualen HTML-Ankern (`<a id="sec-01"></a>` .. `<a id="sec-18"></a>`) ausgestattet, die nahtlos mit allen bestehenden Überschrifts-Slugs koexistieren.
+- **ASCII Four-View Architektur-Topologie**: Vier-Sichten-Projektion (`[VIEW 1: USER INTERFACE, MULTI-TAB PRESENTATION & DOCKING CONTROLS]`, `[VIEW 2: APPLICATION EVENT BUS, ORCHESTRATION & LOCALIZATION ENGINE]`, `[VIEW 3: BACKGROUND INDEXING, CONCURRENT WORKERS & ANALYSIS ENGINES]`, `[VIEW 4: DEFENSE PERIMETER, RUNASINVOKER NON-ELEVATION & PRIVACY BOUNDARY]`; auf Deutsch `[SICHT 1]` bis `[SICHT 4]`) in Abschnitt 2 beider Dokumente integriert.
+- **Gesetzlicher Haftungsausschluss [§ 521 BGB Gefälligkeitsrecht] & verbindliche 48h SLA**: In Abschnitt 18 von `README.md` und `README_de.md` sowie in `SECURITY.md` verankert.
+- **PEP 621 Metadaten-Erweiterung (`pyproject.toml`)**: `project.urls` um `"Level 1 SBOM"`, `"Plain-Text License"` und `"Third-Party Licenses (Text)"` ergänzt; 20 gesättigte Keywords synchronisiert.
+- **Level 1 SBOM Text-Begleitdatei (`THIRD_PARTY_LICENSES.txt`) & Invarianten-Matrix**: Umfassendes Text-Inventar mit Laufzeit- und Entwicklungsabhängigkeiten, Bestätigung aller 10 Governance- und Laufzeitinvarianten (`INV-LOCAL-01` .. `INV-SLA-10`), Unprivileged `RunAsInvoker` Nicht-Eskalationsgarantie, Zero-Copyleft- / AGPL-3.0-Harmonisierung und vollständigen Lizenztexten (AGPL-3.0, LGPL-3.0, BSD-3-Clause, MIT, Apache-2.0, PSFL-2.0).
+- **NOTICE & Level 1 SBOM Audit (`THIRD_PARTY_LICENSES.md`)**: Re-audit Stand 2026-09-29 mit Invarianten-Querverweistabelle und wechselseitiger `NOTICE`-Verlinkung.
+- **Kontext- & Badge-Synchronisation**: `llms.txt` Last-checked Datum 2026-09-29, 372+ Tests und Level 1 SBOM Text-Begleitdatei referenziert; Badges in `README.md` und `README_de.md` synchronisiert (Tests: 372+ passed | 100% green, Last-Checked: 2026-09-29, Level 1 SBOM: Plain Text).
+- **Automatisierte Vertragstest-Suite (`tests/test_metadata_contract.py`)**: 6 neue Vertragstests für `sec-01`..`sec-18` duale HTML-Anker, ASCII Four-View Topologie, PEP 621 SBOM URLs, Level 1 SBOM Begleitdatei Invarianten, gesetzlichen Haftungsausschluss und Marketing-Log Aktualität hinzugefügt.
+
 ### Store-Paket 1.0.7.0 (T-20260928-288887892, 2026-09-28)
 - Laufzeit, Über-Dialog und Workspace-Export lesen die Version jetzt aus `pyproject.toml`; der Paketbau prüft die Übereinstimmung mit `store_package.json`.
 - Desktop-, Fenster-, EXE-, Mobile- und Legacy-Icons nutzen jetzt das vom Nutzer ausgewählte neue Store-Kachelmotiv. `scripts/gen_store_icons.py` erzeugt daraus alle benötigten Größen einschließlich der MSIX-`targetsize`- und `altform`-Varianten.

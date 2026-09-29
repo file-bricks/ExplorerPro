@@ -25,7 +25,7 @@
 [![Stand](https://img.shields.io/badge/Stand-2026--09--26-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]
-> **Abgrenzung / Disambiguation & LLM-Kontext:** `file-bricks/ExplorerPro` ist eine lokale Open-Source Desktop-Dateimanager- und Power-User-Explorer-Suite auf Basis von Python (PySide6 / Qt 6). Das Projekt ist vollkommen unabhängig von Cloud-Speicher-Weboberflächen, mobilen Dateimanagern oder proprietären Dateiverwaltungsprogrammen. Maschinenlesbarer Architekturkontext, Suchbegriffe, Laufzeitinvarianten und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt. Zuletzt geprüft: **2026-09-26**.
+> **Abgrenzung / Disambiguation & LLM-Kontext:** `file-bricks/ExplorerPro` ist eine lokale Open-Source Desktop-Dateimanager- und Power-User-Explorer-Suite auf Basis von Python (PySide6 / Qt 6). Das Projekt ist vollkommen unabhängig von Cloud-Speicher-Weboberflächen, mobilen Dateimanagern oder proprietären Dateiverwaltungsprogrammen. Maschinenlesbarer Architekturkontext, Suchbegriffe, Laufzeitinvarianten und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt. Zuletzt geprüft: **2026-09-29**.
 
 > **ExplorerPro** ist ein moderner, datenschutzorientierter Desktop-Dateimanager und Power-User-Explorer für Windows, Linux und macOS. Er vereint Mehrtab-Dateinavigation, sofortige Mehrformat-Dateivorschau (PDF, Bilder, Quellcode mit Syntax-Highlighting, Markdown, Tabellenkalkulation), blitzschnelle SQLite-FTS5-Volltextsuche, Hash-basierte Duplikaterkennung, Datenschutz-Überwachung, Ordnersynchronisation und einen integrierten Quelltext-Editor in einer nativen PySide6-Anwendung (Qt 6).
 
@@ -54,6 +54,7 @@
 
 ---
 
+<a id="sec-01"></a>
 <a id="1-features"></a>
 <a id="features"></a>
 <a id="key-features"></a>
@@ -76,6 +77,7 @@ Standard-Dateimanager des Betriebssystems sind für oberflächliches Browsen ged
 
 ---
 
+<a id="sec-02"></a>
 <a id="2-architecture"></a>
 <a id="architecture"></a>
 <a id="system-architecture"></a>
@@ -124,8 +126,50 @@ ExplorerPro trennt Benutzeroberflächen-Präsentation, Anwendungs-Lebenszyklusko
 +---------------------------------------------------------------------------------+
 ```
 
+### Vier-Sichten-Architekturtopologie
+
+```text
++--------------------------------------------------------------------------------------------------+
+|                             EXPLORERPRO SUITE ARCHITEKTUR-TOPOLOGIE                              |
++--------------------------------------------------------------------------------------------------+
+| [SICHT 1: BENUTZEROBERFLÄCHE, MULTI-TAB-DARSTELLUNG & DOCKING-STEUERUNG]                         |
+|   * Hauptfenster & Menü : PySide6 QMainWindow, QTabWidget, Breadcrumb-Leiste, andockbare Panels  |
+|   * Multi-Tab-Browser   : FileBrowser QTableView mit Sortierung, Filter, Icon-Cache, Drag & Drop |
+|   * Dokumentenvorschau  : PyMuPDF PDF-Render, QSyntaxHighlighter Editor, Excel/CSV Tabellen     |
+|   * Dialog-Werkzeuge    : Duplikatfinder, Mehrfachumbenennung, Prüfsummen, Diff-Viewer, Optionen |
++--------------------------------------------------------------------------------------------------+
+|                                                |                                                 |
+|                                                v                                                 |
++--------------------------------------------------------------------------------------------------+
+| [SICHT 2: ANWENDUNGS-EVENT-BUS, ORCHESTRIERUNG & LOKALISIERUNGS-ENGINE]                          |
+|   * EventBus-Dispatcher : Entkoppelte Publish/Subscribe-Signalarchitektur für UI-Komponenten     |
+|   * Lokalisierung (i18n): Dynamische 6-Sprachen-Übersetzungs-Engine (de, en, es, zh, ja, ru)     |
+|   * Konfiguration       : Atomare JSON-Einstellungsspeicherung, Hell/Dunkel-Farbpaletten-Engine  |
+|   * Plattform-Utils     : Robuste Pfadnormalisierung, Windows-Verknüpfungsauflösung (.lnk)       |
++--------------------------------------------------------------------------------------------------+
+|                                                |                                                 |
+|                                                v                                                 |
++--------------------------------------------------------------------------------------------------+
+| [SICHT 3: HINTERGRUND-INDEXIERUNG, NEBENLÄUFIGE WORKER & ANALYSE-ENGINES]                        |
+|   * Eingebettete Suche  : SQLite FTS5 Volltextsuche mit WAL-Journal & tokenisierter Indexierung  |
+|   * Byte-Exakte Dedupe  : Zweistufige Größenfilterung & MD5/SHA-256 Chunk-Hash-Kollisionsanalyse  |
+|   * ThreadPool-Worker   : QThread / QThreadPool blockierungsfreie Worker für Suche, Hash & Index |
+|   * Verzeichnis-Sync    : Einweg- & Spiegel-Synchronisations-Engine mit Regex-Ausschlussfiltern  |
++--------------------------------------------------------------------------------------------------+
+|                                                |                                                 |
+|                                                v                                                 |
++--------------------------------------------------------------------------------------------------+
+| [SICHT 4: SICHERHEITSPERIMETER, RUNASINVOKER-BENUTZERRECHTE & DATENSCHUTZ-GRENZE]                |
+|   * Datenschutz-Wächter : Echtzeit-Regex-Monitor für Schlüssel, Zertifikate & sensible Dateien   |
+|   * Dateisicherheit     : Zerstörungsfreie Papierkorb-Integration, kollisionsfreies Auto-Suffix   |
+|   * Sandbox-Ausführung  : Unprivilegierte RunAsInvoker-Ausführung (INV-SEC-02, 0 Administrator)   |
+|   * Zero-Egress Air-Gap : 0 Netzwerk-Sockets, 0 Telemetrie-Beacons, 100% Offline-Isolation       |
++--------------------------------------------------------------------------------------------------+
+```
+
 ---
 
+<a id="sec-03"></a>
 <a id="3-target-personas--discoverability"></a>
 <a id="target-personas--discoverability"></a>
 <a id="target-personas"></a>
@@ -172,6 +216,7 @@ ExplorerPro trennt Benutzeroberflächen-Präsentation, Anwendungs-Lebenszyklusko
 
 ---
 
+<a id="sec-04"></a>
 <a id="4-comparative-matrix-vs-alternatives"></a>
 <a id="comparative-matrix-vs-alternatives"></a>
 <a id="comparative-matrix"></a>
@@ -195,6 +240,7 @@ ExplorerPro trennt Benutzeroberflächen-Präsentation, Anwendungs-Lebenszyklusko
 
 ---
 
+<a id="sec-05"></a>
 <a id="5-dual-mermaid-diagrams"></a>
 <a id="dual-mermaid-diagrams"></a>
 <a id="mermaid-diagrams"></a>
@@ -325,6 +371,7 @@ sequenceDiagram
 
 ---
 
+<a id="sec-06"></a>
 <a id="6-governance--runtime-invariants"></a>
 <a id="governance--runtime-invariants"></a>
 <a id="runtime-invariants"></a>
@@ -350,6 +397,7 @@ ExplorerPro arbeitet unter 10 verbindlichen Laufzeit- und Governance-Invarianten
 
 ---
 
+<a id="sec-07"></a>
 <a id="7-multi-tab-browser--instant-previews"></a>
 <a id="multi-tab-browser--instant-previews"></a>
 <a id="multi-tab-browser"></a>
@@ -367,6 +415,7 @@ ExplorerPro arbeitet unter 10 verbindlichen Laufzeit- und Governance-Invarianten
 
 ---
 
+<a id="sec-08"></a>
 <a id="8-sqlite-fts5-search--duplicate-elimination"></a>
 <a id="sqlite-fts5-search--duplicate-elimination"></a>
 <a id="fts5-search-and-duplicates"></a>
@@ -386,6 +435,7 @@ ExplorerPro arbeitet unter 10 verbindlichen Laufzeit- und Governance-Invarianten
 
 ---
 
+<a id="sec-09"></a>
 <a id="9-visual-showcase-gallery"></a>
 <a id="visual-showcase-gallery"></a>
 <a id="visual-showcase"></a>
@@ -407,6 +457,7 @@ ExplorerPro arbeitet unter 10 verbindlichen Laufzeit- und Governance-Invarianten
 
 ---
 
+<a id="sec-10"></a>
 <a id="10-installation--dependencies"></a>
 <a id="installation--dependencies"></a>
 <a id="installation"></a>
@@ -452,6 +503,7 @@ START_ExplorerPro.bat
 
 ---
 
+<a id="sec-11"></a>
 <a id="11-integrated-quick-editor--sync-engine"></a>
 <a id="integrated-quick-editor--sync-engine"></a>
 <a id="quick-editor--sync-engine"></a>
@@ -474,6 +526,7 @@ START_ExplorerPro.bat
 
 ---
 
+<a id="sec-12"></a>
 <a id="12-universal-6-language-localization"></a>
 <a id="universal-6-language-localization"></a>
 <a id="localization"></a>
@@ -495,6 +548,7 @@ Die Sprache kann dynamisch unter **Einstellungen -> Allgemein** umgeschaltet wer
 
 ---
 
+<a id="sec-13"></a>
 <a id="13-keyboard-shortcuts--power-controls"></a>
 <a id="keyboard-shortcuts--power-controls"></a>
 <a id="keyboard-shortcuts"></a>
@@ -528,6 +582,7 @@ ExplorerPro bietet umfassende Tastatursteuerung für maximale Arbeitseffizienz:
 
 ---
 
+<a id="sec-14"></a>
 <a id="14-workspace-management--redacted-export"></a>
 <a id="workspace-management--redacted-export"></a>
 <a id="workspace-export"></a>
@@ -543,6 +598,7 @@ ExplorerPro unterstützt portablen Arbeitsbereichs-Austausch nach der `explorerp
 
 ---
 
+<a id="sec-15"></a>
 <a id="15-microsoft-store--packaging"></a>
 <a id="microsoft-store--packaging"></a>
 <a id="windows-store--packaging"></a>
@@ -570,6 +626,7 @@ Store-Dokumentation:
 
 ---
 
+<a id="sec-16"></a>
 <a id="16-testing--quality-gates"></a>
 <a id="testing--quality-gates"></a>
 <a id="quality-gates"></a>
@@ -606,6 +663,7 @@ Jeder Commit und Pull Request wird automatisiert via [GitHub Actions CI](.github
 
 ---
 
+<a id="sec-17"></a>
 <a id="17-third-party-licenses--transparency"></a>
 <a id="third-party-licenses--transparency"></a>
 <a id="licenses--transparency"></a>
@@ -629,6 +687,7 @@ Strategische Marketingpläne, Suchbegriffe und Zielgruppen werden in [MARKETING-
 
 ---
 
+<a id="sec-18"></a>
 <a id="18-security-policy--sibling-ecosystem"></a>
 <a id="security-policy--sibling-ecosystem"></a>
 <a id="sibling-ecosystem"></a>
@@ -667,8 +726,10 @@ ExplorerPro ist Teil der **open-bricks** Open-Source-Familie und arbeitet eng mi
 | [ellmos-controlcenter-mcp](https://github.com/ellmos-ai/ellmos-controlcenter-mcp) | `ellmos-ai` | Model Context Protocol Gateway | MCP-Gateway für KI-Tooling |
 | [open-bricks](https://github.com/open-bricks) | `open-bricks` | Dachorganisation & Katalog | Zentrales Portal für datenschutzkonforme Tools |
 
-### Haftungsausschluss / Disclaimer
+### Gesetzlicher Haftungsausschluss [§ 521 BGB Gefälligkeitsrecht] & Sicherheits-SLA
 
-Dieses Projekt wird unentgeltlich als Open-Source-Software bereitgestellt. Nutzung auf eigenes Risiko. Es gibt keine Wartungszusage, Verfügbarkeitsgarantie, Gewähr für Fehlerfreiheit oder Eignung für einen bestimmten Zweck.
+Dieses Projekt wird unentgeltlich als Open-Source-Software bereitgestellt [§ 521 BGB Gefälligkeitsrecht]. Die Haftung des Autors und der Mitwirkenden ist auf Vorsatz und grobe Fahrlässigkeit beschränkt. Es besteht kein Anspruch auf Gewährleistung, Funktionsgarantie oder Schadensersatz bei Datenverlust. Die Nutzung erfolgt auf eigenes Risiko.
 
-*This project is provided as unpaid open-source software. Use it at your own risk. No warranty, maintenance promise, availability guarantee, or fitness for a particular purpose is assumed.*
+*This project is provided free of charge as open-source software under statutory gratuitous terms [§ 521 BGB]. Liability is strictly limited to intent and gross negligence. No warranty, maintenance guarantee, or fitness for a particular purpose is assumed. Use at your own risk.*
+
+Sicherheitsanfragen und Schwachstellenmeldungen werden gemäß [SECURITY.md](SECURITY.md) mit einem verbindlichen **48-Stunden-Reaktions-SLA** und einer Ersteinstufung innerhalb von 5 Werktagen bearbeitet.

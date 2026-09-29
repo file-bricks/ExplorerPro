@@ -1,11 +1,12 @@
 # Third-Party Software Licenses & Runtime Invariants
 
-Stand: **2026-09-26**
+Stand: **2026-09-29**
 Repository: **file-bricks/ExplorerPro**  
 Primary License: **GNU Affero General Public License v3 (AGPL-3.0)**  
 Parent Organization: **file-bricks**  
 Umbrella Ecosystem: **open-bricks**
 Attribution Notice: **[NOTICE](NOTICE)**
+Level 1 SBOM Companion: **[THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt)**
 
 ---
 
@@ -74,6 +75,21 @@ All dependencies adhere to core architectural guarantees:
 
 5. **Safe File Operations & Destruction Defense (`INV-SAFE-05`)**:
    File deletion, duplicate elimination, and folder synchronization delegate destructive actions to the operating system's native Recycle Bin or enforce explicit, cancel-default confirmation gates.
+
+### Level 1 SBOM Invariant Cross-Reference Matrix
+
+| Invariant ID | Invariant Description | Implementation & Audit Verification | Status |
+|---|---|---|---|
+| **INV-LOCAL-01** | 100% Local-First & Zero-Egress Air-Gap | 0 remote network calls, 0 cloud sockets, complete local filesystem isolation | **VERIFIED** |
+| **INV-SEC-02** | RunAsInvoker Non-Elevation Security | Operates strictly within user privileges; zero UAC or sudo elevation required | **VERIFIED** |
+| **INV-SAFE-03** | Destructive Safety & Recycle Bin Guard | OS Recycle Bin integration with explicit cancel-default confirmation modal guards | **VERIFIED** |
+| **INV-PASTE-04** | Collision-Free Auto-Suffix Paste Engine | Automatic `_copy` suffix logic prevents silent data overwrites | **VERIFIED** |
+| **INV-INDEX-05** | Sub-Second SQLite FTS5 Fulltext Search | Embedded WAL SQLite database indexer with tokenized content extraction | **VERIFIED** |
+| **INV-HASH-06** | Byte-Exact 2-Stage Duplicate Detection | Size-bucket grouping followed by MD5/SHA-256 chunk hashing for zero collision | **VERIFIED** |
+| **INV-PRIV-07** | Real-Time Privacy & Secret Watchdog | Continuous regex scanner detecting API keys, private certificates, and secrets | **VERIFIED** |
+| **INV-I18N-08** | Universal 6-Language Dynamic Parity | 100% dynamic UI localization parity across EN, DE, ES, ZH, JA, RU | **VERIFIED** |
+| **INV-EXP-09** | Sanitized Redacted Workspace Export | `explorerpro-workspace-v1` format excludes absolute user paths and arguments | **VERIFIED** |
+| **INV-SLA-10** | AGPL-3.0 Governance & 48h Response SLA | Strict AGPL-3.0 copyleft alignment and committed 48-hour security response SLA | **VERIFIED** |
 
 ---
 

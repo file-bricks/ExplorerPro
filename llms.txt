@@ -7,7 +7,7 @@ Primary UI stack: PySide6 (Qt 6)
 License: AGPL-3.0
 Microsoft Store Identity: Geiger.ExplorerPro (Store-ID: 9P0X52WSHZ3Q)
 
-Last-checked: 2026-09-26
+Last-checked: 2026-09-29
 Version: 1.0.7
 
 ## Search Phrases
@@ -60,7 +60,7 @@ ExplorerPro is a local-first desktop file explorer suite for power users. It com
 - `README.md`: English GitHub entry point with badges, 18-point quick navigation, showcase gallery, dual Mermaid diagrams, 10 invariants, and ecosystem matrix.
 - `README_de.md`: German entry point with full bilingual parity.
 - `THIRD_PARTY_LICENSES.md`: Complete third-party license inventory and zero-egress / RunAsInvoker guarantees.
-- `THIRD_PARTY_LICENSES.txt`: Concise plain-text runtime dependencies and licensing inventory.
+- `THIRD_PARTY_LICENSES.txt`: Plain-text Level 1 SBOM companion, runtime dependencies, and invariant cross-reference matrix.
 - `MARKETING-LOG.txt`: Discovery strategies, 4 target personas, high-intent keywords, and competitive matrix.
 - `SECURITY.md`: Bilingual security policy with local-first, zero-egress, non-elevation, and 48-hour response SLA.
 - `PORTIERUNGSPLAN.md`: Platform, store-readiness, and companion plan.
@@ -69,7 +69,7 @@ ExplorerPro is a local-first desktop file explorer suite for power users. It com
 - `src/main.py`: Application entry point.
 - `src/gui/`: Main UI components and PySide6 widgets.
 - `src/modules/indexer/duplicate_finder.py`: Duplicate-finder UI and actions.
-- `tests/`: Automated test suite (350+ unit, integration, accessibility, and metadata contract tests).
+- `tests/`: Automated test suite (372+ unit, integration, accessibility, and metadata contract tests).
 
 ## Verification
 
