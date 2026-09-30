@@ -1,42 +1,26 @@
 """Capacity widgets and independent background requests for drive rows."""
 
-import atexit
+from concurrent.futures import ThreadPoolExecutor
 
-from PySide6.QtCore import QObject, QRunnable, Qt, Signal, QThreadPool
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QProgressBar, QVBoxLayout, QWidget
 
-from core.drive_usage import format_capacity, read_drive_usage
+from core.drive_usage import format_capacity
 from translator import t
 
-_shutdown_registered = False
+_executor = None
 
 
-def capacity_pool():
-    """Finish Python runnables before interpreter/Qt teardown destroys them."""
-    global _shutdown_registered
-    pool = QThreadPool.globalInstance()
-    if not _shutdown_registered:
-        atexit.register(pool.waitForDone)
-        _shutdown_registered = True
-    return pool
+def capacity_executor():
+    """Workers only return Python data; no Qt objects cross thread boundaries.
 
-
-class UsageSignals(QObject):
-    ready = Signal(str, object)
-
-
-class UsageRequest(QRunnable):
-    def __init__(self, path):
-        super().__init__()
-        self.path = path
-        self.signals = UsageSignals()
-
-    def run(self):
-        try:
-            usage = read_drive_usage(self.path)
-        except (OSError, ValueError):
-            usage = None
-        self.signals.ready.emit(self.path, usage)
+    The standard executor joins workers before interpreter teardown, even when
+    the view has already been deleted and its polling timer has stopped.
+    """
+    global _executor
+    if _executor is None:
+        _executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="drive-capacity")
+    return _executor
 
 
 class DriveCapacityWidget(QWidget):

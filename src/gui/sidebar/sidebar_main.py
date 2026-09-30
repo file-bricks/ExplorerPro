@@ -19,7 +19,8 @@ from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
 from modules.prompts import PromptsPanel
 from modules.sync import SyncPanel
-from gui.sidebar.drive_capacity import DriveCapacityWidget, UsageRequest, capacity_pool
+from core.drive_usage import read_drive_usage
+from gui.sidebar.drive_capacity import DriveCapacityWidget, capacity_executor
 from translator import t
 
 
@@ -35,6 +36,9 @@ class TreePanel(QWidget):
         self._resize_timer = QTimer(self)
         self._resize_timer.setSingleShot(True)
         self._resize_timer.timeout.connect(self._resize_drive_rows)
+        self._usage_timer = QTimer(self)
+        self._usage_timer.setInterval(50)
+        self._usage_timer.timeout.connect(self._collect_drive_usage)
         self._setup_ui()
         self._populate()
         self.refresh_drive_usage()
@@ -114,10 +118,22 @@ class TreePanel(QWidget):
                 continue
             capacity.set_loading()
             item.setSizeHint(0, capacity.sizeHint())
-            request = UsageRequest(path)
-            request.signals.ready.connect(self._on_drive_usage, Qt.ConnectionType.QueuedConnection)
-            self._usage_requests[path] = request
-            capacity_pool().start(request)
+            self._usage_requests[path] = capacity_executor().submit(read_drive_usage, path)
+        if self._usage_requests:
+            self._usage_timer.start()
+
+    @Slot()
+    def _collect_drive_usage(self):
+        for path, future in list(self._usage_requests.items()):
+            if not future.done():
+                continue
+            try:
+                usage = future.result()
+            except (OSError, ValueError):
+                usage = None
+            self._on_drive_usage(path, usage)
+        if not self._usage_requests:
+            self._usage_timer.stop()
 
     @Slot(str, object)
     def _on_drive_usage(self, path, usage):

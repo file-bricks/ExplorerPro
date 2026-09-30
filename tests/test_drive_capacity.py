@@ -6,7 +6,7 @@ from types import SimpleNamespace
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 
 import pytest
-from PySide6.QtCore import QDir, QThreadPool, Qt
+from PySide6.QtCore import QDir, Qt
 from PySide6.QtWidgets import QApplication
 from PySide6.QtTest import QTest
 
@@ -80,7 +80,7 @@ def test_binary_units():
 
 def make_panel(monkeypatch, read):
     monkeypatch.setattr(QDir, 'drives', lambda: [SimpleNamespace(absolutePath=lambda: 'X:/')])
-    monkeypatch.setattr('gui.sidebar.drive_capacity.read_drive_usage', read)
+    monkeypatch.setattr('gui.sidebar.sidebar_main.read_drive_usage', read)
     return TreePanel()
 
 
@@ -112,7 +112,8 @@ def test_slow_query_keeps_gui_responsive_and_deduplicates(monkeypatch):
         assert len(threads) == 2
     finally:
         release.set()
-        QThreadPool.globalInstance().waitForDone(4000)
+        for future in panel._usage_requests.values():
+            future.result(timeout=4)
         panel.close()
 
 
@@ -126,7 +127,7 @@ def test_failed_query_and_recovery(monkeypatch):
     assert item.text(0) == ''  # embedded title must not overlap tree text
     assert item.data(0, Qt.ItemDataRole.AccessibleTextRole) == 'X:/'
     assert 'nicht verfügbar' in widget.details.text()
-    monkeypatch.setattr('gui.sidebar.drive_capacity.read_drive_usage', lambda path: DriveUsage(100, 100, 0))
+    monkeypatch.setattr('gui.sidebar.sidebar_main.read_drive_usage', lambda path: DriveUsage(100, 100, 0))
     panel.refresh_drive_usage()
     wait_until(lambda: not panel._usage_requests)
     assert widget.bar.value() == 1000
@@ -139,7 +140,8 @@ def test_failed_query_and_recovery(monkeypatch):
 
 
 def test_panel_destroyed_while_query_is_running(monkeypatch):
-    from PySide6.QtCore import QCoreApplication, QEvent
+    from PySide6.QtCore import QCoreApplication, QEvent, QObject
+    from shiboken6 import isValid
     entered, release = threading.Event(), threading.Event()
 
     def read(path):
@@ -148,13 +150,21 @@ def test_panel_destroyed_while_query_is_running(monkeypatch):
         return DriveUsage(100, 20, 80)
 
     panel = make_panel(monkeypatch, read)
+    futures = list(panel._usage_requests.values())
+    unrelated = None
     try:
         wait_until(entered.is_set)
+        unrelated = QObject()
+        unrelated.deleteLater()
         panel.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+        QCoreApplication.sendPostedEvents(panel, QEvent.Type.DeferredDelete)
+        assert isValid(unrelated), 'Panel cleanup must not delete unrelated Qt objects'
     finally:
         release.set()
-        assert QThreadPool.globalInstance().waitForDone(4000)
+        for future in futures:
+            future.result(timeout=4)
+        if unrelated is not None and isValid(unrelated):
+            QCoreApplication.sendPostedEvents(unrelated, QEvent.Type.DeferredDelete)
         app.processEvents()
 
 
@@ -198,8 +208,7 @@ def slow_read(path):
     time.sleep(.2)
     print('capacity-job-finished', flush=True)
     return DriveUsage(100, 20, 80)
-drive_capacity.read_drive_usage = slow_read
-drive_capacity.capacity_pool().start(drive_capacity.UsageRequest('X:/'))
+drive_capacity.capacity_executor().submit(slow_read, 'X:/')
 '''
     result = subprocess.run([sys.executable, '-c', script], cwd=root, capture_output=True, text=True, timeout=20)
     assert result.returncode == 0, result.stderr
@@ -217,7 +226,7 @@ def test_destroyed_panel_cancels_queued_layout_refresh(monkeypatch, capsys):
     timer.start(0)
     assert timer.isActive()
     panel.deleteLater()
-    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    QCoreApplication.sendPostedEvents(panel, QEvent.Type.DeferredDelete)
     assert not isValid(timer)
     app.processEvents()
     assert 'RuntimeError' not in capsys.readouterr().err

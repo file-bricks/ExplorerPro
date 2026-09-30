@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from PySide6.QtCore import QItemSelectionModel
 from PySide6.QtGui import QContextMenuEvent
 from PySide6.QtWidgets import QApplication, QInputDialog, QMenu
+from PySide6.QtTest import QTest
 
 import gui.browser.file_browser as browser_module
 from gui.browser.file_browser import FileBrowser
@@ -102,11 +103,11 @@ def test_navigation_loads_files_and_selection_reaches_preview(tmp_path):
     browser.resize(800, 500)
     browser.show()
     browser.navigate_to(str(tmp_path))
-    for _ in range(100):
-        _app().processEvents()
-        if browser.proxy.rowCount(browser.table.rootIndex()) > 0:
-            break
-        time.sleep(.01)
+    # QFileSystemModel gathers rows asynchronously. Pump the actual Qt event
+    # loop with a bounded deadline instead of assuming a one-second OS scan.
+    deadline = time.monotonic() + 5
+    while browser.proxy.rowCount(browser.table.rootIndex()) == 0 and time.monotonic() < deadline:
+        QTest.qWait(10)
     root = browser.proxy.mapToSource(browser.table.rootIndex())
     assert Path(browser.model.filePath(root)) == tmp_path
     assert browser.proxy.rowCount(browser.table.rootIndex()) > 0
