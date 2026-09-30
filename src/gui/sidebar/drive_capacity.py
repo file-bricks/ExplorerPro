@@ -23,6 +23,14 @@ def capacity_executor():
     return _executor
 
 
+def shutdown_capacity_executor():
+    """Drain Python workers before restoring GC or destroying QApplication."""
+    global _executor
+    if _executor is not None:
+        _executor.shutdown(wait=True, cancel_futures=True)
+        _executor = None
+
+
 class DriveCapacityWidget(QWidget):
     def __init__(self, path, parent=None):
         super().__init__(parent)
