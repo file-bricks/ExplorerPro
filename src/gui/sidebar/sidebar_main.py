@@ -32,6 +32,9 @@ class TreePanel(QWidget):
         super().__init__(parent)
         self._drive_rows = {}
         self._usage_requests = {}
+        self._resize_timer = QTimer(self)
+        self._resize_timer.setSingleShot(True)
+        self._resize_timer.timeout.connect(self._resize_drive_rows)
         self._setup_ui()
         self._populate()
         self.refresh_drive_usage()
@@ -134,8 +137,9 @@ class TreePanel(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        QTimer.singleShot(0, self._resize_drive_rows)
+        self._resize_timer.start(0)
 
+    @Slot()
     def _resize_drive_rows(self):
         """Wrapped labels need taller rows when the sidebar becomes narrow."""
         for item, capacity in self._drive_rows.values():

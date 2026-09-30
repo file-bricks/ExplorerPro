@@ -204,3 +204,20 @@ drive_capacity.capacity_pool().start(drive_capacity.UsageRequest('X:/'))
     result = subprocess.run([sys.executable, '-c', script], cwd=root, capture_output=True, text=True, timeout=20)
     assert result.returncode == 0, result.stderr
     assert 'capacity-job-finished' in result.stdout
+
+
+def test_destroyed_panel_cancels_queued_layout_refresh(monkeypatch, capsys):
+    from PySide6.QtCore import QCoreApplication, QEvent
+    from shiboken6 import isValid
+    panel = make_panel(monkeypatch, lambda path: DriveUsage(100, 20, 80))
+    wait_until(lambda: not panel._usage_requests)
+    panel.resize(200, 600)
+    panel.show()
+    timer = panel._resize_timer
+    timer.start(0)
+    assert timer.isActive()
+    panel.deleteLater()
+    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    assert not isValid(timer)
+    app.processEvents()
+    assert 'RuntimeError' not in capsys.readouterr().err
