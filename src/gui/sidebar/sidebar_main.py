@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QTreeWidget, QTreeWidgetItem, QListWidget, QListWidgetItem,
     QPushButton, QLabel, QFrame, QToolButton, QButtonGroup
 )
-from PySide6.QtCore import Qt, Signal, QDir, QStandardPaths
+from PySide6.QtCore import Qt, Signal, Slot, QDir, QStandardPaths, QSize, QTimer
 import os
 
 # Module importieren - absolute Imports
@@ -19,6 +19,8 @@ from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
 from modules.prompts import PromptsPanel
 from modules.sync import SyncPanel
+from gui.sidebar.drive_capacity import DriveCapacityWidget, UsageRequest, capacity_pool
+from translator import t
 
 
 class TreePanel(QWidget):
@@ -28,8 +30,11 @@ class TreePanel(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._drive_rows = {}
+        self._usage_requests = {}
         self._setup_ui()
         self._populate()
+        self.refresh_drive_usage()
 
     def _setup_ui(self):
         layout = QVBoxLayout(self)
@@ -48,6 +53,9 @@ class TreePanel(QWidget):
         self.tree.itemExpanded.connect(self._on_item_expanded)
 
         layout.addWidget(self.tree)
+        self.refresh_drives_button = QPushButton(t("Laufwerksbelegung aktualisieren"))
+        self.refresh_drives_button.clicked.connect(self.refresh_drive_usage)
+        layout.addWidget(self.refresh_drives_button)
 
     def _populate(self):
         """Füllt den Baum mit Laufwerken und Schnellzugriff"""
@@ -77,17 +85,63 @@ class TreePanel(QWidget):
         # Laufwerke
         drives_item = QTreeWidgetItem(["💾 Laufwerke"])
         drives_item.setFlags(drives_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
+        self.tree.addTopLevelItem(drives_item)
 
         for drive in QDir.drives():
             path = drive.absolutePath()
-            item = QTreeWidgetItem([path])
+            # The embedded widget paints the title; duplicate tree text would
+            # otherwise show through between its labels and progress bar.
+            item = QTreeWidgetItem([""])
             item.setData(0, Qt.ItemDataRole.UserRole, path)
+            item.setData(0, Qt.ItemDataRole.AccessibleTextRole, path)
             item.setIcon(0, get_file_icon(path))
             item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
             drives_item.addChild(item)
+            capacity = DriveCapacityWidget(path)
+            self.tree.setItemWidget(item, 0, capacity)
+            item.setSizeHint(0, capacity.sizeHint())
+            self._drive_rows[path] = (item, capacity)
 
-        self.tree.addTopLevelItem(drives_item)
         drives_item.setExpanded(True)
+
+    def refresh_drive_usage(self):
+        """One request per drive; repeat clicks cannot queue duplicate queries."""
+        for path, (item, capacity) in self._drive_rows.items():
+            if path in self._usage_requests:
+                continue
+            capacity.set_loading()
+            item.setSizeHint(0, capacity.sizeHint())
+            request = UsageRequest(path)
+            request.signals.ready.connect(self._on_drive_usage, Qt.ConnectionType.QueuedConnection)
+            self._usage_requests[path] = request
+            capacity_pool().start(request)
+
+    @Slot(str, object)
+    def _on_drive_usage(self, path, usage):
+        self._usage_requests.pop(path, None)
+        row = self._drive_rows.get(path)
+        if row is not None:
+            item, capacity = row
+            capacity.set_usage(usage)
+            item.setToolTip(0, capacity.toolTip())
+            item.setData(0, Qt.ItemDataRole.AccessibleDescriptionRole, capacity.accessibleDescription())
+            item.setSizeHint(0, capacity.sizeHint())
+            self._resize_drive_rows()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.refresh_drive_usage()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        QTimer.singleShot(0, self._resize_drive_rows)
+
+    def _resize_drive_rows(self):
+        """Wrapped labels need taller rows when the sidebar becomes narrow."""
+        for item, capacity in self._drive_rows.values():
+            height = capacity.layout().totalHeightForWidth(capacity.width())
+            item.setSizeHint(0, QSize(0, max(height, capacity.sizeHint().height())))
+        self.tree.doItemsLayout()
 
     def _on_item_clicked(self, item: QTreeWidgetItem, column: int):
         path = item.data(0, Qt.ItemDataRole.UserRole)

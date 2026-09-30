@@ -5,6 +5,13 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Laufwerksbelegung / Drive capacity (2026-09-30)
+
+- Die Ordner-Seitenleiste zeigt für jedes Laufwerk einen Belegungsbalken, den belegten Anteil in Prozent und freien, belegten sowie gesamten Speicher in binären Größen (GiB/TiB).
+- Kapazitäten werden unabhängig im Hintergrund abgefragt, beim Öffnen und über „Laufwerksbelegung aktualisieren“ erneuert. Nicht verfügbare Laufwerke erhalten einen erklärenden Text statt falscher Nullwerte.
+- Text und Balken sind auch in schmalen Seitenleisten lesbar; Pfadnavigation bleibt erhalten. Alle neuen Texte sind in DE/EN/ES/ZH/JA/RU vorhanden.
+- Source feature only: no EXE/MSIX release or Store submission performed.
+
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
 - **CI/CD Lifecycle Workflows & Label-Governance**:
   - `.github/workflows/auto-assign.yml`: Automatisches Zuweisen von Pull Requests an Maintainer via `actions/github-script@v7`, `timeout-minutes: 5`, least-privilege permissions (`issues: write`, `pull-requests: write`) und Concurrency `cancel-in-progress: true`.
