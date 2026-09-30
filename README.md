@@ -23,7 +23,7 @@
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
 [![Version: 1.0.7](https://img.shields.io/badge/version-1.0.7-orange.svg)](CHANGELOG.md)
-[![Last Checked](https://img.shields.io/badge/Last--Checked-2026--09--29-blue?style=flat-square)](CHANGELOG.md)
+[![Last Checked](https://img.shields.io/badge/Last--Checked-2026--09--30-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]
 > **Disambiguation & LLM Context:** `file-bricks/ExplorerPro` is a local-first desktop file manager and power-user explorer suite built with Python (PySide6 / Qt 6). It is completely independent of cloud-based web drives, mobile file managers, or closed-source commercial utilities. Machine-readable architecture context, search keywords, runtime invariants, and verification entry points are maintained in [llms.txt](llms.txt). Last checked: **2026-09-29**.

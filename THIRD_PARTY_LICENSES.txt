@@ -1,7 +1,7 @@
 # THIRD-PARTY SOFTWARE LICENSES & LEVEL 1 SBOM COMPANION
 ================================================================================
 Project: ExplorerPro Suite (Modern Local-First Desktop File Manager & Power Explorer)
-Audited: 2026-09-29 against Level 1 SBOM and Runtime Invariants
+Audited: 2026-09-30 against Level 1 SBOM and Runtime Invariants (Previous Audits: 2026-09-29)
 License: GNU Affero General Public License v3 (AGPL-3.0-only; see LICENSE and NOTICE)
 Repository: https://github.com/file-bricks/ExplorerPro
 Parent Organization: file-bricks (https://github.com/file-bricks)

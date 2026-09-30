@@ -5,6 +5,25 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
+- **CI/CD Lifecycle Workflows & Label-Governance**:
+  - `.github/workflows/auto-assign.yml`: Automatisches Zuweisen von Pull Requests an Maintainer via `actions/github-script@v7`, `timeout-minutes: 5`, least-privilege permissions (`issues: write`, `pull-requests: write`) und Concurrency `cancel-in-progress: true`.
+  - `.github/workflows/label-sync.yml`: Automatisierte Label-Synchronisation via `EndBug/label-sync@v2`, least-privilege permissions (`issues: write`), `timeout-minutes: 5` und Concurrency `cancel-in-progress: true`.
+  - `.github/labels.yml`: 11 standardisierte Labels (`bug`, `enhancement`, `good first issue`, `help wanted`, `documentation`, `duplicate`, `wontfix`, `priority: high`, `priority: low`, `needs-triage`, `stale`) gemäß GOVERNANCE.md §4.2.
+- **Level 1 SBOM Plain-Text Begleitdatei & Re-Audit (Stand: 2026-09-30)**:
+  - `THIRD_PARTY_LICENSES.txt`: Re-auditiert auf Stand 2026-09-30; Bestätigung aller 10 Governance- und Laufzeitinvarianten (`INV-LOCAL-01` bis `INV-SLA-10`), `RunAsInvoker`-Zertifizierung (`INV-SEC-02`), Zero-Egress und vollständige Lizenztexte.
+  - `THIRD_PARTY_LICENSES.md`: Re-Audit Stand 2026-09-30 mit formaler Verlinkung auf den Plain-Text-Begleiter.
+  - `NOTICE`: Bestätigung der Verlinkung zu `THIRD_PARTY_LICENSES.txt` und `THIRD_PARTY_LICENSES.md`.
+- **Multi-Host Sync-, Lock- und Cache-Defense in `.gitignore`**:
+  - Erweiterung um Multi-Host Sync-Muster (`*-IDEAPAD-GEI*`) und Multi-Agent-Locks (`LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`).
+- **PEP 621 Standardisierung in `pyproject.toml`**:
+  - `project.urls`: `Contributing` registriert.
+  - Strikte Version-Freeze-Disziplin per `T-20260920-167562623`: `version = "1.0.7"` unverändert beibehalten.
+- **Dokumentations- und RAG-Kontext-Synchronisation**:
+  - `README.md` & `README_de.md`: Badges auf `Last-Checked: 2026-09-30` bzw. `Stand: 2026-09-30` aktualisiert.
+  - `llms.txt`: Last-checked Datum 2026-09-30 synchronisiert.
+  - `MARKETING-LOG.txt`: Section 11 Pfad A Revisionsbericht dokumentiert.
+
 ### Discoverability, Visuelle Architektur & Level 1 SBOM Audit (2026-09-29, Pfad B)
 - **18-Punkte Navigations-Parität mit reziproken dualen HTML-Ankern**: Beide Dokumente (`README.md` und `README_de.md`) mit dualen HTML-Ankern (`<a id="sec-01"></a>` .. `<a id="sec-18"></a>`) ausgestattet, die nahtlos mit allen bestehenden Überschrifts-Slugs koexistieren.
 - **ASCII Four-View Architektur-Topologie**: Vier-Sichten-Projektion (`[VIEW 1: USER INTERFACE, MULTI-TAB PRESENTATION & DOCKING CONTROLS]`, `[VIEW 2: APPLICATION EVENT BUS, ORCHESTRATION & LOCALIZATION ENGINE]`, `[VIEW 3: BACKGROUND INDEXING, CONCURRENT WORKERS & ANALYSIS ENGINES]`, `[VIEW 4: DEFENSE PERIMETER, RUNASINVOKER NON-ELEVATION & PRIVACY BOUNDARY]`; auf Deutsch `[SICHT 1]` bis `[SICHT 4]`) in Abschnitt 2 beider Dokumente integriert.

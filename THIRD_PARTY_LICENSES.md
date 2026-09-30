@@ -1,6 +1,6 @@
 # Third-Party Software Licenses & Runtime Invariants
 
-Stand: **2026-09-29**
+Stand: **2026-09-30** (Vorversion: 2026-09-29)
 Repository: **file-bricks/ExplorerPro**  
 Primary License: **GNU Affero General Public License v3 (AGPL-3.0)**  
 Parent Organization: **file-bricks**  

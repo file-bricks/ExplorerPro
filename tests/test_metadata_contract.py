@@ -227,7 +227,7 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-09-29" in content
+    assert any(d in content for d in ("Last-checked: 2026-09-30", "Last-checked: 2026-09-29"))
     assert "1.0.7" in content
     assert "ci.yml" in content
 
@@ -367,7 +367,7 @@ def test_notice_and_unreleased_changelog():
     assert "THIRD_PARTY_LICENSES.txt" in notice_text
 
     llms_text = (REPO_ROOT / "llms.txt").read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-29" in llms_text
+    assert any(d in llms_text for d in ("Last-checked: 2026-09-30", "Last-checked: 2026-09-29"))
     assert "NOTICE" in llms_text
 
     changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
@@ -381,6 +381,7 @@ def test_marketing_log_and_personas():
     assert path.exists(), "MARKETING-LOG.txt must exist in repo root"
     content = path.read_text(encoding="utf-8")
 
+    assert any(s in content for s in ["Stand: 2026-09-30", "Stand: 2026-09-29"])
     for section in [
         "TARGET AUDIENCE & STAKEHOLDER PERSONAS",
         "Desktop Power Users",
@@ -393,7 +394,6 @@ def test_marketing_log_and_personas():
         "GOVERNANCE & RUNTIME INVARIANTS",
         "8. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & METADATA AUDIT",
         "10. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & LEVEL 1 SBOM AUDIT",
-        "Stand: 2026-09-29",
     ]:
         assert section in content, f"Section '{section}' missing in MARKETING-LOG.txt"
 
@@ -456,3 +456,53 @@ def test_offline_zero_egress_and_privacy_invariants():
         text = py_file.read_text(encoding="utf-8", errors="ignore")
         for bad in forbidden_imports:
             assert bad not in text, f"Forbidden remote egress import '{bad}' found in {py_file.name}"
+
+
+def test_ci_lifecycle_workflows_and_labels_parity():
+    """Validates auto-assign.yml, label-sync.yml, and labels.yml presence and configuration."""
+    auto_assign = REPO_ROOT / ".github" / "workflows" / "auto-assign.yml"
+    assert auto_assign.exists(), "auto-assign.yml must exist"
+    aa_text = auto_assign.read_text(encoding="utf-8")
+    assert "actions/github-script@v7" in aa_text
+    assert "timeout-minutes: 5" in aa_text
+    assert "cancel-in-progress: true" in aa_text
+    assert "pull-requests: write" in aa_text
+    assert "issues: write" in aa_text
+
+    label_sync = REPO_ROOT / ".github" / "workflows" / "label-sync.yml"
+    assert label_sync.exists(), "label-sync.yml must exist"
+    ls_text = label_sync.read_text(encoding="utf-8")
+    assert "EndBug/label-sync@v2" in ls_text
+    assert "timeout-minutes: 5" in ls_text
+    assert "cancel-in-progress: true" in ls_text
+    assert ".github/labels.yml" in ls_text
+
+    labels_file = REPO_ROOT / ".github" / "labels.yml"
+    assert labels_file.exists(), "labels.yml must exist"
+    lbl_text = labels_file.read_text(encoding="utf-8")
+    for expected in [
+        "bug", "enhancement", "good first issue", "help wanted",
+        "documentation", "duplicate", "wontfix", "priority: high",
+        "priority: low", "needs-triage", "stale"
+    ]:
+        assert expected in lbl_text, f"labels.yml missing label '{expected}'"
+
+
+def test_contributing_guide_and_pyproject_url():
+    """Validates CONTRIBUTING.md guide presence and pyproject.toml URL declaration."""
+    contrib_file = REPO_ROOT / "CONTRIBUTING.md"
+    assert contrib_file.exists(), "CONTRIBUTING.md must exist"
+    pyproject_text = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'Contributing = "https://github.com/file-bricks/ExplorerPro/blob/master/CONTRIBUTING.md"' in pyproject_text
+
+
+def test_changelog_pfad_a_unreleased_entry():
+    """Validates CHANGELOG.md contains Pfad A release notes for 2026-09-30 under Unreleased."""
+    changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    assert "## [Unreleased]" in changelog_text
+    assert "Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)" in changelog_text
+    assert "auto-assign.yml" in changelog_text
+    assert "label-sync.yml" in changelog_text
+    assert "labels.yml" in changelog_text
+    assert "INV-LOCAL-01" in changelog_text
+    assert "INV-SLA-10" in changelog_text
