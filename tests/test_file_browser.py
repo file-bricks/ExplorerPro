@@ -32,6 +32,19 @@ def test_dnd_flags_enabled():
     assert browser.table.dragEnabled(), "table.dragEnabled() muss True sein"
 
 
+def test_browser_destruction_disposes_its_models():
+    from PySide6.QtCore import QCoreApplication, QEvent
+    from shiboken6 import isValid
+    _ensure_app()
+    browser = FileBrowser()
+    model, proxy = browser.model, browser.proxy
+    browser.deleteLater()
+    QCoreApplication.sendPostedEvents(browser, QEvent.Type.DeferredDelete)
+    assert not isValid(browser)
+    assert not isValid(model), 'Filesystem gatherer must not outlive its browser'
+    assert not isValid(proxy), 'Sort model must not outlive its browser'
+
+
 def test_do_file_drop_copies_file(tmp_path):
     """_do_file_drop kopiert eine Quelldatei ohne das Original zu löschen."""
     _ensure_app()

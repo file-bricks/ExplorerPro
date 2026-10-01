@@ -115,7 +115,7 @@ class FileBrowser(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         # Datei-System-Model
-        self.model = QFileSystemModel()
+        self.model = QFileSystemModel(self)
         self.model.setFilter(
             QDir.Filter.AllEntries |
             QDir.Filter.NoDotAndDotDot
@@ -123,7 +123,7 @@ class FileBrowser(QWidget):
         self.model.directoryLoaded.connect(self._on_directory_loaded)
 
         # Sortier-Proxy
-        self.proxy = QSortFilterProxyModel()
+        self.proxy = QSortFilterProxyModel(self)
         self.proxy.setSourceModel(self.model)
         self.proxy.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
 

@@ -2,6 +2,8 @@
 
 # ExplorerPro Suite
 
+Der aktuelle Quellcode zeigt in der Ordner-Seitenleiste die Speicherbelegung je Laufwerk: Balken, Prozentanteil und freier/belegter/gesamter Speicher in GiB/TiB. Die Abfrage läuft im Hintergrund; **Laufwerksbelegung aktualisieren** erneuert die Werte. Nicht verfügbare Geräte werden verständlich gekennzeichnet. Diese Ergänzung ist noch nicht Bestandteil eines neu gebauten Releases.
+
 [English](README.md) | **[Deutsch](README_de.md)** | [Maschinenlesbarer Kontext (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
