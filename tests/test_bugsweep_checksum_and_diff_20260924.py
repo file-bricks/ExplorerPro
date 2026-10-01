@@ -152,6 +152,7 @@ def test_checksum_dialog_done_cancels_worker(tmp_path: Path, qtbot):
     sample.write_bytes(b"Z" * (1024 * 1024))
 
     dlg = ChecksumDialog(str(sample))
+    qtbot.addWidget(dlg)
     worker = dlg.worker
     assert worker is not None
 
@@ -162,13 +163,14 @@ def test_checksum_dialog_done_cancels_worker(tmp_path: Path, qtbot):
     qtbot.waitUntil(lambda: not dlg._close_timer.isActive(), timeout=3000)
 
 
-def test_checksum_dialog_directory_handling(tmp_path: Path):
+def test_checksum_dialog_directory_handling(tmp_path: Path, qtbot):
     """Prüft, dass ChecksumDialog bei einem Verzeichnis nicht abstürzt und klare Meldung liefert."""
     _ensure_app()
     sub_dir = tmp_path / "some_directory"
     sub_dir.mkdir()
 
     dlg = ChecksumDialog(str(sub_dir))
+    qtbot.addWidget(dlg)
     assert dlg.worker is None
     assert "Verzeichnis" in dlg.verify_result_label.text()
     dlg.close()

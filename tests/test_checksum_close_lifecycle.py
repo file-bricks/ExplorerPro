@@ -29,6 +29,7 @@ def test_close_remains_responsive_and_keeps_running_worker(qtbot, monkeypatch, t
     sample = tmp_path / 'sample.txt'
     sample.write_text('slow storage', encoding='utf-8')
     dialog = ChecksumDialog(str(sample))
+    qtbot.addWidget(dialog)
     dialog.show()
     completed = []
     dialog.finished.connect(completed.append)
