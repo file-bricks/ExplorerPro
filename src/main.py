@@ -65,6 +65,17 @@ def set_application_version(app: QApplication) -> None:
     app.setApplicationVersion(__version__)
 
 
+def configure_application_language():
+    """Restore the saved UI language before constructing any translated widgets."""
+    from core.settings_manager import SettingsManager
+    from translator import get_translator, SUPPORTED_LANGUAGES
+
+    language = SettingsManager.instance().get("general", "language", "de")
+    if language not in SUPPORTED_LANGUAGES:
+        language = "de"
+    return get_translator(language)
+
+
 def main():
     """Haupteinstiegspunkt für ExplorerPro"""
     # High DPI Support
@@ -75,8 +86,8 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("ExplorerPro")
     app.setOrganizationName("ExplorerPro")
-    from translator import get_translator
-    install_qt_translations(app, get_translator().get_language())
+    translator = configure_application_language()
+    install_qt_translations(app, translator.get_language())
     set_application_version(app)
     icon = load_app_icon()
     if not icon.isNull():

@@ -14,6 +14,7 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import QFont
 
 from core.checksum_service import ChecksumWorker, verify_hash
+from translator import t
 
 
 class ChecksumDialog(QDialog):
@@ -104,7 +105,7 @@ class ChecksumDialog(QDialog):
         self.copy_all_btn = QPushButton("📋 Alle Prüfsummen kopieren")
         self.copy_all_btn.setAccessibleName("Alle Prüfsummen kopieren")
         self.copy_all_btn.setAccessibleDescription("Kopiert alle berechneten Hash-Werte strukturiert in die Zwischenablage.")
-        self.copy_all_btn.setToolTip("Alle berechneten Prüfsummen (MD5, SHA-1, SHA-256, SHA-512) in die Zwischenablage kopieren")
+        self.copy_all_btn.setToolTip(t("Alle berechneten Prüfsummen (MD5, SHA-1, SHA-256, SHA-512) in die Zwischenablage kopieren"))
         self.copy_all_btn.clicked.connect(self._copy_all_hashes)
         self.copy_all_btn.setEnabled(False)
         hashes_layout.addRow("", self.copy_all_btn)
@@ -124,7 +125,7 @@ class ChecksumDialog(QDialog):
         self.verify_edit.setClearButtonEnabled(True)
         self.verify_edit.setAccessibleName("Erwartete Prüfsumme zur Verifikation")
         self.verify_edit.setAccessibleDescription("Eingabefeld für den Vergleichs-Hash. Erkennt automatisch den passenden Prüfsummen-Algorithmus.")
-        self.verify_edit.setToolTip("Geben Sie hier einen Hash ein, um die Integrität automatisch zu überprüfen")
+        self.verify_edit.setToolTip(t("Geben Sie hier einen Hash ein, um die Integrität automatisch zu überprüfen"))
         self.verify_edit.textChanged.connect(self._on_verify_text_changed)
         verify_layout.addWidget(self.verify_edit)
 
@@ -141,7 +142,7 @@ class ChecksumDialog(QDialog):
 
         self.close_btn = QPushButton("Schließen")
         self.close_btn.setAccessibleName("Dialog schließen")
-        self.close_btn.setToolTip("Schließt das Prüfsummen-Fenster (Esc)")
+        self.close_btn.setToolTip(t("Schließt das Prüfsummen-Fenster (Esc)"))
         self.close_btn.setShortcut("Escape")
         self.close_btn.setDefault(True)
         self.close_btn.clicked.connect(self.accept)
@@ -157,7 +158,7 @@ class ChecksumDialog(QDialog):
             return
         if not os.path.isfile(self.filepath):
             self.progress_bar.setVisible(False)
-            self.verify_result_label.setText("Fehler: Pfad ist ein Verzeichnis, keine Datei.")
+            self.verify_result_label.setText(t("Fehler: Pfad ist ein Verzeichnis, keine Datei."))
             self.verify_result_label.setStyleSheet("color: red; font-weight: bold;")
             return
 

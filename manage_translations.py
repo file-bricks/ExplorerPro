@@ -9,6 +9,7 @@ Verwendung:
 """
 
 import argparse
+import ast
 import json
 import os
 import re
@@ -76,6 +77,20 @@ def find_german_strings(source_dir: str) -> Set[str]:
                     for match in pattern.findall(content):
                         if is_german(match):
                             german_strings.add(match.strip())
+                # Translated calls must remain visible to the auditor after
+                # setters are changed from setToolTip("...") to setToolTip(t("...")).
+                try:
+                    tree = ast.parse(content)
+                except SyntaxError:
+                    continue
+                for node in ast.walk(tree):
+                    if (isinstance(node, ast.Call)
+                            and isinstance(node.func, ast.Name)
+                            and node.func.id == "t" and node.args
+                            and isinstance(node.args[0], ast.Constant)
+                            and isinstance(node.args[0].value, str)
+                            and node.args[0].value.strip()):
+                        german_strings.add(node.args[0].value.strip())
     return german_strings
 
 
@@ -123,7 +138,7 @@ def manage_translations(source_dir: str = ".", check_mode: bool = False) -> int:
         for lang, count in missing_by_lang.items():
             print(f"    - {lang}: {count} unvollständig")
     else:
-        print("\n[ok] Alle Strings haben vollständige Übersetzungen in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU).")
+        print("\n[ok] Alle Katalogeinträge haben vollständige Übersetzungen in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU).")
 
     print(f"\n[i] Gesamt: {len(translations)} Strings in {trans_file}")
 
