@@ -239,7 +239,7 @@ class SettingsDialog(QDialog):
 
         self.start_folder_edit.setText(get("general", "start_folder", "") or "")
         self.show_hidden_cb.setChecked(bool(get("general", "show_hidden_files", False)))
-        self.confirm_delete_cb.setChecked(bool(get("general", "confirm_delete", True)))
+        self.confirm_delete_cb.setChecked(get("general", "confirm_delete", True) is not False)
         self.remember_size_cb.setChecked(bool(get("general", "remember_window_size", True)))
 
         self.auto_index_cb.setChecked(bool(get("index", "auto_index", True)))

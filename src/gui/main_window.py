@@ -329,6 +329,14 @@ class MainWindow(QMainWindow):
         batch_rename_action.triggered.connect(self._batch_rename)
         edit_menu.addAction(batch_rename_action)
 
+        edit_menu.addSeparator()
+        self.confirm_delete_action = QAction("Vor dem Löschen nachfragen", self)
+        self.confirm_delete_action.setCheckable(True)
+        self._sync_delete_confirmation()
+        self.confirm_delete_action.triggered.connect(self._set_delete_confirmation)
+        edit_menu.addAction(self.confirm_delete_action)
+        edit_menu.aboutToShow.connect(self._sync_delete_confirmation)
+
         # ===== Ansicht-Menü =====
         view_menu = menubar.addMenu("&Ansicht")
 
@@ -758,11 +766,26 @@ class MainWindow(QMainWindow):
             self._apply_settings()
             self.statusBar().showMessage("Einstellungen gespeichert", 3000)
 
+    def _sync_delete_confirmation(self):
+        from core.settings_manager import SettingsManager
+
+        self.confirm_delete_action.setChecked(
+            SettingsManager.instance().get("general", "confirm_delete", True) is not False
+        )
+
+    def _set_delete_confirmation(self, checked):
+        from core.settings_manager import SettingsManager
+
+        settings = SettingsManager.instance()
+        settings.set("general", "confirm_delete", checked)
+        settings.save()
+
     def _apply_settings(self):
         """Wendet die gespeicherten Einstellungen auf das laufende Fenster an."""
         from core.settings_manager import SettingsManager
 
         settings = SettingsManager.instance()
+        self._sync_delete_confirmation()
 
         show_hidden = bool(settings.get("general", "show_hidden_files", False))
         if hasattr(self.file_browser, "set_show_hidden_files"):
