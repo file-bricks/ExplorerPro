@@ -5,6 +5,21 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Bugsweep & Resilienz-Härtung (2026-10-01, Turnusgemäßer Bugsweep)
+- **Mehrfachumbenennung (Batch Rename) Resilienz**:
+  - `src/core/batch_rename_service.py`:
+    - Nicht-reguläres Suchen & Ersetzen (`use_regex=False`, `regex_case_sensitive=False`) via `pattern.sub(lambda _: rules.replace_str, new_stem)` gegen unhandled `re.error: invalid group reference / bad escape` bei Backslashes (Pfade, Escape-Muster) im Ersetzungstext gehärtet.
+    - Formatierung negativer Nummerierungs-Startwerte mit korrektem Vorzeichen und Nullen-Padding (`-005` statt `-05` bei Padding 3).
+    - Windows-Gerätenamen-Schutz um `CLOCK$` erweitert.
+    - Validierung vollständig geleerter Dateinamen korrigiert (liefert leeren String statt masking mit Originalnamen).
+    - Zweistufige atomare Rollback-Hygiene in `execute_rename` bei Fehlern in Phase 2: Bereits erzeugte Zieldateien werden vor der Wiederherstellung zurück nach `temp_path` verschoben, wodurch zyklische Kettungen und Swaps kollisionsfrei ohne `[WinError 183]` oder verwaiste temporäre Dateien wiederhergestellt werden.
+    - Transaktionale Abbruch- und Wiederherstellungslogik in `rollback_rename`: Bereinigt Zwischendateien bei Fehlern in Phase 1 oder Phase 2 restlos, ohne gestrandete `.__ep_rb_tmp_*`-Dateien im Verzeichnis zu hinterlassen.
+  - `src/gui/batch_rename_dialog.py`:
+    - Synchronisation von `self.file_paths` nach `_do_rollback`: Stellt sicher, dass nach einem Klick auf "Rückgängig" die Dateipfade wieder auf die tatsächlich existierenden Originaldateien zeigen.
+    - Dialog-Lebenszyklus: Verhindert das automatische Schließen des modalen Dialogs bei `_do_rename`, sodass der Rollback-Button für den Benutzer erreichbar und nutzbar bleibt; `Accepted`-Status wird beim Schließen nach erfolgreicher Umbenennung an den Browser übermittelt.
+    - Eingabepfad-Deduplizierung unter Erhalt der Reihenfolge im Konstruktor.
+  - `tests/test_bugsweep_batch_rename_resilience_20261001.py`: 8 neue hermetische Regressionstests (100% grün).
+
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
 - **CI/CD Lifecycle Workflows & Label-Governance**:
   - `.github/workflows/auto-assign.yml`: Automatisches Zuweisen von Pull Requests an Maintainer via `actions/github-script@v7`, `timeout-minutes: 5`, least-privilege permissions (`issues: write`, `pull-requests: write`) und Concurrency `cancel-in-progress: true`.
