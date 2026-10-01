@@ -22,6 +22,7 @@ import shlex
 import subprocess
 
 from core.platform_utils import open_path_with_system
+from translator import t
 
 
 @dataclass
@@ -149,11 +150,11 @@ class AppEditDialog(QDialog):
         self.path_edit = QLineEdit()
         self.path_edit.setAccessibleName("Programmpfad")
         self.path_edit.setAccessibleDescription("Dateipfad zur ausführbaren Datei oder zum Skript.")
-        self.path_edit.setToolTip("Pfad zur ausführbaren Datei")
+        self.path_edit.setToolTip(t("Pfad zur ausführbaren Datei"))
         path_btn = QPushButton("...")
         path_btn.setFixedWidth(30)
         path_btn.setAccessibleName("Programmdatei durchsuchen")
-        path_btn.setToolTip("Dateiauswahldialog öffnen")
+        path_btn.setToolTip(t("Dateiauswahldialog öffnen"))
         path_btn.clicked.connect(self._browse_path)
         path_layout.addWidget(self.path_edit)
         path_layout.addWidget(path_btn)
@@ -163,7 +164,7 @@ class AppEditDialog(QDialog):
         self.category_combo.setEditable(True)
         self.category_combo.setAccessibleName("Kategorie")
         self.category_combo.setAccessibleDescription("Kategorie zur Gruppierung im Schnellstarter.")
-        self.category_combo.setToolTip("Kategorie auswählen oder neu eingeben")
+        self.category_combo.setToolTip(t("Kategorie auswählen oder neu eingeben"))
         self.category_combo.addItems([
             "Allgemein", "Entwicklung", "Office", "Grafik",
             "Multimedia", "Internet", "System", "Spiele"
@@ -192,7 +193,7 @@ class AppEditDialog(QDialog):
         ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
         if ok_btn:
             ok_btn.setAccessibleName("App speichern")
-            ok_btn.setToolTip("Speichert die Anwendungseinstellungen (Enter)")
+            ok_btn.setToolTip(t("Speichert die Anwendungseinstellungen (Enter)"))
         cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
         if cancel_btn:
             cancel_btn.setAccessibleName("Abbrechen")
@@ -259,9 +260,9 @@ class AppsPanel(QWidget):
         header = QHBoxLayout()
         self.search_edit = QLineEdit()
         self.search_edit.setPlaceholderText("🔍 App suchen...")
-        self.search_edit.setAccessibleName("Apps durchsuchen")
+        self.search_edit.setAccessibleName(t("Apps durchsuchen"))
         self.search_edit.setAccessibleDescription("Filtert die Anwendungsliste nach Name.")
-        self.search_edit.setToolTip("Apps durchsuchen")
+        self.search_edit.setToolTip(t("Apps durchsuchen"))
         self.search_edit.textChanged.connect(self._filter_apps)
         header.addWidget(self.search_edit)
 

@@ -1862,5 +1862,701 @@
     "zh": "浏览...",
     "ja": "参照...",
     "ru": "Обзор..."
+  },
+  "Alle berechneten Prüfsummen (MD5, SHA-1, SHA-256, SHA-512) in die Zwischenablage kopieren": {
+    "de": "Alle berechneten Prüfsummen (MD5, SHA-1, SHA-256, SHA-512) in die Zwischenablage kopieren",
+    "en": "Copy all calculated checksums (MD5, SHA-1, SHA-256, SHA-512) to the clipboard",
+    "es": "Copiar todas las sumas de comprobación calculadas (MD5, SHA-1, SHA-256, SHA-512) al portapapeles",
+    "zh": "将所有计算出的校验和（MD5、SHA-1、SHA-256、SHA-512）复制到剪贴板",
+    "ja": "計算したすべてのチェックサム（MD5、SHA-1、SHA-256、SHA-512）をクリップボードにコピー",
+    "ru": "Копировать все вычисленные контрольные суммы (MD5, SHA-1, SHA-256, SHA-512) в буфер обмена"
+  },
+  "Apps durchsuchen": {
+    "de": "Apps durchsuchen",
+    "en": "Search apps",
+    "es": "Buscar aplicaciones",
+    "zh": "搜索应用",
+    "ja": "アプリを検索",
+    "ru": "Поиск приложений"
+  },
+  "Arbeitsblatt der Excel-Arbeitsmappe auswählen": {
+    "de": "Arbeitsblatt der Excel-Arbeitsmappe auswählen",
+    "en": "Select a worksheet in the Excel workbook",
+    "es": "Seleccionar una hoja del libro de Excel",
+    "zh": "选择 Excel 工作簿中的工作表",
+    "ja": "Excel ブックのワークシートを選択",
+    "ru": "Выбрать лист книги Excel"
+  },
+  "Auf bestimmte Dateitypen einschränken": {
+    "de": "Auf bestimmte Dateitypen einschränken",
+    "en": "Restrict to specific file types",
+    "es": "Limitar a tipos de archivo específicos",
+    "zh": "限定特定文件类型",
+    "ja": "特定のファイル形式に限定",
+    "ru": "Ограничить определёнными типами файлов"
+  },
+  "Basisschriftgröße in Punkten": {
+    "de": "Basisschriftgröße in Punkten",
+    "en": "Base font size in points",
+    "es": "Tamaño de fuente base en puntos",
+    "zh": "基本字体大小（磅）",
+    "ja": "基本フォントサイズ（ポイント）",
+    "ru": "Основной размер шрифта в пунктах"
+  },
+  "Dateiauswahldialog öffnen": {
+    "de": "Dateiauswahldialog öffnen",
+    "en": "Open the file selection dialog",
+    "es": "Abrir el diálogo de selección de archivos",
+    "zh": "打开文件选择对话框",
+    "ja": "ファイル選択ダイアログを開く",
+    "ru": "Открыть диалог выбора файла"
+  },
+  "Dateidialog zur Auswahl des Startordners öffnen": {
+    "de": "Dateidialog zur Auswahl des Startordners öffnen",
+    "en": "Open the dialog to select the startup folder",
+    "es": "Abrir el diálogo para seleccionar la carpeta inicial",
+    "zh": "打开启动文件夹选择对话框",
+    "ja": "起動フォルダーの選択ダイアログを開く",
+    "ru": "Открыть диалог выбора начальной папки"
+  },
+  "Dateien fortlaufend nummerieren": {
+    "de": "Dateien fortlaufend nummerieren",
+    "en": "Number files sequentially",
+    "es": "Numerar los archivos consecutivamente",
+    "zh": "为文件连续编号",
+    "ja": "ファイルに連番を付ける",
+    "ru": "Последовательно нумеровать файлы"
+  },
+  "Dateien über dieser Größe werden nicht indiziert": {
+    "de": "Dateien über dieser Größe werden nicht indiziert",
+    "en": "Files larger than this size are not indexed",
+    "es": "Los archivos mayores que este tamaño no se indexan",
+    "zh": "不索引超过此大小的文件",
+    "ja": "このサイズを超えるファイルはインデックスに登録しません",
+    "ru": "Файлы больше этого размера не индексируются"
+  },
+  "Dateiendungen kommagetrennt eingeben": {
+    "de": "Dateiendungen kommagetrennt eingeben",
+    "en": "Enter file extensions separated by commas",
+    "es": "Introducir extensiones de archivo separadas por comas",
+    "zh": "输入文件扩展名，以逗号分隔",
+    "ja": "ファイル拡張子をカンマ区切りで入力",
+    "ru": "Введите расширения файлов через запятую"
+  },
+  "Dateinamen durchsuchen": {
+    "de": "Dateinamen durchsuchen",
+    "en": "Search file names",
+    "es": "Buscar nombres de archivo",
+    "zh": "搜索文件名",
+    "ja": "ファイル名を検索",
+    "ru": "Поиск по именам файлов"
+  },
+  "Dateivergleich starten (Strg+Enter)": {
+    "de": "Dateivergleich starten (Strg+Enter)",
+    "en": "Start file comparison (Ctrl+Enter)",
+    "es": "Iniciar comparación de archivos (Ctrl+Enter)",
+    "zh": "开始比较文件（Ctrl+Enter）",
+    "ja": "ファイル比較を開始（Ctrl+Enter）",
+    "ru": "Начать сравнение файлов (Ctrl+Enter)"
+  },
+  "Ergebnistabelle (Doppelklick oder Enter zum Öffnen)": {
+    "de": "Ergebnistabelle (Doppelklick oder Enter zum Öffnen)",
+    "en": "Results table (double-click or press Enter to open)",
+    "es": "Tabla de resultados (doble clic o Intro para abrir)",
+    "zh": "结果表（双击或按 Enter 打开）",
+    "ja": "結果一覧（ダブルクリックまたは Enter で開く）",
+    "ru": "Таблица результатов (двойной щелчок или Enter для открытия)"
+  },
+  "Erste Seite von PDF-Dokumenten im Vorschaufenster darstellen": {
+    "de": "Erste Seite von PDF-Dokumenten im Vorschaufenster darstellen",
+    "en": "Show the first page of PDF documents in the preview panel",
+    "es": "Mostrar la primera página de los documentos PDF en la vista previa",
+    "zh": "在预览面板中显示 PDF 文档的第一页",
+    "ja": "プレビューパネルに PDF の最初のページを表示",
+    "ru": "Показывать первую страницу PDF в панели предпросмотра"
+  },
+  "Exakte Schreibweise beim Suchen berücksichtigen": {
+    "de": "Exakte Schreibweise beim Suchen berücksichtigen",
+    "en": "Match letter case when searching",
+    "es": "Distinguir mayúsculas y minúsculas en la búsqueda",
+    "zh": "搜索时区分大小写",
+    "ja": "検索で大文字と小文字を区別",
+    "ru": "Учитывать регистр при поиске"
+  },
+  "Farbschema der Benutzeroberfläche": {
+    "de": "Farbschema der Benutzeroberfläche",
+    "en": "Interface color scheme",
+    "es": "Esquema de colores de la interfaz",
+    "zh": "界面配色方案",
+    "ja": "インターフェースの配色",
+    "ru": "Цветовая схема интерфейса"
+  },
+  "Fehler: Pfad ist ein Verzeichnis, keine Datei.": {
+    "de": "Fehler: Pfad ist ein Verzeichnis, keine Datei.",
+    "en": "Error: The path is a directory, not a file.",
+    "es": "Error: La ruta es un directorio, no un archivo.",
+    "zh": "错误：该路径是目录，不是文件。",
+    "ja": "エラー：パスはファイルではなくディレクトリです。",
+    "ru": "Ошибка: путь указывает на каталог, а не на файл."
+  },
+  "Fenstergröße und Position beim Beenden speichern": {
+    "de": "Fenstergröße und Position beim Beenden speichern",
+    "en": "Save window size and position on exit",
+    "es": "Guardar tamaño y posición de la ventana al salir",
+    "zh": "退出时保存窗口大小和位置",
+    "ja": "終了時にウィンドウのサイズと位置を保存",
+    "ru": "Сохранять размер и положение окна при выходе"
+  },
+  "Freitextnotizen zur Datei eingeben": {
+    "de": "Freitextnotizen zur Datei eingeben",
+    "en": "Enter notes for the file",
+    "es": "Introducir notas sobre el archivo",
+    "zh": "输入文件备注",
+    "ja": "ファイルのメモを入力",
+    "ru": "Введите заметки к файлу"
+  },
+  "Führt die geplante Umbenennung für alle Dateien aus (Enter)": {
+    "de": "Führt die geplante Umbenennung für alle Dateien aus (Enter)",
+    "en": "Apply the planned rename to all files (Enter)",
+    "es": "Aplicar el cambio de nombre previsto a todos los archivos (Intro)",
+    "zh": "对所有文件执行计划的重命名（Enter）",
+    "ja": "すべてのファイルに予定した名前変更を実行（Enter）",
+    "ru": "Выполнить запланированное переименование всех файлов (Enter)"
+  },
+  "Geben Sie hier einen Hash ein, um die Integrität automatisch zu überprüfen": {
+    "de": "Geben Sie hier einen Hash ein, um die Integrität automatisch zu überprüfen",
+    "en": "Enter a hash here to automatically verify integrity",
+    "es": "Introduzca un hash para comprobar automáticamente la integridad",
+    "zh": "在此输入哈希值以自动验证完整性",
+    "ja": "ハッシュ値を入力して整合性を自動検証",
+    "ru": "Введите хеш для автоматической проверки целостности"
+  },
+  "Groß- und Kleinschreibung des Namens anpassen": {
+    "de": "Groß- und Kleinschreibung des Namens anpassen",
+    "en": "Change the letter case of the name",
+    "es": "Cambiar las mayúsculas y minúsculas del nombre",
+    "zh": "更改名称的大小写",
+    "ja": "名前の大文字と小文字を変更",
+    "ru": "Изменить регистр букв в имени"
+  },
+  "Groß-/Kleinschreibung bei der Mustersuche berücksichtigen": {
+    "de": "Groß-/Kleinschreibung bei der Mustersuche berücksichtigen",
+    "en": "Match letter case in pattern searches",
+    "es": "Distinguir mayúsculas y minúsculas al buscar patrones",
+    "zh": "模式搜索时区分大小写",
+    "ja": "パターン検索で大文字と小文字を区別",
+    "ru": "Учитывать регистр при поиске по шаблону"
+  },
+  "Größe der Dateisymbole in Pixeln": {
+    "de": "Größe der Dateisymbole in Pixeln",
+    "en": "File icon size in pixels",
+    "es": "Tamaño de los iconos de archivo en píxeles",
+    "zh": "文件图标大小（像素）",
+    "ja": "ファイルアイコンのサイズ（ピクセル）",
+    "ru": "Размер значков файлов в пикселях"
+  },
+  "Indexprüfung direkt beim Start von ExplorerPro durchführen": {
+    "de": "Indexprüfung direkt beim Start von ExplorerPro durchführen",
+    "en": "Check the index when ExplorerPro starts",
+    "es": "Comprobar el índice al iniciar ExplorerPro",
+    "zh": "启动 ExplorerPro 时检查索引",
+    "ja": "ExplorerPro の起動時にインデックスを確認",
+    "ru": "Проверять индекс при запуске ExplorerPro"
+  },
+  "Inkrement pro Datei": {
+    "de": "Inkrement pro Datei",
+    "en": "Increment per file",
+    "es": "Incremento por archivo",
+    "zh": "每个文件的编号增量",
+    "ja": "ファイルごとの増分",
+    "ru": "Шаг нумерации для каждого файла"
+  },
+  "Kategorie auswählen oder neu eingeben": {
+    "de": "Kategorie auswählen oder neu eingeben",
+    "en": "Select a category or enter a new one",
+    "es": "Seleccionar una categoría o introducir una nueva",
+    "zh": "选择类别或输入新类别",
+    "ja": "カテゴリを選択または新規入力",
+    "ru": "Выберите категорию или введите новую"
+  },
+  "Kategorie für die Einordnung des Prompts": {
+    "de": "Kategorie für die Einordnung des Prompts",
+    "en": "Category for organizing the prompt",
+    "es": "Categoría para clasificar el prompt",
+    "zh": "用于归类提示词的类别",
+    "ja": "プロンプトを分類するカテゴリ",
+    "ru": "Категория для классификации промпта"
+  },
+  "Kommagetrennte Tags filtern": {
+    "de": "Kommagetrennte Tags filtern",
+    "en": "Filter by comma-separated tags",
+    "es": "Filtrar por etiquetas separadas por comas",
+    "zh": "按逗号分隔的标签筛选",
+    "ja": "カンマ区切りのタグで絞り込む",
+    "ru": "Фильтровать по тегам, разделённым запятыми"
+  },
+  "Kommagetrennte Tags für die Datei eingeben": {
+    "de": "Kommagetrennte Tags für die Datei eingeben",
+    "en": "Enter file tags separated by commas",
+    "es": "Introducir etiquetas del archivo separadas por comas",
+    "zh": "输入文件标签，以逗号分隔",
+    "ja": "ファイルのタグをカンマ区切りで入力",
+    "ru": "Введите теги файла через запятую"
+  },
+  "Kopieren hochsensibler Daten wie Passwörter und API-Keys blockieren": {
+    "de": "Kopieren hochsensibler Daten wie Passwörter und API-Keys blockieren",
+    "en": "Block copying highly sensitive data such as passwords and API keys",
+    "es": "Bloquear la copia de datos muy sensibles, como contraseñas y claves API",
+    "zh": "阻止复制密码和 API 密钥等高度敏感的数据",
+    "ja": "パスワードや API キーなど機密性の高いデータのコピーをブロック",
+    "ru": "Блокировать копирование особо конфиденциальных данных, например паролей и ключей API"
+  },
+  "Macht die vorherige Umbenennungs-Aktion rückgängig": {
+    "de": "Macht die vorherige Umbenennungs-Aktion rückgängig",
+    "en": "Undo the previous rename operation",
+    "es": "Deshacer el cambio de nombre anterior",
+    "zh": "撤销上一次重命名操作",
+    "ja": "直前の名前変更を元に戻す",
+    "ru": "Отменить предыдущее переименование"
+  },
+  "Maximale Dateigröße für generierte Vorschauen": {
+    "de": "Maximale Dateigröße für generierte Vorschauen",
+    "en": "Maximum file size for previews",
+    "es": "Tamaño máximo de archivo para vistas previas",
+    "zh": "生成预览的最大文件大小",
+    "ja": "プレビューを生成する最大ファイルサイズ",
+    "ru": "Максимальный размер файла для предпросмотра"
+  },
+  "Miniaturansichten für Grafikdateien rendern": {
+    "de": "Miniaturansichten für Grafikdateien rendern",
+    "en": "Render thumbnails for image files",
+    "es": "Generar miniaturas de archivos de imagen",
+    "zh": "生成图像文件的缩略图",
+    "ja": "画像ファイルのサムネイルを生成",
+    "ru": "Создавать миниатюры изображений"
+  },
+  "Neuer Text für gefundene Treffer": {
+    "de": "Neuer Text für gefundene Treffer",
+    "en": "Replacement text for matches",
+    "es": "Texto de sustitución para las coincidencias",
+    "zh": "用于替换匹配项的新文本",
+    "ja": "一致した部分の置換テキスト",
+    "ru": "Текст для замены найденных совпадений"
+  },
+  "Nur eigenständige Wörter als Treffer werten": {
+    "de": "Nur eigenständige Wörter als Treffer werten",
+    "en": "Match whole words only",
+    "es": "Buscar solo palabras completas",
+    "zh": "仅匹配完整单词",
+    "ja": "単語全体が一致するものだけを検索",
+    "ru": "Искать только целые слова"
+  },
+  "Pfad zur ausführbaren Datei": {
+    "de": "Pfad zur ausführbaren Datei",
+    "en": "Path to the executable file",
+    "es": "Ruta del archivo ejecutable",
+    "zh": "可执行文件的路径",
+    "ja": "実行ファイルのパス",
+    "ru": "Путь к исполняемому файлу"
+  },
+  "Position der Nummerierung im Dateinamen": {
+    "de": "Position der Nummerierung im Dateinamen",
+    "en": "Position of numbering in the file name",
+    "es": "Posición de la numeración en el nombre del archivo",
+    "zh": "文件名中编号的位置",
+    "ja": "ファイル名での番号の位置",
+    "ru": "Положение номера в имени файла"
+  },
+  "Programmsprache für Menüs und Dialoge": {
+    "de": "Programmsprache für Menüs und Dialoge",
+    "en": "Language for menus and dialogs",
+    "es": "Idioma de los menús y diálogos",
+    "zh": "菜单和对话框的语言",
+    "ja": "メニューとダイアログの言語",
+    "ru": "Язык меню и диалогов"
+  },
+  "Präfix vor den Dateinamen stellen": {
+    "de": "Präfix vor den Dateinamen stellen",
+    "en": "Add a prefix before the file name",
+    "es": "Añadir un prefijo al nombre del archivo",
+    "zh": "在文件名前添加前缀",
+    "ja": "ファイル名の前に接頭辞を追加",
+    "ru": "Добавить префикс перед именем файла"
+  },
+  "Schlagwörter zur Filterung, kommagetrennt": {
+    "de": "Schlagwörter zur Filterung, kommagetrennt",
+    "en": "Filter keywords, separated by commas",
+    "es": "Palabras clave para filtrar, separadas por comas",
+    "zh": "筛选关键词，以逗号分隔",
+    "ja": "絞り込み用のキーワードをカンマ区切りで入力",
+    "ru": "Ключевые слова для фильтрации через запятую"
+  },
+  "Schließt das Dialogfenster (Esc)": {
+    "de": "Schließt das Dialogfenster (Esc)",
+    "en": "Close the dialog (Esc)",
+    "es": "Cerrar el diálogo (Esc)",
+    "zh": "关闭对话框（Esc）",
+    "ja": "ダイアログを閉じる（Esc）",
+    "ru": "Закрыть диалог (Esc)"
+  },
+  "Schließt das Mehrfachumbenennungs-Fenster (Esc)": {
+    "de": "Schließt das Mehrfachumbenennungs-Fenster (Esc)",
+    "en": "Close the batch rename window (Esc)",
+    "es": "Cerrar la ventana de cambio de nombre por lotes (Esc)",
+    "zh": "关闭批量重命名窗口（Esc）",
+    "ja": "一括名前変更ウィンドウを閉じる（Esc）",
+    "ru": "Закрыть окно группового переименования (Esc)"
+  },
+  "Schließt das Prüfsummen-Fenster (Esc)": {
+    "de": "Schließt das Prüfsummen-Fenster (Esc)",
+    "en": "Close the checksum window (Esc)",
+    "es": "Cerrar la ventana de sumas de comprobación (Esc)",
+    "zh": "关闭校验和窗口（Esc）",
+    "ja": "チェックサムウィンドウを閉じる（Esc）",
+    "ru": "Закрыть окно контрольных сумм (Esc)"
+  },
+  "Schließt den Vergleichs-Dialog (Esc)": {
+    "de": "Schließt den Vergleichs-Dialog (Esc)",
+    "en": "Close the comparison dialog (Esc)",
+    "es": "Cerrar el diálogo de comparación (Esc)",
+    "zh": "关闭比较对话框（Esc）",
+    "ja": "比較ダイアログを閉じる（Esc）",
+    "ru": "Закрыть диалог сравнения (Esc)"
+  },
+  "Setzt alle Kriterien und Filter auf Standardwerte zurück": {
+    "de": "Setzt alle Kriterien und Filter auf Standardwerte zurück",
+    "en": "Reset all criteria and filters to defaults",
+    "es": "Restablecer todos los criterios y filtros predeterminados",
+    "zh": "将所有条件和筛选器重置为默认值",
+    "ja": "すべての条件とフィルターを既定値に戻す",
+    "ru": "Сбросить все критерии и фильтры к значениям по умолчанию"
+  },
+  "Sicherheitsabfrage vor dem unwiderruflichen Löschen einblenden": {
+    "de": "Sicherheitsabfrage vor dem unwiderruflichen Löschen einblenden",
+    "en": "Ask for confirmation before permanent deletion",
+    "es": "Pedir confirmación antes de eliminar permanentemente",
+    "zh": "永久删除前请求确认",
+    "ja": "完全削除の前に確認する",
+    "ru": "Запрашивать подтверждение перед безвозвратным удалением"
+  },
+  "Speichert die Anwendungseinstellungen (Enter)": {
+    "de": "Speichert die Anwendungseinstellungen (Enter)",
+    "en": "Save application settings (Enter)",
+    "es": "Guardar ajustes de la aplicación (Intro)",
+    "zh": "保存应用设置（Enter）",
+    "ja": "アプリの設定を保存（Enter）",
+    "ru": "Сохранить настройки приложения (Enter)"
+  },
+  "Speichert die Datenschutz-Einstellungen (Enter)": {
+    "de": "Speichert die Datenschutz-Einstellungen (Enter)",
+    "en": "Save privacy settings (Enter)",
+    "es": "Guardar ajustes de privacidad (Intro)",
+    "zh": "保存隐私设置（Enter）",
+    "ja": "プライバシー設定を保存（Enter）",
+    "ru": "Сохранить настройки конфиденциальности (Enter)"
+  },
+  "Standardverzeichnis beim Programmstart": {
+    "de": "Standardverzeichnis beim Programmstart",
+    "en": "Default folder on startup",
+    "es": "Carpeta predeterminada al iniciar",
+    "zh": "启动时的默认文件夹",
+    "ja": "起動時の既定フォルダー",
+    "ru": "Папка по умолчанию при запуске"
+  },
+  "Startet die erweiterte Suche (Enter)": {
+    "de": "Startet die erweiterte Suche (Enter)",
+    "en": "Start advanced search (Enter)",
+    "es": "Iniciar búsqueda avanzada (Intro)",
+    "zh": "开始高级搜索（Enter）",
+    "ja": "詳細検索を開始（Enter）",
+    "ru": "Начать расширенный поиск (Enter)"
+  },
+  "Startnummer der Zählung": {
+    "de": "Startnummer der Zählung",
+    "en": "Starting number",
+    "es": "Número inicial",
+    "zh": "起始编号",
+    "ja": "開始番号",
+    "ru": "Начальный номер"
+  },
+  "Suchbegriff als regulären Ausdruck auswerten": {
+    "de": "Suchbegriff als regulären Ausdruck auswerten",
+    "en": "Treat the search term as a regular expression",
+    "es": "Interpretar el término de búsqueda como expresión regular",
+    "zh": "将搜索词作为正则表达式",
+    "ja": "検索語を正規表現として扱う",
+    "ru": "Интерпретировать поисковый запрос как регулярное выражение"
+  },
+  "Suchbegriff eingeben (Enter startet die Suche)": {
+    "de": "Suchbegriff eingeben (Enter startet die Suche)",
+    "en": "Enter a search term (Enter starts the search)",
+    "es": "Introducir un término de búsqueda (Intro inicia la búsqueda)",
+    "zh": "输入搜索词（Enter 开始搜索）",
+    "ja": "検索語を入力（Enter で検索開始）",
+    "ru": "Введите поисковый запрос (Enter запускает поиск)"
+  },
+  "Suffix an den Dateinamen anhängen": {
+    "de": "Suffix an den Dateinamen anhängen",
+    "en": "Append a suffix to the file name",
+    "es": "Añadir un sufijo al nombre del archivo",
+    "zh": "在文件名后添加后缀",
+    "ja": "ファイル名の後に接尾辞を追加",
+    "ru": "Добавить суффикс к имени файла"
+  },
+  "Syntaxhervorhebung für Quellcode und Textdateien nutzen": {
+    "de": "Syntaxhervorhebung für Quellcode und Textdateien nutzen",
+    "en": "Use syntax highlighting for source code and text files",
+    "es": "Usar resaltado de sintaxis en archivos de código y texto",
+    "zh": "对源代码和文本文件启用语法高亮",
+    "ja": "ソースコードとテキストファイルに構文強調を使用",
+    "ru": "Использовать подсветку синтаксиса для исходного кода и текстовых файлов"
+  },
+  "Versteckte Dateien und Systemordner im Dateibrowser anzeigen": {
+    "de": "Versteckte Dateien und Systemordner im Dateibrowser anzeigen",
+    "en": "Show hidden files and system folders in the file browser",
+    "es": "Mostrar archivos ocultos y carpetas del sistema en el explorador",
+    "zh": "在文件浏览器中显示隐藏文件和系统文件夹",
+    "ja": "ファイルブラウザーに隠しファイルとシステムフォルダーを表示",
+    "ru": "Показывать скрытые файлы и системные папки в обозревателе файлов"
+  },
+  "Verwirft Änderungen (Esc)": {
+    "de": "Verwirft Änderungen (Esc)",
+    "en": "Discard changes (Esc)",
+    "es": "Descartar cambios (Esc)",
+    "zh": "放弃更改（Esc）",
+    "ja": "変更を破棄（Esc）",
+    "ru": "Отменить изменения (Esc)"
+  },
+  "Verzeichnisse im Hintergrund automatisch für die Schnellsuche indizieren": {
+    "de": "Verzeichnisse im Hintergrund automatisch für die Schnellsuche indizieren",
+    "en": "Automatically index folders in the background for quick search",
+    "es": "Indexar carpetas automáticamente en segundo plano para la búsqueda rápida",
+    "zh": "在后台自动索引文件夹以便快速搜索",
+    "ja": "クイック検索用にフォルダーをバックグラウンドで自動登録",
+    "ru": "Автоматически индексировать папки в фоне для быстрого поиска"
+  },
+  "Vollständigen Dateipfad durchsuchen": {
+    "de": "Vollständigen Dateipfad durchsuchen",
+    "en": "Search the full file path",
+    "es": "Buscar en la ruta completa del archivo",
+    "zh": "搜索完整文件路径",
+    "ja": "ファイルのフルパスを検索",
+    "ru": "Поиск по полному пути файла"
+  },
+  "Vollständiger Prompt-Text": {
+    "de": "Vollständiger Prompt-Text",
+    "en": "Full prompt text",
+    "es": "Texto completo del prompt",
+    "zh": "完整提示词文本",
+    "ja": "プロンプトの全文",
+    "ru": "Полный текст промпта"
+  },
+  "Volltextinhalte durchsuchen": {
+    "de": "Volltextinhalte durchsuchen",
+    "en": "Search full-text content",
+    "es": "Buscar en el contenido completo",
+    "zh": "搜索全文内容",
+    "ja": "全文を検索",
+    "ru": "Поиск по полному тексту"
+  },
+  "Vorschau des ausgewählten Prompts": {
+    "de": "Vorschau des ausgewählten Prompts",
+    "en": "Preview of the selected prompt",
+    "es": "Vista previa del prompt seleccionado",
+    "zh": "所选提示词的预览",
+    "ja": "選択したプロンプトのプレビュー",
+    "ru": "Предпросмотр выбранного промпта"
+  },
+  "Vorschauleiste auf der rechten Seite einblenden": {
+    "de": "Vorschauleiste auf der rechten Seite einblenden",
+    "en": "Show the preview panel on the right",
+    "es": "Mostrar el panel de vista previa a la derecha",
+    "zh": "显示右侧预览面板",
+    "ja": "右側にプレビューパネルを表示",
+    "ru": "Показывать панель предпросмотра справа"
+  },
+  "Vorschautabelle aller zu ändernden Dateinamen": {
+    "de": "Vorschautabelle aller zu ändernden Dateinamen",
+    "en": "Preview table of all file names to be changed",
+    "es": "Tabla de vista previa de los nombres de archivo que se cambiarán",
+    "zh": "显示所有待更改文件名的预览表",
+    "ja": "変更するすべてのファイル名のプレビュー一覧",
+    "ru": "Таблица предпросмотра всех изменяемых имён файлов"
+  },
+  "Zeilenweiser Vergleich der beiden Dateien": {
+    "de": "Zeilenweiser Vergleich der beiden Dateien",
+    "en": "Line-by-line comparison of the two files",
+    "es": "Comparación línea por línea de ambos archivos",
+    "zh": "逐行比较两个文件",
+    "ja": "2 つのファイルを行ごとに比較",
+    "ru": "Построчное сравнение двух файлов"
+  },
+  "Zeitraum der letzten Änderung auswählen": {
+    "de": "Zeitraum der letzten Änderung auswählen",
+    "en": "Select the last modification date range",
+    "es": "Seleccionar el intervalo de fechas de última modificación",
+    "zh": "选择最后修改时间的范围",
+    "ja": "最終更新日の範囲を選択",
+    "ru": "Выбрать диапазон дат последнего изменения"
+  },
+  "Zu ersetzender Teilstring im Dateinamen": {
+    "de": "Zu ersetzender Teilstring im Dateinamen",
+    "en": "Substring to replace in the file name",
+    "es": "Texto que se sustituirá en el nombre del archivo",
+    "zh": "文件名中要替换的子字符串",
+    "ja": "ファイル名で置換する文字列",
+    "ru": "Подстрока в имени файла для замены"
+  },
+  "Zwischenablage kontinuierlich auf schutzwürdige Muster überwachen": {
+    "de": "Zwischenablage kontinuierlich auf schutzwürdige Muster überwachen",
+    "en": "Continuously monitor the clipboard for sensitive patterns",
+    "es": "Supervisar continuamente el portapapeles en busca de patrones sensibles",
+    "zh": "持续监控剪贴板中的敏感数据模式",
+    "ja": "クリップボード内の機密データのパターンを継続監視",
+    "ru": "Постоянно отслеживать в буфере обмена шаблоны конфиденциальных данных"
+  },
+  "Öffnet den Bearbeitungsdialog für den Prompt": {
+    "de": "Öffnet den Bearbeitungsdialog für den Prompt",
+    "en": "Open the prompt editor dialog",
+    "es": "Abrir el diálogo de edición del prompt",
+    "zh": "打开提示词编辑对话框",
+    "ja": "プロンプトの編集ダイアログを開く",
+    "ru": "Открыть диалог редактирования промпта"
+  },
+  "Öffnet den Ordner der ausgewählten Datei": {
+    "de": "Öffnet den Ordner der ausgewählten Datei",
+    "en": "Open the folder of the selected file",
+    "es": "Abrir la carpeta del archivo seleccionado",
+    "zh": "打开所选文件所在的文件夹",
+    "ja": "選択したファイルのフォルダーを開く",
+    "ru": "Открыть папку выбранного файла"
+  },
+  "Öffnet die Dateiauswahl für Datei 1 (Basis)": {
+    "de": "Öffnet die Dateiauswahl für Datei 1 (Basis)",
+    "en": "Open file selection for file 1 (base)",
+    "es": "Abrir la selección del archivo 1 (base)",
+    "zh": "打开文件 1（基准）的选择对话框",
+    "ja": "ファイル 1（基準）の選択ダイアログを開く",
+    "ru": "Открыть выбор файла 1 (базового)"
+  },
+  "Öffnet die Dateiauswahl für Datei 2 (Vergleich)": {
+    "de": "Öffnet die Dateiauswahl für Datei 2 (Vergleich)",
+    "en": "Open file selection for file 2 (comparison)",
+    "es": "Abrir la selección del archivo 2 (comparación)",
+    "zh": "打开文件 2（比较）的选择对话框",
+    "ja": "ファイル 2（比較）の選択ダイアログを開く",
+    "ru": "Открыть выбор файла 2 (сравниваемого)"
+  },
+  "Öffnet die Excel-Datei im Standardprogramm": {
+    "de": "Öffnet die Excel-Datei im Standardprogramm",
+    "en": "Open the Excel file in the default application",
+    "es": "Abrir el archivo Excel en la aplicación predeterminada",
+    "zh": "在默认应用中打开 Excel 文件",
+    "ja": "既定のアプリで Excel ファイルを開く",
+    "ru": "Открыть файл Excel в приложении по умолчанию"
+  },
+  "Öffnet die ausgewählte Datei": {
+    "de": "Öffnet die ausgewählte Datei",
+    "en": "Open the selected file",
+    "es": "Abrir el archivo seleccionado",
+    "zh": "打开所选文件",
+    "ja": "選択したファイルを開く",
+    "ru": "Открыть выбранный файл"
+  },
+  "Datei nicht gefunden": {
+    "de": "Datei nicht gefunden",
+    "en": "File not found",
+    "es": "Archivo no encontrado",
+    "zh": "找不到文件",
+    "ja": "ファイルが見つかりません",
+    "ru": "Файл не найден"
+  },
+  "Dateien umbenannt, aber Fehler aufgetreten:": {
+    "de": "Dateien umbenannt, aber Fehler aufgetreten:",
+    "en": "Files renamed, but errors occurred:",
+    "es": "Archivos renombrados, pero se produjeron errores:",
+    "zh": "文件已重命名，但发生了错误：",
+    "ja": "ファイルの名前を変更しましたが、エラーが発生しました：",
+    "ru": "Файлы переименованы, но возникли ошибки:"
+  },
+  "Dateien zurückgesetzt, Fehler:": {
+    "de": "Dateien zurückgesetzt, Fehler:",
+    "en": "Files restored; errors:",
+    "es": "Archivos restaurados; errores:",
+    "zh": "文件已还原；错误：",
+    "ja": "ファイルを復元しました。エラー：",
+    "ru": "Файлы восстановлены; ошибки:"
+  },
+  "Fehler": {
+    "de": "Fehler",
+    "en": "Error",
+    "es": "Error",
+    "zh": "错误",
+    "ja": "エラー",
+    "ru": "Ошибка"
+  },
+  "Pfad ist keine Datei": {
+    "de": "Pfad ist keine Datei",
+    "en": "The path is not a file",
+    "es": "La ruta no es un archivo",
+    "zh": "该路径不是文件",
+    "ja": "パスはファイルではありません",
+    "ru": "Путь не указывает на файл"
+  },
+  "Ungültiger Pfad": {
+    "de": "Ungültiger Pfad",
+    "en": "Invalid path",
+    "es": "Ruta no válida",
+    "zh": "无效路径",
+    "ja": "無効なパス",
+    "ru": "Недопустимый путь"
+  },
+  "Sprachänderungen werden beim nächsten Start übernommen.": {
+    "de": "Sprachänderungen werden beim nächsten Start übernommen.",
+    "en": "Language changes take effect on the next start.",
+    "es": "Los cambios de idioma se aplican en el próximo inicio.",
+    "zh": "语言更改将在下次启动时生效。",
+    "ja": "言語の変更は次回起動時に適用されます。",
+    "ru": "Изменение языка вступит в силу при следующем запуске."
+  },
+  "Umbenennen": {
+    "de": "Umbenennen",
+    "en": "Rename",
+    "es": "Renombrar",
+    "zh": "重命名",
+    "ja": "名前を変更",
+    "ru": "Переименовать"
+  },
+  "Status": {
+    "de": "Status",
+    "en": "Status",
+    "es": "Estado",
+    "zh": "状态",
+    "ja": "状態",
+    "ru": "Статус"
+  },
+  "Erfolg": {
+    "de": "Erfolg",
+    "en": "Success",
+    "es": "Correcto",
+    "zh": "成功",
+    "ja": "成功",
+    "ru": "Успех"
+  },
+  "Inhalt": {
+    "de": "Inhalt",
+    "en": "Content",
+    "es": "Contenido",
+    "zh": "内容",
+    "ja": "内容",
+    "ru": "Содержимое"
+  },
+  "Diff kopieren": {
+    "de": "Diff kopieren",
+    "en": "Copy diff",
+    "es": "Copiar diferencias",
+    "zh": "复制差异",
+    "ja": "差分をコピー",
+    "ru": "Копировать различия"
   }
 }

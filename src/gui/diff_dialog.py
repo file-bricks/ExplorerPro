@@ -67,7 +67,7 @@ class DiffDialog(QDialog):
         files_grid.addWidget(self.file1_edit, 0, 1)
         browse1_btn = QPushButton(t("Durchsuchen..."))
         browse1_btn.setAccessibleName("Datei 1 durchsuchen")
-        browse1_btn.setToolTip("Öffnet die Dateiauswahl für Datei 1 (Basis)")
+        browse1_btn.setToolTip(t("Öffnet die Dateiauswahl für Datei 1 (Basis)"))
         browse1_btn.clicked.connect(self._browse_file1)
         files_grid.addWidget(browse1_btn, 0, 2)
 
@@ -81,7 +81,7 @@ class DiffDialog(QDialog):
         files_grid.addWidget(self.file2_edit, 1, 1)
         browse2_btn = QPushButton(t("Durchsuchen..."))
         browse2_btn.setAccessibleName("Datei 2 durchsuchen")
-        browse2_btn.setToolTip("Öffnet die Dateiauswahl für Datei 2 (Vergleich)")
+        browse2_btn.setToolTip(t("Öffnet die Dateiauswahl für Datei 2 (Vergleich)"))
         browse2_btn.clicked.connect(self._browse_file2)
         files_grid.addWidget(browse2_btn, 1, 2)
 
@@ -89,7 +89,7 @@ class DiffDialog(QDialog):
         self.compare_btn.setStyleSheet("font-weight: bold; padding: 5px;")
         self.compare_btn.setAccessibleName("Dateien vergleichen")
         self.compare_btn.setAccessibleDescription("Startet die Differenzanalyse zwischen Datei 1 und Datei 2.")
-        self.compare_btn.setToolTip("Dateivergleich starten (Strg+Enter)")
+        self.compare_btn.setToolTip(t("Dateivergleich starten (Strg+Enter)"))
         self.compare_btn.setShortcut("Ctrl+Return")
         self.compare_btn.clicked.connect(self._do_compare)
         files_grid.addWidget(self.compare_btn, 2, 1, 1, 2)
@@ -127,7 +127,7 @@ class DiffDialog(QDialog):
         self.table.verticalHeader().setVisible(False)
         self.table.setAccessibleName("Diff-Ergebnistabelle")
         self.table.setAccessibleDescription("Zeilenweiser Vergleich beider Dateien: Grün = hinzugefügt, Rot = entfernt.")
-        self.table.setToolTip("Zeilenweiser Vergleich der beiden Dateien")
+        self.table.setToolTip(t("Zeilenweiser Vergleich der beiden Dateien"))
         main_layout.addWidget(self.table)
 
         # 4. Buttons
@@ -144,7 +144,7 @@ class DiffDialog(QDialog):
 
         self.close_btn = QPushButton(t("Schließen"))
         self.close_btn.setAccessibleName("Dialog schließen")
-        self.close_btn.setToolTip("Schließt den Vergleichs-Dialog (Esc)")
+        self.close_btn.setToolTip(t("Schließt den Vergleichs-Dialog (Esc)"))
         self.close_btn.setShortcut("Escape")
         self.close_btn.setDefault(True)
         self.close_btn.clicked.connect(self.accept)

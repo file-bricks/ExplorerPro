@@ -5,6 +5,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Übersetzte Hilfetexte und gespeicherte Sprache (2026-10-01)
+- 86 bislang fehlende Hilfetexte, Beschriftungen und Fehlermeldungen im Katalog ergänzt; Hilfetexte über die Übersetzungsfunktion angebunden (DE, EN, ES, ZH, JA, RU).
+- Die Sprachauswahl erklärt in allen sechs Sprachen, dass Sprachänderungen beim nächsten Start übernommen werden.
+- Sprachauswahl wird geladen und gespeichert; beim nächsten Start verwenden die angebundenen Texte und Qt-Standarddialoge die gespeicherte Sprache.
+- Übersetzungsprüfung erkennt auch bereits angebundene `t(...)`-Aufrufe. Weitere fest deutsche Bedienelemente bleiben separat offen.
+
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
 - **CI/CD Lifecycle Workflows & Label-Governance**:
   - `.github/workflows/auto-assign.yml`: Automatisches Zuweisen von Pull Requests an Maintainer via `actions/github-script@v7`, `timeout-minutes: 5`, least-privilege permissions (`issues: write`, `pull-requests: write`) und Concurrency `cancel-in-progress: true`.
