@@ -19,7 +19,7 @@ from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
 from modules.prompts import PromptsPanel
 from modules.sync import SyncPanel
-from core.drive_usage import read_drive_usage
+from core.drive_usage import read_drive_usage_bounded as read_drive_usage
 from gui.sidebar.drive_capacity import DriveCapacityWidget, capacity_executor
 from translator import t
 

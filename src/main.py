@@ -21,6 +21,11 @@ if sys.platform == 'win32':
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Frozen helpers must finish before importing Qt or constructing the application.
+if __name__ == '__main__' and len(sys.argv) == 4 and sys.argv[1] == '--drive-capacity-query':
+    from core.drive_usage import capacity_query_main
+    sys.exit(capacity_query_main(sys.argv[2], sys.argv[3]))
+
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo
 from PySide6.QtGui import QIcon

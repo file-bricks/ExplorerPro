@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QProgressBar, QVBoxLayout, QWidget
 
-from core.drive_usage import format_capacity
+from core.drive_usage import format_capacity, start_drive_queries, stop_drive_queries
 from translator import t
 
 _executor = None
@@ -14,19 +14,20 @@ _executor = None
 def capacity_executor():
     """Workers only return Python data; no Qt objects cross thread boundaries.
 
-    The standard executor joins workers before interpreter teardown, even when
-    the view has already been deleted and its polling timer has stopped.
+    OS reads run in bounded helpers, so failed drives release worker slots.
     """
     global _executor
     if _executor is None:
+        start_drive_queries()
         _executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="drive-capacity")
     return _executor
 
 
 def shutdown_capacity_executor():
-    """Drain Python workers before restoring GC or destroying QApplication."""
+    """Stop capacity helpers, then drain Python workers before Qt teardown."""
     global _executor
     if _executor is not None:
+        stop_drive_queries()
         _executor.shutdown(wait=True, cancel_futures=True)
         _executor = None
 

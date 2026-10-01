@@ -13,6 +13,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Hintergrundabfragen liefern reine Python-Daten; ein Timer des Panels übernimmt fertige Ergebnisse im GUI-Thread. Dateisystem- und Sortiermodell gehören jetzt ihrem Dateibrowser und werden mit ihm gelöscht.
 - Die Löschprüfungen bereinigen ausschließlich ihre eigenen Qt-Objekte; die Navigation wartet mit einem begrenzten Qt-Ereignislauf auf tatsächlich geladene Dateizeilen.
 - Zyklische Python-Objekte werden während des GUI-Betriebs im Anwendungsthread bereinigt. Hintergrundabfragen werden vor dem Beenden abgewartet; Prüfsummen-Threads lösen keine automatische Löschung von Qt-GUI-Objekten mehr aus.
+- Laufwerksabfragen laufen in eigenen Hilfsprozessen mit zehn Sekunden Zeitlimit. Hängende Datenträger werden als nicht verfügbar angezeigt; beim Beenden werden laufende Hilfsprozesse beendet und abgeholt.
 - Source feature only: no EXE/MSIX release or Store submission performed.
 
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
