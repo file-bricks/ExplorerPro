@@ -10,6 +10,17 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Das Schließen fordert den Abbruch an und hält den Dialog bis zum bestätigten Thread-Ende offen. Die Oberfläche bleibt dabei bedienbar; die Freigabe eines noch laufenden nativen Workers wird verhindert.
 - Automatische zyklische Python-Bereinigung wird während des GUI-Betriebs im Anwendungsthread ausgeführt, damit Hintergrundthreads keine Qt-Objekte zerstören.
 
+### Laufwerksbelegung / Drive capacity (2026-09-30)
+
+- Die Ordner-Seitenleiste zeigt für jedes Laufwerk einen Belegungsbalken, den belegten Anteil in Prozent und freien, belegten sowie gesamten Speicher in binären Größen (GiB/TiB).
+- Kapazitäten werden unabhängig im Hintergrund abgefragt, beim Öffnen und über „Laufwerksbelegung aktualisieren“ erneuert. Nicht verfügbare Laufwerke erhalten einen erklärenden Text statt falscher Nullwerte.
+- Text und Balken sind auch in schmalen Seitenleisten lesbar; Pfadnavigation bleibt erhalten. Alle neuen Texte sind in DE/EN/ES/ZH/JA/RU vorhanden.
+- Hintergrundabfragen liefern reine Python-Daten; ein Timer des Panels übernimmt fertige Ergebnisse im GUI-Thread. Dateisystem- und Sortiermodell gehören jetzt ihrem Dateibrowser und werden mit ihm gelöscht.
+- Die Löschprüfungen bereinigen ausschließlich ihre eigenen Qt-Objekte; die Navigation wartet mit einem begrenzten Qt-Ereignislauf auf tatsächlich geladene Dateizeilen.
+- Zyklische Python-Objekte werden während des GUI-Betriebs im Anwendungsthread bereinigt. Hintergrundabfragen werden vor dem Beenden abgewartet; Prüfsummen-Threads lösen keine automatische Löschung von Qt-GUI-Objekten mehr aus.
+- Laufwerksabfragen laufen in eigenen Hilfsprozessen mit zehn Sekunden Zeitlimit. Hängende Datenträger werden als nicht verfügbar angezeigt; beim Beenden werden laufende Hilfsprozesse beendet und abgeholt.
+- Source feature only: no EXE/MSIX release or Store submission performed.
+
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
 - **CI/CD Lifecycle Workflows & Label-Governance**:
   - `.github/workflows/auto-assign.yml`: Automatisches Zuweisen von Pull Requests an Maintainer via `actions/github-script@v7`, `timeout-minutes: 5`, least-privilege permissions (`issues: write`, `pull-requests: write`) und Concurrency `cancel-in-progress: true`.

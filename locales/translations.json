@@ -1862,5 +1862,53 @@
     "zh": "浏览...",
     "ja": "参照...",
     "ru": "Обзор..."
+  },
+  "Speicherbelegung": {
+    "de": "Speicherbelegung",
+    "en": "Storage usage",
+    "es": "Uso del almacenamiento",
+    "zh": "存储使用情况",
+    "ja": "ストレージ使用量",
+    "ru": "Использование хранилища"
+  },
+  "Speicherbelegung wird ermittelt …": {
+    "de": "Speicherbelegung wird ermittelt …",
+    "en": "Checking storage usage …",
+    "es": "Calculando el uso del almacenamiento …",
+    "zh": "正在查询存储使用情况 …",
+    "ja": "ストレージ使用量を確認中 …",
+    "ru": "Проверка использования хранилища …"
+  },
+  "Speicherbelegung nicht verfügbar": {
+    "de": "Speicherbelegung nicht verfügbar",
+    "en": "Storage usage unavailable",
+    "es": "Uso del almacenamiento no disponible",
+    "zh": "存储使用情况不可用",
+    "ja": "ストレージ使用量を取得できません",
+    "ru": "Данные об использовании хранилища недоступны"
+  },
+  "{free} frei · {used} belegt · {total} gesamt": {
+    "de": "{free} frei · {used} belegt · {total} gesamt",
+    "en": "{free} free · {used} used · {total} total",
+    "es": "{free} libre · {used} usado · {total} total",
+    "zh": "{free} 可用 · {used} 已用 · {total} 总计",
+    "ja": "{free} 空き · {used} 使用中 · {total} 合計",
+    "ru": "{free} свободно · {used} занято · {total} всего"
+  },
+  "{percent}% belegt": {
+    "de": "{percent}% belegt",
+    "en": "{percent}% used",
+    "es": "{percent}% usado",
+    "zh": "已用 {percent}%",
+    "ja": "{percent}% 使用中",
+    "ru": "{percent}% занято"
+  },
+  "Laufwerksbelegung aktualisieren": {
+    "de": "Laufwerksbelegung aktualisieren",
+    "en": "Refresh drive usage",
+    "es": "Actualizar el uso de las unidades",
+    "zh": "刷新驱动器使用情况",
+    "ja": "ドライブ使用量を更新",
+    "ru": "Обновить использование дисков"
   }
 }
