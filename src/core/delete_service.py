@@ -1,4 +1,4 @@
-"""Permanent deletion with a narrowly scoped Windows read-only-file retry."""
+"""Permanent deletion with a Windows read-only retry for single-link files."""
 
 import os
 import shutil
@@ -21,7 +21,10 @@ def _retry_readonly_file(operation, path, error):
     if not (
         stat.S_ISREG(original.st_mode)
         and original.st_file_attributes & stat.FILE_ATTRIBUTE_READONLY
+        and original.st_nlink == 1
     ):
+        # Attributes belong to the file, not its name. Clearing read-only on
+        # a hardlink would also modify aliases outside the selected tree.
         raise error
 
     os.chmod(path, original.st_mode | stat.S_IWRITE)

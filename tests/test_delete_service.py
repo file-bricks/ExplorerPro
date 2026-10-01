@@ -41,6 +41,40 @@ def test_native_readonly_file_deletion(tmp_path, nested):
             os.chmod(child, stat.S_IWRITE)
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows read-only hardlink attributes")
+@pytest.mark.parametrize("nested", [False, True])
+def test_readonly_hardlink_does_not_change_surviving_alias(tmp_path, nested):
+    outside = tmp_path / "outside.txt"
+    outside.write_text("unchanged bytes")
+    selected = tmp_path / "selected"
+    selected.mkdir()
+    alias = selected / "alias.txt"
+    os.link(outside, alias)
+    os.chmod(alias, stat.S_IREAD)
+    original_attributes = outside.stat().st_file_attributes
+    try:
+        with pytest.raises(PermissionError) as caught:
+            delete_service.delete_path(str(selected if nested else alias))
+        assert caught.value.winerror == 5
+        assert alias.exists() and outside.exists()
+        assert outside.read_text() == "unchanged bytes"
+        assert alias.read_text() == "unchanged bytes"
+        assert outside.stat().st_file_attributes == original_attributes
+        assert alias.stat().st_file_attributes == original_attributes
+    finally:
+        os.chmod(outside, stat.S_IWRITE)
+
+
+def test_writable_hardlink_deletes_selected_name_only(tmp_path):
+    outside = tmp_path / "outside.txt"
+    outside.write_text("unchanged bytes")
+    alias = tmp_path / "selected.txt"
+    os.link(outside, alias)
+    delete_service.delete_path(str(alias))
+    assert not alias.exists()
+    assert outside.read_text() == "unchanged bytes"
+
+
 def _windows_error(code):
     error = PermissionError(13, "access denied")
     error.winerror = code
