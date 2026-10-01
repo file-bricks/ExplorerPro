@@ -256,6 +256,10 @@ class ChecksumDialog(QDialog):
             self.close_btn.setEnabled(False)
             self._close_timer.start()
             return
+        self._close_timer.stop()
+        if self._pending_close_result is not None:
+            result = self._pending_close_result
+            self._pending_close_result = None
         super().done(result)
 
     @Slot()

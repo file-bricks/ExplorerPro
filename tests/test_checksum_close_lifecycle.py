@@ -45,7 +45,13 @@ def test_close_remains_responsive_and_keeps_running_worker(qtbot, monkeypatch, t
         # Repeated close requests must not emit duplicate completion signals.
         getattr(dialog, action)()
         release.set()
+        assert dialog.worker.wait(2000)
+        # The worker can exit just before the polling timer handles its end.
+        # A concurrent close request must preserve the first result and emit once.
+        dialog.done(1 - int(result))
         qtbot.waitUntil(lambda: completed == [int(result)], timeout=3000)
+        qtbot.wait(40)
+        assert completed == [int(result)]
         assert not dialog.isVisible()
         assert not dialog.worker.isRunning()
     finally:
