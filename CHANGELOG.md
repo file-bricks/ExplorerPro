@@ -8,6 +8,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ### Prüfsummen-Dialog (2026-10-01)
 
 - Das Schließen fordert den Abbruch an und hält den Dialog bis zum bestätigten Thread-Ende offen. Die Oberfläche bleibt dabei bedienbar; die Freigabe eines noch laufenden nativen Workers wird verhindert.
+- Automatische zyklische Python-Bereinigung wird während des GUI-Betriebs im Anwendungsthread ausgeführt, damit Hintergrundthreads keine Qt-Objekte zerstören.
 
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
 - **CI/CD Lifecycle Workflows & Label-Governance**:

@@ -27,6 +27,7 @@ from PySide6.QtGui import QIcon
 
 from app import ExplorerProApp
 from version import __version__
+from core.gui_gc import install_gui_gc
 
 
 def load_app_icon() -> QIcon:
@@ -73,6 +74,7 @@ def main():
     )
 
     app = QApplication(sys.argv)
+    collector = install_gui_gc(app)
     app.setApplicationName("ExplorerPro")
     app.setOrganizationName("ExplorerPro")
     from translator import get_translator
@@ -90,12 +92,15 @@ def main():
     # apply_dark_theme(app)
 
     # Hauptfenster starten
-    explorer = ExplorerProApp()
-    if not icon.isNull():
-        explorer.setWindowIcon(icon)
-    explorer.show()
-
-    sys.exit(app.exec())
+    try:
+        explorer = ExplorerProApp()
+        if not icon.isNull():
+            explorer.setWindowIcon(icon)
+        explorer.show()
+        exit_code = app.exec()
+    finally:
+        collector.close()
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
