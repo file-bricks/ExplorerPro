@@ -69,7 +69,7 @@ def test_checksum_dialog_non_existent_file(tmp_path: Path):
     dlg.close()
 
 
-def test_checksum_dialog_close_cancels_worker(tmp_path: Path):
+def test_checksum_dialog_close_cancels_worker(tmp_path: Path, qtbot):
     """Prüft, dass closeEvent den Worker sauber abbricht."""
     _ensure_app()
     sample = tmp_path / "cancel_test.txt"
@@ -78,3 +78,5 @@ def test_checksum_dialog_close_cancels_worker(tmp_path: Path):
     dlg = ChecksumDialog(str(sample))
     dlg.closeEvent(QCloseEvent())
     assert dlg.worker is not None
+    qtbot.waitUntil(lambda: not dlg.worker.isRunning(), timeout=3000)
+    qtbot.waitUntil(lambda: not dlg._close_timer.isActive(), timeout=3000)
