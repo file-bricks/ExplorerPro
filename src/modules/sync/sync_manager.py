@@ -708,7 +708,17 @@ class SyncPanel(QWidget):
         self.preview_btn.setEnabled(has_selection)
 
     def _add_pair(self):
-        dialog = SyncPairDialog(parent=self)
+        self._add_pair_dialog(SyncPairDialog(parent=self))
+
+    def add_pair_for_path(self, path: str):
+        """Öffnet "Neues Sync-Paar" mit dem Ordner von `path` als Quelle."""
+        folder = path if os.path.isdir(path) else os.path.dirname(path)
+        pair = SyncPair(id="", name=os.path.basename(os.path.normpath(folder)), source=folder, target="")
+        dialog = SyncPairDialog(pair, parent=self)
+        dialog.setWindowTitle("Neues Sync-Paar")
+        self._add_pair_dialog(dialog)
+
+    def _add_pair_dialog(self, dialog: "SyncPairDialog"):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             pair = dialog.get_sync_pair()
             self.sync_pairs.append(pair)
