@@ -8,6 +8,7 @@ os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 
 from PySide6.QtWidgets import QApplication
 from core.gui_gc import install_gui_gc
+from gui.sidebar.drive_capacity import shutdown_capacity_executor
 
 _application = QApplication.instance() or QApplication([])
 _collector = install_gui_gc(_application)
@@ -22,4 +23,7 @@ def collect_gui_cycles():
 @pytest.fixture(scope='session', autouse=True)
 def gui_runtime():
     yield
-    _collector.close()
+    try:
+        shutdown_capacity_executor()
+    finally:
+        _collector.close()
