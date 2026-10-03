@@ -5,6 +5,28 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Datei-/Ordner-Eigenschaften, Pfad-Kopier-Suite & Terminal-Integration (2026-10-03, TW-EP-11)
+- **Datei- & Ordner-Eigenschaften Dialog (`src/gui/properties_dialog.py`)**:
+  - Neuer standardkonformer Eigenschafts-Dialog mit Tabs für "Allgemein" und "Prüfsummen" (bzw. "Inhalt" für Textdateien).
+  - Umfassende Metadaten-Anzeige: Name, Dateityp, Pfad, Größe (formatiert und in Bytes), Zeitstempel (Erstellt, Geändert, Letzter Zugriff), Dateiattribute/Berechtigungen.
+  - Rekursive Ordner-Statistiken: Zählung von Unterdateien und -ordnern sowie Gesamtgröße mittels Hintergrund-Thread `FolderStatsWorker` ohne GUI-Blockade.
+  - On-Demand Prüfsummen-Berechnung (SHA-256, MD5) mit direktem Kopier-Button für Integritätsprüfungen.
+  - Zeilen-, Wort- und Zeichenzähler für gängige Text- und Codeformate.
+  - Tastenkürzel `Alt+Enter` bzw. `Alt+Return` im Dateibrowser und Hauptfenster.
+- **Pfad-Kopier-Suite (`src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**:
+  - Erweiterte Zwischenablage-Aktionen: "Pfad kopieren" (`Ctrl+Shift+C`) kopiert native Pfade (bei Mehrfachauswahl zeilenweise umgebrochen).
+  - Integration in das Kontextmenü für ausgewählte Elemente ("📋 Pfad kopieren") und Leerbereiche ("📋 Ordnerpfad kopieren").
+  - Menü-Verdrahtung in "Bearbeiten -> Pfad kopieren" (`Ctrl+Shift+C`).
+- **Cross-Platform Terminal-Integration (`src/core/platform_utils.py`, `src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**:
+  - `open_terminal_in_directory(path)` & `get_terminal_command(directory)`: Plattformunabhängiges Öffnen des systemweiten Standard-Terminals im Zielverzeichnis (Windows Terminal / PowerShell / CMD auf Windows, Terminal.app auf macOS, xdg-terminal-exec / gnome-terminal / konsole / xterm auf Linux).
+  - Entkoppelte Ausführung via `subprocess.Popen` mit `CREATE_NEW_CONSOLE` auf Windows.
+  - Kontextmenü-Aktionen: "💻 Im Terminal öffnen" für Ordner bzw. Elternverzeichnisse und "💻 Terminal hier öffnen" im Leerbereich.
+  - Menü-Verdrahtung in "Tools -> 💻 Terminal hier öffnen" (`Ctrl+Shift+P`).
+- **Lokalisierung (Tier-2 P-006)**:
+  - 123 neue Lokalisierungsschlüssel lückenlos über alle 6 Zielsprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` integriert (Katalog auf 356 Schlüssel erweitert; `manage_translations.py --check` meldet 0 fehlende Übersetzungen).
+- **Test-Abdeckung (`tests/test_properties_and_terminal.py`)**:
+  - 17 neue automatisierte Unit- und Integrationstests für Terminal-Befehlserkennung, Größenformatierung, Ordnerstatistik-Berechnung, Dialog-Initialisierung, Pfad-Kopieren und Menü-Verdrahtung (Gesamttestsuite: 405 passed, 1 skipped).
+
 ### Bugsweep & Resilienz-Härtung (2026-10-01, Turnusgemäßer Bugsweep)
 - **Mehrfachumbenennung (Batch Rename) Resilienz**:
   - `src/core/batch_rename_service.py`:
