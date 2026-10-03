@@ -41,6 +41,10 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
     - Dialog-Lebenszyklus: Verhindert das automatische Schließen des modalen Dialogs bei `_do_rename`, sodass der Rollback-Button für den Benutzer erreichbar und nutzbar bleibt; `Accepted`-Status wird beim Schließen nach erfolgreicher Umbenennung an den Browser übermittelt.
     - Eingabepfad-Deduplizierung unter Erhalt der Reihenfolge im Konstruktor.
   - `tests/test_bugsweep_batch_rename_resilience_20261001.py`: 8 neue hermetische Regressionstests (100% grün).
+### Prüfsummen-Dialog (2026-10-01)
+
+- Das Schließen fordert den Abbruch an und hält den Dialog bis zum bestätigten Thread-Ende offen. Die Oberfläche bleibt dabei bedienbar; die Freigabe eines noch laufenden nativen Workers wird verhindert.
+- Automatische zyklische Python-Bereinigung wird während des GUI-Betriebs im Anwendungsthread ausgeführt, damit Hintergrundthreads keine Qt-Objekte zerstören.
 
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
 - **CI/CD Lifecycle Workflows & Label-Governance**:
