@@ -104,7 +104,9 @@ class SettingsDialog(QDialog):
 
         self.confirm_delete_cb = QCheckBox("Vor dem Löschen nachfragen")
         self.confirm_delete_cb.setAccessibleName("Vor dem Löschen nachfragen")
-        self.confirm_delete_cb.setToolTip("Sicherheitsabfrage vor dem unwiderruflichen Löschen einblenden")
+        self.confirm_delete_cb.setToolTip(
+            "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben."
+        )
         form.addRow(self.confirm_delete_cb)
 
         self.remember_size_cb = QCheckBox("Fenstergröße merken")

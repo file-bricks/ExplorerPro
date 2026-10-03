@@ -46,8 +46,18 @@ def _retry_readonly_file(operation, path, error):
 
 
 def _rmtree_error(operation, path, exc_info):
-    # onerror is available on every supported Python version (3.10+).
     _retry_readonly_file(operation, path, exc_info[1])
+
+
+def _rmtree_exception(operation, path, error):
+    _retry_readonly_file(operation, path, error)
+
+
+def _remove_tree(path):
+    if sys.version_info >= (3, 12):
+        shutil.rmtree(path, onexc=_rmtree_exception)
+    else:
+        shutil.rmtree(path, onerror=_rmtree_error)
 
 
 def delete_path(path):
@@ -59,9 +69,17 @@ def delete_path(path):
         os.rmdir(path)
     elif stat.S_ISDIR(entry.st_mode):
         # Python 3.8+ also avoids descending into nested Windows junctions.
-        shutil.rmtree(path, onerror=_rmtree_error)
+        _remove_tree(path)
     else:
         try:
             os.remove(path)
         except OSError as error:
             _retry_readonly_file(os.remove, path, error)
+
+
+def move_to_trash(path):
+    """Move one selected item to the operating system trash/recycle bin."""
+    from PySide6.QtCore import QFile
+
+    if not QFile.moveToTrash(path):
+        raise OSError("Das Element konnte nicht in den Papierkorb verschoben werden.")

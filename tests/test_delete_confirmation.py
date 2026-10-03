@@ -2,6 +2,7 @@
 
 import json
 import os
+from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
@@ -122,6 +123,8 @@ def test_all_entry_points_use_current_setting(window, settings, tmp_path, monkey
         window.confirm_delete_action.trigger()
     question = Mock(return_value=QMessageBox.StandardButton.Yes)
     monkeypatch.setattr(QMessageBox, "question", question)
+    trash = Mock(side_effect=lambda path: Path(path).unlink())
+    monkeypatch.setattr(delete_service, "move_to_trash", trash)
     if entry == "direct":
         assert browser.delete_selection([str(target)])
     elif entry == "keyboard":
@@ -133,6 +136,7 @@ def test_all_entry_points_use_current_setting(window, settings, tmp_path, monkey
         _context_delete(browser, target, monkeypatch)
     assert not target.exists()
     assert question.call_count == int(confirm)
+    assert trash.call_count == int(not confirm)
     if confirm:
         assert question.call_args.args[-1] == QMessageBox.StandardButton.No
 
@@ -153,18 +157,47 @@ def test_partial_failure_warns_and_continues(window, tmp_path, monkeypatch):
     good = tmp_path / "good.txt"
     good.write_text("delete")
     window.confirm_delete_action.trigger()
-    actual_delete = delete_service.delete_path
-
-    def delete(path):
+    def trash(path):
         if path == str(blocked):
             raise PermissionError("blocked fixture")
-        actual_delete(path)
+        Path(path).unlink()
 
-    monkeypatch.setattr(delete_service, "delete_path", delete)
+    monkeypatch.setattr(delete_service, "move_to_trash", trash)
     warning = Mock()
     monkeypatch.setattr(QMessageBox, "warning", warning)
     assert not window.file_browser.delete_selection([str(blocked), str(good)])
     assert blocked.read_text() == "keep"
     assert not good.exists()
     assert "blocked.txt" in warning.call_args.args[2]
+    warning.assert_called_once()
+
+
+def test_disabled_confirmation_uses_trash_and_never_permanent_delete(window, tmp_path, monkeypatch):
+    target = tmp_path / "recoverable.txt"
+    target.write_text("keep recoverable")
+    window.confirm_delete_action.trigger()
+    trash = Mock()
+    monkeypatch.setattr(delete_service, "move_to_trash", trash)
+    permanent_delete = Mock(side_effect=AssertionError("must not permanently delete"))
+    monkeypatch.setattr(delete_service, "delete_path", permanent_delete)
+    monkeypatch.setattr(QMessageBox, "question", Mock(side_effect=AssertionError("must not ask")))
+
+    assert window.file_browser.delete_selection([str(target)])
+    trash.assert_called_once_with(str(target))
+    permanent_delete.assert_not_called()
+    assert target.exists()
+
+
+def test_disabled_confirmation_preserves_item_when_trash_fails(window, tmp_path, monkeypatch):
+    target = tmp_path / "keep.txt"
+    target.write_text("keep")
+    window.confirm_delete_action.trigger()
+    monkeypatch.setattr(
+        delete_service, "move_to_trash", Mock(side_effect=OSError("Papierkorb nicht verfügbar"))
+    )
+    warning = Mock()
+    monkeypatch.setattr(QMessageBox, "warning", warning)
+
+    assert not window.file_browser.delete_selection([str(target)])
+    assert target.read_text() == "keep"
     warning.assert_called_once()

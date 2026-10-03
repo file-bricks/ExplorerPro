@@ -344,6 +344,9 @@ class MainWindow(QMainWindow):
         edit_menu.addSeparator()
         self.confirm_delete_action = QAction("Vor dem Löschen nachfragen", self)
         self.confirm_delete_action.setCheckable(True)
+        self.confirm_delete_action.setToolTip(
+            "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben."
+        )
         self._sync_delete_confirmation()
         self.confirm_delete_action.triggered.connect(self._set_delete_confirmation)
         edit_menu.addAction(self.confirm_delete_action)

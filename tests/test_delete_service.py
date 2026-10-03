@@ -4,6 +4,7 @@ import os
 import stat
 import subprocess
 import sys
+from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
@@ -155,6 +156,52 @@ def test_directory_error_does_not_retry_or_chmod(tmp_path, monkeypatch):
         delete_service._rmtree_error(os.rmdir, str(tmp_path), (PermissionError, error, None))
     assert caught.value is error
     chmod.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    ("version", "callback_name"),
+    [((3, 10), "onerror"), ((3, 11), "onerror"), ((3, 12), "onexc")],
+)
+def test_remove_tree_selects_python_compatible_callback(monkeypatch, version, callback_name):
+    rmtree = Mock()
+    monkeypatch.setattr(delete_service.shutil, "rmtree", rmtree)
+    monkeypatch.setattr(delete_service, "sys", SimpleNamespace(version_info=version))
+
+    delete_service._remove_tree("folder")
+
+    assert rmtree.call_count == 1
+    assert rmtree.call_args.args == ("folder",)
+    assert callback_name in rmtree.call_args.kwargs
+
+
+def test_move_to_trash_uses_qt_trash_api(monkeypatch, tmp_path):
+    from PySide6.QtCore import QFile
+
+    target = tmp_path / "recoverable.txt"
+    target.write_text("keep recoverable")
+    move = Mock(return_value=True)
+    monkeypatch.setattr(QFile, "moveToTrash", move)
+
+    delete_service.move_to_trash(str(target))
+
+    move.assert_called_once_with(str(target))
+    assert target.read_text() == "keep recoverable"
+
+
+def test_move_to_trash_failure_does_not_fall_back_to_permanent_delete(monkeypatch, tmp_path):
+    from PySide6.QtCore import QFile
+
+    target = tmp_path / "keep.txt"
+    target.write_text("keep")
+    monkeypatch.setattr(QFile, "moveToTrash", Mock(return_value=False))
+    permanent_delete = Mock(side_effect=AssertionError("must not permanently delete"))
+    monkeypatch.setattr(delete_service.os, "remove", permanent_delete)
+
+    with pytest.raises(OSError, match="Papierkorb"):
+        delete_service.move_to_trash(str(target))
+
+    permanent_delete.assert_not_called()
+    assert target.read_text() == "keep"
 
 
 @pytest.mark.parametrize("kind", ["file", "directory", "broken"])

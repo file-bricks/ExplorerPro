@@ -5,6 +5,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Sicheres Löschen
+- Die Löschbestätigung lässt sich über das Menü **Bearbeiten** oder die Einstellungen ein- und ausschalten.
+- Wenn die Bestätigung ausgeschaltet ist, verschiebt ExplorerPro ausgewählte Elemente in den System-Papierkorb. Schlägt das Verschieben fehl, bleibt das Element erhalten und ExplorerPro zeigt den Fehler an.
+- Die Windows-Fehler-5-Behandlung entfernt bei Bedarf das Read-only-Attribut regulärer Einzel-Link-Dateien vor einem einzelnen Löschversuch und stellt es bei Fehlschlag wieder her.
+- Die rekursive Löschbehandlung verwendet ab Python 3.12 den `onexc`-Callback und bei älteren unterstützten Python-Versionen `onerror`.
+
 ### Datei-/Ordner-Eigenschaften, Pfad-Kopier-Suite & Terminal-Integration (2026-10-03, TW-EP-11)
 - **Datei- & Ordner-Eigenschaften Dialog (`src/gui/properties_dialog.py`)**:
   - Neuer standardkonformer Eigenschafts-Dialog mit Tabs für "Allgemein" und "Prüfsummen" (bzw. "Inhalt" für Textdateien).

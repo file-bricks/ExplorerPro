@@ -570,7 +570,7 @@ ExplorerPro provides comprehensive keyboard control designed for high-efficiency
 | <kbd>Ctrl</kbd> + <kbd>Tab</kbd> | Browser | Cycle through open directory tabs |
 | <kbd>Ctrl</kbd> + <kbd>F</kbd> | Global | Focus search bar and trigger FTS5 search |
 | <kbd>F2</kbd> | Browser | Rename selected file or folder |
-| <kbd>Delete</kbd> | Browser | Delete selected items (with confirmation dialog) |
+| <kbd>Delete</kbd> | Browser | Delete selected items (with confirmation; without confirmation they go to the system trash) |
 | <kbd>Ctrl</kbd> + <kbd>C</kbd> | Browser | Copy selected files/folders to clipboard |
 | <kbd>Ctrl</kbd> + <kbd>V</kbd> | Browser | Paste files from clipboard (with collision-free auto-suffix) |
 | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> | Browser | Create a new folder in current directory |

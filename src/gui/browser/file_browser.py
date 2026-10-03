@@ -775,8 +775,8 @@ class FileBrowser(QWidget):
         dialog.exec()
 
     def delete_selection(self, target_paths: list = None) -> bool:
-        """Löscht ausgewählte Einträge mit der eingestellten Bestätigungsabfrage."""
-        from core.delete_service import delete_path
+        """Delete selected entries, using the trash when confirmation is disabled."""
+        from core.delete_service import delete_path, move_to_trash
         from core.settings_manager import SettingsManager
 
         if not target_paths:
@@ -793,7 +793,8 @@ class FileBrowser(QWidget):
                 preview += f"\n... und {count - 5} weitere"
             msg = f"Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?\n\n{preview}"
 
-        if SettingsManager.instance().get("general", "confirm_delete", True) is not False:
+        confirm_delete = SettingsManager.instance().get("general", "confirm_delete", True) is not False
+        if confirm_delete:
             reply = QMessageBox.question(
                 self,
                 "Löschen bestätigen",
@@ -805,11 +806,12 @@ class FileBrowser(QWidget):
                 return False
 
         errors = []
+        delete_item = delete_path if confirm_delete else move_to_trash
         for path in target_paths:
             if not os.path.lexists(path):
                 continue
             try:
-                delete_path(path)
+                delete_item(path)
             except OSError as exc:
                 errors.append(f"{os.path.basename(path)}: {exc}")
 
