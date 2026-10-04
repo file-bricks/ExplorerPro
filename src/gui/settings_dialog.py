@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.settings_manager import SettingsManager
-from translator import TranslationSystem
+from translator import TranslationSystem, t
 
 
 class SettingsDialog(QDialog):
@@ -102,9 +102,11 @@ class SettingsDialog(QDialog):
         self.show_hidden_cb.setToolTip("Versteckte Dateien und Systemordner im Dateibrowser anzeigen")
         form.addRow(self.show_hidden_cb)
 
-        self.confirm_delete_cb = QCheckBox("Vor dem Löschen nachfragen")
-        self.confirm_delete_cb.setAccessibleName("Vor dem Löschen nachfragen")
-        self.confirm_delete_cb.setToolTip("Sicherheitsabfrage vor dem unwiderruflichen Löschen einblenden")
+        self.confirm_delete_cb = QCheckBox(t("Vor dem Löschen nachfragen"))
+        self.confirm_delete_cb.setAccessibleName(t("Vor dem Löschen nachfragen"))
+        self.confirm_delete_cb.setToolTip(
+            t("Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben.")
+        )
         form.addRow(self.confirm_delete_cb)
 
         self.remember_size_cb = QCheckBox("Fenstergröße merken")
@@ -239,7 +241,7 @@ class SettingsDialog(QDialog):
 
         self.start_folder_edit.setText(get("general", "start_folder", "") or "")
         self.show_hidden_cb.setChecked(bool(get("general", "show_hidden_files", False)))
-        self.confirm_delete_cb.setChecked(bool(get("general", "confirm_delete", True)))
+        self.confirm_delete_cb.setChecked(get("general", "confirm_delete", True) is not False)
         self.remember_size_cb.setChecked(bool(get("general", "remember_window_size", True)))
 
         self.auto_index_cb.setChecked(bool(get("index", "auto_index", True)))

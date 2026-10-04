@@ -775,7 +775,10 @@ class FileBrowser(QWidget):
         dialog.exec()
 
     def delete_selection(self, target_paths: list = None) -> bool:
-        """Löscht ausgewählte Dateien oder Ordner nach Bestätigung."""
+        """Delete selected entries, using the trash when confirmation is disabled."""
+        from core.delete_service import delete_path, move_to_trash
+        from core.settings_manager import SettingsManager
+
         if not target_paths:
             target_paths = self.get_selected_files()
         if not target_paths:
@@ -790,26 +793,25 @@ class FileBrowser(QWidget):
                 preview += f"\n... und {count - 5} weitere"
             msg = f"Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?\n\n{preview}"
 
-        reply = QMessageBox.question(
-            self,
-            "Löschen bestätigen",
-            msg,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
-        )
-
-        if reply != QMessageBox.StandardButton.Yes:
-            return False
+        confirm_delete = SettingsManager.instance().get("general", "confirm_delete", True) is not False
+        if confirm_delete:
+            reply = QMessageBox.question(
+                self,
+                "Löschen bestätigen",
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            if reply != QMessageBox.StandardButton.Yes:
+                return False
 
         errors = []
+        delete_item = delete_path if confirm_delete else move_to_trash
         for path in target_paths:
-            if not os.path.exists(path):
+            if not os.path.lexists(path):
                 continue
             try:
-                if os.path.isdir(path):
-                    shutil.rmtree(path)
-                else:
-                    os.remove(path)
+                delete_item(path)
             except OSError as exc:
                 errors.append(f"{os.path.basename(path)}: {exc}")
 
