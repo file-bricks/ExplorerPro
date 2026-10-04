@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QLabel, QLineEdit, QPushButton, QProgressBar, QApplication,
     QMessageBox
 )
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot, QTimer
 from PySide6.QtGui import QFont
 
 from core.checksum_service import ChecksumWorker, verify_hash
@@ -25,6 +25,10 @@ class ChecksumDialog(QDialog):
         self.filepath = filepath
         self.worker = None
         self._calculated_hashes = {}
+        self._pending_close_result = None
+        self._close_timer = QTimer(self)
+        self._close_timer.setInterval(20)
+        self._close_timer.timeout.connect(self._finish_pending_close)
 
         filename = os.path.basename(filepath)
         self.setWindowTitle(f"Prüfsummen — {filename}")
@@ -244,13 +248,34 @@ class ChecksumDialog(QDialog):
             self.verify_result_label.setStyleSheet("color: #c00000; font-weight: bold;")
 
     def done(self, result: int):
-        if self.worker and self.worker.isRunning():
+        if self.worker and not self.worker.wait(0):
+            # A timed wait does not make destroying a still-running QThread safe.
+            # Keep the dialog alive and its event loop responsive until it exits.
+            if self._pending_close_result is None:
+                self._pending_close_result = result
             self.worker.cancel()
-            self.worker.wait(1000)
+            self.close_btn.setEnabled(False)
+            self._close_timer.start()
+            return
+        self._close_timer.stop()
+        if self._pending_close_result is not None:
+            result = self._pending_close_result
+            self._pending_close_result = None
         super().done(result)
 
+    @Slot()
+    def _finish_pending_close(self):
+        if self.worker and not self.worker.wait(0):
+            return
+        self._close_timer.stop()
+        result = self._pending_close_result
+        self._pending_close_result = None
+        if result is not None:
+            super().done(result)
+
     def closeEvent(self, event):
-        if self.worker and self.worker.isRunning():
-            self.worker.cancel()
-            self.worker.wait(1000)
+        if self.worker and not self.worker.wait(0):
+            event.ignore()
+            self.done(QDialog.DialogCode.Rejected)
+            return
         super().closeEvent(event)

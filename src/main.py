@@ -27,6 +27,7 @@ from PySide6.QtGui import QIcon
 
 from app import ExplorerProApp
 from version import __version__
+from core.gui_gc import install_gui_gc
 
 
 def load_app_icon() -> QIcon:
@@ -65,17 +66,6 @@ def set_application_version(app: QApplication) -> None:
     app.setApplicationVersion(__version__)
 
 
-def configure_application_language():
-    """Restore the saved UI language before constructing any translated widgets."""
-    from core.settings_manager import SettingsManager
-    from translator import get_translator, SUPPORTED_LANGUAGES
-
-    language = SettingsManager.instance().get("general", "language", "de")
-    if language not in SUPPORTED_LANGUAGES:
-        language = "de"
-    return get_translator(language)
-
-
 def main():
     """Haupteinstiegspunkt für ExplorerPro"""
     # High DPI Support
@@ -84,29 +74,33 @@ def main():
     )
 
     app = QApplication(sys.argv)
-    app.setApplicationName("ExplorerPro")
-    app.setOrganizationName("ExplorerPro")
-    translator = configure_application_language()
-    install_qt_translations(app, translator.get_language())
-    set_application_version(app)
-    icon = load_app_icon()
-    if not icon.isNull():
-        app.setWindowIcon(icon)
+    collector = install_gui_gc(app)
+    try:
+        app.setApplicationName("ExplorerPro")
+        app.setOrganizationName("ExplorerPro")
+        translator = configure_application_language()
+        install_qt_translations(app, translator.get_language())
+        set_application_version(app)
+        icon = load_app_icon()
+        if not icon.isNull():
+            app.setWindowIcon(icon)
 
-    # Style
-    app.setStyle("Fusion")
+        # Style
+        app.setStyle("Fusion")
 
-    # Dark Theme (optional)
-    # from gui.themes import apply_dark_theme
-    # apply_dark_theme(app)
+        # Dark Theme (optional)
+        # from gui.themes import apply_dark_theme
+        # apply_dark_theme(app)
 
-    # Hauptfenster starten
-    explorer = ExplorerProApp()
-    if not icon.isNull():
-        explorer.setWindowIcon(icon)
-    explorer.show()
-
-    sys.exit(app.exec())
+        # Hauptfenster starten
+        explorer = ExplorerProApp()
+        if not icon.isNull():
+            explorer.setWindowIcon(icon)
+        explorer.show()
+        exit_code = app.exec()
+    finally:
+        collector.close()
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
