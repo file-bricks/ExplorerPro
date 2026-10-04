@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
-
-
-import shutil
 
 
 def get_system_open_command(path: str) -> list[str] | None:
@@ -31,10 +29,12 @@ def get_terminal_command(directory: str) -> list[str]:
     """Return the platform-native terminal launcher command for a directory."""
     if sys.platform.startswith("win"):
         if shutil.which("wt"):
-            # Resolve the target through Popen(cwd=...), not command text.
-            # Windows Terminal treats semicolons as command separators.
+            # Windows Terminal treats semicolons as command separators. Use
+            # the Popen working directory instead of passing an untrusted path.
             return ["wt", "-d", "."]
         if shutil.which("powershell"):
+            # open_terminal_in_directory passes cwd to Popen; never interpolate
+            # a path into a shell-interpreted command.
             return ["powershell", "-NoExit"]
         return ["cmd", "/K"]
     if sys.platform == "darwin":
