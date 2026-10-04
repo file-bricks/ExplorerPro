@@ -881,10 +881,13 @@ class FileBrowser(QWidget):
             )
 
     def _sync_path(self, path: str):
-        """Öffnet das Sync-Panel für den Pfad."""
+        """Öffnet das Sync-Panel und legt ein Sync-Paar mit dem Pfad als Quelle an."""
         main_win = self.window()
         if hasattr(main_win, 'show_sync_panel'):
             main_win.show_sync_panel()
+        sidebar = getattr(main_win, 'sidebar', None)
+        if sidebar is not None and hasattr(sidebar, 'sync_panel'):
+            sidebar.sync_panel.add_pair_for_path(path)
 
     # ------------------------------------------------------------------ #
     # Drag-and-Drop                                                        #

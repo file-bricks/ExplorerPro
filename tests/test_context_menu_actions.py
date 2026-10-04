@@ -166,3 +166,35 @@ def test_spec_bundles_translator_and_locales():
     spec = (ROOT / "ExplorerPro.spec").read_text(encoding="utf-8")
     assert "pathex=[str(src_dir), str(project_root)]" in spec
     assert "(str(project_root / 'locales'), 'locales')" in spec
+
+
+def test_context_menu_sync_prefills_source_folder(tmp_path, monkeypatch):
+    _ensure_app()
+    from gui.main_window import MainWindow
+    from modules.sync import sync_manager
+
+    target = tmp_path / "daten.txt"
+    target.write_text("x", encoding="utf-8")
+    seen = {}
+
+    def fake_exec(dialog):
+        seen["source"] = dialog.source_edit.text()
+        seen["name"] = dialog.name_edit.text()
+        seen["title"] = dialog.windowTitle()
+        return 0  # abgebrochen: nichts speichern
+
+    monkeypatch.setattr(sync_manager.SyncPairDialog, "exec", fake_exec)
+    win = MainWindow()
+    _context_actions(win.file_browser, target, monkeypatch)["🔄 Synchronisieren"].trigger()
+    assert os.path.normpath(seen["source"]) == os.path.normpath(str(tmp_path))
+    assert seen["name"] == tmp_path.name
+    assert seen["title"] == "Neues Sync-Paar"
+    win.deleteLater()
+
+
+def test_translations_complete_for_all_tier2_languages():
+    import json
+
+    data = json.loads((ROOT / "locales" / "translations.json").read_text(encoding="utf-8"))
+    missing = [k for k, v in data.items() for lang in ("en", "es", "zh", "ja", "ru") if not v.get(lang)]
+    assert missing == []
