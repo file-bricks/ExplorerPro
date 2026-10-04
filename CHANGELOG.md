@@ -5,6 +5,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Übersetzte Hilfetexte und gespeicherte Sprache (2026-10-01)
+- 86 bislang fehlende Hilfetexte, Beschriftungen und Fehlermeldungen im Katalog ergänzt; Hilfetexte über die Übersetzungsfunktion angebunden (DE, EN, ES, ZH, JA, RU).
+- Die Sprachauswahl erklärt in allen sechs Sprachen, dass Sprachänderungen beim nächsten Start übernommen werden.
+- Sprachauswahl wird geladen und gespeichert; beim nächsten Start verwenden die angebundenen Texte und Qt-Standarddialoge die gespeicherte Sprache.
+- Übersetzungsprüfung erkennt auch bereits angebundene `t(...)`-Aufrufe. Weitere fest deutsche Bedienelemente bleiben separat offen.
+
 ### Sicheres Löschen
 - Die Löschbestätigung lässt sich über das Menü **Bearbeiten** oder die Einstellungen ein- und ausschalten.
 - Wenn die Bestätigung ausgeschaltet ist, verschiebt ExplorerPro ausgewählte Elemente in den System-Papierkorb. Schlägt das Verschieben fehl, bleibt das Element erhalten und ExplorerPro zeigt den Fehler an.

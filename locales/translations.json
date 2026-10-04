@@ -2910,5 +2910,93 @@
     "zh": "无法将项目移至回收站。",
     "ja": "項目をごみ箱に移動できませんでした。",
     "ru": "Не удалось переместить элемент в корзину."
+  },
+  "Datei nicht gefunden": {
+    "de": "Datei nicht gefunden",
+    "en": "File not found",
+    "es": "Archivo no encontrado",
+    "zh": "找不到文件",
+    "ja": "ファイルが見つかりません",
+    "ru": "Файл не найден"
+  },
+  "Dateien umbenannt, aber Fehler aufgetreten:": {
+    "de": "Dateien umbenannt, aber Fehler aufgetreten:",
+    "en": "Files renamed, but errors occurred:",
+    "es": "Archivos renombrados, pero se produjeron errores:",
+    "zh": "文件已重命名，但发生了错误：",
+    "ja": "ファイルの名前を変更しましたが、エラーが発生しました：",
+    "ru": "Файлы переименованы, но возникли ошибки:"
+  },
+  "Dateien zurückgesetzt, Fehler:": {
+    "de": "Dateien zurückgesetzt, Fehler:",
+    "en": "Files restored; errors:",
+    "es": "Archivos restaurados; errores:",
+    "zh": "文件已还原；错误：",
+    "ja": "ファイルを復元しました。エラー：",
+    "ru": "Файлы восстановлены; ошибки:"
+  },
+  "Pfad ist keine Datei": {
+    "de": "Pfad ist keine Datei",
+    "en": "The path is not a file",
+    "es": "La ruta no es un archivo",
+    "zh": "该路径不是文件",
+    "ja": "パスはファイルではありません",
+    "ru": "Путь не указывает на файл"
+  },
+  "Ungültiger Pfad": {
+    "de": "Ungültiger Pfad",
+    "en": "Invalid path",
+    "es": "Ruta no válida",
+    "zh": "无效路径",
+    "ja": "無効なパス",
+    "ru": "Недопустимый путь"
+  },
+  "Sprachänderungen werden beim nächsten Start übernommen.": {
+    "de": "Sprachänderungen werden beim nächsten Start übernommen.",
+    "en": "Language changes take effect on the next start.",
+    "es": "Los cambios de idioma se aplican en el próximo inicio.",
+    "zh": "语言更改将在下次启动时生效。",
+    "ja": "言語の変更は次回起動時に適用されます。",
+    "ru": "Изменение языка вступит в силу при следующем запуске."
+  },
+  "Umbenennen": {
+    "de": "Umbenennen",
+    "en": "Rename",
+    "es": "Renombrar",
+    "zh": "重命名",
+    "ja": "名前を変更",
+    "ru": "Переименовать"
+  },
+  "Status": {
+    "de": "Status",
+    "en": "Status",
+    "es": "Estado",
+    "zh": "状态",
+    "ja": "状態",
+    "ru": "Статус"
+  },
+  "Erfolg": {
+    "de": "Erfolg",
+    "en": "Success",
+    "es": "Correcto",
+    "zh": "成功",
+    "ja": "成功",
+    "ru": "Успех"
+  },
+  "Inhalt": {
+    "de": "Inhalt",
+    "en": "Content",
+    "es": "Contenido",
+    "zh": "内容",
+    "ja": "内容",
+    "ru": "Содержимое"
+  },
+  "Diff kopieren": {
+    "de": "Diff kopieren",
+    "en": "Copy diff",
+    "es": "Copiar diferencias",
+    "zh": "复制差异",
+    "ja": "差分をコピー",
+    "ru": "Копировать различия"
   }
 }

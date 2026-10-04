@@ -17,6 +17,7 @@ from datetime import datetime
 from pathlib import Path
 
 from core.shortcut_utils import build_shortcut_preview_target, is_windows_shortcut
+from translator import t
 
 # Optionale Imports
 try:
@@ -347,7 +348,7 @@ class MetadataPanel(QWidget):
         self.tags_edit = QLineEdit()
         self.tags_edit.setPlaceholderText("Tags hinzufügen (kommagetrennt)")
         self.tags_edit.setAccessibleName("Metadaten-Tags")
-        self.tags_edit.setToolTip("Kommagetrennte Tags für die Datei eingeben")
+        self.tags_edit.setToolTip(t("Kommagetrennte Tags für die Datei eingeben"))
         self.tags_edit.editingFinished.connect(self.save_user_data)
         tags_layout.addWidget(self.tags_edit)
 
@@ -361,7 +362,7 @@ class MetadataPanel(QWidget):
         self.notes_edit.setMaximumHeight(100)
         self.notes_edit.setPlaceholderText("Notizen zur Datei...")
         self.notes_edit.setAccessibleName("Datei-Notizen")
-        self.notes_edit.setToolTip("Freitextnotizen zur Datei eingeben")
+        self.notes_edit.setToolTip(t("Freitextnotizen zur Datei eingeben"))
         notes_layout.addWidget(self.notes_edit)
 
         layout.addWidget(notes_group)
@@ -472,13 +473,13 @@ class ExcelPreview(QWidget):
         self.sheet_combo = QComboBox()
         self.sheet_combo.setMinimumWidth(120)
         self.sheet_combo.setAccessibleName("Excel-Arbeitsblatt")
-        self.sheet_combo.setToolTip("Arbeitsblatt der Excel-Arbeitsmappe auswählen")
+        self.sheet_combo.setToolTip(t("Arbeitsblatt der Excel-Arbeitsmappe auswählen"))
         self.sheet_combo.currentTextChanged.connect(self._on_sheet_changed)
         header.addWidget(self.sheet_combo, 1)
 
         self.open_extern_btn = QPushButton("Extern öffnen")
         self.open_extern_btn.setAccessibleName("In externer Anwendung öffnen")
-        self.open_extern_btn.setToolTip("Öffnet die Excel-Datei im Standardprogramm")
+        self.open_extern_btn.setToolTip(t("Öffnet die Excel-Datei im Standardprogramm"))
         self.open_extern_btn.setVisible(False)
         self.open_extern_btn.clicked.connect(self._open_extern)
         header.addWidget(self.open_extern_btn)

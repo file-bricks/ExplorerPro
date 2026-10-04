@@ -18,6 +18,7 @@ from typing import List
 from dataclasses import dataclass, field
 from datetime import datetime
 import json
+from translator import t
 
 
 @dataclass
@@ -76,7 +77,7 @@ class PromptEditDialog(QDialog):
         self.category_combo = QComboBox()
         self.category_combo.setEditable(True)
         self.category_combo.setAccessibleName("Prompt-Kategorie")
-        self.category_combo.setToolTip("Kategorie für die Einordnung des Prompts")
+        self.category_combo.setToolTip(t("Kategorie für die Einordnung des Prompts"))
         self.category_combo.addItems(self.categories)
         form.addRow("Kategorie:", self.category_combo)
 
@@ -84,7 +85,7 @@ class PromptEditDialog(QDialog):
         self.tags_edit = QLineEdit()
         self.tags_edit.setPlaceholderText("tag1, tag2, tag3 (mit Komma trennen)")
         self.tags_edit.setAccessibleName("Prompt-Tags")
-        self.tags_edit.setToolTip("Schlagwörter zur Filterung, kommagetrennt")
+        self.tags_edit.setToolTip(t("Schlagwörter zur Filterung, kommagetrennt"))
         form.addRow("Tags:", self.tags_edit)
 
         layout.addLayout(form)
@@ -98,7 +99,7 @@ class PromptEditDialog(QDialog):
         self.content_edit.setAccessibleDescription(
             "Text der Prompt-Vorlage. Variablen in doppelten geschweiften Klammern werden beim Verwenden abgefragt."
         )
-        self.content_edit.setToolTip("Vollständiger Prompt-Text")
+        self.content_edit.setToolTip(t("Vollständiger Prompt-Text"))
         layout.addWidget(self.content_edit)
 
         # Variablen-Hinweis
@@ -284,7 +285,7 @@ class PromptsPanel(QWidget):
         self.preview_text.setReadOnly(True)
         self.preview_text.setMaximumHeight(100)
         self.preview_text.setAccessibleName("Prompt-Vorschautext")
-        self.preview_text.setToolTip("Vorschau des ausgewählten Prompts")
+        self.preview_text.setToolTip(t("Vorschau des ausgewählten Prompts"))
         preview_layout.addWidget(self.preview_text)
 
         # Aktions-Buttons
@@ -299,7 +300,7 @@ class PromptsPanel(QWidget):
 
         self.edit_btn = QPushButton("✏️ Bearbeiten")
         self.edit_btn.setAccessibleName("Ausgewählten Prompt bearbeiten")
-        self.edit_btn.setToolTip("Öffnet den Bearbeitungsdialog für den Prompt")
+        self.edit_btn.setToolTip(t("Öffnet den Bearbeitungsdialog für den Prompt"))
         self.edit_btn.clicked.connect(self._edit_selected)
         self.edit_btn.setEnabled(False)
         btn_layout.addWidget(self.edit_btn)
