@@ -5,6 +5,8 @@ Sidebar - Seitenleiste mit Ordnerbaum, Favoriten, Suche, Apps, Prompts, Sync
 Phase 5: Vollständige Integration
 """
 
+from concurrent.futures import CancelledError
+
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget,
     QTreeWidget, QTreeWidgetItem, QListWidget, QListWidgetItem,
@@ -129,7 +131,7 @@ class TreePanel(QWidget):
                 continue
             try:
                 usage = future.result()
-            except (OSError, ValueError):
+            except (CancelledError, OSError, ValueError):
                 usage = None
             self._on_drive_usage(path, usage)
         if not self._usage_requests:

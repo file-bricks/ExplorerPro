@@ -31,10 +31,12 @@ def get_terminal_command(directory: str) -> list[str]:
     """Return the platform-native terminal launcher command for a directory."""
     if sys.platform.startswith("win"):
         if shutil.which("wt"):
-            return ["wt", "-d", directory]
+            # Resolve the target through Popen(cwd=...), not command text.
+            # Windows Terminal treats semicolons as command separators.
+            return ["wt", "-d", "."]
         if shutil.which("powershell"):
-            return ["powershell", "-NoExit", "-Command", f"Set-Location -LiteralPath '{directory}'"]
-        return ["cmd", "/K", f"cd /d {directory}"]
+            return ["powershell", "-NoExit"]
+        return ["cmd", "/K"]
     if sys.platform == "darwin":
         return ["open", "-a", "Terminal", directory]
     # Linux / BSD
