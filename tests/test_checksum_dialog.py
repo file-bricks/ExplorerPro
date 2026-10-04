@@ -20,13 +20,14 @@ def _ensure_app():
     return app
 
 
-def test_checksum_dialog_initialization(tmp_path: Path):
+def test_checksum_dialog_initialization(tmp_path: Path, qtbot):
     """Prüft Dialog-Aufbau und Hash-Berechnung."""
     _ensure_app()
     sample = tmp_path / "test_dialog.txt"
     sample.write_text("ExplorerPro Dialog Test Content", encoding="utf-8")
 
     dlg = ChecksumDialog(str(sample))
+    qtbot.addWidget(dlg)
     assert dlg.path_label.text() == str(sample)
     assert dlg.windowTitle().startswith("Prüfsummen — test_dialog.txt")
     assert "sha256" in dlg.hash_edits
@@ -61,23 +62,24 @@ def test_checksum_dialog_initialization(tmp_path: Path):
     dlg.close()
 
 
-def test_checksum_dialog_non_existent_file(tmp_path: Path):
+def test_checksum_dialog_non_existent_file(tmp_path: Path, qtbot):
     """Prüft Dialog-Verhalten wenn Datei nicht existiert."""
     _ensure_app()
     dlg = ChecksumDialog(str(tmp_path / "nicht_da.txt"))
+    qtbot.addWidget(dlg)
     assert "Fehler" in dlg.verify_result_label.text()
     dlg.close()
 
 
-def test_checksum_dialog_close_cancels_worker(tmp_path: Path):
+def test_checksum_dialog_close_cancels_worker(tmp_path: Path, qtbot):
     """Prüft, dass closeEvent den Worker sauber abbricht."""
-    app = _ensure_app()
+    _ensure_app()
     sample = tmp_path / "cancel_test.txt"
     sample.write_bytes(b"X" * (500 * 1024))
 
     dlg = ChecksumDialog(str(sample))
+    qtbot.addWidget(dlg)
     dlg.closeEvent(QCloseEvent())
     assert dlg.worker is not None
-    dlg.close()
-    dlg.deleteLater()
-    app.processEvents()
+    qtbot.waitUntil(lambda: not dlg.worker.isRunning(), timeout=3000)
+    qtbot.waitUntil(lambda: not dlg._close_timer.isActive(), timeout=3000)

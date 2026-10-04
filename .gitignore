@@ -107,6 +107,12 @@ pytest_res.txt
 LOCK
 LOCK*.txt
 LOCK.*
+LOCK.dev.*
+LOCK.antigravity.*
+LOCK.bugsearch.*
+LOCK.user.*
+LOCK.until.*
+LOCK.condition.*
 *.lock
 uv.lock
 !package-lock.json
@@ -131,6 +137,7 @@ assets/splash-icon.png
 *-Mac Studio*
 *-MacBook*
 *-IDEAPAD*
+*-IDEAPAD-GEI*
 *.sync-conflict-*
 *.sync-temp-*
 *.conflict

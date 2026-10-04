@@ -1,26 +1,21 @@
-"""Shared pytest setup and teardown for ExplorerPro.
-
-1. Safe Symlink & Numbered Dir Cleanup (Windows):
-   On Windows, pytest's `cleanup_dead_symlinks` in `_pytest.pathlib` checks
-   `left_dir.resolve().exists()` on `pytest-current` (a directory symlink).
-   Without Developer Mode or when symlink permissions differ, `exists()` raises
-   `PermissionError: [WinError 5] Zugriff verweigert: '...\\pytest-current'`.
-   When raised inside `tmp_path_factory._exit_stack.close()` at sessionfinish,
-   CPython aborts with `Fatal Python error: Aborted` / `STATUS_STACK_BUFFER_OVERRUN`
-   (exit code 1). Suppressing OSError in `cleanup_dead_symlinks` and `cleanup_numbered_dir`
-   guards against this Windows-specific teardown failure.
-
-2. Clean Qt Top-Level Widget Teardown:
-   Closes and schedules `deleteLater()` for remaining top-level Qt widgets
-   and processes pending events, preventing dangling QObject destructors
-   at interpreter exit.
-"""
-from __future__ import annotations
+"""Exercise the application's GUI-thread cyclic collection policy."""
 
 import os
 
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+import pytest
 
+os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+
+from PySide6.QtWidgets import QApplication
+from core.gui_gc import install_gui_gc
+
+_application = QApplication.instance() or QApplication([])
+_collector = install_gui_gc(_application)
+
+
+# Windows: pytest's dead-symlink cleanup can raise PermissionError at session
+# teardown (WinError 5 on `pytest-current`), which aborts CPython with
+# STATUS_STACK_BUFFER_OVERRUN. Suppress OSError in those cleanup helpers.
 try:
     import _pytest.pathlib as _pytest_pathlib
 
@@ -44,37 +39,14 @@ try:
 except (ImportError, AttributeError):
     pass
 
-import pytest
-from PySide6.QtWidgets import QApplication
-
 
 @pytest.fixture(autouse=True)
-def _cleanup_qt_widgets():
-    """Ensure top-level Qt widgets created during a test are closed and drained."""
+def collect_gui_cycles():
     yield
-    app = QApplication.instance()
-    if app is not None:
-        for widget in app.topLevelWidgets():
-            try:
-                widget.close()
-                widget.deleteLater()
-            except Exception:
-                pass
-        app.processEvents()
+    _collector.collect()
 
 
-def pytest_sessionfinish(session, exitstatus):
-    """Drain any remaining events before interpreter shutdown."""
-    app = QApplication.instance()
-    if app is not None:
-        try:
-            for widget in app.topLevelWidgets():
-                try:
-                    widget.close()
-                    widget.deleteLater()
-                except Exception:
-                    pass
-            for _ in range(5):
-                app.processEvents()
-        except Exception:
-            pass
+@pytest.fixture(scope='session', autouse=True)
+def gui_runtime():
+    yield
+    _collector.close()

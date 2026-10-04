@@ -292,6 +292,13 @@ class MainWindow(QMainWindow):
 
         file_menu.addSeparator()
 
+        properties_action = QAction("Eigenschaften...", self)
+        properties_action.setShortcut(QKeySequence("Alt+Enter"))
+        properties_action.triggered.connect(self._show_properties)
+        file_menu.addAction(properties_action)
+
+        file_menu.addSeparator()
+
         exit_action = QAction("Beenden", self)
         exit_action.setShortcut(QKeySequence("Alt+F4"))
         exit_action.triggered.connect(self.close)
@@ -328,6 +335,12 @@ class MainWindow(QMainWindow):
         batch_rename_action.setShortcut(QKeySequence("Ctrl+M"))
         batch_rename_action.triggered.connect(self._batch_rename)
         edit_menu.addAction(batch_rename_action)
+
+        copy_path_action = QAction("Pfad kopieren", self)
+        copy_path_action.setShortcut(QKeySequence("Ctrl+Shift+C"))
+        copy_path_action.triggered.connect(self._copy_path)
+        edit_menu.addAction(copy_path_action)
+
 
         # ===== Ansicht-Menü =====
         view_menu = menubar.addMenu("&Ansicht")
@@ -398,7 +411,13 @@ class MainWindow(QMainWindow):
         diff_action.triggered.connect(self._compare_files)
         tools_menu.addAction(diff_action)
 
+        terminal_action = QAction("💻 Terminal hier öffnen", self)
+        terminal_action.setShortcut(QKeySequence("Ctrl+Shift+P"))
+        terminal_action.triggered.connect(self._open_terminal)
+        tools_menu.addAction(terminal_action)
+
         tools_menu.addSeparator()
+
 
         editor_action = QAction("✏️ Editor öffnen", self)
         editor_action.setShortcut(QKeySequence("F4"))
@@ -525,7 +544,22 @@ class MainWindow(QMainWindow):
         except Exception as e:
             QMessageBox.warning(self, "Export fehlgeschlagen", str(e))
 
+    def _show_properties(self):
+        """Öffnet den Eigenschaften-Dialog für ausgewählte Datei oder Ordner."""
+        self.file_browser.show_properties()
+
+    def _copy_path(self):
+        """Kopiert den Pfad der Auswahl in die Zwischenablage."""
+        copied = self.file_browser.copy_path_to_clipboard()
+        if copied:
+            self.statusBar().showMessage("📋 Pfad kopiert", 3000)
+
+    def _open_terminal(self):
+        """Öffnet ein Terminal im aktuellen Verzeichnis."""
+        self.file_browser.open_terminal()
+
     def _open_folder(self):
+
         """Öffnet einen Ordner-Dialog"""
         folder = QFileDialog.getExistingDirectory(
             self, "Ordner öffnen",

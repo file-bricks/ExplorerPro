@@ -145,29 +145,32 @@ def test_is_binary_file_heuristic_control_chars(tmp_path: Path):
     assert is_binary_file(str(bin_file)) is True
 
 
-def test_checksum_dialog_done_cancels_worker(tmp_path: Path):
+def test_checksum_dialog_done_cancels_worker(tmp_path: Path, qtbot):
     """Prüft, dass ChecksumDialog.done() (via accept/reject/Schließen) den Worker abbricht."""
     _ensure_app()
     sample = tmp_path / "big_sample.bin"
     sample.write_bytes(b"Z" * (1024 * 1024))
 
     dlg = ChecksumDialog(str(sample))
+    qtbot.addWidget(dlg)
     worker = dlg.worker
     assert worker is not None
 
     # Simuliere Schließen via accept (Button "Schließen")
     dlg.accept()
     assert worker.is_cancelled() is True
-    assert not worker.isRunning()
+    qtbot.waitUntil(lambda: not worker.isRunning(), timeout=3000)
+    qtbot.waitUntil(lambda: not dlg._close_timer.isActive(), timeout=3000)
 
 
-def test_checksum_dialog_directory_handling(tmp_path: Path):
+def test_checksum_dialog_directory_handling(tmp_path: Path, qtbot):
     """Prüft, dass ChecksumDialog bei einem Verzeichnis nicht abstürzt und klare Meldung liefert."""
     _ensure_app()
     sub_dir = tmp_path / "some_directory"
     sub_dir.mkdir()
 
     dlg = ChecksumDialog(str(sub_dir))
+    qtbot.addWidget(dlg)
     assert dlg.worker is None
     assert "Verzeichnis" in dlg.verify_result_label.text()
     dlg.close()
