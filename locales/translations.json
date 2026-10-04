@@ -2894,5 +2894,21 @@
     "zh": "刷新驱动器使用情况",
     "ja": "ドライブ使用量を更新",
     "ru": "Обновить использование дисков"
+  },
+  "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben.": {
+    "de": "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben.",
+    "en": "When disabled, items are moved to the Recycle Bin without asking.",
+    "es": "Si se desactiva, los elementos se mueven a la papelera sin pedir confirmación.",
+    "zh": "禁用后，项目会直接移至回收站，不再询问。",
+    "ja": "無効にすると、確認なしで項目をごみ箱に移動します。",
+    "ru": "Если отключить, элементы будут перемещаться в корзину без запроса подтверждения."
+  },
+  "Das Element konnte nicht in den Papierkorb verschoben werden.": {
+    "de": "Das Element konnte nicht in den Papierkorb verschoben werden.",
+    "en": "The item could not be moved to the Recycle Bin.",
+    "es": "No se pudo mover el elemento a la papelera.",
+    "zh": "无法将项目移至回收站。",
+    "ja": "項目をごみ箱に移動できませんでした。",
+    "ru": "Не удалось переместить элемент в корзину."
   }
 }

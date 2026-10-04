@@ -1,6 +1,7 @@
 import os
 import threading
 import time
+from concurrent.futures import Future
 from types import SimpleNamespace
 
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
@@ -82,6 +83,22 @@ def make_panel(monkeypatch, read):
     monkeypatch.setattr(QDir, 'drives', lambda: [SimpleNamespace(absolutePath=lambda: 'X:/')])
     monkeypatch.setattr('gui.sidebar.sidebar_main.read_drive_usage', read)
     return TreePanel()
+
+
+def test_cancelled_drive_query_is_reported_as_unavailable(monkeypatch):
+    panel = make_panel(monkeypatch, lambda _: DriveUsage(100, 20, 80))
+    try:
+        wait_until(lambda: not panel._usage_requests)
+        cancelled = Future()
+        cancelled.cancel()
+        panel._usage_requests['X:/'] = cancelled
+
+        panel._collect_drive_usage()
+
+        assert not panel._usage_requests
+        assert panel._drive_rows['X:/'][1].details.text() == 'Speicherbelegung nicht verfügbar'
+    finally:
+        panel.close()
 
 
 def test_slow_query_keeps_gui_responsive_and_deduplicates(monkeypatch):

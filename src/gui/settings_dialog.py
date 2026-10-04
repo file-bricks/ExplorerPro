@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.settings_manager import SettingsManager
-from translator import TranslationSystem
+from translator import TranslationSystem, t
 
 
 class SettingsDialog(QDialog):
@@ -102,10 +102,10 @@ class SettingsDialog(QDialog):
         self.show_hidden_cb.setToolTip("Versteckte Dateien und Systemordner im Dateibrowser anzeigen")
         form.addRow(self.show_hidden_cb)
 
-        self.confirm_delete_cb = QCheckBox("Vor dem Löschen nachfragen")
-        self.confirm_delete_cb.setAccessibleName("Vor dem Löschen nachfragen")
+        self.confirm_delete_cb = QCheckBox(t("Vor dem Löschen nachfragen"))
+        self.confirm_delete_cb.setAccessibleName(t("Vor dem Löschen nachfragen"))
         self.confirm_delete_cb.setToolTip(
-            "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben."
+            t("Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben.")
         )
         form.addRow(self.confirm_delete_cb)
 

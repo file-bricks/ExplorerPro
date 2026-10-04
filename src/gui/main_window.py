@@ -22,6 +22,7 @@ from .browser.file_browser import FileBrowser
 from .preview.preview_panel import PreviewPanel
 from .status_bar import StatusBarWidget
 from version import __version__
+from translator import t
 
 
 class SearchToolBar(QToolBar):
@@ -342,10 +343,10 @@ class MainWindow(QMainWindow):
         edit_menu.addAction(copy_path_action)
 
         edit_menu.addSeparator()
-        self.confirm_delete_action = QAction("Vor dem Löschen nachfragen", self)
+        self.confirm_delete_action = QAction(t("Vor dem Löschen nachfragen"), self)
         self.confirm_delete_action.setCheckable(True)
         self.confirm_delete_action.setToolTip(
-            "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben."
+            t("Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben.")
         )
         self._sync_delete_confirmation()
         self.confirm_delete_action.triggered.connect(self._set_delete_confirmation)

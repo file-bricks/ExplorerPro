@@ -5,6 +5,8 @@ import shutil
 import stat
 import sys
 
+from translator import t
+
 
 def _retry_readonly_file(operation, path, error):
     """Retry a failed file deletion once; never relax directory permissions."""
@@ -82,4 +84,4 @@ def move_to_trash(path):
     from PySide6.QtCore import QFile
 
     if not QFile.moveToTrash(path):
-        raise OSError("Das Element konnte nicht in den Papierkorb verschoben werden.")
+        raise OSError(t("Das Element konnte nicht in den Papierkorb verschoben werden."))
