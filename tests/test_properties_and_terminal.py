@@ -77,6 +77,27 @@ class TestPlatformTerminal:
             assert isinstance(cmd, list)
             assert any("cmd" in c or "powershell" in c or "wt" in c for c in cmd)
 
+    def test_windows_terminal_does_not_receive_directory_as_command_text(self):
+        directory = r"C:\Users\test\a; new-tab -p PowerShell"
+        with patch("sys.platform", "win32"), patch(
+            "shutil.which",
+            side_effect=lambda executable: "wt.exe" if executable == "wt" else None,
+        ):
+            assert get_terminal_command(directory) == ["wt", "-d", "."]
+
+    def test_windows_powershell_fallback_does_not_interpolate_directory(self):
+        directory = r"C:\Users\test\x'; Start-Process calc; '"
+        with patch("sys.platform", "win32"), patch(
+            "shutil.which",
+            side_effect=lambda executable: "powershell.exe" if executable == "powershell" else None,
+        ):
+            assert get_terminal_command(directory) == ["powershell", "-NoExit"]
+
+    def test_windows_cmd_fallback_does_not_interpolate_directory(self):
+        directory = r"C:\Users\test\a&calc"
+        with patch("sys.platform", "win32"), patch("shutil.which", return_value=None):
+            assert get_terminal_command(directory) == ["cmd", "/K"]
+
     def test_get_terminal_command_darwin(self):
         with patch("sys.platform", "darwin"):
             cmd = get_terminal_command("/Users/test")
@@ -95,6 +116,34 @@ class TestPlatformTerminal:
             assert mock_popen.called
             args, kwargs = mock_popen.call_args
             assert kwargs.get("cwd") == str(target)
+
+    def test_open_terminal_uses_cwd_for_windows_metacharacter_path(self, tmp_path):
+        target = tmp_path / "x'&calc"
+        target.mkdir()
+        with (
+            patch("sys.platform", "win32"),
+            patch("shutil.which", return_value=None),
+            patch("subprocess.Popen") as mock_popen,
+        ):
+            open_terminal_in_directory(str(target))
+
+        args, kwargs = mock_popen.call_args
+        assert args[0] == ["cmd", "/K"]
+        assert kwargs["cwd"] == str(target)
+
+    def test_open_terminal_uses_cwd_with_windows_terminal(self, tmp_path):
+        target = tmp_path / "a; new-tab -p PowerShell"
+        target.mkdir()
+        with (
+            patch("sys.platform", "win32"),
+            patch("shutil.which", side_effect=lambda executable: "wt.exe" if executable == "wt" else None),
+            patch("subprocess.Popen") as mock_popen,
+        ):
+            open_terminal_in_directory(str(target))
+
+        args, kwargs = mock_popen.call_args
+        assert args[0] == ["wt", "-d", "."]
+        assert kwargs["cwd"] == str(target)
 
 
 class TestCopyPathOperations:

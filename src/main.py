@@ -27,6 +27,7 @@ from PySide6.QtGui import QIcon
 
 from app import ExplorerProApp
 from version import __version__
+from core.gui_gc import install_gui_gc
 
 
 def load_app_icon() -> QIcon:
@@ -73,29 +74,33 @@ def main():
     )
 
     app = QApplication(sys.argv)
-    app.setApplicationName("ExplorerPro")
-    app.setOrganizationName("ExplorerPro")
-    from translator import get_translator
-    install_qt_translations(app, get_translator().get_language())
-    set_application_version(app)
-    icon = load_app_icon()
-    if not icon.isNull():
-        app.setWindowIcon(icon)
+    collector = install_gui_gc(app)
+    try:
+        app.setApplicationName("ExplorerPro")
+        app.setOrganizationName("ExplorerPro")
+        from translator import get_translator
+        install_qt_translations(app, get_translator().get_language())
+        set_application_version(app)
+        icon = load_app_icon()
+        if not icon.isNull():
+            app.setWindowIcon(icon)
 
-    # Style
-    app.setStyle("Fusion")
+        # Style
+        app.setStyle("Fusion")
 
-    # Dark Theme (optional)
-    # from gui.themes import apply_dark_theme
-    # apply_dark_theme(app)
+        # Dark Theme (optional)
+        # from gui.themes import apply_dark_theme
+        # apply_dark_theme(app)
 
-    # Hauptfenster starten
-    explorer = ExplorerProApp()
-    if not icon.isNull():
-        explorer.setWindowIcon(icon)
-    explorer.show()
-
-    sys.exit(app.exec())
+        # Hauptfenster starten
+        explorer = ExplorerProApp()
+        if not icon.isNull():
+            explorer.setWindowIcon(icon)
+        explorer.show()
+        exit_code = app.exec()
+    finally:
+        collector.close()
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
