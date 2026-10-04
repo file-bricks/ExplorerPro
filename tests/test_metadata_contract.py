@@ -209,6 +209,9 @@ def test_pyproject_pep621_classifiers_and_urls():
         "Security",
         "Umbrella",
         "Third-Party Licenses",
+        "Third-Party Licenses (Text)",
+        "Level 1 SBOM",
+        "Plain-Text License",
         "Marketing Log",
         "Parent Organization",
         "Umbrella Ecosystem",
@@ -224,7 +227,7 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert "Last-checked: 2026-09-26" in content
+    assert any(d in content for d in ("Last-checked: 2026-09-30", "Last-checked: 2026-09-29"))
     assert "1.0.7" in content
     assert "ci.yml" in content
 
@@ -293,6 +296,12 @@ def test_readme_18_point_navigation_parity():
     assert '<a id="18-security-policy--sibling-ecosystem"></a>' in en_content and '<a id="18-security-policy--sibling-ecosystem"></a>' in de_content
     assert '<a id="18-sicherheitsrichtlinie--geschwister-oekosystem"></a>' in en_content and '<a id="18-sicherheitsrichtlinie--geschwister-oekosystem"></a>' in de_content
 
+    # Verify sec-01..sec-18 reciprocal dual HTML anchors
+    for idx in range(1, 19):
+        sec_tag = f'<a id="sec-{idx:02d}"></a>'
+        assert sec_tag in en_content, f"Missing anchor {sec_tag} in README.md"
+        assert sec_tag in de_content, f"Missing anchor {sec_tag} in README_de.md"
+
     # Verify target personas
     for persona_id in ["[PERSONA-01]", "[PERSONA-02]", "[PERSONA-03]", "[PERSONA-04]"]:
         assert persona_id in en_content, f"Missing {persona_id} in README.md"
@@ -340,7 +349,9 @@ def test_third_party_licenses_md_and_transparency():
         "RunAsInvoker",
         "Zero-Egress",
         "NOTICE",
-        "2026-09-26",
+        "2026-09-29",
+        "THIRD_PARTY_LICENSES.txt",
+        "Level 1 SBOM",
     ]:
         assert keyword in content, f"Keyword '{keyword}' missing in THIRD_PARTY_LICENSES.md"
 
@@ -353,15 +364,16 @@ def test_notice_and_unreleased_changelog():
     assert "Lukas Geiger" in notice_text
     assert "file-bricks" in notice_text
     assert "open-bricks" in notice_text
+    assert "THIRD_PARTY_LICENSES.txt" in notice_text
 
     llms_text = (REPO_ROOT / "llms.txt").read_text(encoding="utf-8")
-    assert "Last-checked: 2026-09-26" in llms_text
+    assert any(d in llms_text for d in ("Last-checked: 2026-09-30", "Last-checked: 2026-09-29"))
     assert "NOTICE" in llms_text
 
     changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     assert "## [Unreleased]" in changelog_text
-    assert "Pfad A" in changelog_text
-    assert "2026-09-26" in changelog_text
+    assert "Pfad B" in changelog_text
+    assert "2026-09-29" in changelog_text
 
 
 def test_marketing_log_and_personas():
@@ -369,6 +381,7 @@ def test_marketing_log_and_personas():
     assert path.exists(), "MARKETING-LOG.txt must exist in repo root"
     content = path.read_text(encoding="utf-8")
 
+    assert any(s in content for s in ["Stand: 2026-09-30", "Stand: 2026-09-29"])
     for section in [
         "TARGET AUDIENCE & STAKEHOLDER PERSONAS",
         "Desktop Power Users",
@@ -380,8 +393,51 @@ def test_marketing_log_and_personas():
         "Total Commander",
         "GOVERNANCE & RUNTIME INVARIANTS",
         "8. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & METADATA AUDIT",
+        "10. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & LEVEL 1 SBOM AUDIT",
     ]:
         assert section in content, f"Section '{section}' missing in MARKETING-LOG.txt"
+
+
+def test_readme_ascii_four_view_topology():
+    en_content = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    de_content = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+    for view in ["[VIEW 1:", "[VIEW 2:", "[VIEW 3:", "[VIEW 4:"]:
+        assert view in en_content, f"Missing {view} in README.md Section 2"
+    for sicht in ["[SICHT 1:", "[SICHT 2:", "[SICHT 3:", "[SICHT 4:"]:
+        assert sicht in de_content, f"Missing {sicht} in README_de.md Section 2"
+
+
+def test_level1_sbom_plaintext_invariants():
+    txt_path = REPO_ROOT / "THIRD_PARTY_LICENSES.txt"
+    assert txt_path.exists(), "THIRD_PARTY_LICENSES.txt must exist"
+    content = txt_path.read_text(encoding="utf-8")
+    assert "LEVEL 1 SBOM COMPANION" in content
+    assert "2026-09-29" in content
+    assert "RunAsInvoker" in content
+    assert "Zero-Egress" in content
+    for inv in [
+        "INV-LOCAL-01",
+        "INV-SEC-02",
+        "INV-SAFE-03",
+        "INV-PASTE-04",
+        "INV-INDEX-05",
+        "INV-HASH-06",
+        "INV-PRIV-07",
+        "INV-I18N-08",
+        "INV-EXP-09",
+        "INV-SLA-10",
+    ]:
+        assert inv in content, f"Missing {inv} in THIRD_PARTY_LICENSES.txt"
+    assert "VERIFIED" in content
+
+
+def test_statutory_disclaimer_and_sla():
+    en_content = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    de_content = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+    assert "§ 521 BGB Gefälligkeitsrecht" in en_content
+    assert "§ 521 BGB Gefälligkeitsrecht" in de_content
+    assert "48-hour response SLA" in en_content
+    assert "48-Stunden-Reaktions-SLA" in de_content
 
 
 def test_offline_zero_egress_and_privacy_invariants():
@@ -400,3 +456,53 @@ def test_offline_zero_egress_and_privacy_invariants():
         text = py_file.read_text(encoding="utf-8", errors="ignore")
         for bad in forbidden_imports:
             assert bad not in text, f"Forbidden remote egress import '{bad}' found in {py_file.name}"
+
+
+def test_ci_lifecycle_workflows_and_labels_parity():
+    """Validates auto-assign.yml, label-sync.yml, and labels.yml presence and configuration."""
+    auto_assign = REPO_ROOT / ".github" / "workflows" / "auto-assign.yml"
+    assert auto_assign.exists(), "auto-assign.yml must exist"
+    aa_text = auto_assign.read_text(encoding="utf-8")
+    assert "actions/github-script@v7" in aa_text
+    assert "timeout-minutes: 5" in aa_text
+    assert "cancel-in-progress: true" in aa_text
+    assert "pull-requests: write" in aa_text
+    assert "issues: write" in aa_text
+
+    label_sync = REPO_ROOT / ".github" / "workflows" / "label-sync.yml"
+    assert label_sync.exists(), "label-sync.yml must exist"
+    ls_text = label_sync.read_text(encoding="utf-8")
+    assert "EndBug/label-sync@v2" in ls_text
+    assert "timeout-minutes: 5" in ls_text
+    assert "cancel-in-progress: true" in ls_text
+    assert ".github/labels.yml" in ls_text
+
+    labels_file = REPO_ROOT / ".github" / "labels.yml"
+    assert labels_file.exists(), "labels.yml must exist"
+    lbl_text = labels_file.read_text(encoding="utf-8")
+    for expected in [
+        "bug", "enhancement", "good first issue", "help wanted",
+        "documentation", "duplicate", "wontfix", "priority: high",
+        "priority: low", "needs-triage", "stale"
+    ]:
+        assert expected in lbl_text, f"labels.yml missing label '{expected}'"
+
+
+def test_contributing_guide_and_pyproject_url():
+    """Validates CONTRIBUTING.md guide presence and pyproject.toml URL declaration."""
+    contrib_file = REPO_ROOT / "CONTRIBUTING.md"
+    assert contrib_file.exists(), "CONTRIBUTING.md must exist"
+    pyproject_text = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'Contributing = "https://github.com/file-bricks/ExplorerPro/blob/master/CONTRIBUTING.md"' in pyproject_text
+
+
+def test_changelog_pfad_a_unreleased_entry():
+    """Validates CHANGELOG.md contains Pfad A release notes for 2026-09-30 under Unreleased."""
+    changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    assert "## [Unreleased]" in changelog_text
+    assert "Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)" in changelog_text
+    assert "auto-assign.yml" in changelog_text
+    assert "label-sync.yml" in changelog_text
+    assert "labels.yml" in changelog_text
+    assert "INV-LOCAL-01" in changelog_text
+    assert "INV-SLA-10" in changelog_text

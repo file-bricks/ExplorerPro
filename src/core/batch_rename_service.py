@@ -24,7 +24,7 @@ INVALID_FILENAME_CHARS = set(r'<>:"/\|?*')
 
 # Windows-reservierte Gerätenamen (dürfen weder als Stamm noch als ganzer Name vorkommen)
 WINDOWS_RESERVED_NAMES = {
-    "CON", "PRN", "AUX", "NUL",
+    "CON", "PRN", "AUX", "NUL", "CLOCK$",
     *(f"COM{i}" for i in range(1, 10)),
     *(f"LPT{i}" for i in range(1, 10)),
 }
@@ -112,7 +112,7 @@ def compute_new_name(
                 new_stem = new_stem.replace(rules.search_str, rules.replace_str)
             else:
                 pattern = re.compile(re.escape(rules.search_str), re.IGNORECASE)
-                new_stem = pattern.sub(rules.replace_str, new_stem)
+                new_stem = pattern.sub(lambda _: rules.replace_str, new_stem)
 
     # 2. Groß-/Kleinschreibung
     new_stem = apply_case_mode(new_stem, rules.case_mode)
@@ -120,7 +120,11 @@ def compute_new_name(
     # 3. Nummerierung (formt oder ersetzt den Basis-Stamm)
     if rules.numbering_enabled:
         num_val = rules.start_num + (index * rules.step_num)
-        formatted_num = str(num_val).zfill(max(1, rules.padding))
+        pad_len = max(1, rules.padding)
+        if num_val < 0:
+            formatted_num = f"-{abs(num_val):0{pad_len}d}"
+        else:
+            formatted_num = f"{num_val:0{pad_len}d}"
         if rules.number_position == "prefix":
             new_stem = f"{formatted_num}_{new_stem}"
         elif rules.number_position == "replace":
@@ -144,7 +148,7 @@ def compute_new_name(
 
     # 6. Validierung
     if not final_name or final_name.strip() in ("", ".", ".."):
-        return original_name, "Dateiname darf nicht leer sein"
+        return final_name if final_name else "", "Dateiname darf nicht leer sein"
 
     if final_name.endswith(".") or final_name.endswith(" "):
         return final_name, "Dateiname darf nicht mit einem Punkt oder Leerzeichen enden"
@@ -347,20 +351,23 @@ def execute_rename(
             break
 
     if errors:
-        # Rückabwicklung bei Abbruch in Phase 2
-        for final_dst, original_path in reversed(phase2_done):
+        # Rückabwicklung bei Abbruch in Phase 2:
+        # 1. Zunächst alle in Phase 2 bereits erzeugten dst zurück auf ihren jeweiligen temp_path verschieben
+        #    Dadurch werden sämtliche original_path im Ordner kollisionsfrei geräumt (auch bei Swaps, Zyklen und Ketten)
+        for temp_path, orig_path, dst, item in reversed(temp_stage[:len(phase2_done)]):
             try:
-                if os.path.exists(final_dst):
-                    os.rename(final_dst, original_path)
+                if os.path.exists(dst):
+                    os.rename(dst, temp_path)
             except OSError as rb_exc:
-                errors.append(f"Rollback-Fehler bei {final_dst}: {rb_exc}")
+                errors.append(f"Rollback-Fehler bei Phase-2-Bereinigung von {dst}: {rb_exc}")
 
-        for temp_path, orig_path, dst, item in temp_stage[len(phase2_done):]:
+        # 2. Nun alle temporären Zwischenpfade zurück auf ihren jeweiligen original_path umbenennen
+        for temp_path, orig_path, dst, item in reversed(temp_stage):
             try:
                 if os.path.exists(temp_path):
                     os.rename(temp_path, orig_path)
             except OSError as rb_exc:
-                errors.append(f"Rollback-Fehler bei Phase-1-Rest {orig_path}: {rb_exc}")
+                errors.append(f"Rollback-Fehler bei Wiederherstellung von {orig_path}: {rb_exc}")
 
         return 0, errors, []
 
@@ -370,7 +377,7 @@ def execute_rename(
 def rollback_rename(history: List[Tuple[str, str]]) -> Tuple[int, List[str]]:
     """
     Macht einen Batch-Rename-Vorgang anhand der Historie rückgängig.
-    Nutzt ebenfalls ein temporäres Zwischenverfahren, damit auch Ketten,
+    Nutzt ebenfalls ein zweistufiges temporäres Zwischenverfahren, damit auch Ketten,
     Swaps und Case-Changes im Rollback kollisionsfrei zurückgesetzt werden.
     Gibt (anzahl_rueckgaengig, fehlerliste) zurück.
     """
@@ -380,25 +387,57 @@ def rollback_rename(history: List[Tuple[str, str]]) -> Tuple[int, List[str]]:
     errors: List[str] = []
 
     # Phase 1: current_path -> temp_path
-    temp_stage: List[Tuple[str, str]] = []  # [(temp_path, original_path)]
+    temp_stage: List[Tuple[str, str, str]] = []  # [(temp_path, current_path, original_path)]
     for current_path, original_path in reversed(history):
         if not os.path.exists(current_path):
             errors.append(f"Datei für Rollback nicht gefunden: {current_path}")
-            continue
+            break
         parent_dir = os.path.dirname(current_path)
-        temp_path = os.path.join(parent_dir, f".__ep_rb_tmp_{uuid.uuid4().hex}__")
+        temp_name = f".__ep_rb_tmp_{uuid.uuid4().hex}__"
+        temp_path = os.path.join(parent_dir, temp_name)
         try:
             os.rename(current_path, temp_path)
-            temp_stage.append((temp_path, original_path))
+            temp_stage.append((temp_path, current_path, original_path))
         except OSError as exc:
             errors.append(f"Fehler bei Rollback-Vorbereitung für {current_path}: {exc}")
+            break
+
+    if errors:
+        # Phase 1 abgebrochen: Bereits verschobene temp_path zurück nach current_path
+        for temp_path, current_path, original_path in reversed(temp_stage):
+            try:
+                if os.path.exists(temp_path):
+                    os.rename(temp_path, current_path)
+            except OSError as rb_exc:
+                errors.append(f"Rollback-Bereinigung fehlgeschlagen für {current_path}: {rb_exc}")
+        return 0, errors
 
     # Phase 2: temp_path -> original_path
-    for temp_path, original_path in temp_stage:
+    phase2_done: List[Tuple[str, str, str]] = []  # [(temp_path, current_path, original_path)]
+    for temp_path, current_path, original_path in temp_stage:
         try:
             os.rename(temp_path, original_path)
+            phase2_done.append((temp_path, current_path, original_path))
             restored += 1
         except OSError as exc:
             errors.append(f"Rollback fehlgeschlagen für {original_path}: {exc}")
+            break
+
+    if errors:
+        # Phase 2 abgebrochen: Bereits wiederhergestellte original_path zurück nach temp_path
+        for temp_path, current_path, original_path in reversed(phase2_done):
+            try:
+                if os.path.exists(original_path):
+                    os.rename(original_path, temp_path)
+            except OSError as rb_exc:
+                errors.append(f"Fehler beim Rückgängigmachen von Rollback-Schritt {original_path}: {rb_exc}")
+        # Alle temp_path zurück nach current_path (Ausgangszustand vor rollback_rename)
+        for temp_path, current_path, original_path in reversed(temp_stage):
+            try:
+                if os.path.exists(temp_path):
+                    os.rename(temp_path, current_path)
+            except OSError as rb_exc:
+                errors.append(f"Fehler beim Wiederherstellen des Ausgangszustands für {current_path}: {rb_exc}")
+        return 0, errors
 
     return restored, errors

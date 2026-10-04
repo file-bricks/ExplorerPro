@@ -5,6 +5,72 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Datei-/Ordner-Eigenschaften, Pfad-Kopier-Suite & Terminal-Integration (2026-10-03, TW-EP-11)
+- **Datei- & Ordner-Eigenschaften Dialog (`src/gui/properties_dialog.py`)**:
+  - Neuer standardkonformer Eigenschafts-Dialog mit Tabs für "Allgemein" und "Prüfsummen" (bzw. "Inhalt" für Textdateien).
+  - Umfassende Metadaten-Anzeige: Name, Dateityp, Pfad, Größe (formatiert und in Bytes), Zeitstempel (Erstellt, Geändert, Letzter Zugriff), Dateiattribute/Berechtigungen.
+  - Rekursive Ordner-Statistiken: Zählung von Unterdateien und -ordnern sowie Gesamtgröße mittels Hintergrund-Thread `FolderStatsWorker` ohne GUI-Blockade.
+  - On-Demand Prüfsummen-Berechnung (SHA-256, MD5) mit direktem Kopier-Button für Integritätsprüfungen.
+  - Zeilen-, Wort- und Zeichenzähler für gängige Text- und Codeformate.
+  - Tastenkürzel `Alt+Enter` bzw. `Alt+Return` im Dateibrowser und Hauptfenster.
+- **Pfad-Kopier-Suite (`src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**:
+  - Erweiterte Zwischenablage-Aktionen: "Pfad kopieren" (`Ctrl+Shift+C`) kopiert native Pfade (bei Mehrfachauswahl zeilenweise umgebrochen).
+  - Integration in das Kontextmenü für ausgewählte Elemente ("📋 Pfad kopieren") und Leerbereiche ("📋 Ordnerpfad kopieren").
+  - Menü-Verdrahtung in "Bearbeiten -> Pfad kopieren" (`Ctrl+Shift+C`).
+- **Cross-Platform Terminal-Integration (`src/core/platform_utils.py`, `src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**:
+  - `open_terminal_in_directory(path)` & `get_terminal_command(directory)`: Plattformunabhängiges Öffnen des systemweiten Standard-Terminals im Zielverzeichnis (Windows Terminal / PowerShell / CMD auf Windows, Terminal.app auf macOS, xdg-terminal-exec / gnome-terminal / konsole / xterm auf Linux).
+  - Entkoppelte Ausführung via `subprocess.Popen` mit `CREATE_NEW_CONSOLE` auf Windows.
+  - Kontextmenü-Aktionen: "💻 Im Terminal öffnen" für Ordner bzw. Elternverzeichnisse und "💻 Terminal hier öffnen" im Leerbereich.
+  - Menü-Verdrahtung in "Tools -> 💻 Terminal hier öffnen" (`Ctrl+Shift+P`).
+- **Lokalisierung (Tier-2 P-006)**:
+  - 123 neue Lokalisierungsschlüssel lückenlos über alle 6 Zielsprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` integriert (Katalog auf 356 Schlüssel erweitert; `manage_translations.py --check` meldet 0 fehlende Übersetzungen).
+- **Test-Abdeckung (`tests/test_properties_and_terminal.py`)**:
+  - 17 neue automatisierte Unit- und Integrationstests für Terminal-Befehlserkennung, Größenformatierung, Ordnerstatistik-Berechnung, Dialog-Initialisierung, Pfad-Kopieren und Menü-Verdrahtung (Gesamttestsuite: 405 passed, 1 skipped).
+
+### Bugsweep & Resilienz-Härtung (2026-10-01, Turnusgemäßer Bugsweep)
+- **Mehrfachumbenennung (Batch Rename) Resilienz**:
+  - `src/core/batch_rename_service.py`:
+    - Nicht-reguläres Suchen & Ersetzen (`use_regex=False`, `regex_case_sensitive=False`) via `pattern.sub(lambda _: rules.replace_str, new_stem)` gegen unhandled `re.error: invalid group reference / bad escape` bei Backslashes (Pfade, Escape-Muster) im Ersetzungstext gehärtet.
+    - Formatierung negativer Nummerierungs-Startwerte mit korrektem Vorzeichen und Nullen-Padding (`-005` statt `-05` bei Padding 3).
+    - Windows-Gerätenamen-Schutz um `CLOCK$` erweitert.
+    - Validierung vollständig geleerter Dateinamen korrigiert (liefert leeren String statt masking mit Originalnamen).
+    - Zweistufige atomare Rollback-Hygiene in `execute_rename` bei Fehlern in Phase 2: Bereits erzeugte Zieldateien werden vor der Wiederherstellung zurück nach `temp_path` verschoben, wodurch zyklische Kettungen und Swaps kollisionsfrei ohne `[WinError 183]` oder verwaiste temporäre Dateien wiederhergestellt werden.
+    - Transaktionale Abbruch- und Wiederherstellungslogik in `rollback_rename`: Bereinigt Zwischendateien bei Fehlern in Phase 1 oder Phase 2 restlos, ohne gestrandete `.__ep_rb_tmp_*`-Dateien im Verzeichnis zu hinterlassen.
+  - `src/gui/batch_rename_dialog.py`:
+    - Synchronisation von `self.file_paths` nach `_do_rollback`: Stellt sicher, dass nach einem Klick auf "Rückgängig" die Dateipfade wieder auf die tatsächlich existierenden Originaldateien zeigen.
+    - Dialog-Lebenszyklus: Verhindert das automatische Schließen des modalen Dialogs bei `_do_rename`, sodass der Rollback-Button für den Benutzer erreichbar und nutzbar bleibt; `Accepted`-Status wird beim Schließen nach erfolgreicher Umbenennung an den Browser übermittelt.
+    - Eingabepfad-Deduplizierung unter Erhalt der Reihenfolge im Konstruktor.
+  - `tests/test_bugsweep_batch_rename_resilience_20261001.py`: 8 neue hermetische Regressionstests (100% grün).
+
+### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
+- **CI/CD Lifecycle Workflows & Label-Governance**:
+  - `.github/workflows/auto-assign.yml`: Automatisches Zuweisen von Pull Requests an Maintainer via `actions/github-script@v7`, `timeout-minutes: 5`, least-privilege permissions (`issues: write`, `pull-requests: write`) und Concurrency `cancel-in-progress: true`.
+  - `.github/workflows/label-sync.yml`: Automatisierte Label-Synchronisation via `EndBug/label-sync@v2`, least-privilege permissions (`issues: write`), `timeout-minutes: 5` und Concurrency `cancel-in-progress: true`.
+  - `.github/labels.yml`: 11 standardisierte Labels (`bug`, `enhancement`, `good first issue`, `help wanted`, `documentation`, `duplicate`, `wontfix`, `priority: high`, `priority: low`, `needs-triage`, `stale`) gemäß GOVERNANCE.md §4.2.
+- **Level 1 SBOM Plain-Text Begleitdatei & Re-Audit (Stand: 2026-09-30)**:
+  - `THIRD_PARTY_LICENSES.txt`: Re-auditiert auf Stand 2026-09-30; Bestätigung aller 10 Governance- und Laufzeitinvarianten (`INV-LOCAL-01` bis `INV-SLA-10`), `RunAsInvoker`-Zertifizierung (`INV-SEC-02`), Zero-Egress und vollständige Lizenztexte.
+  - `THIRD_PARTY_LICENSES.md`: Re-Audit Stand 2026-09-30 mit formaler Verlinkung auf den Plain-Text-Begleiter.
+  - `NOTICE`: Bestätigung der Verlinkung zu `THIRD_PARTY_LICENSES.txt` und `THIRD_PARTY_LICENSES.md`.
+- **Multi-Host Sync-, Lock- und Cache-Defense in `.gitignore`**:
+  - Erweiterung um Multi-Host Sync-Muster (`*-IDEAPAD-GEI*`) und Multi-Agent-Locks (`LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`).
+- **PEP 621 Standardisierung in `pyproject.toml`**:
+  - `project.urls`: `Contributing` registriert.
+  - Strikte Version-Freeze-Disziplin per `T-20260920-167562623`: `version = "1.0.7"` unverändert beibehalten.
+- **Dokumentations- und RAG-Kontext-Synchronisation**:
+  - `README.md` & `README_de.md`: Badges auf `Last-Checked: 2026-09-30` bzw. `Stand: 2026-09-30` aktualisiert.
+  - `llms.txt`: Last-checked Datum 2026-09-30 synchronisiert.
+  - `MARKETING-LOG.txt`: Section 11 Pfad A Revisionsbericht dokumentiert.
+
+### Discoverability, Visuelle Architektur & Level 1 SBOM Audit (2026-09-29, Pfad B)
+- **18-Punkte Navigations-Parität mit reziproken dualen HTML-Ankern**: Beide Dokumente (`README.md` und `README_de.md`) mit dualen HTML-Ankern (`<a id="sec-01"></a>` .. `<a id="sec-18"></a>`) ausgestattet, die nahtlos mit allen bestehenden Überschrifts-Slugs koexistieren.
+- **ASCII Four-View Architektur-Topologie**: Vier-Sichten-Projektion (`[VIEW 1: USER INTERFACE, MULTI-TAB PRESENTATION & DOCKING CONTROLS]`, `[VIEW 2: APPLICATION EVENT BUS, ORCHESTRATION & LOCALIZATION ENGINE]`, `[VIEW 3: BACKGROUND INDEXING, CONCURRENT WORKERS & ANALYSIS ENGINES]`, `[VIEW 4: DEFENSE PERIMETER, RUNASINVOKER NON-ELEVATION & PRIVACY BOUNDARY]`; auf Deutsch `[SICHT 1]` bis `[SICHT 4]`) in Abschnitt 2 beider Dokumente integriert.
+- **Gesetzlicher Haftungsausschluss [§ 521 BGB Gefälligkeitsrecht] & verbindliche 48h SLA**: In Abschnitt 18 von `README.md` und `README_de.md` sowie in `SECURITY.md` verankert.
+- **PEP 621 Metadaten-Erweiterung (`pyproject.toml`)**: `project.urls` um `"Level 1 SBOM"`, `"Plain-Text License"` und `"Third-Party Licenses (Text)"` ergänzt; 20 gesättigte Keywords synchronisiert.
+- **Level 1 SBOM Text-Begleitdatei (`THIRD_PARTY_LICENSES.txt`) & Invarianten-Matrix**: Umfassendes Text-Inventar mit Laufzeit- und Entwicklungsabhängigkeiten, Bestätigung aller 10 Governance- und Laufzeitinvarianten (`INV-LOCAL-01` .. `INV-SLA-10`), Unprivileged `RunAsInvoker` Nicht-Eskalationsgarantie, Zero-Copyleft- / AGPL-3.0-Harmonisierung und vollständigen Lizenztexten (AGPL-3.0, LGPL-3.0, BSD-3-Clause, MIT, Apache-2.0, PSFL-2.0).
+- **NOTICE & Level 1 SBOM Audit (`THIRD_PARTY_LICENSES.md`)**: Re-audit Stand 2026-09-29 mit Invarianten-Querverweistabelle und wechselseitiger `NOTICE`-Verlinkung.
+- **Kontext- & Badge-Synchronisation**: `llms.txt` Last-checked Datum 2026-09-29, 372+ Tests und Level 1 SBOM Text-Begleitdatei referenziert; Badges in `README.md` und `README_de.md` synchronisiert (Tests: 372+ passed | 100% green, Last-Checked: 2026-09-29, Level 1 SBOM: Plain Text).
+- **Automatisierte Vertragstest-Suite (`tests/test_metadata_contract.py`)**: 6 neue Vertragstests für `sec-01`..`sec-18` duale HTML-Anker, ASCII Four-View Topologie, PEP 621 SBOM URLs, Level 1 SBOM Begleitdatei Invarianten, gesetzlichen Haftungsausschluss und Marketing-Log Aktualität hinzugefügt.
+
 ### Store-Paket 1.0.7.0 (T-20260928-288887892, 2026-09-28)
 - Laufzeit, Über-Dialog und Workspace-Export lesen die Version jetzt aus `pyproject.toml`; der Paketbau prüft die Übereinstimmung mit `store_package.json`.
 - Desktop-, Fenster-, EXE-, Mobile- und Legacy-Icons nutzen jetzt das vom Nutzer ausgewählte neue Store-Kachelmotiv. `scripts/gen_store_icons.py` erzeugt daraus alle benötigten Größen einschließlich der MSIX-`targetsize`- und `altform`-Varianten.

@@ -35,9 +35,10 @@ class BatchRenameDialog(QDialog):
 
     def __init__(self, file_paths: List[str], parent=None):
         super().__init__(parent)
-        self.file_paths = [p for p in file_paths if os.path.exists(p)]
+        self.file_paths = list(dict.fromkeys(p for p in file_paths if os.path.exists(p)))
         self.preview_items: List[RenameItem] = []
         self.history: List[tuple] = []
+        self._has_renamed = False
 
         self.setWindowTitle(t("Mehrfach umbenennen"))
         self.resize(900, 650)
@@ -49,6 +50,17 @@ class BatchRenameDialog(QDialog):
 
         self._setup_ui()
         self._update_preview()
+
+    def _on_close_clicked(self):
+        if self._has_renamed:
+            self.accept()
+        else:
+            self.reject()
+
+    def closeEvent(self, event):
+        if self._has_renamed:
+            self.setResult(QDialog.DialogCode.Accepted)
+        super().closeEvent(event)
 
     def _setup_ui(self):
         main_layout = QVBoxLayout(self)
@@ -267,7 +279,7 @@ class BatchRenameDialog(QDialog):
         self.close_btn.setAccessibleName("Dialog schließen")
         self.close_btn.setToolTip("Schließt das Mehrfachumbenennungs-Fenster (Esc)")
         self.close_btn.setShortcut("Escape")
-        self.close_btn.clicked.connect(self.reject)
+        self.close_btn.clicked.connect(self._on_close_clicked)
         btn_layout.addWidget(self.close_btn)
 
         main_layout.addLayout(btn_layout)
@@ -363,6 +375,7 @@ class BatchRenameDialog(QDialog):
                 f"{success_count} " + t("Dateien umbenannt, aber Fehler aufgetreten:\n\n") + err_text
             )
         else:
+            self._has_renamed = True
             QMessageBox.information(
                 self, t("Erfolg"),
                 f"{success_count} " + t("Dateien erfolgreich umbenannt.")
@@ -381,15 +394,22 @@ class BatchRenameDialog(QDialog):
         self.file_paths = updated_paths
 
         self._update_preview()
-        if not errors:
-            self.accept()
 
     def _do_rollback(self):
         if not self.history:
             return
+        history_map = {dst: orig for dst, orig in self.history}
         restored, errors = rollback_rename(self.history)
         self.history.clear()
         self.rollback_btn.setEnabled(False)
+
+        # file_paths wieder auf die wiederhergestellten Originalpfade synchronisieren
+        self.file_paths = [
+            history_map[p] if (p in history_map and os.path.exists(history_map[p])) else p
+            for p in self.file_paths
+        ]
+        if not errors:
+            self._has_renamed = False
 
         if errors:
             QMessageBox.warning(

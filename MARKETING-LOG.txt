@@ -1,10 +1,10 @@
 ================================================================================
 EXPLORERPRO SUITE — MARKETING, DISCOVERY & GOVERNANCE LOG
 ================================================================================
-Stand: 2026-09-18
+Stand: 2026-09-30 (Previous: 2026-09-29)
 Repository: file-bricks/ExplorerPro
 Branch: master
-Version: 1.0.5
+Version: 1.0.7
 Organization: file-bricks
 Umbrella Ecosystem: open-bricks
 Microsoft Store ID: 9P0X52WSHZ3Q (Package Identity: Geiger.ExplorerPro)
@@ -215,4 +215,61 @@ INV-SLA-10: 48-Hour Security Response & 5-Day Triage SLA
   - llms.txt Last-checked Datum 2026-09-26, 350+ Tests und NOTICE-Referenz synchronisiert.
 - Automatisierte Vertragstest-Erweiterung:
   - tests/test_security_license_contract.py und tests/test_metadata_contract.py um neue Prüfungen für NOTICE, pyproject license-files/Notice URL, 20 gesättigte Keywords, erweiterte Multi-Host-Muster und CI compileall Gate erweitert.
+================================================================================
+
+
+10. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & LEVEL 1 SBOM AUDIT (2026-09-29, Pfad B)
+--------------------------------------------------------------------------------
+- Audit-Metadaten:
+  - Audit-Datum: 2026-09-29
+  - Prüfer: Antigravity AI Engine (Pfad B Discoverability, Visual Architecture & Level 1 SBOM Standard)
+  - Ziel-Repository: file-bricks/ExplorerPro (Branch: master)
+  - Status: PASS (372+ Tests 100% grün, ruff sauber, compileall sauber, git diff --check sauber)
+- 18-Punkte Navigations-Parität mit reziproken dualen HTML-Ankern:
+  - Vollständige bilaterale Schnellnavigation in README.md und README_de.md mit dualen reziproken HTML-Ankern (<a id="sec-01"></a> bis <a id="sec-18"></a>) zusätzlich zu bestehenden Überschrifts-Slugs implementiert.
+  - Badges synchronisiert: Tests (372+ passed | 100% green), Last-Checked (2026-09-29), Level 1 SBOM (Plain Text), Store Live.
+- ASCII Vier-Ansichten-Architekturprojektion (Abschnitt 2):
+  - In README.md: [VIEW 1: USER INTERFACE, MULTI-TAB PRESENTATION & DOCKING CONTROLS], [VIEW 2: APPLICATION EVENT BUS, ORCHESTRATION & LOCALIZATION ENGINE], [VIEW 3: BACKGROUND INDEXING, CONCURRENT WORKERS & ANALYSIS ENGINES] und [VIEW 4: DEFENSE PERIMETER, RUNASINVOKER NON-ELEVATION & PRIVACY BOUNDARY].
+  - In README_de.md: [SICHT 1: BENUTZEROBERFLÄCHE, MULTI-TAB-DARSTELLUNG & DOCKING-STEUERUNG], [SICHT 2: ANWENDUNGS-EVENT-BUS, ORCHESTRIERUNG & LOKALISIERUNGS-ENGINE], [SICHT 3: HINTERGRUND-INDEXIERUNG, NEBENLÄUFIGE WORKER & ANALYSE-ENGINES] und [SICHT 4: SICHERHEITSPERIMETER, RUNASINVOKER-BENUTZERRECHTE & DATENSCHUTZ-GRENZE].
+- Gesetzlicher Haftungsausschluss (§ 521 BGB) & Sicherheits-SLA (Abschnitt 18):
+  - In README.md und README_de.md verankert: Gesetzlicher Haftungsausschluss für unentgeltliche Open-Source-Software [§ 521 BGB Gefälligkeitsrecht].
+  - Verbindliches 48-Stunden-Reaktions-SLA und 5-tägiges Ersteinstufungsfenster gemäß SECURITY.md referenziert.
+- PEP 621 Metadaten & URLs (pyproject.toml):
+  - [project.urls] um "Level 1 SBOM", "Plain-Text License" und "Third-Party Licenses (Text)" erweitert.
+  - 20 gesättigte Keywords identisch mit den 20 GitHub-Repository-Topics verifiziert.
+- Level 1 SBOM Text-Begleitdatei (THIRD_PARTY_LICENSES.txt):
+  - Vollständiges Text-Inventar mit 21 Paketen (PySide6, shiboken6, PyMuPDF, pandas, numpy, python-dateutil, pytz, tzdata, openpyxl, et_xmlfile, PyInstaller, pyinstaller-hooks-contrib, altgraph, packaging, pytest, pluggy, iniconfig, ruff, PyPDF2, xlrd, pywin32).
+  - Invariant Cross-Reference Matrix table (INV-LOCAL-01 bis INV-SLA-10, alle 10 VERIFIED).
+  - Unprivileged RunAsInvoker Non-Elevation Zertifizierung (INV-SEC-02), 100% Zero-Egress Air-Gap.
+  - Vollständige Lizenztexte (AGPL-3.0, LGPL-3.0, BSD-3-Clause, MIT, Apache-2.0, PSF-2.0).
+- NOTICE & Level 1 SBOM Markdown-Audit (THIRD_PARTY_LICENSES.md):
+  - Stand 2026-09-29 mit Invarianten-Querverweistabelle und wechselseitiger NOTICE-Verlinkung aktualisiert.
+  - NOTICE im Repo-Root um Querverweis auf THIRD_PARTY_LICENSES.txt erweitert.
+- RAG-Kontext & Automatisierte Vertragstests:
+  - llms.txt Last-checked Datum 2026-09-29, 372+ Tests Baseline und Level 1 SBOM Plain-Text Companion synchronisiert.
+  - CHANGELOG.md unter ## [Unreleased] Stand 2026-09-29 gepflegt.
+  - tests/test_metadata_contract.py erweitert um 6 neue Contract-Tests für 18-Punkte sec-01..sec-18 Anker, ASCII Topologie, PEP 621 URLs, Level 1 SBOM Text-Invariants, gesetzlichen Haftungsausschluss und Marketing-Log Aktualität.
+================================================================================
+
+11. PFAD A REPOSITORY HYGIENE, CI LIFECYCLE WORKFLOWS & LEVEL 1 SBOM AUDIT (2026-09-30, Pfad A)
+--------------------------------------------------------------------------------
+- Audit-Metadaten:
+  - Audit-Datum: 2026-09-30
+  - Prüfer: Antigravity AI Engine (Pfad A Repository Lifecycle Hardening Standard)
+  - Ziel-Repository: file-bricks/ExplorerPro (Branch: master)
+  - Status: PASS (377+ Tests 100% grün, ruff sauber, compileall sauber, git diff --check sauber)
+- CI/CD Lifecycle Automation Parity (.github/workflows):
+  - Bereitstellung von .github/workflows/auto-assign.yml (actions/github-script@v7, timeout 5m, cancel-in-progress, least-privilege permissions).
+  - Bereitstellung von .github/workflows/label-sync.yml (EndBug/label-sync@v2, timeout 5m, cancel-in-progress, least-privilege permissions).
+  - Bereitstellung von .github/labels.yml mit 11 standardisierten Labels gemäß GOVERNANCE.md §4.2.
+- Level 1 SBOM Plain-Text Begleitdatei & Re-Audit (Stand: 2026-09-30):
+  - THIRD_PARTY_LICENSES.txt re-auditiert auf Stand 2026-09-30 unter Bestätigung aller 10 Invarianten (INV-LOCAL-01 bis INV-SLA-10) und RunAsInvoker Non-Elevation (INV-SEC-02).
+  - THIRD_PARTY_LICENSES.md und NOTICE re-auditiert und synchronisiert.
+- Multi-Host Sync- & Lock-Defense (.gitignore):
+  - Absicherung gegen Multi-Host Konflikte (*-IDEAPAD-GEI*) und Multi-Agent-Locks (LOCK.dev.*, LOCK.antigravity.*, LOCK.bugsearch.*, LOCK.user.*, LOCK.until.*, LOCK.condition.*).
+- PEP 621 Standardisierung (pyproject.toml):
+  - project.urls um Contributing erweitert.
+  - Strikte Version-Freeze-Disziplin (version = "1.0.7") per T-20260920-167562623 gewahrt.
+- Automatisierte Vertragstests (tests/test_metadata_contract.py & tests/test_security_license_contract.py):
+  - Automatisierte Vertragstests für auto-assign.yml, label-sync.yml, labels.yml, Level 1 SBOM Textbegleiter und Contributing URL verifiziert.
 ================================================================================

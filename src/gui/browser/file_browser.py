@@ -72,6 +72,12 @@ class _DnDTableView(QTableView):
         elif event.key() == Qt.Key.Key_F2:
             self._fb.rename_selection()
             event.accept()
+        elif event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter) and (event.modifiers() & Qt.KeyboardModifier.AltModifier):
+            self._fb.show_properties()
+            event.accept()
+        elif (event.modifiers() & Qt.KeyboardModifier.ControlModifier) and (event.modifiers() & Qt.KeyboardModifier.ShiftModifier) and event.key() == Qt.Key.Key_C:
+            self._fb.copy_path_to_clipboard()
+            event.accept()
         elif event.matches(QKeySequence.StandardKey.Copy):
             self._fb.copy_selection()
             event.accept()
@@ -80,6 +86,7 @@ class _DnDTableView(QTableView):
             event.accept()
         else:
             super().keyPressEvent(event)
+
 
 
 class FileBrowser(QWidget):
@@ -393,6 +400,23 @@ class FileBrowser(QWidget):
             rename_action.triggered.connect(lambda: self.rename_selection(file_path))
             menu.addAction(rename_action)
 
+            menu.addSeparator()
+
+            copy_path_action = QAction("📋 Pfad kopieren", self)
+            copy_path_action.setShortcut("Ctrl+Shift+C")
+            copy_path_action.triggered.connect(lambda: self.copy_path_to_clipboard())
+            menu.addAction(copy_path_action)
+
+            if not is_file or os.path.isdir(file_path):
+                term_action = QAction("💻 Im Terminal öffnen", self)
+                term_action.triggered.connect(lambda: self.open_terminal(file_path))
+                menu.addAction(term_action)
+
+            prop_action = QAction("ℹ️ Eigenschaften...", self)
+            prop_action.setShortcut("Alt+Enter")
+            prop_action.triggered.connect(lambda: self.show_properties(file_path))
+            menu.addAction(prop_action)
+
         else:
             # Leer-Bereich-Menü
             new_file = QAction("📄 Neue Datei...", self)
@@ -409,6 +433,16 @@ class FileBrowser(QWidget):
 
             menu.addSeparator()
 
+            copy_dir_path_action = QAction("📋 Ordnerpfad kopieren", self)
+            copy_dir_path_action.triggered.connect(lambda: self.copy_path_to_clipboard())
+            menu.addAction(copy_dir_path_action)
+
+            term_here_action = QAction("💻 Terminal hier öffnen", self)
+            term_here_action.triggered.connect(lambda: self.open_terminal())
+            menu.addAction(term_here_action)
+
+            menu.addSeparator()
+
             paste_action = QAction("Einfügen", self)
             paste_action.setShortcut("Ctrl+V")
             paste_action.triggered.connect(self.paste_from_clipboard)
@@ -416,10 +450,18 @@ class FileBrowser(QWidget):
 
             menu.addSeparator()
 
+            prop_dir_action = QAction("ℹ️ Eigenschaften...", self)
+            prop_dir_action.setShortcut("Alt+Enter")
+            prop_dir_action.triggered.connect(lambda: self.show_properties(self._current_path))
+            menu.addAction(prop_dir_action)
+
+            menu.addSeparator()
+
             refresh_action = QAction("Aktualisieren", self)
             refresh_action.setShortcut("F5")
             refresh_action.triggered.connect(self.refresh)
             menu.addAction(refresh_action)
+
 
         menu.exec(QCursor.pos())
 
@@ -531,6 +573,64 @@ class FileBrowser(QWidget):
         mime_data.setText("\n".join(paths))
         QApplication.clipboard().setMimeData(mime_data)
         return True
+
+    def copy_path_to_clipboard(self, relative: bool = False, name_only: bool = False) -> str:
+        """Kopiert ausgewählte Dateipfade oder den aktuellen Ordnerpfad als Reintext in die Zwischenablage."""
+        paths = self.get_selected_files()
+        if not paths and self._current_path:
+            paths = [self._current_path]
+        if not paths:
+            return ""
+
+        if name_only:
+            result_paths = [os.path.basename(p) for p in paths]
+        elif relative and self._current_path:
+            result_paths = [os.path.relpath(p, self._current_path) for p in paths]
+        else:
+            result_paths = paths
+
+        text = "\n".join(result_paths)
+        QApplication.clipboard().setText(text)
+        return text
+
+    def show_properties(self, target_path: str = None) -> bool:
+        """Öffnet den detaillierten Eigenschaften-Dialog für Datei oder Ordner."""
+        if not target_path:
+            selected = self.get_selected_files()
+            target_path = selected[0] if selected else self._current_path
+
+        if not target_path or not os.path.exists(target_path):
+            return False
+
+        from gui.properties_dialog import FilePropertiesDialog
+        dialog = FilePropertiesDialog(target_path, self.window())
+        dialog.exec()
+        return True
+
+    def open_terminal(self, target_path: str = None) -> bool:
+        """Öffnet ein Terminalfenster im angegebenen Verzeichnis oder aktuellen Ordner."""
+        if not target_path:
+            selected = self.get_selected_files()
+            if selected and os.path.isdir(selected[0]):
+                target_path = selected[0]
+            else:
+                target_path = self._current_path
+
+        if not target_path or not os.path.exists(target_path):
+            return False
+
+        from core.platform_utils import open_terminal_in_directory
+        try:
+            open_terminal_in_directory(target_path)
+            return True
+        except Exception as exc:
+            QMessageBox.warning(
+                self,
+                "Terminal öffnen",
+                f"Konnte Terminal nicht öffnen:\n{exc}"
+            )
+            return False
+
 
     def paste_from_clipboard(self) -> bool:
         """Fügt Dateien/Ordner aus der Zwischenablage in den aktuellen Ordner ein."""
