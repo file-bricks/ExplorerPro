@@ -5,6 +5,9 @@ import subprocess
 import sys
 
 
+import shutil
+
+
 def get_system_open_command(path: str) -> list[str] | None:
     """Return the native desktop opener command for the current platform."""
     if sys.platform.startswith("win"):
@@ -22,3 +25,36 @@ def open_path_with_system(path: str) -> None:
         return
     # D4: timeout verhindert, dass ein haengender Shell-Opener den Prozess blockiert.
     subprocess.run(command, check=True, timeout=10)
+
+
+def get_terminal_command(directory: str) -> list[str]:
+    """Return the platform-native terminal launcher command for a directory."""
+    if sys.platform.startswith("win"):
+        if shutil.which("wt"):
+            return ["wt", "-d", directory]
+        if shutil.which("powershell"):
+            return ["powershell", "-NoExit", "-Command", f"Set-Location -LiteralPath '{directory}'"]
+        return ["cmd", "/K", f"cd /d {directory}"]
+    if sys.platform == "darwin":
+        return ["open", "-a", "Terminal", directory]
+    # Linux / BSD
+    for term in ["xdg-terminal-exec", "gnome-terminal", "konsole", "xfce4-terminal", "xterm"]:
+        if shutil.which(term):
+            if term == "gnome-terminal":
+                return ["gnome-terminal", f"--working-directory={directory}"]
+            if term == "konsole":
+                return ["konsole", "--workdir", directory]
+            if term == "xfce4-terminal":
+                return ["xfce4-terminal", f"--working-directory={directory}"]
+            return [term]
+    return ["xterm"]
+
+
+def open_terminal_in_directory(path: str) -> subprocess.Popen:
+    """Launch a terminal emulator session located in the given directory or file parent."""
+    target_dir = path if os.path.isdir(path) else os.path.dirname(path)
+    if not target_dir or not os.path.exists(target_dir):
+        target_dir = os.getcwd()
+    cmd = get_terminal_command(os.path.abspath(target_dir))
+    flags = getattr(subprocess, "CREATE_NEW_CONSOLE", 0) if sys.platform.startswith("win") else 0
+    return subprocess.Popen(cmd, cwd=target_dir, creationflags=flags)

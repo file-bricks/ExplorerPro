@@ -11,6 +11,43 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - Sprachauswahl wird geladen und gespeichert; beim nächsten Start verwenden die angebundenen Texte und Qt-Standarddialoge die gespeicherte Sprache.
 - Übersetzungsprüfung erkennt auch bereits angebundene `t(...)`-Aufrufe. Weitere fest deutsche Bedienelemente bleiben separat offen.
 
+### Datei-/Ordner-Eigenschaften, Pfad-Kopier-Suite & Terminal-Integration (2026-10-03, TW-EP-11)
+- **Datei- & Ordner-Eigenschaften Dialog (`src/gui/properties_dialog.py`)**:
+  - Neuer standardkonformer Eigenschafts-Dialog mit Tabs für "Allgemein" und "Prüfsummen" (bzw. "Inhalt" für Textdateien).
+  - Umfassende Metadaten-Anzeige: Name, Dateityp, Pfad, Größe (formatiert und in Bytes), Zeitstempel (Erstellt, Geändert, Letzter Zugriff), Dateiattribute/Berechtigungen.
+  - Rekursive Ordner-Statistiken: Zählung von Unterdateien und -ordnern sowie Gesamtgröße mittels Hintergrund-Thread `FolderStatsWorker` ohne GUI-Blockade.
+  - On-Demand Prüfsummen-Berechnung (SHA-256, MD5) mit direktem Kopier-Button für Integritätsprüfungen.
+  - Zeilen-, Wort- und Zeichenzähler für gängige Text- und Codeformate.
+  - Tastenkürzel `Alt+Enter` bzw. `Alt+Return` im Dateibrowser und Hauptfenster.
+- **Pfad-Kopier-Suite (`src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**:
+  - Erweiterte Zwischenablage-Aktionen: "Pfad kopieren" (`Ctrl+Shift+C`) kopiert native Pfade (bei Mehrfachauswahl zeilenweise umgebrochen).
+  - Integration in das Kontextmenü für ausgewählte Elemente ("📋 Pfad kopieren") und Leerbereiche ("📋 Ordnerpfad kopieren").
+  - Menü-Verdrahtung in "Bearbeiten -> Pfad kopieren" (`Ctrl+Shift+C`).
+- **Cross-Platform Terminal-Integration (`src/core/platform_utils.py`, `src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**:
+  - `open_terminal_in_directory(path)` & `get_terminal_command(directory)`: Plattformunabhängiges Öffnen des systemweiten Standard-Terminals im Zielverzeichnis (Windows Terminal / PowerShell / CMD auf Windows, Terminal.app auf macOS, xdg-terminal-exec / gnome-terminal / konsole / xterm auf Linux).
+  - Entkoppelte Ausführung via `subprocess.Popen` mit `CREATE_NEW_CONSOLE` auf Windows.
+  - Kontextmenü-Aktionen: "💻 Im Terminal öffnen" für Ordner bzw. Elternverzeichnisse und "💻 Terminal hier öffnen" im Leerbereich.
+  - Menü-Verdrahtung in "Tools -> 💻 Terminal hier öffnen" (`Ctrl+Shift+P`).
+- **Lokalisierung (Tier-2 P-006)**:
+  - 123 neue Lokalisierungsschlüssel lückenlos über alle 6 Zielsprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` integriert (Katalog auf 356 Schlüssel erweitert; `manage_translations.py --check` meldet 0 fehlende Übersetzungen).
+- **Test-Abdeckung (`tests/test_properties_and_terminal.py`)**:
+  - 17 neue automatisierte Unit- und Integrationstests für Terminal-Befehlserkennung, Größenformatierung, Ordnerstatistik-Berechnung, Dialog-Initialisierung, Pfad-Kopieren und Menü-Verdrahtung (Gesamttestsuite: 405 passed, 1 skipped).
+
+### Bugsweep & Resilienz-Härtung (2026-10-01, Turnusgemäßer Bugsweep)
+- **Mehrfachumbenennung (Batch Rename) Resilienz**:
+  - `src/core/batch_rename_service.py`:
+    - Nicht-reguläres Suchen & Ersetzen (`use_regex=False`, `regex_case_sensitive=False`) via `pattern.sub(lambda _: rules.replace_str, new_stem)` gegen unhandled `re.error: invalid group reference / bad escape` bei Backslashes (Pfade, Escape-Muster) im Ersetzungstext gehärtet.
+    - Formatierung negativer Nummerierungs-Startwerte mit korrektem Vorzeichen und Nullen-Padding (`-005` statt `-05` bei Padding 3).
+    - Windows-Gerätenamen-Schutz um `CLOCK$` erweitert.
+    - Validierung vollständig geleerter Dateinamen korrigiert (liefert leeren String statt masking mit Originalnamen).
+    - Zweistufige atomare Rollback-Hygiene in `execute_rename` bei Fehlern in Phase 2: Bereits erzeugte Zieldateien werden vor der Wiederherstellung zurück nach `temp_path` verschoben, wodurch zyklische Kettungen und Swaps kollisionsfrei ohne `[WinError 183]` oder verwaiste temporäre Dateien wiederhergestellt werden.
+    - Transaktionale Abbruch- und Wiederherstellungslogik in `rollback_rename`: Bereinigt Zwischendateien bei Fehlern in Phase 1 oder Phase 2 restlos, ohne gestrandete `.__ep_rb_tmp_*`-Dateien im Verzeichnis zu hinterlassen.
+  - `src/gui/batch_rename_dialog.py`:
+    - Synchronisation von `self.file_paths` nach `_do_rollback`: Stellt sicher, dass nach einem Klick auf "Rückgängig" die Dateipfade wieder auf die tatsächlich existierenden Originaldateien zeigen.
+    - Dialog-Lebenszyklus: Verhindert das automatische Schließen des modalen Dialogs bei `_do_rename`, sodass der Rollback-Button für den Benutzer erreichbar und nutzbar bleibt; `Accepted`-Status wird beim Schließen nach erfolgreicher Umbenennung an den Browser übermittelt.
+    - Eingabepfad-Deduplizierung unter Erhalt der Reihenfolge im Konstruktor.
+  - `tests/test_bugsweep_batch_rename_resilience_20261001.py`: 8 neue hermetische Regressionstests (100% grün).
+
 ### Repository-Lebenszyklus-Härtung & CI/CD-Parität (2026-09-30, Pfad A)
 - **CI/CD Lifecycle Workflows & Label-Governance**:
   - `.github/workflows/auto-assign.yml`: Automatisches Zuweisen von Pull Requests an Maintainer via `actions/github-script@v7`, `timeout-minutes: 5`, least-privilege permissions (`issues: write`, `pull-requests: write`) und Concurrency `cancel-in-progress: true`.
