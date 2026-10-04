@@ -184,7 +184,8 @@ class Translator:
     def get_language(self):
         return 'en'
 module = types.ModuleType('translator')
-module.get_translator = lambda: Translator()
+module.get_translator = lambda *args: Translator()
+module.SUPPORTED_LANGUAGES = {'de': 'Deutsch', 'en': 'English'}
 sys.modules['translator'] = module
 def fail_setup(app, language):
     raise RuntimeError('application-setup-failed')
