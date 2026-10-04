@@ -209,3 +209,34 @@ print('main-setup-close-restored')
     )
     assert result.returncode == 0, result.stderr
     assert 'main-setup-close-restored' in result.stdout
+
+
+def test_capacity_shutdown_drains_workers_before_restoring_gc():
+    script = '''
+import gc, sys, threading, time
+sys.path.insert(0, 'src')
+from PySide6.QtWidgets import QApplication
+from core.gui_gc import install_gui_gc
+from gui.sidebar.drive_capacity import capacity_executor, shutdown_capacity_executor
+app = QApplication([])
+collector = install_gui_gc(app)
+entered = threading.Event()
+def worker():
+    entered.set()
+    time.sleep(.1)
+    assert not gc.isenabled()
+    return 'finished'
+future = capacity_executor().submit(worker)
+assert entered.wait(5)
+shutdown_capacity_executor()
+assert future.done() and future.result() == 'finished'
+collector.close()
+assert gc.isenabled()
+print('shutdown-ok')
+'''
+    result = subprocess.run(
+        [sys.executable, "-c", script], cwd=Path(__file__).resolve().parents[1],
+        capture_output=True, text=True, timeout=25,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "shutdown-ok" in result.stdout

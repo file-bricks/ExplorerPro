@@ -64,6 +64,8 @@
 <a id="hauptfunktionen"></a>
 ## 1. Features & Core Capabilities
 
+The source version includes per-drive capacity bars in the folder sidebar, with used percentage and free/used/total space in GiB/TiB. Capacity requests run in the background; use **Refresh drive usage** to update them. Unavailable devices show an explanatory message. This addition is not yet part of a newly packaged release.
+
 Standard operating system file managers are built for casual browsing and lack the heavy-lifting tools developers, researchers, and power users require daily. ExplorerPro addresses this gap by packaging pro-grade productivity utilities into a cohesive, responsive desktop interface with zero telemetry and 100% Local-First data isolation:
 
 - **Unified Multi-Tab Experience:** Browse multiple directories concurrently with tab pinning, breadcrumb navigation, drag-and-drop, and intelligent context menus.
@@ -568,7 +570,7 @@ ExplorerPro provides comprehensive keyboard control designed for high-efficiency
 | <kbd>Ctrl</kbd> + <kbd>Tab</kbd> | Browser | Cycle through open directory tabs |
 | <kbd>Ctrl</kbd> + <kbd>F</kbd> | Global | Focus search bar and trigger FTS5 search |
 | <kbd>F2</kbd> | Browser | Rename selected file or folder |
-| <kbd>Delete</kbd> | Browser | Delete selected items (with confirmation dialog) |
+| <kbd>Delete</kbd> | Browser | Delete selected items (with confirmation; without confirmation they go to the system trash) |
 | <kbd>Ctrl</kbd> + <kbd>C</kbd> | Browser | Copy selected files/folders to clipboard |
 | <kbd>Ctrl</kbd> + <kbd>V</kbd> | Browser | Paste files from clipboard (with collision-free auto-suffix) |
 | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> | Browser | Create a new folder in current directory |

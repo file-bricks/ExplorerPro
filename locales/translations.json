@@ -2847,6 +2847,70 @@
     "ja": "選択したファイルを開く",
     "ru": "Открывает выбранный файл"
   },
+  "Speicherbelegung": {
+    "de": "Speicherbelegung",
+    "en": "Storage usage",
+    "es": "Uso del almacenamiento",
+    "zh": "存储使用情况",
+    "ja": "ストレージ使用量",
+    "ru": "Использование хранилища"
+  },
+  "Speicherbelegung wird ermittelt …": {
+    "de": "Speicherbelegung wird ermittelt …",
+    "en": "Checking storage usage …",
+    "es": "Calculando el uso del almacenamiento …",
+    "zh": "正在查询存储使用情况 …",
+    "ja": "ストレージ使用量を確認中 …",
+    "ru": "Проверка использования хранилища …"
+  },
+  "Speicherbelegung nicht verfügbar": {
+    "de": "Speicherbelegung nicht verfügbar",
+    "en": "Storage usage unavailable",
+    "es": "Uso del almacenamiento no disponible",
+    "zh": "存储使用情况不可用",
+    "ja": "ストレージ使用量を取得できません",
+    "ru": "Данные об использовании хранилища недоступны"
+  },
+  "{free} frei · {used} belegt · {total} gesamt": {
+    "de": "{free} frei · {used} belegt · {total} gesamt",
+    "en": "{free} free · {used} used · {total} total",
+    "es": "{free} libre · {used} usado · {total} total",
+    "zh": "{free} 可用 · {used} 已用 · {total} 总计",
+    "ja": "{free} 空き · {used} 使用中 · {total} 合計",
+    "ru": "{free} свободно · {used} занято · {total} всего"
+  },
+  "{percent}% belegt": {
+    "de": "{percent}% belegt",
+    "en": "{percent}% used",
+    "es": "{percent}% usado",
+    "zh": "已用 {percent}%",
+    "ja": "{percent}% 使用中",
+    "ru": "{percent}% занято"
+  },
+  "Laufwerksbelegung aktualisieren": {
+    "de": "Laufwerksbelegung aktualisieren",
+    "en": "Refresh drive usage",
+    "es": "Actualizar el uso de las unidades",
+    "zh": "刷新驱动器使用情况",
+    "ja": "ドライブ使用量を更新",
+    "ru": "Обновить использование дисков"
+  },
+  "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben.": {
+    "de": "Wenn deaktiviert, werden Elemente ohne Rückfrage in den Papierkorb verschoben.",
+    "en": "When disabled, items are moved to the Recycle Bin without asking.",
+    "es": "Si se desactiva, los elementos se mueven a la papelera sin pedir confirmación.",
+    "zh": "禁用后，项目会直接移至回收站，不再询问。",
+    "ja": "無効にすると、確認なしで項目をごみ箱に移動します。",
+    "ru": "Если отключить, элементы будут перемещаться в корзину без запроса подтверждения."
+  },
+  "Das Element konnte nicht in den Papierkorb verschoben werden.": {
+    "de": "Das Element konnte nicht in den Papierkorb verschoben werden.",
+    "en": "The item could not be moved to the Recycle Bin.",
+    "es": "No se pudo mover el elemento a la papelera.",
+    "zh": "无法将项目移至回收站。",
+    "ja": "項目をごみ箱に移動できませんでした。",
+    "ru": "Не удалось переместить элемент в корзину."
+  },
   "Datei nicht gefunden": {
     "de": "Datei nicht gefunden",
     "en": "File not found",

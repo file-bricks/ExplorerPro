@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from PySide6.QtCore import QItemSelectionModel
 from PySide6.QtGui import QContextMenuEvent
 from PySide6.QtWidgets import QApplication, QInputDialog, QMenu
+from PySide6.QtTest import QTest
 
 import gui.browser.file_browser as browser_module
 from gui.browser.file_browser import FileBrowser
@@ -102,11 +103,11 @@ def test_navigation_loads_files_and_selection_reaches_preview(tmp_path):
     browser.resize(800, 500)
     browser.show()
     browser.navigate_to(str(tmp_path))
-    for _ in range(100):
-        _app().processEvents()
-        if browser.proxy.rowCount(browser.table.rootIndex()) > 0:
-            break
-        time.sleep(.01)
+    # QFileSystemModel gathers rows asynchronously. Pump the actual Qt event
+    # loop with a bounded deadline instead of assuming a one-second OS scan.
+    deadline = time.monotonic() + 5
+    while browser.proxy.rowCount(browser.table.rootIndex()) == 0 and time.monotonic() < deadline:
+        QTest.qWait(10)
     root = browser.proxy.mapToSource(browser.table.rootIndex())
     assert Path(browser.model.filePath(root)) == tmp_path
     assert browser.proxy.rowCount(browser.table.rootIndex()) > 0
@@ -254,3 +255,48 @@ def test_frozen_run_button_starts_interpreter_not_explorerpro(tmp_path, monkeypa
     editor._run_code()
     assert launched == [(str(interpreter), [str(script)])]
     editor.close()
+
+
+def test_right_click_on_unselected_row_selects_row(tmp_path, monkeypatch):
+    _app()
+    first = tmp_path / "first.txt"
+    second = tmp_path / "second.txt"
+    first.write_text("first", encoding="utf-8")
+    second.write_text("second", encoding="utf-8")
+
+    browser = FileBrowser()
+    browser.resize(800, 500)
+    browser.show()
+    browser.navigate_to(str(tmp_path))
+    for _ in range(100):
+        _app().processEvents()
+        if browser.proxy.rowCount(browser.table.rootIndex()) == 2:
+            break
+        time.sleep(.01)
+
+    idx_first = browser.proxy.mapFromSource(browser.model.index(str(first)))
+    browser.table.selectRow(idx_first.row())
+    assert [Path(p) for p in browser.get_selected_files()] == [first]
+
+    idx_second = browser.proxy.mapFromSource(browser.model.index(str(second)))
+    assert not browser.table.selectionModel().isRowSelected(idx_second.row(), idx_second.parent())
+
+    menus = []
+
+    class CapturingMenu(QMenu):
+        def exec(self, *args):
+            menus.append(self)
+
+    monkeypatch.setattr(browser_module, "QMenu", CapturingMenu)
+    pos = browser.table.visualRect(idx_second).center()
+    event = QContextMenuEvent(
+        QContextMenuEvent.Reason.Mouse, pos, browser.table.viewport().mapToGlobal(pos)
+    )
+    QApplication.sendEvent(browser.table.viewport(), event)
+
+    assert browser.table.selectionModel().isRowSelected(idx_second.row(), idx_second.parent())
+    assert second in [Path(p) for p in browser.get_selected_files()]
+
+    browser.close()
+    browser.deleteLater()
+    _app().processEvents()

@@ -122,7 +122,7 @@ class FileBrowser(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         # Datei-System-Model
-        self.model = QFileSystemModel()
+        self.model = QFileSystemModel(self)
         self.model.setFilter(
             QDir.Filter.AllEntries |
             QDir.Filter.NoDotAndDotDot
@@ -130,7 +130,7 @@ class FileBrowser(QWidget):
         self.model.directoryLoaded.connect(self._on_directory_loaded)
 
         # Sortier-Proxy
-        self.proxy = QSortFilterProxyModel()
+        self.proxy = QSortFilterProxyModel(self)
         self.proxy.setSourceModel(self.model)
         self.proxy.setSortCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
 
@@ -775,7 +775,10 @@ class FileBrowser(QWidget):
         dialog.exec()
 
     def delete_selection(self, target_paths: list = None) -> bool:
-        """Löscht ausgewählte Dateien oder Ordner nach Bestätigung."""
+        """Delete selected entries, using the trash when confirmation is disabled."""
+        from core.delete_service import delete_path, move_to_trash
+        from core.settings_manager import SettingsManager
+
         if not target_paths:
             target_paths = self.get_selected_files()
         if not target_paths:
@@ -790,26 +793,25 @@ class FileBrowser(QWidget):
                 preview += f"\n... und {count - 5} weitere"
             msg = f"Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?\n\n{preview}"
 
-        reply = QMessageBox.question(
-            self,
-            "Löschen bestätigen",
-            msg,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
-        )
-
-        if reply != QMessageBox.StandardButton.Yes:
-            return False
+        confirm_delete = SettingsManager.instance().get("general", "confirm_delete", True) is not False
+        if confirm_delete:
+            reply = QMessageBox.question(
+                self,
+                "Löschen bestätigen",
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            if reply != QMessageBox.StandardButton.Yes:
+                return False
 
         errors = []
+        delete_item = delete_path if confirm_delete else move_to_trash
         for path in target_paths:
-            if not os.path.exists(path):
+            if not os.path.lexists(path):
                 continue
             try:
-                if os.path.isdir(path):
-                    shutil.rmtree(path)
-                else:
-                    os.remove(path)
+                delete_item(path)
             except OSError as exc:
                 errors.append(f"{os.path.basename(path)}: {exc}")
 
@@ -879,10 +881,13 @@ class FileBrowser(QWidget):
             )
 
     def _sync_path(self, path: str):
-        """Öffnet das Sync-Panel für den Pfad."""
+        """Öffnet das Sync-Panel und legt ein Sync-Paar mit dem Pfad als Quelle an."""
         main_win = self.window()
         if hasattr(main_win, 'show_sync_panel'):
             main_win.show_sync_panel()
+        sidebar = getattr(main_win, 'sidebar', None)
+        if sidebar is not None and hasattr(sidebar, 'sync_panel'):
+            sidebar.sync_panel.add_pair_for_path(path)
 
     # ------------------------------------------------------------------ #
     # Drag-and-Drop                                                        #
