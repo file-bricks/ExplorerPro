@@ -179,7 +179,7 @@ class PromptItem(QListWidgetItem):
         if self.prompt.tags:
             tooltip += f"🏷️ {', '.join(self.prompt.tags)}<br>"
         tooltip += f"📅 {self.prompt.modified[:10]}<br>"
-        tooltip += f"📊 {self.prompt.use_count}x verwendet<br><br>"
+        tooltip += t("📊 {count}x verwendet").format(count=self.prompt.use_count) + "<br><br>"
         tooltip += f"<i>{self.prompt.content[:200]}...</i>"
 
         self.setToolTip(tooltip)
@@ -454,8 +454,8 @@ class PromptsPanel(QWidget):
             # Variablen abfragen
             for var in set(variables):
                 value, ok = QInputDialog.getText(
-                    self, f"Variable: {var}",
-                    f"Wert für '{var}' eingeben:"
+                    self, t("Variable: {name}").format(name=var),
+                    t("Wert für '{name}' eingeben:").format(name=var)
                 )
                 if ok:
                     content = content.replace(f"{{{{{var}}}}}", value)
@@ -470,7 +470,7 @@ class PromptsPanel(QWidget):
         prompt.use_count += 1
         self._save_prompts()
 
-        self.status_label.setText(f"✅ '{prompt.title}' kopiert!")
+        self.status_label.setText(t("✅ '{title}' kopiert!").format(title=prompt.title))
         self.prompt_copied.emit(content)
 
     def _copy_selected(self):
@@ -505,7 +505,7 @@ class PromptsPanel(QWidget):
         """Prompt löschen"""
         if QMessageBox.question(
             self, "Löschen",
-            f"'{prompt.title}' wirklich löschen?",
+            t("'{name}' wirklich löschen?").format(name=prompt.title),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         ) == QMessageBox.StandardButton.Yes:
             self.prompts.remove(prompt)
@@ -543,4 +543,4 @@ class PromptsPanel(QWidget):
         """Aktualisiert Status-Anzeige"""
         total = len(self.prompts)
         shown = self.prompt_list.count()
-        self.status_label.setText(f"{shown} von {total} Prompts")
+        self.status_label.setText(t("{shown} von {total} Prompts").format(shown=shown, total=total))

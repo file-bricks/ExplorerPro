@@ -22,6 +22,7 @@ import sqlite3
 import subprocess
 
 from core.platform_utils import open_path_with_system
+from translator import t
 
 
 class DuplicateScanWorker(QThread):
@@ -528,7 +529,7 @@ class DuplicateFinderDialog(QDialog):
         if total > 0:
             percent = int(current / total * 100)
             self.progress_bar.setValue(percent)
-        self.progress_label.setText(f"Prüfe: {filename[:50]}...")
+        self.progress_label.setText(t("Prüfe: {name}...").format(name=filename[:50]))
 
     @Slot(dict)
     def _on_duplicates_found(self, duplicates: dict):
@@ -542,11 +543,15 @@ class DuplicateFinderDialog(QDialog):
         self._reset_ui()
 
         if groups == 0:
-            self.stats_label.setText(f"✅ Keine Duplikate gefunden ({total_files} Dateien geprüft)")
+            self.stats_label.setText(
+                t("✅ Keine Duplikate gefunden ({count} Dateien geprüft)").format(count=total_files)
+            )
         else:
             total_duplicates = sum(len(p) - 1 for p in self.duplicate_groups.values())
             self.stats_label.setText(
-                f"✅ {groups} Duplikat-Gruppen gefunden ({total_duplicates} doppelte Dateien)"
+                t("✅ {groups} Duplikat-Gruppen gefunden ({count} doppelte Dateien)").format(
+                    groups=groups, count=total_duplicates
+                )
             )
             self._update_space_info()
             self._update_buttons(True)
@@ -555,7 +560,7 @@ class DuplicateFinderDialog(QDialog):
     def _on_scan_error(self, error: str):
         """Fehler beim Scan"""
         self._reset_ui()
-        self.stats_label.setText(f"❌ Fehler: {error}")
+        self.stats_label.setText(t("❌ Fehler: {error}").format(error=error))
 
     def _reset_ui(self):
         """Setzt UI zurück"""
@@ -575,7 +580,7 @@ class DuplicateFinderDialog(QDialog):
             # Gruppe
             size = self._get_file_size(paths[0])
             group_item = QTreeWidgetItem([
-                f"📁 {len(paths)} Dateien",
+                t("📁 {count} Dateien").format(count=len(paths)),
                 self._format_size(size),
                 f"Hash: {file_hash[:16]}..."
             ])
@@ -629,7 +634,7 @@ class DuplicateFinderDialog(QDialog):
                 total_waste += size * (len(paths) - 1)
 
         self.space_label.setText(
-            f"💾 Verschwendeter Speicher: {self._format_size(total_waste)}"
+            t("💾 Verschwendeter Speicher: {size}").format(size=self._format_size(total_waste))
         )
 
     def _update_buttons(self, enabled: bool):
@@ -740,9 +745,11 @@ class DuplicateFinderDialog(QDialog):
         reply = QMessageBox.question(
             self,
             "Duplikate löschen",
-            f"Möchten Sie {len(files_to_delete)} Dateien löschen?\n\n"
-            f"Gesamtgröße: {self._format_size(total_size)}\n\n"
-            f"Diese Aktion kann nicht rückgängig gemacht werden!",
+            t(
+                "Möchten Sie {count} Dateien löschen?\n\n"
+                "Gesamtgröße: {size}\n\n"
+                "Diese Aktion kann nicht rückgängig gemacht werden!"
+            ).format(count=len(files_to_delete), size=self._format_size(total_size)),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No
         )
@@ -767,14 +774,16 @@ class DuplicateFinderDialog(QDialog):
         if errors:
             QMessageBox.warning(
                 self, "Teilweise gelöscht",
-                f"{deleted} von {len(files_to_delete)} Dateien gelöscht.\n\n"
-                f"Fehler:\n" + "\n".join(errors[:5])
+                t("{deleted} von {total} Dateien gelöscht.\n\nFehler:\n{errors}").format(
+                    deleted=deleted, total=len(files_to_delete), errors="\n".join(errors[:5])
+                )
             )
         else:
             QMessageBox.information(
                 self, "Erfolgreich",
-                f"{deleted} Dateien wurden gelöscht.\n"
-                f"Freigegeben: {self._format_size(total_size)}"
+                t("{count} Dateien wurden gelöscht.\nFreigegeben: {size}").format(
+                    count=deleted, size=self._format_size(total_size)
+                )
             )
 
         # Neu scannen
@@ -823,7 +832,7 @@ class DuplicateFinderDialog(QDialog):
             QMessageBox.warning(
                 self,
                 title,
-                f"Der Pfad konnte nicht geöffnet werden:\n{path}\n\n{exc}"
+                t("Der Pfad konnte nicht geöffnet werden:\n{path}\n\n{error}").format(path=path, error=exc)
             )
 
     def _copy_path(self, path: str):

@@ -22,6 +22,8 @@ import json
 import os
 import shutil
 
+from translator import t
+
 
 class SyncDirection(Enum):
     """Synchronisations-Richtung"""
@@ -113,11 +115,11 @@ class SyncWorker(QThread):
 
         if direction == "target_to_source":
             if not target.exists():
-                self.error.emit(f"Zielordner existiert nicht: {target}")
+                self.error.emit(t("Zielordner existiert nicht: {path}").format(path=target))
                 return
         else:
             if not source.exists():
-                self.error.emit(f"Quellordner existiert nicht: {source}")
+                self.error.emit(t("Quellordner existiert nicht: {path}").format(path=source))
                 return
 
         # Alle Dateien sammeln
@@ -734,7 +736,7 @@ class SyncPanel(QWidget):
     def _delete_pair(self, pair: SyncPair):
         if QMessageBox.question(
             self, "Löschen",
-            f"'{pair.name}' wirklich löschen?",
+            t("'{name}' wirklich löschen?").format(name=pair.name),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         ) == QMessageBox.StandardButton.Yes:
             self.sync_pairs.remove(pair)
@@ -760,9 +762,9 @@ class SyncPanel(QWidget):
 
         reply = QMessageBox.question(
             self, "Synchronisation starten",
-            f"'{pair.name}' synchronisieren?\n\n"
-            f"Quelle: {pair.source}\n"
-            f"Ziel: {pair.target}",
+            t("'{name}' synchronisieren?\n\nQuelle: {source}\nZiel: {target}").format(
+                name=pair.name, source=pair.source, target=pair.target
+            ),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
 
@@ -784,8 +786,8 @@ class SyncPanel(QWidget):
         self.progress_bar.show()
         self.sync_btn.setEnabled(False)
 
-        mode = "Vorschau" if dry_run else "Sync"
-        self.status_label.setText(f"{mode}: Analysiere...")
+        mode = t("Vorschau") if dry_run else t("Sync")
+        self.status_label.setText(t("{mode}: Analysiere...").format(mode=mode))
         self.sync_started.emit(pair.name)
 
         self.sync_worker = SyncWorker(pair, dry_run)
@@ -801,7 +803,7 @@ class SyncPanel(QWidget):
     def _on_progress(self, current: int, total: int, filename: str):
         if total > 0:
             self.progress_bar.setValue(int(current / total * 100))
-        self.status_label.setText(f"Prüfe: {Path(filename).name}")
+        self.status_label.setText(t("Prüfe: {name}").format(name=Path(filename).name))
 
     def _on_scan_finished(self, actions: list, dry_run: bool, pair: SyncPair):
         if not actions:
@@ -825,26 +827,26 @@ class SyncPanel(QWidget):
         self.sync_btn.setEnabled(True)
 
         if errors:
-            self.status_label.setText(f"⚠️ {synced} synchronisiert, {errors} Fehler")
+            self.status_label.setText(t("⚠️ {synced} synchronisiert, {errors} Fehler").format(synced=synced, errors=errors))
         else:
-            self.status_label.setText(f"✅ {synced} Dateien synchronisiert")
+            self.status_label.setText(t("✅ {count} Dateien synchronisiert").format(count=synced))
 
         self.sync_finished.emit(synced)
 
     def _on_error(self, error: str):
         self.progress_bar.hide()
         self.sync_btn.setEnabled(True)
-        self.status_label.setText(f"❌ Fehler: {error}")
+        self.status_label.setText(t("❌ Fehler: {error}").format(error=error))
 
     def _show_preview_dialog(self, actions: list, pair: SyncPair):
         """Zeigt Vorschau-Dialog"""
         dialog = QDialog(self)
-        dialog.setWindowTitle(f"Sync-Vorschau: {pair.name}")
+        dialog.setWindowTitle(t("Sync-Vorschau: {name}").format(name=pair.name))
         dialog.setMinimumSize(600, 400)
 
         layout = QVBoxLayout(dialog)
 
-        summary = QLabel(f"📊 {len(actions)} Änderungen gefunden:")
+        summary = QLabel(t("📊 {count} Änderungen gefunden:").format(count=len(actions)))
         summary.setAccessibleName("Anzahl geplanter Synchronisationsänderungen")
         layout.addWidget(summary)
 
