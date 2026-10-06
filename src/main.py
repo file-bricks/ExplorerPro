@@ -136,6 +136,9 @@ def main():
         explorer.show()
         exit_code = app.exec()
     finally:
+        from core.ui_translator import uninstall_ui_translator
+
+        uninstall_ui_translator(app)
         try:
             shutdown_capacity_executor()
         finally:

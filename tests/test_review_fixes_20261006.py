@@ -278,7 +278,10 @@ def test_image_preview_downscales_large_images(app, tmp_path):
 def monitor(tmp_path):
     from modules.privacy.privacy_monitor import PrivacyMonitor
 
-    return PrivacyMonitor(tmp_path / "privacy")
+    instance = PrivacyMonitor(tmp_path / "privacy")
+    yield instance
+    instance.stop()
+    shiboken6.delete(instance)
 
 
 def test_privacy_dialog_edits_black_and_whitelist(app, isolated_settings, monitor):
@@ -455,9 +458,9 @@ def test_ui_translator_translates_and_switches_live(app, fresh_translator):
         assert button.text() == "Abbrechen"
         assert action.text() == "Neue Datei..."
     finally:
-        fresh_translator.remove_language_listener(ui._on_language_changed)
-        app.removeEventFilter(ui)
+        ui.shutdown()
         shiboken6.delete(window)
+        shiboken6.delete(ui)
 
 
 def test_settings_language_change_applies_live(app, isolated_settings, fresh_translator, monkeypatch):

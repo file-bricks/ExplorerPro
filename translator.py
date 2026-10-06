@@ -152,6 +152,12 @@ class TranslationSystem:
                     return value
             return key
 
+        # Dekorierte Varianten ("🟢 Grün", "Name:", "Neue Datei...") über
+        # den Kern-Schlüssel auflösen.
+        decorated = self._translate_parts(key, 0, self.current_lang)
+        if decorated is not None:
+            return decorated
+
         # Fehlende Schlüssel nur im Speicher vormerken: Zur Laufzeit darf der
         # Katalog nicht geschrieben werden (im Store-/EXE-Paket schreibgeschützt,
         # ein PermissionError würde sonst die aufrufende GUI-Aktion abbrechen).

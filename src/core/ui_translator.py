@@ -18,8 +18,9 @@ Katalog ``locales/translations.json``:
 Bei einem Sprachwechsel werden alle bereits übersetzten Texte live neu
 übersetzt, sofern der Code sie zwischenzeitlich nicht geändert hat.
 Nutzerdaten (Dateinamen, Pfade, Editorinhalte) werden nie angefasst;
-Widgets mit Nutzerdaten können zusätzlich per
-``widget.setProperty(NO_TRANSLATE, True)`` ausgenommen werden.
+bei Widgets mit Nutzerdaten im Text (Labels, Listen, Comboboxen) schließt
+``widget.setProperty(NO_TRANSLATE, True)`` den angezeigten Inhalt aus –
+Tooltips und Barrierefreiheitstexte werden weiterhin übersetzt.
 """
 from __future__ import annotations
 
@@ -76,6 +77,10 @@ class UiTranslator(QObject):
         self._translator.add_language_listener(self._on_language_changed)
         app.installEventFilter(self)
 
+    def shutdown(self) -> None:
+        self._app.removeEventFilter(self)
+        self._translator.remove_language_listener(self._on_language_changed)
+
     # ------------------------------------------------------------------ #
     # Event-Filter                                                         #
     # ------------------------------------------------------------------ #
@@ -95,15 +100,16 @@ class UiTranslator(QObject):
 
     def translate_widget(self, widget: QWidget) -> None:
         """Übersetzt die statischen Texte eines Widgets (nicht rekursiv)."""
-        if widget.property(NO_TRANSLATE):
-            return
         record = self._record(widget)
         changed = False
 
         for name, getter, setter in _WIDGET_ATTRS:
             changed |= self._apply(widget, record, name, getter, setter)
 
-        if isinstance(widget, QAbstractButton):
+        if widget.property(NO_TRANSLATE):
+            # Inhalt sind Nutzerdaten: nur Hilfetexte (oben) übersetzen.
+            pass
+        elif isinstance(widget, QAbstractButton):
             changed |= self._apply(widget, record, "text", QAbstractButton.text, QAbstractButton.setText)
         elif isinstance(widget, QLabel):
             changed |= self._apply(widget, record, "text", QLabel.text, QLabel.setText)
@@ -157,7 +163,7 @@ class UiTranslator(QObject):
         if changed:
             widget.setProperty(_RECORD, record)
 
-        if isinstance(widget, (QMenu, QMenuBar, QToolBar)):
+        if isinstance(widget, (QMenu, QMenuBar, QToolBar)) and not widget.property(NO_TRANSLATE):
             for action in widget.actions():
                 self.translate_action(action)
 
@@ -339,6 +345,19 @@ class UiTranslator(QObject):
             if attr == name:
                 return (lambda: getter(obj), lambda v: setter(obj, v))
         return None
+
+
+def uninstall_ui_translator(app: QApplication) -> None:
+    """Entfernt Filter und Sprach-Listener vor dem Abbau der QApplication.
+
+    Ein Python-Eventfilter, der während der Zerstörung der Anwendung noch
+    Ereignisse erhält, kann beim Beenden zu nativen Abstürzen führen.
+    """
+    existing = getattr(app, "_ep_ui_translator", None)
+    if existing is None:
+        return
+    app._ep_ui_translator = None
+    existing.shutdown()
 
 
 def install_ui_translator(app: QApplication) -> UiTranslator:
