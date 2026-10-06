@@ -5,6 +5,7 @@ FileIndex - SQLite-basierte Dateiindizierung
 Basiert auf ProFiler V14
 """
 
+import fnmatch
 import os
 import re
 import sqlite3
@@ -247,21 +248,34 @@ class FileIndex:
 
         return None
 
-    def index_file(self, filepath: str, calculate_hash: bool = True) -> bool:
-        """Indiziert eine einzelne Datei"""
+    def index_file(self, filepath: str, calculate_hash: bool = True,
+                   max_content_bytes: int = 100 * 1024 * 1024) -> bool:
+        """Indiziert eine einzelne Datei.
+
+        Inhalte (Hash, Volltext) werden nur für lokal vorhandene Dateien bis
+        *max_content_bytes* gelesen. Cloud-Platzhalter ("Nur online") werden
+        nur mit Metadaten aufgenommen, damit die Indizierung keine Downloads
+        auslöst.
+        """
         if not os.path.exists(filepath):
             return False
 
         try:
+            from core.file_attributes import is_cloud_placeholder
+
             stat = os.stat(filepath)
             filename = os.path.basename(filepath)
             ext = os.path.splitext(filename)[1].lower()
 
+            read_content = (
+                stat.st_size <= max_content_bytes and not is_cloud_placeholder(filepath)
+            )
+
             file_hash = None
-            if calculate_hash and stat.st_size < 100 * 1024 * 1024:  # Max 100MB
+            if calculate_hash and read_content:
                 file_hash = self.calculate_hash(filepath)
 
-            text_content = self.extract_text(filepath)
+            text_content = self.extract_text(filepath) if read_content else None
             category = self.get_category(filename)
 
             conn = sqlite3.connect(self.db_path)
@@ -725,12 +739,36 @@ class IndexWorker(QThread):
     finished_indexing = Signal(int)  # total indexed
     error = Signal(str)
 
-    def __init__(self, index: FileIndex, folder: str, recursive: bool = True):
+    def __init__(self, index: FileIndex, folder: str, recursive: bool = True,
+                 max_file_size_mb: Optional[int] = None, excluded_patterns: Optional[List[str]] = None):
         super().__init__()
         self.index = index
         self.folder = folder
         self.recursive = recursive
         self._cancelled = False
+        # Einstellungen im GUI-Thread lesen; der Worker arbeitet nur mit Kopien.
+        if max_file_size_mb is None or excluded_patterns is None:
+            try:
+                from core.settings_manager import SettingsManager
+
+                settings = SettingsManager.instance()
+                if max_file_size_mb is None:
+                    max_file_size_mb = settings.get("index", "max_file_size_mb", 100)
+                if excluded_patterns is None:
+                    excluded_patterns = settings.get("index", "excluded_patterns", [])
+            except Exception:
+                pass
+        try:
+            self.max_content_bytes = max(1, int(max_file_size_mb or 100)) * 1024 * 1024
+        except (TypeError, ValueError):
+            self.max_content_bytes = 100 * 1024 * 1024
+        self.excluded_patterns = [
+            str(p).lower() for p in (excluded_patterns or []) if isinstance(p, str) and p.strip()
+        ]
+
+    def _is_excluded(self, name: str) -> bool:
+        lower = name.lower()
+        return any(fnmatch.fnmatch(lower, pattern) for pattern in self.excluded_patterns)
 
     def cancel(self):
         self._cancelled = True
@@ -742,14 +780,18 @@ class IndexWorker(QThread):
         try:
             files = []
             if self.recursive:
-                for root, _, filenames in os.walk(self.folder):
+                for root, dirs, filenames in os.walk(self.folder):
+                    if self._cancelled:
+                        break
+                    dirs[:] = [d for d in dirs if not self._is_excluded(d)]
                     for filename in filenames:
-                        files.append(os.path.join(root, filename))
+                        if not self._is_excluded(filename):
+                            files.append(os.path.join(root, filename))
             else:
                 files = [
                     os.path.join(self.folder, f)
                     for f in os.listdir(self.folder)
-                    if os.path.isfile(os.path.join(self.folder, f))
+                    if os.path.isfile(os.path.join(self.folder, f)) and not self._is_excluded(f)
                 ]
 
             total = len(files)
@@ -758,7 +800,7 @@ class IndexWorker(QThread):
                 if self._cancelled:
                     break
 
-                if self.index.index_file(filepath):
+                if self.index.index_file(filepath, max_content_bytes=self.max_content_bytes):
                     indexed_count += 1
                     self.file_indexed.emit(filepath)
 

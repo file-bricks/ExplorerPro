@@ -17,9 +17,11 @@ from PySide6.QtGui import QAction, QCursor, QDrag, QKeySequence
 import os
 import subprocess
 import shutil
+import sys
 from pathlib import Path
 
-from core.platform_utils import open_path_with_system
+from core.platform_utils import open_path_with_system, normalize_user_path
+from translator import t
 
 # Editor-Extensions
 EDITOR_EXTENSIONS = {
@@ -31,6 +33,19 @@ EDITOR_EXTENSIONS = {
     '.c', '.cpp', '.h', '.hpp', '.java',
     '.rb', '.php', '.go', '.rs', '.swift'
 }
+
+
+def base_entry_filters() -> QDir.Filter:
+    """Filter für die Dateiliste.
+
+    Unter Windows blendet Qt ohne ``QDir.System`` Einträge aus, die weder als
+    Datei noch als Ordner erkannt werden. Das betrifft u. a. OneDrive-/Cloud-
+    Platzhalter (Reparse-Points mit Cloud-Tag) und Verknüpfungen (*.lnk).
+    """
+    filters = QDir.Filter.AllEntries | QDir.Filter.NoDotAndDotDot
+    if sys.platform.startswith("win"):
+        filters |= QDir.Filter.System
+    return filters
 
 
 class _DnDTableView(QTableView):
@@ -65,6 +80,10 @@ class _DnDTableView(QTableView):
     def startDrag(self, supported_actions):
         self._fb._start_drag_files(supported_actions)
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._fb._ensure_name_column_visible()
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Delete:
             self._fb.delete_selection()
@@ -95,6 +114,10 @@ class FileBrowser(QWidget):
     Integriert QuickEditor für Code-Dateien
     """
 
+    # Standardbreiten für Größe, Typ, Änderungsdatum (Pixel)
+    COLUMN_WIDTHS = {1: 90, 2: 150, 3: 135}
+    MIN_NAME_WIDTH = 160
+
     # Signale
     file_selected = Signal(str)
     folder_changed = Signal(str)
@@ -111,11 +134,26 @@ class FileBrowser(QWidget):
         self._file_count = 0
         self._setup_ui()
 
-        # Startverzeichnis
+        # Startverzeichnis (Einstellung "Startordner", sonst Benutzerordner)
+        self.navigate_to(self.default_start_path())
+
+    @staticmethod
+    def default_start_path() -> str:
+        """Startordner aus den Einstellungen oder das Benutzerverzeichnis."""
         home = QStandardPaths.writableLocation(
             QStandardPaths.StandardLocation.HomeLocation
         )
-        self.navigate_to(home)
+        try:
+            from core.settings_manager import SettingsManager
+
+            configured = SettingsManager.instance().get("general", "start_folder", "") or ""
+        except Exception:
+            configured = ""
+        if isinstance(configured, str) and configured.strip():
+            candidate = normalize_user_path(configured)
+            if os.path.isdir(candidate):
+                return candidate
+        return home
 
     def _setup_ui(self):
         layout = QVBoxLayout(self)
@@ -123,10 +161,7 @@ class FileBrowser(QWidget):
 
         # Datei-System-Model
         self.model = QFileSystemModel(self)
-        self.model.setFilter(
-            QDir.Filter.AllEntries |
-            QDir.Filter.NoDotAndDotDot
-        )
+        self.model.setFilter(base_entry_filters())
         self.model.directoryLoaded.connect(self._on_directory_loaded)
 
         # Sortier-Proxy
@@ -152,13 +187,22 @@ class FileBrowser(QWidget):
         # System-Icons: explizite Größe damit die Icons in Spalte 0 sichtbar
         # dargestellt werden (QFileSystemModel liefert sie über QFileIconProvider).
         self.table.setIconSize(QSize(16, 16))
+        # Lange Namen in der Mitte kürzen, damit Anfang und Endung lesbar bleiben.
+        self.table.setTextElideMode(Qt.TextElideMode.ElideMiddle)
+        self.table.setWordWrap(False)
 
-        # Header
+        # Header: Die Namensspalte erhält den Restplatz. Die übrigen Spalten
+        # haben feste, vom Nutzer veränderbare Breiten. Mit ResizeToContents
+        # konnten lange Typbezeichnungen ("Komprimierter (gezippter) Ordner")
+        # die Namensspalte auf wenige Pixel zusammendrücken – sichtbar blieb
+        # dann nur noch der Typ "Ordner" statt des Ordnernamens.
         header = self.table.horizontalHeader()
+        header.setMinimumSectionSize(48)
+        header.setStretchLastSection(False)
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+        for column, width in self.COLUMN_WIDTHS.items():
+            header.setSectionResizeMode(column, QHeaderView.ResizeMode.Interactive)
+            header.resizeSection(column, width)
 
         # Signale
         self.table.clicked.connect(self._on_item_clicked)
@@ -186,19 +230,45 @@ class FileBrowser(QWidget):
 
         layout.addWidget(self.table)
 
+    def _ensure_name_column_visible(self):
+        """Verkleinert Zusatzspalten, wenn sonst kein Platz für Namen bleibt."""
+        header = self.table.horizontalHeader()
+        available = self.table.viewport().width()
+        if available <= 0:
+            return
+        others = [c for c in self.COLUMN_WIDTHS if not self.table.isColumnHidden(c)]
+        used = sum(header.sectionSize(c) for c in others)
+        overflow = used + self.MIN_NAME_WIDTH - available
+        if overflow <= 0:
+            return
+        # Zuerst den Typ, dann das Datum, zuletzt die Größe verkleinern.
+        for column in (2, 3, 1):
+            if overflow <= 0 or column not in others:
+                continue
+            size = header.sectionSize(column)
+            shrink = min(overflow, max(0, size - header.minimumSectionSize()))
+            if shrink:
+                header.resizeSection(column, size - shrink)
+                overflow -= shrink
+
     def _on_directory_loaded(self, path: str):
         """Handler wenn Verzeichnis geladen wurde"""
-        if path == self._current_path:
+        if os.path.normcase(os.path.normpath(path)) == os.path.normcase(os.path.normpath(self._current_path or "")):
             self._update_file_count()
+            self.selection_changed.emit(len(self.get_selected_files()))
 
     def _update_file_count(self):
-        """Aktualisiert die Datei-Anzahl"""
-        if self._current_path:
-            try:
-                entries = list(Path(self._current_path).iterdir())
-                self._file_count = len(entries)
-            except (OSError, PermissionError):
-                self._file_count = 0
+        """Aktualisiert die Anzahl sichtbarer Einträge.
+
+        Zählt die Zeilen des (asynchron geladenen) Modells statt das
+        Verzeichnis erneut synchron im GUI-Thread aufzulisten – bei Netzwerk-
+        und Cloud-Ordnern blockierte das zuvor die Oberfläche.
+        """
+        if not self._current_path:
+            self._file_count = 0
+            return
+        root = self.model.index(self._current_path)
+        self._file_count = self.model.rowCount(root) if root.isValid() else 0
 
     def _on_selection_changed(self):
         """Handler für Auswahl-Änderungen"""
@@ -207,7 +277,18 @@ class FileBrowser(QWidget):
 
     def navigate_to(self, path: str):
         """Navigiert zu einem Pfad"""
-        if not os.path.exists(path):
+        if not path:
+            return
+        path = normalize_user_path(path)
+        if os.path.isfile(path):
+            # Datei-Pfad (z. B. aus Suche oder Adresszeile): Ordner öffnen
+            # und die Datei anschließend markieren.
+            folder = os.path.dirname(path)
+            if folder and os.path.isdir(folder):
+                self.navigate_to(folder)
+                self.file_selected.emit(path)
+            return
+        if not os.path.isdir(path):
             return
 
         # History aktualisieren
@@ -274,9 +355,17 @@ class FileBrowser(QWidget):
             self.table.setRootIndex(self.proxy.mapFromSource(source_index))
             self._update_file_count()
 
+    def set_icon_size(self, size: int):
+        """Setzt die Größe der Dateisymbole (Einstellung "Symbolgröße")."""
+        size = max(12, min(64, int(size)))
+        self.table.setIconSize(QSize(size, size))
+        self.table.verticalHeader().setDefaultSectionSize(
+            max(size + 6, self.table.fontMetrics().height() + 6)
+        )
+
     def set_show_hidden_files(self, show: bool):
         """Schaltet die Anzeige versteckter Dateien um."""
-        filters = QDir.Filter.AllEntries | QDir.Filter.NoDotAndDotDot
+        filters = base_entry_filters()
         if show:
             filters |= QDir.Filter.Hidden
         self.model.setFilter(filters)
@@ -476,8 +565,8 @@ class FileBrowser(QWidget):
         except (OSError, subprocess.CalledProcessError) as exc:
             QMessageBox.warning(
                 self,
-                "Datei öffnen",
-                f"Die Datei konnte nicht geöffnet werden:\n{path}\n\n{exc}"
+                t("Datei öffnen"),
+                t("Die Datei konnte nicht geöffnet werden:") + f"\n{path}\n\n{exc}"
             )
 
     def _edit_file(self, path: str):
@@ -529,10 +618,10 @@ class FileBrowser(QWidget):
 
                 if alert.detected_patterns:
                     QMessageBox.warning(
-                        self, "Datenschutz-Prüfung",
-                        f"Status: {alert.status.value.upper()}\n\n"
-                        f"Erkannte Muster:\n• " +
-                        "\n• ".join(alert.detected_patterns)
+                        self, t("Datenschutz-Prüfung"),
+                        t("Status: {status}").format(status=alert.status.value.upper()) + "\n\n"
+                        + t("Erkannte Muster:") + "\n• "
+                        + "\n• ".join(alert.detected_patterns)
                     )
                 else:
                     QMessageBox.information(
@@ -541,8 +630,8 @@ class FileBrowser(QWidget):
                     )
         except Exception as e:
             QMessageBox.warning(
-                self, "Fehler",
-                f"Konnte Datei nicht prüfen: {e}"
+                self, t("Fehler"),
+                t("Konnte Datei nicht prüfen: {error}").format(error=e)
             )
 
     @property
@@ -626,8 +715,8 @@ class FileBrowser(QWidget):
         except Exception as exc:
             QMessageBox.warning(
                 self,
-                "Terminal öffnen",
-                f"Konnte Terminal nicht öffnen:\n{exc}"
+                t("Terminal öffnen"),
+                t("Konnte Terminal nicht öffnen:") + f"\n{exc}"
             )
             return False
 
@@ -666,14 +755,14 @@ class FileBrowser(QWidget):
             return True
         except FileExistsError:
             QMessageBox.warning(
-                self, "Neuer Ordner",
-                f"Ein Ordner oder eine Datei mit dem Namen '{name}' existiert bereits."
+                self, t("Neuer Ordner"),
+                t("Ein Ordner oder eine Datei mit dem Namen '{name}' existiert bereits.").format(name=name)
             )
             return False
         except OSError as exc:
             QMessageBox.warning(
-                self, "Neuer Ordner",
-                f"Konnte Ordner nicht erstellen:\n{exc}"
+                self, t("Neuer Ordner"),
+                t("Konnte Ordner nicht erstellen:") + f"\n{exc}"
             )
             return False
 
@@ -698,14 +787,14 @@ class FileBrowser(QWidget):
             return True
         except FileExistsError:
             QMessageBox.warning(
-                self, "Neue Datei",
-                f"Ein Element namens '{name}' existiert bereits in diesem Verzeichnis."
+                self, t("Neue Datei"),
+                t("Ein Element namens '{name}' existiert bereits in diesem Verzeichnis.").format(name=name)
             )
             return False
         except OSError as exc:
             QMessageBox.warning(
-                self, "Neue Datei",
-                f"Konnte Datei nicht erstellen:\n{exc}"
+                self, t("Neue Datei"),
+                t("Konnte Datei nicht erstellen:") + f"\n{exc}"
             )
             return False
 
@@ -736,8 +825,8 @@ class FileBrowser(QWidget):
         new_path = os.path.join(parent_dir, new_name)
         if os.path.exists(new_path):
             QMessageBox.warning(
-                self, "Umbenennen",
-                f"Ein Element namens '{new_name}' existiert bereits in diesem Verzeichnis."
+                self, t("Umbenennen"),
+                t("Ein Element namens '{name}' existiert bereits in diesem Verzeichnis.").format(name=new_name)
             )
             return False
 
@@ -747,8 +836,8 @@ class FileBrowser(QWidget):
             return True
         except OSError as exc:
             QMessageBox.warning(
-                self, "Umbenennen",
-                f"Konnte Element nicht umbenennen:\n{exc}"
+                self, t("Umbenennen"),
+                t("Konnte Element nicht umbenennen:") + f"\n{exc}"
             )
             return False
 
@@ -786,18 +875,22 @@ class FileBrowser(QWidget):
 
         count = len(target_paths)
         if count == 1:
-            msg = f"Möchten Sie '{os.path.basename(target_paths[0])}' wirklich unwiderruflich löschen?"
+            msg = t("Möchten Sie '{name}' wirklich unwiderruflich löschen?").format(
+                name=os.path.basename(target_paths[0])
+            )
         else:
             preview = "\n".join(f"• {os.path.basename(p)}" for p in target_paths[:5])
             if count > 5:
-                preview += f"\n... und {count - 5} weitere"
-            msg = f"Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?\n\n{preview}"
+                preview += "\n" + t("... und {count} weitere").format(count=count - 5)
+            msg = t("Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?").format(
+                count=count
+            ) + f"\n\n{preview}"
 
         confirm_delete = SettingsManager.instance().get("general", "confirm_delete", True) is not False
         if confirm_delete:
             reply = QMessageBox.question(
                 self,
-                "Löschen bestätigen",
+                t("Löschen bestätigen"),
                 msg,
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No
@@ -818,8 +911,8 @@ class FileBrowser(QWidget):
         self.refresh()
         if errors:
             QMessageBox.warning(
-                self, "Fehler beim Löschen",
-                "Folgende Elemente konnten nicht gelöscht werden:\n\n" + "\n".join(errors)
+                self, t("Fehler beim Löschen"),
+                t("Folgende Elemente konnten nicht gelöscht werden:") + "\n\n" + "\n".join(errors)
             )
             return False
         return True
@@ -840,8 +933,10 @@ class FileBrowser(QWidget):
         main_win = self.window()
         filename = os.path.basename(path)
         is_file = os.path.isfile(path)
-        content = f"Analysiere bitte folgende Datei:\n{path}" if is_file else f"Analysiere bitte folgenden Ordner:\n{path}"
-        title = f"Pfad: {filename}"
+        content = (
+            t("Analysiere bitte folgende Datei:") if is_file else t("Analysiere bitte folgenden Ordner:")
+        ) + f"\n{path}"
+        title = t("Pfad: {name}").format(name=filename)
 
         if hasattr(main_win, 'sidebar') and hasattr(main_win.sidebar, 'prompts_panel'):
             prompts_panel = main_win.sidebar.prompts_panel
@@ -854,14 +949,14 @@ class FileBrowser(QWidget):
             if hasattr(main_win, 'show_prompts_panel'):
                 main_win.show_prompts_panel()
             QMessageBox.information(
-                self, "Prompt gespeichert",
-                f"Prompt für '{filename}' wurde in der Bibliothek gespeichert."
+                self, t("Prompt gespeichert"),
+                t("Prompt für '{name}' wurde in der Bibliothek gespeichert.").format(name=filename)
             )
         else:
             QApplication.clipboard().setText(content)
             QMessageBox.information(
-                self, "Prompt in Zwischenablage",
-                f"Prompt-Vorlage für '{filename}' in die Zwischenablage kopiert."
+                self, t("Prompt in Zwischenablage"),
+                t("Prompt-Vorlage für '{name}' in die Zwischenablage kopiert.").format(name=filename)
             )
 
     def _add_to_blacklist(self, path: str):
@@ -871,13 +966,16 @@ class FileBrowser(QWidget):
         if hasattr(main_win, 'privacy_monitor') and main_win.privacy_monitor:
             main_win.privacy_monitor.add_to_blacklist(filename)
             QMessageBox.information(
-                self, "Datenschutz",
-                f"'{filename}' wurde zur Datenschutz-Blacklist hinzugefügt."
+                self, t("Datenschutz"),
+                t("'{name}' wurde zur Datenschutz-Blacklist hinzugefügt.").format(name=filename)
+                + "\n\n" + t("Die Liste kann über einen Klick auf die Datenschutz-Ampel bearbeitet werden.")
             )
         else:
             QMessageBox.information(
-                self, "Datenschutz",
-                f"'{filename}' konnte nicht hinzugefügt werden: Datenschutz-Monitor nicht initialisiert."
+                self, t("Datenschutz"),
+                t("'{name}' konnte nicht hinzugefügt werden: Datenschutz-Monitor nicht initialisiert.").format(
+                    name=filename
+                )
             )
 
     def _sync_path(self, path: str):
@@ -960,7 +1058,7 @@ class FileBrowser(QWidget):
         for src in src_paths:
             src = os.path.normpath(src)
             if not os.path.exists(src):
-                errors.append(f"Quelle nicht gefunden: {src}")
+                errors.append(t("Quelle nicht gefunden: {path}").format(path=src))
                 continue
 
             src_real = os.path.normcase(os.path.realpath(src))
@@ -973,8 +1071,8 @@ class FileBrowser(QWidget):
                     target_is_within_source = False
                 if target_is_within_source:
                     errors.append(
-                        f"{os.path.basename(src)}: Ordner kann nicht in seinen "
-                        "eigenen Unterordner kopiert oder verschoben werden."
+                        f"{os.path.basename(src)}: "
+                        + t("Ordner kann nicht in seinen eigenen Unterordner kopiert oder verschoben werden.")
                     )
                     continue
             elif os.path.normcase(os.path.realpath(os.path.dirname(src))) == target_real:
@@ -1004,7 +1102,7 @@ class FileBrowser(QWidget):
         if errors:
             QMessageBox.warning(
                 self,
-                "Drag & Drop",
-                "Einige Dateien konnten nicht übertragen werden:\n\n"
+                t("Drag & Drop"),
+                t("Einige Dateien konnten nicht übertragen werden:") + "\n\n"
                 + "\n".join(errors),
             )

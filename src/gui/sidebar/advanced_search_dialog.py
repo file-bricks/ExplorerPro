@@ -488,14 +488,16 @@ class AdvancedSearchDialog(QDialog):
             self.results_table.setItem(row, 4, QTableWidgetItem(date_str))
 
         count = len(results)
-        self.status_label.setText(f"✅ {count} Ergebnis{'se' if count != 1 else ''} gefunden")
+        self.status_label.setText(
+            "✅ " + (t("{count} Ergebnis gefunden") if count == 1 else t("{count} Ergebnisse gefunden")).format(count=count)
+        )
 
     @Slot(str)
     def _on_search_error(self, error: str):
         """Fehler bei Suche"""
         self.search_btn.setEnabled(True)
         self.progress_bar.hide()
-        self.status_label.setText(f"❌ Fehler: {error}")
+        self.status_label.setText("❌ " + t("Fehler: {error}").format(error=error))
 
     def _format_size(self, size: int) -> str:
         """Formatiert Dateigröße"""

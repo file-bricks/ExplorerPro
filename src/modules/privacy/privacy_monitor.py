@@ -18,6 +18,8 @@ from enum import Enum
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QApplication
 
+from translator import t
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -130,6 +132,7 @@ class PrivacyMonitor(QObject):
 
         # Clipboard
         self.clipboard = None
+        self._connected = False
 
         # Laden & Kompilieren
         self._load_config()
@@ -137,25 +140,47 @@ class PrivacyMonitor(QObject):
 
     def start(self):
         """Startet die Clipboard-Überwachung"""
+        self._enabled = True
         if self.clipboard is None:
             app = QApplication.instance()
             if app:
                 self.clipboard = app.clipboard()
-                self.clipboard.dataChanged.connect(self._on_clipboard_change)
-                logging.info("PrivacyMonitor gestartet")
-                self.status_changed.emit(self._current_status.value)
+        if self.clipboard is not None and not self._connected:
+            self.clipboard.dataChanged.connect(self._on_clipboard_change)
+            self._connected = True
+            logging.info("PrivacyMonitor gestartet")
+        if self._current_status == PrivacyStatus.GRAY:
+            self._current_status = PrivacyStatus.GREEN
+        self.status_changed.emit(self._current_status.value)
 
     def stop(self):
         """Stoppt die Überwachung"""
-        if self.clipboard:
+        if self.clipboard is not None and self._connected:
             try:
                 self.clipboard.dataChanged.disconnect(self._on_clipboard_change)
             except (RuntimeError, TypeError):
                 pass
+        self._connected = False
         self._enabled = False
         self._current_status = PrivacyStatus.GRAY
         self.status_changed.emit('gray')
         logging.info("PrivacyMonitor gestoppt")
+
+    def reset_status(self):
+        """Setzt die Ampel nach einer Warnung zurück (grün bzw. grau, wenn inaktiv)."""
+        self._current_status = PrivacyStatus.GREEN if self._enabled else PrivacyStatus.GRAY
+        self.status_changed.emit(self._current_status.value)
+
+    def recheck_clipboard(self):
+        """Prüft den aktuellen Inhalt der Zwischenablage erneut (z. B. nach Listenänderung)."""
+        if not self._enabled or self.clipboard is None:
+            return
+        mime_data = self.clipboard.mimeData()
+        text = mime_data.text() if mime_data is not None and mime_data.hasText() else ""
+        alert = self.check_text(text)
+        if alert.status != self._current_status:
+            self._current_status = alert.status
+            self.status_changed.emit(alert.status.value)
 
     @property
     def enabled(self) -> bool:
@@ -163,11 +188,18 @@ class PrivacyMonitor(QObject):
 
     @enabled.setter
     def enabled(self, value: bool):
-        self._enabled = value
         if value:
             self.start()
         else:
             self.stop()
+
+    @property
+    def auto_clear(self) -> bool:
+        return self._auto_clear
+
+    @auto_clear.setter
+    def auto_clear(self, value: bool):
+        self._auto_clear = bool(value)
 
     @property
     def status(self) -> str:
@@ -194,7 +226,11 @@ class PrivacyMonitor(QObject):
                 else:
                     self.whitelist = set()
 
-                self.pattern_enabled = cfg.get('patterns', self.pattern_enabled)
+                saved_patterns = cfg.get('patterns', {})
+                if isinstance(saved_patterns, dict):
+                    for key, value in saved_patterns.items():
+                        if key in BUILTIN_PATTERNS:
+                            self.pattern_enabled[key] = bool(value)
                 self.case_sensitive = cfg.get('case_sensitive', False)
                 self.whole_words = cfg.get('whole_words', False)
                 self._auto_clear = cfg.get('auto_clear', False)
@@ -206,8 +242,8 @@ class PrivacyMonitor(QObject):
     def save_config(self):
         """Speichert die Konfiguration"""
         cfg = {
-            'blacklist': list(self.blacklist),
-            'whitelist': list(self.whitelist),
+            'blacklist': sorted(self.blacklist, key=str.lower),
+            'whitelist': sorted(self.whitelist, key=str.lower),
             'patterns': self.pattern_enabled,
             'case_sensitive': self.case_sensitive,
             'whole_words': self.whole_words,
@@ -300,6 +336,13 @@ class PrivacyMonitor(QObject):
         self._compile_patterns()
         self.save_config()
 
+    def set_lists(self, blacklist, whitelist):
+        """Ersetzt Black- und Whitelist vollständig und speichert die Konfiguration."""
+        self.blacklist = {str(t).strip() for t in blacklist if str(t).strip()}
+        self.whitelist = {str(t).strip() for t in whitelist if str(t).strip()}
+        self._compile_patterns()
+        self.save_config()
+
     def import_blacklist(self, terms: List[str]):
         """Importiert mehrere Begriffe in die Blacklist"""
         for term in terms:
@@ -333,7 +376,8 @@ class PrivacyMonitor(QObject):
                 if (m.group() if self.case_sensitive else m.group().lower()) not in whitelist_check
             ]
             if matches:
-                detected.append(f"{name}: {len(matches)}x")
+                label = name if severity == "blacklist" else t(name)
+                detected.append(f"{label}: {len(matches)}x")
                 if severity == "high":
                     has_high = True
                 for m in matches:
@@ -388,15 +432,15 @@ class PrivacyMonitor(QObject):
         # Status bestimmen
         if not detected:
             status = PrivacyStatus.GREEN
-            message = "Keine sensiblen Daten erkannt"
+            message = t("Keine sensiblen Daten erkannt")
         else:
             # Prüfe Severity
             if has_high or len(detected) > 2:
                 status = PrivacyStatus.RED
-                message = f"WARNUNG: {len(detected)} sensible Muster erkannt!"
+                message = t("WARNUNG: {count} sensible Muster erkannt!").format(count=len(detected))
             else:
                 status = PrivacyStatus.YELLOW
-                message = f"Hinweis: {len(detected)} Muster erkannt"
+                message = t("Hinweis: {count} Muster erkannt").format(count=len(detected))
 
         return PrivacyAlert(
             status=status,
@@ -405,6 +449,35 @@ class PrivacyMonitor(QObject):
             original_text=text,
             anonymized_text=anonymized
         )
+
+    def preview_check(self, text: str, *, blacklist=None, whitelist=None, patterns=None,
+                      case_sensitive=None, whole_words=None) -> PrivacyAlert:
+        """Prüft *text* mit einer noch nicht gespeicherten Konfiguration.
+
+        Der aktuelle Zustand des Monitors wird danach vollständig
+        wiederhergestellt (genutzt vom "Text testen"-Bereich im Dialog).
+        """
+        saved = (
+            self.blacklist, self.whitelist, self.pattern_enabled,
+            self.case_sensitive, self.whole_words, self.compiled_patterns, self._enabled,
+        )
+        try:
+            if blacklist is not None:
+                self.blacklist = {str(t).strip() for t in blacklist if str(t).strip()}
+            if whitelist is not None:
+                self.whitelist = {str(t).strip() for t in whitelist if str(t).strip()}
+            if patterns is not None:
+                self.pattern_enabled = dict(patterns)
+            if case_sensitive is not None:
+                self.case_sensitive = bool(case_sensitive)
+            if whole_words is not None:
+                self.whole_words = bool(whole_words)
+            self._enabled = True
+            self._compile_patterns()
+            return self.check_text(text)
+        finally:
+            (self.blacklist, self.whitelist, self.pattern_enabled, self.case_sensitive,
+             self.whole_words, self.compiled_patterns, self._enabled) = saved
 
     def anonymize(self, text: str) -> str:
         """Anonymisiert einen Text unter Berücksichtigung von Blacklist, Whitelist und Patterns"""

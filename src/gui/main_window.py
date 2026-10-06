@@ -21,6 +21,7 @@ from .sidebar import Sidebar
 from .browser.file_browser import FileBrowser
 from .preview.preview_panel import PreviewPanel
 from .status_bar import StatusBarWidget
+from .privacy_dialog import PrivacySettingsDialog  # noqa: F401 (öffentliche API)
 from version import __version__
 from translator import t
 
@@ -137,114 +138,6 @@ class SearchToolBar(QToolBar):
     def set_path(self, path: str):
         """Aktualisiert die Pfad-Anzeige"""
         self.path_edit.setText(path)
-
-
-class PrivacySettingsDialog(QDialog):
-    """Dialog für Datenschutz-Einstellungen"""
-
-    def __init__(self, privacy_monitor, parent=None):
-        super().__init__(parent)
-        self.privacy_monitor = privacy_monitor
-        self.setWindowTitle("Datenschutz-Einstellungen")
-        self.setMinimumWidth(450)
-        self.setAccessibleName("Datenschutz-Einstellungen")
-        self.setAccessibleDescription(
-            "Konfiguration von Erkennungsmustern, automatischer Bereinigung und Datenschutzkriterien."
-        )
-        self._setup_ui()
-        self._load_settings()
-
-    def _setup_ui(self):
-        layout = QVBox(self)
-
-        # Pattern-Gruppe
-        pattern_group = QGroupBox("Erkennungsmuster")
-        pattern_layout = QVBox(pattern_group)
-
-        self.pattern_checks = {}
-        from modules.privacy.privacy_monitor import BUILTIN_PATTERNS
-
-        for key, info in BUILTIN_PATTERNS.items():
-            cb = QCheckBox(f"{info['name']} - {info['description']}")
-            cb.setAccessibleName(f"{info['name']} Erkennungsmuster")
-            cb.setAccessibleDescription(info['description'])
-            cb.setToolTip(f"Schweregrad: {info['severity']}")
-            self.pattern_checks[key] = cb
-            pattern_layout.addWidget(cb)
-
-        layout.addWidget(pattern_group)
-
-        # Optionen
-        options_group = QGroupBox("Optionen")
-        options_layout = QVBox(options_group)
-
-        self.case_sensitive_cb = QCheckBox("Groß-/Kleinschreibung beachten")
-        self.case_sensitive_cb.setAccessibleName("Groß- und Kleinschreibung beachten")
-        self.case_sensitive_cb.setToolTip(t("Groß-/Kleinschreibung bei der Mustersuche berücksichtigen"))
-        options_layout.addWidget(self.case_sensitive_cb)
-
-        self.whole_words_cb = QCheckBox("Nur ganze Wörter")
-        self.whole_words_cb.setAccessibleName("Nur ganze Wörter")
-        self.whole_words_cb.setToolTip(t("Nur eigenständige Wörter als Treffer werten"))
-        options_layout.addWidget(self.whole_words_cb)
-
-        self.auto_clear_cb = QCheckBox("Clipboard bei ROT automatisch leeren")
-        self.auto_clear_cb.setAccessibleName("Clipboard bei Alarm automatisch leeren")
-        self.auto_clear_cb.setToolTip("Zwischenablage automatisch leeren, wenn sensible Daten erkannt werden")
-        options_layout.addWidget(self.auto_clear_cb)
-
-        layout.addWidget(options_group)
-
-        # Statistik
-        stats_group = QGroupBox("Statistik")
-        stats_layout = QFormLayout(stats_group)
-
-        stats = self.privacy_monitor.get_stats()
-        stats_layout.addRow("Blacklist-Einträge:", QLabel(str(stats['blacklist_count'])))
-        stats_layout.addRow("Whitelist-Einträge:", QLabel(str(stats['whitelist_count'])))
-        stats_layout.addRow("Aktive Patterns:", QLabel(str(stats['active_patterns'])))
-
-        layout.addWidget(stats_group)
-
-        # Buttons
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok |
-            QDialogButtonBox.StandardButton.Cancel
-        )
-        ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
-        if ok_btn:
-            ok_btn.setAccessibleName("Einstellungen speichern")
-            ok_btn.setToolTip(t("Speichert die Datenschutz-Einstellungen (Enter)"))
-        cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
-        if cancel_btn:
-            cancel_btn.setAccessibleName("Abbrechen")
-            cancel_btn.setToolTip(t("Verwirft Änderungen (Esc)"))
-        buttons.accepted.connect(self._save_and_close)
-        buttons.rejected.connect(self.reject)
-        layout.addWidget(buttons)
-
-    def _load_settings(self):
-        """Lädt aktuelle Einstellungen"""
-        for key, cb in self.pattern_checks.items():
-            cb.setChecked(self.privacy_monitor.pattern_enabled.get(key, False))
-
-        self.case_sensitive_cb.setChecked(self.privacy_monitor.case_sensitive)
-        self.whole_words_cb.setChecked(self.privacy_monitor.whole_words)
-        self.auto_clear_cb.setChecked(self.privacy_monitor._auto_clear)
-
-    def _save_and_close(self):
-        """Speichert und schließt"""
-        for key, cb in self.pattern_checks.items():
-            self.privacy_monitor.pattern_enabled[key] = cb.isChecked()
-
-        self.privacy_monitor.case_sensitive = self.case_sensitive_cb.isChecked()
-        self.privacy_monitor.whole_words = self.whole_words_cb.isChecked()
-        self.privacy_monitor._auto_clear = self.auto_clear_cb.isChecked()
-
-        self.privacy_monitor._compile_patterns()
-        self.privacy_monitor.save_config()
-
-        self.accept()
 
 
 class MainWindow(QMainWindow):
@@ -532,6 +425,9 @@ class MainWindow(QMainWindow):
         """Erstellt die Statusleiste mit Ampel"""
         self.status_widget = StatusBarWidget()
         self.setStatusBar(self.status_widget)
+        self.status_widget.privacy_settings_requested.connect(self._show_privacy_settings)
+        self.status_widget.privacy_reset_requested.connect(self._reset_privacy_status)
+        self.status_widget.privacy_monitoring_toggled.connect(self._set_privacy_monitoring)
 
     # ===== Menü-Aktionen =====
 
@@ -539,9 +435,9 @@ class MainWindow(QMainWindow):
         """Exportiert den Arbeitsbereich als explorerpro-workspace-v1.json."""
         output_path, _ = QFileDialog.getSaveFileName(
             self,
-            "Arbeitsbereich exportieren",
+            t("Arbeitsbereich exportieren"),
             str(Path.home() / "explorerpro-workspace.json"),
-            "JSON-Dateien (*.json)",
+            t("JSON-Dateien (*.json)"),
         )
         if not output_path:
             return
@@ -551,9 +447,9 @@ class MainWindow(QMainWindow):
             settings = SettingsManager.instance()._settings
             exporter = WorkspaceExporter(settings=settings)
             exporter.save_export(Path(output_path))
-            self.statusBar().showMessage(f"✅ Exportiert: {output_path}", 5000)
+            self.statusBar().showMessage("✅ " + t("Exportiert: {path}").format(path=output_path), 5000)
         except Exception as e:
-            QMessageBox.warning(self, "Export fehlgeschlagen", str(e))
+            QMessageBox.warning(self, t("Export fehlgeschlagen"), str(e))
 
     def _show_properties(self):
         """Öffnet den Eigenschaften-Dialog für ausgewählte Datei oder Ordner."""
@@ -563,7 +459,7 @@ class MainWindow(QMainWindow):
         """Kopiert den Pfad der Auswahl in die Zwischenablage."""
         copied = self.file_browser.copy_path_to_clipboard()
         if copied:
-            self.statusBar().showMessage("📋 Pfad kopiert", 3000)
+            self.statusBar().showMessage("📋 " + t("Pfad kopiert"), 3000)
 
     def _open_terminal(self):
         """Öffnet ein Terminal im aktuellen Verzeichnis."""
@@ -573,7 +469,7 @@ class MainWindow(QMainWindow):
 
         """Öffnet einen Ordner-Dialog"""
         folder = QFileDialog.getExistingDirectory(
-            self, "Ordner öffnen",
+            self, t("Ordner öffnen"),
             self.file_browser.current_path
         )
         if folder:
@@ -660,14 +556,18 @@ class MainWindow(QMainWindow):
             if current_path:
                 self.index_worker = IndexWorker(self.file_index, current_path)
                 self.index_worker.progress.connect(
-                    lambda c, t: self.statusBar().showMessage(f"Indiziere: {c}/{t}")
+                    lambda current, total: self.statusBar().showMessage(
+                        t("Indiziere: {current}/{total}").format(current=current, total=total)
+                    )
                 )
                 self.index_worker.finished_indexing.connect(
-                    lambda n: self.statusBar().showMessage(f"✅ {n} Dateien indiziert", 5000)
+                    lambda n: self.statusBar().showMessage(
+                        "✅ " + t("{count} Dateien indiziert").format(count=n), 5000
+                    )
                 )
                 self.index_worker.start()
         else:
-            self.statusBar().showMessage("Indizierung: Funktion in app.py", 3000)
+            self.statusBar().showMessage(t("Indizierung ist nicht verfügbar."), 3000)
 
     def _find_duplicates(self):
         """Duplikate finden - öffnet DuplicateFinderDialog"""
@@ -678,7 +578,7 @@ class MainWindow(QMainWindow):
         elif hasattr(self, 'show_duplicate_finder'):
             self.show_duplicate_finder()
         else:
-            self.statusBar().showMessage("Duplikate-Finder: In app.py verfügbar", 3000)
+            self.statusBar().showMessage(t("Duplikatsuche ist nicht verfügbar."), 3000)
 
     def _calculate_checksums(self):
         """Öffnet den Prüfsummen-Dialog für die ausgewählte Datei oder fordert zur Dateiauswahl auf."""
@@ -688,7 +588,7 @@ class MainWindow(QMainWindow):
             target_path = selected[0]
         else:
             file_path, _ = QFileDialog.getOpenFileName(
-                self, "Datei für Prüfsummenberechnung auswählen"
+                self, t("Datei für Prüfsummenberechnung auswählen")
             )
             if file_path and os.path.isfile(file_path):
                 target_path = file_path
@@ -707,7 +607,7 @@ class MainWindow(QMainWindow):
                     self.file_browser._edit_file(path)
                     break
         else:
-            self.statusBar().showMessage("Keine Datei ausgewählt", 3000)
+            self.statusBar().showMessage(t("Keine Datei ausgewählt"), 3000)
 
     def show_apps_panel(self):
         self.sidebar.switch_to_apps()
@@ -717,17 +617,6 @@ class MainWindow(QMainWindow):
 
     def show_sync_panel(self):
         self.sidebar.switch_to_sync()
-
-    def _show_privacy_settings(self):
-        """Zeigt Datenschutz-Einstellungen"""
-        if hasattr(self, 'privacy_monitor'):
-            dialog = PrivacySettingsDialog(self.privacy_monitor, self)
-            dialog.exec()
-        else:
-            QMessageBox.information(
-                self, "Hinweis",
-                "Datenschutz-Monitor nicht initialisiert."
-            )
 
     def _open_new_window(self):
         """Öffnet ein weiteres ExplorerPro-Fenster im aktuellen Ordner."""
@@ -749,17 +638,17 @@ class MainWindow(QMainWindow):
     def _copy_selection(self):
         """Kopiert die Auswahl des Dateibrowsers in die Zwischenablage."""
         if self.file_browser.copy_selection():
-            self.statusBar().showMessage("In die Zwischenablage kopiert", 3000)
+            self.statusBar().showMessage(t("In die Zwischenablage kopiert"), 3000)
         else:
-            self.statusBar().showMessage("Keine Datei ausgewählt", 3000)
+            self.statusBar().showMessage(t("Keine Datei ausgewählt"), 3000)
 
     def _paste_clipboard(self):
         """Fügt Dateien aus der Zwischenablage in den aktuellen Ordner ein."""
         if self.file_browser.paste_from_clipboard():
-            self.statusBar().showMessage("Eingefügt", 3000)
+            self.statusBar().showMessage(t("Eingefügt"), 3000)
         else:
             self.statusBar().showMessage(
-                "Keine Dateien in der Zwischenablage", 3000
+                t("Keine Dateien in der Zwischenablage"), 3000
             )
 
     def _create_new_folder(self):
@@ -798,10 +687,13 @@ class MainWindow(QMainWindow):
 
         # Referenz am Fenster halten, damit der Dialog nicht sofort wieder
         # eingesammelt wird.
-        self.settings_dialog = SettingsDialog(self)
+        self.settings_dialog = SettingsDialog(
+            self, privacy_monitor=getattr(self, "privacy_monitor", None)
+        )
+        self.settings_dialog.privacy_lists_requested.connect(self._show_privacy_settings)
         if self.settings_dialog.exec() == QDialog.DialogCode.Accepted:
             self._apply_settings()
-            self.statusBar().showMessage("Einstellungen gespeichert", 3000)
+            self.statusBar().showMessage(t("Einstellungen gespeichert"), 3000)
 
     def _sync_delete_confirmation(self):
         from core.settings_manager import SettingsManager
@@ -817,36 +709,106 @@ class MainWindow(QMainWindow):
         settings.set("general", "confirm_delete", checked)
         settings.save()
 
-    def _apply_settings(self):
-        """Wendet die gespeicherten Einstellungen auf das laufende Fenster an."""
+    def _apply_settings(self, startup: bool = False):
+        """Wendet die gespeicherten Einstellungen auf das laufende Fenster an.
+
+        Wird beim Start und nach dem Einstellungsdialog aufgerufen, damit
+        jede Option im Dialog auch tatsächlich wirkt.
+        """
         from core.settings_manager import SettingsManager
+        from core.appearance import apply_font_size, apply_theme
+        from PySide6.QtWidgets import QApplication
+        from translator import SUPPORTED_LANGUAGES, get_translator
 
         settings = SettingsManager.instance()
         self._sync_delete_confirmation()
+
+        # Sprache (live; Qt-Standarddialoge folgen über den Sprach-Listener)
+        language = settings.get("general", "language", "de")
+        if language in SUPPORTED_LANGUAGES:
+            get_translator().set_language(language)
 
         show_hidden = bool(settings.get("general", "show_hidden_files", False))
         if hasattr(self.file_browser, "set_show_hidden_files"):
             self.file_browser.set_show_hidden_files(show_hidden)
 
         show_preview = bool(settings.get("preview", "show_preview", True))
-        self.preview_panel.setVisible(show_preview)
         self.toggle_preview.setChecked(show_preview)
+        self._toggle_preview()
+
+        # Darstellung
+        app = QApplication.instance()
+        if app is not None:
+            apply_theme(app, str(settings.get("appearance", "theme", "system")))
+            apply_font_size(app, settings.get("appearance", "font_size", 0))
+        try:
+            icon_size = int(settings.get("appearance", "icon_size", 16))
+        except (TypeError, ValueError):
+            icon_size = 16
+        if hasattr(self.file_browser, "set_icon_size"):
+            self.file_browser.set_icon_size(icon_size)
+
+        # Datenschutz-Ampel
+        monitor = getattr(self, "privacy_monitor", None)
+        if monitor is not None:
+            enabled = bool(settings.get("privacy", "enable_clipboard_monitor", True))
+            if enabled != monitor.enabled:
+                monitor.enabled = enabled
+            if not startup:
+                # Beim Start bleibt privacy_config.json maßgeblich, damit eine
+                # alte Standardvorgabe nicht unbemerkt das Leeren aktiviert.
+                monitor.auto_clear = bool(settings.get("privacy", "auto_block_sensitive", False))
+                monitor.save_config()
+
+    def _show_privacy_settings(self):
+        """Zeigt Datenschutz-Einstellungen"""
+        if hasattr(self, 'privacy_monitor'):
+            dialog = PrivacySettingsDialog(self.privacy_monitor, self)
+            dialog.exec()
+        else:
+            QMessageBox.information(
+                self, t("Hinweis"),
+                t("Datenschutz-Monitor nicht initialisiert.")
+            )
+
+    def _set_privacy_monitoring(self, enabled: bool):
+        """Schaltet die Ampel aus dem Schnellmenü ein oder aus und speichert das."""
+        from core.settings_manager import SettingsManager
+
+        monitor = getattr(self, "privacy_monitor", None)
+        if monitor is None:
+            return
+        monitor.enabled = bool(enabled)
+        settings = SettingsManager.instance()
+        settings.set("privacy", "enable_clipboard_monitor", bool(enabled))
+        settings.save()
+        self.statusBar().showMessage(
+            t("Datenschutz-Überwachung aktiviert") if enabled else t("Datenschutz-Überwachung deaktiviert"),
+            3000,
+        )
+
+    def _reset_privacy_status(self):
+        monitor = getattr(self, "privacy_monitor", None)
+        if monitor is not None:
+            monitor.reset_status()
 
     def _show_about(self):
         """Zeigt den Über-Dialog"""
+        features = [
+            t("Datenbank-gestützter Volltextsuche"),
+            t("Integrierter Code-Bearbeitung"),
+            t("Datenschutz-Ampel"),
+            t("App-Launcher"),
+            t("Prompt-Bibliothek"),
+        ]
+        items = "".join(f"<li>{item}</li>" for item in features)
         QMessageBox.about(
             self,
-            "Über ExplorerPro",
+            t("Über ExplorerPro"),
             f"""<h2>ExplorerPro</h2>
-            <p>Version {__version__}</p>
-            <p>Ein intelligenter Datei-Explorer mit:</p>
-            <ul>
-                <li>Datenbank-gestützter Volltextsuche</li>
-                <li>Integrierter Code-Bearbeitung</li>
-                <li>Datenschutz-Ampel</li>
-                <li>App-Launcher</li>
-                <li>Prompt-Bibliothek</li>
-            </ul>
-            <p>Fusion aus: ProFiler, PythonBox, ProSync, AmpelTool, SoftwareCenter, ProfiPrompt</p>
+            <p>{t("Version {version}").format(version=__version__)}</p>
+            <p>{t("Ein intelligenter Datei-Explorer mit:")}</p>
+            <ul>{items}</ul>
+            <p>{t("Fusion aus: {tools}").format(tools="ProFiler, PythonBox, ProSync, AmpelTool, SoftwareCenter, ProfiPrompt")}</p>
             """
         )

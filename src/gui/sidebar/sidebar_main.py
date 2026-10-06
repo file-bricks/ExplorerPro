@@ -16,6 +16,7 @@ from PySide6.QtCore import Qt, Signal, Slot, QDir, QStandardPaths, QSize, QTimer
 import os
 
 # Module importieren - absolute Imports
+from core.cloud_locations import find_cloud_locations
 from core.file_icon_helper import get_file_icon
 from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
@@ -67,32 +68,53 @@ class TreePanel(QWidget):
         layout.addWidget(self.refresh_drives_button)
 
     def _populate(self):
-        """Füllt den Baum mit Laufwerken und Schnellzugriff"""
+        """Füllt den Baum mit Schnellzugriff, Cloud-Speichern und Laufwerken"""
         # Schnellzugriff
-        quick_access = QTreeWidgetItem(["⭐ Schnellzugriff"])
+        quick_access = QTreeWidgetItem(["⭐ " + t("Schnellzugriff")])
         quick_access.setFlags(quick_access.flags() & ~Qt.ItemFlag.ItemIsSelectable)
 
         locations = [
-            ("Desktop", QStandardPaths.StandardLocation.DesktopLocation),
-            ("Dokumente", QStandardPaths.StandardLocation.DocumentsLocation),
-            ("Downloads", QStandardPaths.StandardLocation.DownloadLocation),
-            ("Bilder", QStandardPaths.StandardLocation.PicturesLocation),
-            ("Musik", QStandardPaths.StandardLocation.MusicLocation),
+            (t("Persönlicher Ordner"), QStandardPaths.StandardLocation.HomeLocation),
+            (t("Desktop"), QStandardPaths.StandardLocation.DesktopLocation),
+            (t("Dokumente"), QStandardPaths.StandardLocation.DocumentsLocation),
+            (t("Downloads"), QStandardPaths.StandardLocation.DownloadLocation),
+            (t("Bilder"), QStandardPaths.StandardLocation.PicturesLocation),
+            (t("Musik"), QStandardPaths.StandardLocation.MusicLocation),
+            (t("Videos"), QStandardPaths.StandardLocation.MoviesLocation),
         ]
 
+        seen = set()
         for name, location in locations:
             path = QStandardPaths.writableLocation(location)
-            if path and os.path.exists(path):
-                child = QTreeWidgetItem([name])
-                child.setData(0, Qt.ItemDataRole.UserRole, path)
-                child.setIcon(0, get_file_icon(path))
-                quick_access.addChild(child)
+            if not path or not os.path.isdir(path):
+                continue
+            key = os.path.normcase(os.path.normpath(path))
+            if key in seen:
+                continue
+            seen.add(key)
+            quick_access.addChild(self._folder_item(name, path))
 
         self.tree.addTopLevelItem(quick_access)
         quick_access.setExpanded(True)
 
+        # Cloud-Speicher (OneDrive, Dropbox, Google Drive, iCloud, ...)
+        self.cloud_item = None
+        try:
+            cloud_locations = find_cloud_locations()
+        except Exception:
+            cloud_locations = []
+        if cloud_locations:
+            self.cloud_item = QTreeWidgetItem(["☁️ " + t("Cloud-Speicher")])
+            self.cloud_item.setFlags(self.cloud_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
+            for location in cloud_locations:
+                child = self._folder_item(location.label, location.path)
+                child.setToolTip(0, location.path)
+                self.cloud_item.addChild(child)
+            self.tree.addTopLevelItem(self.cloud_item)
+            self.cloud_item.setExpanded(True)
+
         # Laufwerke
-        drives_item = QTreeWidgetItem(["💾 Laufwerke"])
+        drives_item = QTreeWidgetItem(["💾 " + t("Laufwerke")])
         drives_item.setFlags(drives_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
         self.tree.addTopLevelItem(drives_item)
 
@@ -170,6 +192,16 @@ class TreePanel(QWidget):
         if path:
             self.folder_selected.emit(path)
 
+    @staticmethod
+    def _folder_item(name: str, path: str) -> QTreeWidgetItem:
+        """Erzeugt einen aufklappbaren Ordner-Eintrag (Unterordner werden lazy geladen)."""
+        item = QTreeWidgetItem([name])
+        item.setData(0, Qt.ItemDataRole.UserRole, path)
+        item.setIcon(0, get_file_icon(path))
+        item.setToolTip(0, path)
+        item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
+        return item
+
     def _on_item_expanded(self, item: QTreeWidgetItem):
         """Lazy Loading für Unterordner"""
         path = item.data(0, Qt.ItemDataRole.UserRole)
@@ -182,16 +214,27 @@ class TreePanel(QWidget):
         item.takeChildren()
 
         try:
-            for name in os.listdir(path):
-                full_path = os.path.join(path, name)
-                if os.path.isdir(full_path) and not name.startswith('.'):
-                    child = QTreeWidgetItem([name])
-                    child.setData(0, Qt.ItemDataRole.UserRole, full_path)
-                    child.setIcon(0, get_file_icon(full_path))
-                    child.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
-                    item.addChild(child)
+            names = sorted(os.listdir(path), key=str.lower)
         except OSError:
-            pass
+            names = []
+
+        for name in names:
+            if name.startswith('.'):
+                continue
+            full_path = os.path.join(path, name)
+            try:
+                # Cloud-Platzhalter (OneDrive "Nur online") sind Reparse-Points;
+                # isdir() liest nur Metadaten und lädt nichts herunter.
+                if not os.path.isdir(full_path):
+                    continue
+            except OSError:
+                continue
+            item.addChild(self._folder_item(name, full_path))
+
+        if item.childCount() == 0:
+            item.setChildIndicatorPolicy(
+                QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
+            )
 
 
 class FavoritesPanel(QWidget):

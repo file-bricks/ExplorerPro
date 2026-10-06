@@ -171,23 +171,23 @@ class DiffDialog(QDialog):
             return
 
         if not os.path.exists(f1):
-            QMessageBox.warning(self, t("Datei nicht gefunden"), f"{t('Datei nicht gefunden')}:\n{f1}")
+            QMessageBox.warning(self, t("Datei nicht gefunden"), t("Datei nicht gefunden:\n{path}").format(path=f1))
             return
         if not os.path.exists(f2):
-            QMessageBox.warning(self, t("Datei nicht gefunden"), f"{t('Datei nicht gefunden')}:\n{f2}")
+            QMessageBox.warning(self, t("Datei nicht gefunden"), t("Datei nicht gefunden:\n{path}").format(path=f2))
             return
 
         if not os.path.isfile(f1):
-            QMessageBox.warning(self, t("Ungültiger Pfad"), f"{t('Pfad ist keine Datei')}:\n{f1}")
+            QMessageBox.warning(self, t("Ungültiger Pfad"), t("Pfad ist keine Datei:\n{path}").format(path=f1))
             return
         if not os.path.isfile(f2):
-            QMessageBox.warning(self, t("Ungültiger Pfad"), f"{t('Pfad ist keine Datei')}:\n{f2}")
+            QMessageBox.warning(self, t("Ungültiger Pfad"), t("Pfad ist keine Datei:\n{path}").format(path=f2))
             return
 
         try:
             self.current_diff = compare_files(f1, f2)
         except Exception as exc:
-            QMessageBox.critical(self, t("Fehler"), f"{t('Fehler beim Dateivergleich')}:\n{exc}")
+            QMessageBox.critical(self, t("Fehler"), t("Fehler beim Dateivergleich:\n{error}").format(error=exc))
             return
 
         self._render_diff()
@@ -199,22 +199,27 @@ class DiffDialog(QDialog):
 
         # Status & Header
         if diff.is_identical:
-            self.status_label.setText(f"✓ {t('Dateien sind absolut identisch')}")
+            self.status_label.setText("✓ " + t("Dateien sind absolut identisch"))
             self.status_label.setStyleSheet("color: #2e7d32; font-weight: bold; font-size: 13px;")
         else:
-            self.status_label.setText(f"≠ {t('Dateien weisen Unterschiede auf')}")
+            self.status_label.setText("≠ " + t("Dateien weisen Unterschiede auf"))
             self.status_label.setStyleSheet("color: #c62828; font-weight: bold; font-size: 13px;")
 
         # Details
-        size_txt = f"{diff.file1_name} ({diff.file1_size:,} Bytes) ↔ {diff.file2_name} ({diff.file2_size:,} Bytes)"
+        size_txt = t("{name1} ({size1} Bytes) ↔ {name2} ({size2} Bytes)").format(
+            name1=diff.file1_name,
+            size1=f"{diff.file1_size:,}",
+            name2=diff.file2_name,
+            size2=f"{diff.file2_size:,}",
+        )
         hash_txt = f"SHA256 1: {diff.file1_hash[:16]}... | SHA256 2: {diff.file2_hash[:16]}..."
         if diff.is_binary:
             stat_txt = t("Binärvergleich")
         else:
-            stat_txt = (
-                f"+{diff.stats['added']} " + t("hinzugefügt") + " | " +
-                f"-{diff.stats['deleted']} " + t("entfernt") + " | " +
-                f"{diff.stats['identical']} " + t("identisch")
+            stat_txt = t("+{added} hinzugefügt | -{deleted} entfernt | {identical} identisch").format(
+                added=diff.stats['added'],
+                deleted=diff.stats['deleted'],
+                identical=diff.stats['identical'],
             )
         self.meta_label.setText(f"{size_txt}\n{hash_txt}\n{stat_txt}")
 

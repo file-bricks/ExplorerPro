@@ -60,3 +60,28 @@ def open_terminal_in_directory(path: str) -> subprocess.Popen:
     cmd = get_terminal_command(os.path.abspath(target_dir))
     flags = getattr(subprocess, "CREATE_NEW_CONSOLE", 0) if sys.platform.startswith("win") else 0
     return subprocess.Popen(cmd, cwd=target_dir, creationflags=flags)
+
+
+def normalize_user_path(path: str) -> str:
+    """Bereinigt einen vom Nutzer eingegebenen oder eingefügten Pfad.
+
+    Entfernt umschließende Anführungszeichen (Windows "Als Pfad kopieren"),
+    wandelt ``file://``-URLs um und expandiert ``~`` sowie Umgebungsvariablen
+    wie ``%OneDrive%`` oder ``$HOME``.
+    """
+    if not path:
+        return path
+    text = str(path).strip()
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in "\"'":
+        text = text[1:-1].strip()
+    if text.lower().startswith("file:"):
+        from urllib.parse import unquote, urlparse
+
+        parsed = urlparse(text)
+        local = unquote(parsed.path)
+        if sys.platform.startswith("win") and len(local) > 2 and local[0] == "/" and local[2] == ":":
+            local = local[1:]
+        if parsed.netloc and parsed.netloc.lower() != "localhost":
+            local = f"//{parsed.netloc}{local}"
+        text = local
+    return os.path.expandvars(os.path.expanduser(text))
