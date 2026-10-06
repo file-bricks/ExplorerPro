@@ -83,5 +83,5 @@ def normalize_user_path(path: str) -> str:
             local = local[1:]
         if parsed.netloc and parsed.netloc.lower() != "localhost":
             local = f"//{parsed.netloc}{local}"
-        text = local
+        text = os.path.normpath(local)
     return os.path.expandvars(os.path.expanduser(text))

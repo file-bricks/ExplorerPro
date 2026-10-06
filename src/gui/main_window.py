@@ -7,9 +7,8 @@ Mit vollständiger Menü-Integration
 
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QSplitter,
-    QLabel, QToolBar, QLineEdit, QPushButton, QMessageBox,
-    QToolButton, QDialog, QFormLayout, QCheckBox, QGroupBox,
-    QVBoxLayout as QVBox, QDialogButtonBox, QFileDialog,
+    QToolBar, QLineEdit, QPushButton, QMessageBox,
+    QToolButton, QDialog, QFileDialog,
     QMenu
 )
 from PySide6.QtCore import Qt, QSize, Signal, QStandardPaths
