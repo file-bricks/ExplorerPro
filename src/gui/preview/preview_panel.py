@@ -10,14 +10,63 @@ from PySide6.QtWidgets import (
     QPlainTextEdit, QFrame,
     QComboBox, QPushButton, QTableWidget, QTableWidgetItem,
 )
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap, QImage, QFont, QSyntaxHighlighter, QTextCharFormat, QColor
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import (
+    QPixmap, QImage, QImageReader, QFont, QSyntaxHighlighter, QTextCharFormat, QColor,
+)
+import logging
 import os
 from datetime import datetime
 from pathlib import Path
 
+from core.file_attributes import is_cloud_placeholder
 from core.shortcut_utils import build_shortcut_preview_target, is_windows_shortcut
+from core.ui_translator import NO_TRANSLATE
 from translator import t
+
+IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.ico', '.tif', '.tiff'}
+TEXT_EXTENSIONS = {
+    '.txt', '.md', '.py', '.pyw', '.js', '.html', '.htm', '.css', '.json',
+    '.xml', '.sql', '.c', '.cpp', '.h', '.hpp', '.java', '.ini', '.cfg', '.conf',
+    '.log', '.yml', '.yaml', '.toml', '.sh', '.bat', '.cmd', '.ps1',
+    '.csv', '.tsv', '.env', '.gitignore', '.editorconfig',
+    '.rs', '.go', '.ts', '.tsx', '.jsx', '.vue', '.svelte', '.kt', '.cs', '.swift',
+    '.r', '.rb', '.php', '.lua', '.tex', '.bib', '.cmake', '.rst', '.properties',
+}
+# Bilder werden höchstens in dieser Kantenlänge dekodiert (Speicher/Tempo).
+MAX_IMAGE_EDGE = 2048
+# PDF-Seiten werden höchstens in dieser Breite gerendert.
+MAX_PDF_WIDTH = 1600
+
+
+def _preview_setting(key: str, default):
+    try:
+        from core.settings_manager import SettingsManager
+
+        return SettingsManager.instance().get("preview", key, default)
+    except Exception:
+        return default
+
+
+def _looks_like_text(path: str) -> bool:
+    """Erkennt Textdateien ohne bekannte Endung (README, Makefile, *.conf ...)."""
+    try:
+        with open(path, 'rb') as f:
+            sample = f.read(4096)
+    except OSError:
+        return False
+    if not sample:
+        return True
+    if sample.startswith((b'\xff\xfe', b'\xfe\xff', b'\xef\xbb\xbf')):
+        return True
+    if b'\x00' in sample:
+        return False
+    try:
+        sample.decode('utf-8')
+        return True
+    except UnicodeDecodeError as exc:
+        # Abgeschnittenes Mehrbyte-Zeichen am Ende des Ausschnitts ist ok.
+        return exc.start >= len(sample) - 3
 
 # Optionale Imports
 try:
@@ -90,20 +139,28 @@ class ImagePreview(QLabel):
         self._original_pixmap = None
 
     def load_image(self, path: str):
-        """Lädt und zeigt ein Bild"""
+        """Lädt und zeigt ein Bild (verkleinert dekodiert, EXIF-Drehung beachtet)"""
         self._original_pixmap = None
         self.clear()
         try:
-            pixmap = QPixmap(path)
+            reader = QImageReader(path)
+            reader.setAutoTransform(True)
+            size = reader.size()
+            if size.isValid() and max(size.width(), size.height()) > MAX_IMAGE_EDGE:
+                reader.setScaledSize(size.scaled(
+                    QSize(MAX_IMAGE_EDGE, MAX_IMAGE_EDGE), Qt.AspectRatioMode.KeepAspectRatio
+                ))
+            image = reader.read()
+            pixmap = QPixmap.fromImage(image) if not image.isNull() else QPixmap(path)
             if pixmap.isNull():
-                self.setText("Bild konnte nicht geladen werden")
+                self.setText(t("Bild konnte nicht geladen werden"))
                 return
 
             self._original_pixmap = pixmap
             self._scale_to_fit()
         except Exception as e:
             self._original_pixmap = None
-            self.setText(f"Fehler: {e}")
+            self.setText(t("Fehler: {error}").format(error=e))
 
     def _scale_to_fit(self):
         if self._original_pixmap and not self._original_pixmap.isNull():
@@ -192,7 +249,7 @@ class TextPreview(QPlainTextEdit):
             if self._highlighter is not None:
                 self._highlighter.setDocument(None)
                 self._highlighter = None
-            self.setPlainText(f"Fehler beim Laden: {e}")
+            self.setPlainText(t("Fehler beim Laden: {error}").format(error=e))
 
 
 class DirectoryPreview(QPlainTextEdit):
@@ -206,7 +263,7 @@ class DirectoryPreview(QPlainTextEdit):
 
     def load_directory(self, path: str, heading: str | None = None):
         folder = Path(path)
-        lines = [heading or f"Ordner: {folder}", ""]
+        lines = [heading or t("Ordner: {path}").format(path=folder), ""]
 
         try:
             entries = sorted(
@@ -214,17 +271,19 @@ class DirectoryPreview(QPlainTextEdit):
                 key=lambda item: (not item.is_dir(), item.name.lower()),
             )
         except OSError as exc:
-            self.setPlainText(f"Ordner konnte nicht gelesen werden:\n{folder}\n\n{exc}")
+            self.setPlainText(
+                t("Ordner konnte nicht gelesen werden:") + f"\n{folder}\n\n{exc}"
+            )
             return
 
         if not entries:
-            lines.append("(leer)")
+            lines.append(t("(leer)"))
         else:
             for entry in entries[:200]:
                 marker = "[DIR]" if entry.is_dir() else "     "
                 lines.append(f"{marker} {entry.name}")
             if len(entries) > 200:
-                lines.append(f"... {len(entries) - 200} weitere Einträge")
+                lines.append(t("... {count} weitere Einträge").format(count=len(entries) - 200))
 
         self.setPlainText("\n".join(lines))
 
@@ -242,8 +301,9 @@ class PdfPreview(QScrollArea):
 
     def load_pdf(self, path: str):
         """Lädt ein PDF und zeigt die erste Seite"""
+        self.content.clear()
         if not HAS_FITZ:
-            self.content.setText("PyMuPDF nicht installiert.\nPDF-Vorschau nicht verfügbar.")
+            self.content.setText(t("PyMuPDF nicht installiert.\nPDF-Vorschau nicht verfügbar."))
             return
 
         try:
@@ -251,25 +311,35 @@ class PdfPreview(QScrollArea):
             try:
                 if len(doc) > 0:
                     page = doc[0]
-                    mat = fitz.Matrix(1.5, 1.5)  # Zoom
-                    pix = page.get_pixmap(matrix=mat)
+                    zoom = 1.5
+                    try:
+                        width = float(page.rect.width)
+                        if width > 0:
+                            zoom = max(0.2, min(1.5, MAX_PDF_WIDTH / width))
+                    except (AttributeError, TypeError, ValueError):
+                        pass
+                    mat = fitz.Matrix(zoom, zoom)
+                    pix = page.get_pixmap(matrix=mat, alpha=False)
 
+                    # Puffer explizit halten und das Bild kopieren: QImage
+                    # referenziert sonst Speicher, den PyMuPDF wieder freigibt.
+                    samples = pix.samples
                     img = QImage(
-                        pix.samples,
+                        samples,
                         pix.width,
                         pix.height,
                         pix.stride,
                         QImage.Format.Format_RGB888
-                    )
+                    ).copy()
 
                     pixmap = QPixmap.fromImage(img)
                     self.content.setPixmap(pixmap)
                 else:
-                    self.content.setText("Leeres PDF")
+                    self.content.setText(t("Leeres PDF"))
             finally:
                 doc.close()
         except Exception as e:
-            self.content.setText(f"Fehler beim Laden: {e}")
+            self.content.setText(t("Fehler beim Laden: {error}").format(error=e))
 
 
 class MetadataPanel(QWidget):
@@ -296,15 +366,22 @@ class MetadataPanel(QWidget):
         tags, notes = self._user_data()
         if (tags, notes) == self._loaded_user_data:
             return
-        self._file_index.set_tags(self._current_path, tags.split(","))
-        self._file_index.set_note(self._current_path, notes)
+        try:
+            self._file_index.set_tags(self._current_path, tags.split(","))
+            self._file_index.set_note(self._current_path, notes)
+        except Exception as exc:  # z. B. "database is locked" während einer Indizierung
+            logging.warning("Tags/Notizen konnten nicht gespeichert werden: %s", exc)
+            return
         self._loaded_user_data = (tags, notes)
 
     def _load_user_data(self, path: str):
         tags, notes = "", ""
         if self._file_index:
-            tags = ", ".join(self._file_index.get_tags(path))
-            notes = self._file_index.get_note(path)
+            try:
+                tags = ", ".join(self._file_index.get_tags(path))
+                notes = self._file_index.get_note(path)
+            except Exception as exc:
+                logging.warning("Tags/Notizen konnten nicht gelesen werden: %s", exc)
         self.tags_edit.setText(tags)
         self.notes_edit.setPlainText(notes)
         self._loaded_user_data = self._user_data()
@@ -318,6 +395,8 @@ class MetadataPanel(QWidget):
         info_layout = QFormLayout(info_group)
 
         self.name_label = QLabel("-")
+        self.name_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.name_label.setWordWrap(True)
         info_layout.addRow("Name:", self.name_label)
 
         self.type_label = QLabel("-")
@@ -331,6 +410,11 @@ class MetadataPanel(QWidget):
 
         self.created_label = QLabel("-")
         info_layout.addRow("Erstellt:", self.created_label)
+
+        # Werte sind Nutzerdaten (Dateinamen); nie automatisch übersetzen.
+        for label in (self.name_label, self.type_label, self.size_label,
+                      self.modified_label, self.created_label):
+            label.setProperty(NO_TRANSLATE, True)
 
         self.checksum_btn = QPushButton("🔑 Berechnen...")
         self.checksum_btn.setAccessibleName("Prüfsummen berechnen")
@@ -395,14 +479,20 @@ class MetadataPanel(QWidget):
         except OSError:
             self.clear_metadata()
             self.name_label.setText(os.path.basename(path))
-            self.type_label.setText("Nicht lesbar")
+            self.type_label.setText(t("Nicht lesbar"))
             return
 
         name = os.path.basename(path)
         ext = os.path.splitext(name)[1].lower()
 
         self.name_label.setText(name)
-        self.type_label.setText("Ordner" if os.path.isdir(path) else (ext or "Unbekannt"))
+        if os.path.isdir(path):
+            type_text = t("Ordner")
+        else:
+            type_text = ext or t("Unbekannt")
+            if is_cloud_placeholder(path):
+                type_text += " · ☁️ " + t("nur online")
+        self.type_label.setText(type_text)
 
         # Größe formatieren
         size = stat.st_size
@@ -471,6 +561,7 @@ class ExcelPreview(QWidget):
         header.addWidget(QLabel("Arbeitsblatt:"))
 
         self.sheet_combo = QComboBox()
+        self.sheet_combo.setProperty(NO_TRANSLATE, True)  # Blattnamen sind Nutzerdaten
         self.sheet_combo.setMinimumWidth(120)
         self.sheet_combo.setAccessibleName("Excel-Arbeitsblatt")
         self.sheet_combo.setToolTip(t("Arbeitsblatt der Excel-Arbeitsmappe auswählen"))
@@ -564,7 +655,8 @@ class ExcelPreview(QWidget):
         self.table.setRowCount(0)
         self.table.setColumnCount(0)
         self.status_label.setText(
-            f"Vorschau nicht verfügbar: {reason}\n→ Datei extern öffnen"
+            t("Vorschau nicht verfügbar: {reason}").format(reason=reason)
+            + "\n→ " + t("Datei extern öffnen")
         )
         self.status_label.setVisible(True)
         self.open_extern_btn.setVisible(True)
@@ -584,7 +676,7 @@ class ExcelPreview(QWidget):
             else:
                 subprocess.Popen(["xdg-open", self._path])
         except Exception as exc:
-            self.status_label.setText(f"Externes Öffnen fehlgeschlagen: {exc}")
+            self.status_label.setText(t("Externes Öffnen fehlgeschlagen: {error}").format(error=exc))
             self.status_label.setVisible(True)
 
 
@@ -611,6 +703,7 @@ class PreviewPanel(QWidget):
 
         # Platzhalter
         placeholder = QLabel("Keine Datei ausgewählt")
+        placeholder.setWordWrap(True)
         placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.preview_stack.addWidget(placeholder)
 
@@ -631,8 +724,9 @@ class PreviewPanel(QWidget):
         self.preview_stack.addWidget(self.directory_preview)
 
         # Nicht unterstützt
-        self.unsupported_label = QLabel("Vorschau nicht verfügbar\nfür diesen Dateityp")
+        self.unsupported_label = QLabel(t("Vorschau nicht verfügbar\nfür diesen Dateityp"))
         self.unsupported_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.unsupported_label.setWordWrap(True)
         self.preview_stack.addWidget(self.unsupported_label)
 
         # Excel-Vorschau (.xlsx / .xls) — Index 6
@@ -658,7 +752,26 @@ class PreviewPanel(QWidget):
         self.metadata_panel.clear_metadata()
 
     def show_preview(self, path: str):
-        """Zeigt Vorschau für eine Datei"""
+        """Zeigt Vorschau für eine Datei.
+
+        Fehler beim Erzeugen der Vorschau dürfen niemals die Anwendung
+        beenden; sie werden protokolliert und als Hinweis angezeigt.
+        """
+        try:
+            self._show_preview(path)
+        except Exception as exc:
+            logging.exception("Vorschau fehlgeschlagen für %s", path)
+            self._show_message(t("Vorschau nicht verfügbar: {reason}").format(reason=exc))
+            try:
+                self.metadata_panel.show_metadata(path)
+            except Exception:
+                pass
+
+    def _show_message(self, text: str):
+        self.unsupported_label.setText(text)
+        self.preview_stack.setCurrentWidget(self.unsupported_label)
+
+    def _show_preview(self, path: str):
         if not path or not os.path.exists(path):
             self.clear_preview()
             return
@@ -670,18 +783,17 @@ class PreviewPanel(QWidget):
         if is_windows_shortcut(path):
             shortcut_target = build_shortcut_preview_target(path)
             if shortcut_target is None:
-                self.unsupported_label.setText(
-                    "Verknüpfung konnte nicht aufgelöst werden\noder das Ziel existiert nicht."
+                self._show_message(
+                    t("Verknüpfung konnte nicht aufgelöst werden\noder das Ziel existiert nicht.")
                 )
-                self.preview_stack.setCurrentIndex(5)
                 self.metadata_panel.show_metadata(path)
                 return
 
             preview_path = shortcut_target.preview_path
             heading = (
-                f"Verknüpfung: {os.path.basename(path)}\n"
-                f"Ziel: {shortcut_target.target_path}\n"
-                f"Vorschau: {shortcut_target.preview_path}"
+                t("Verknüpfung: {name}").format(name=os.path.basename(path)) + "\n"
+                + t("Ziel: {path}").format(path=shortcut_target.target_path) + "\n"
+                + t("Vorschau: {path}").format(path=shortcut_target.preview_path)
             )
 
         self._show_preview_for_path(preview_path, heading)
@@ -689,37 +801,79 @@ class PreviewPanel(QWidget):
 
     def _show_preview_for_path(self, path: str, heading: str | None = None):
         ext = os.path.splitext(path)[1].lower()
-        self.unsupported_label.setText("Vorschau nicht verfügbar\nfür diesen Dateityp")
+        self.unsupported_label.setText(t("Vorschau nicht verfügbar\nfür diesen Dateityp"))
 
         if os.path.isdir(path):
             self.directory_preview.load_directory(path, heading)
             self.preview_stack.setCurrentIndex(4)
             return
 
-        # Bild-Vorschau
-        if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']:
-            self.image_preview.load_image(path)
-            self.preview_stack.setCurrentIndex(1)
+        # Cloud-Platzhalter ("Nur online verfügbar") nicht öffnen: Das Lesen
+        # würde einen Download auslösen und die Oberfläche blockieren.
+        if is_cloud_placeholder(path):
+            self._show_message(
+                "☁️ " + t("Diese Datei ist nur online verfügbar.") + "\n"
+                + t("Zum Öffnen doppelklicken – die Datei wird dabei heruntergeladen.")
+            )
+            return
 
-        # Text/Code-Vorschau
-        elif ext in ['.txt', '.md', '.py', '.js', '.html', '.css', '.json',
-                     '.xml', '.sql', '.c', '.cpp', '.h', '.java', '.ini', '.cfg',
-                     '.log', '.yml', '.yaml', '.toml', '.sh', '.bat', '.ps1',
-                     '.csv', '.tsv', '.env', '.gitignore', '.editorconfig',
-                     '.rs', '.go', '.ts', '.tsx', '.jsx', '.vue', '.svelte',
-                     '.r', '.rb', '.php', '.lua', '.tex', '.bib', '.cmake']:
-            self.text_preview.load_file(path)
-            self.preview_stack.setCurrentIndex(2)
+        try:
+            size = os.path.getsize(path)
+        except OSError:
+            size = 0
+        try:
+            limit_mb = float(_preview_setting("max_preview_size_mb", 50))
+        except (TypeError, ValueError):
+            limit_mb = 50.0
+        too_large = limit_mb > 0 and size > limit_mb * 1024 * 1024
+
+        def show_too_large():
+            self._show_message(
+                t("Datei zu groß für die Vorschau ({size} MB, Grenze {limit} MB).").format(
+                    size=f"{size / (1024 * 1024):.1f}", limit=f"{limit_mb:g}"
+                )
+            )
+
+        # Bild-Vorschau
+        if ext in IMAGE_EXTENSIONS:
+            if not _preview_setting("preview_images", True):
+                self._show_message(t("Bildvorschau ist in den Einstellungen deaktiviert."))
+            elif too_large:
+                show_too_large()
+            else:
+                self.image_preview.load_image(path)
+                self.preview_stack.setCurrentIndex(1)
+
+        # Text/Code-Vorschau (liest höchstens 100 KB)
+        elif ext in TEXT_EXTENSIONS:
+            if not _preview_setting("preview_code", True):
+                self._show_message(t("Textvorschau ist in den Einstellungen deaktiviert."))
+            else:
+                self.text_preview.load_file(path)
+                self.preview_stack.setCurrentIndex(2)
 
         # PDF-Vorschau
         elif ext == '.pdf':
-            self.pdf_preview.load_pdf(path)
-            self.preview_stack.setCurrentIndex(3)
+            if not _preview_setting("preview_pdfs", True):
+                self._show_message(t("PDF-Vorschau ist in den Einstellungen deaktiviert."))
+            elif too_large:
+                show_too_large()
+            else:
+                self.pdf_preview.load_pdf(path)
+                self.preview_stack.setCurrentIndex(3)
 
         # Excel-Vorschau
         elif ext in ['.xlsx', '.xls']:
-            self.excel_preview.load_file(path)
-            self.preview_stack.setCurrentIndex(6)
+            if too_large:
+                show_too_large()
+            else:
+                self.excel_preview.load_file(path)
+                self.preview_stack.setCurrentIndex(6)
+
+        # Unbekannte Endung, aber offensichtlich Text (README, Makefile, ...)
+        elif _preview_setting("preview_code", True) and _looks_like_text(path):
+            self.text_preview.load_file(path)
+            self.preview_stack.setCurrentIndex(2)
 
         # Nicht unterstützt
         else:

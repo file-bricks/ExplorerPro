@@ -2998,5 +2998,5405 @@
     "zh": "复制差异",
     "ja": "差分をコピー",
     "ru": "Копировать различия"
+  },
+  "'{name}' entfernen?": {
+    "de": "'{name}' entfernen?",
+    "en": "Remove '{name}'?",
+    "es": "¿Quitar '{name}'?",
+    "zh": "移除 '{name}'？",
+    "ja": "'{name}' を削除しますか？",
+    "ru": "Удалить '{name}'?"
+  },
+  "'{name}' konnte nicht hinzugefügt werden: Datenschutz-Monitor nicht initialisiert.": {
+    "de": "'{name}' konnte nicht hinzugefügt werden: Datenschutz-Monitor nicht initialisiert.",
+    "en": "'{name}' could not be added: Privacy monitor not initialized.",
+    "es": "No se pudo agregar '{name}': el monitor de privacidad no está inicializado.",
+    "zh": "无法添加 '{name}'：隐私监视器未初始化。",
+    "ja": "'{name}' を追加できませんでした: プライバシーモニターが初期化されていません。",
+    "ru": "Не удалось добавить '{name}': монитор конфиденциальности не инициализирован."
+  },
+  "'{name}' synchronisieren?\n\nQuelle: {source}\nZiel: {target}": {
+    "de": "'{name}' synchronisieren?\n\nQuelle: {source}\nZiel: {target}",
+    "en": "Synchronize '{name}'?\n\nSource: {source}\nTarget: {target}",
+    "es": "¿Sincronizar '{name}'?\n\nOrigen: {source}\nDestino: {target}",
+    "zh": "同步 '{name}'？\n\n源：{source}\n目标：{target}",
+    "ja": "'{name}' を同期しますか？\n\n同期元: {source}\n同期先: {target}",
+    "ru": "Синхронизировать '{name}'?\n\nИсточник: {source}\nЦель: {target}"
+  },
+  "'{name}' wirklich löschen?": {
+    "de": "'{name}' wirklich löschen?",
+    "en": "Really delete '{name}'?",
+    "es": "¿Seguro que desea eliminar '{name}'?",
+    "zh": "确定要删除 '{name}' 吗？",
+    "ja": "'{name}' を本当に削除しますか？",
+    "ru": "Действительно удалить '{name}'?"
+  },
+  "'{name}' wurde zur Datenschutz-Blacklist hinzugefügt.": {
+    "de": "'{name}' wurde zur Datenschutz-Blacklist hinzugefügt.",
+    "en": "'{name}' was added to the privacy blacklist.",
+    "es": "'{name}' se agregó a la lista negra de privacidad.",
+    "zh": "'{name}' 已添加到隐私黑名单。",
+    "ja": "'{name}' をプライバシーブラックリストに追加しました。",
+    "ru": "'{name}' добавлен в чёрный список конфиденциальности."
+  },
+  "(leer)": {
+    "de": "(leer)",
+    "en": "(empty)",
+    "es": "(vacío)",
+    "zh": "(空)",
+    "ja": "(空)",
+    "ru": "(пусто)"
+  },
+  "+{added} hinzugefügt | -{deleted} entfernt | {identical} identisch": {
+    "de": "+{added} hinzugefügt | -{deleted} entfernt | {identical} identisch",
+    "en": "+{added} added | -{deleted} removed | {identical} identical",
+    "es": "+{added} agregados | -{deleted} eliminados | {identical} idénticos",
+    "zh": "+{added} 已添加 | -{deleted} 已移除 | {identical} 相同",
+    "ja": "+{added} 追加 | -{deleted} 削除 | {identical} 同一",
+    "ru": "+{added} добавлено | -{deleted} удалено | {identical} идентично"
+  },
+  "... und {count} weitere": {
+    "de": "... und {count} weitere",
+    "en": "... and {count} more",
+    "es": "... y {count} más",
+    "zh": "... 以及另外 {count} 项",
+    "ja": "... 他 {count} 件",
+    "ru": "... и ещё {count}"
+  },
+  "... {count} weitere Einträge": {
+    "de": "... {count} weitere Einträge",
+    "en": "... {count} more entries",
+    "es": "... {count} entradas más",
+    "zh": "... 另外 {count} 个条目",
+    "ja": "... 他 {count} 件のエントリ",
+    "ru": "... ещё записей: {count}"
+  },
+  "Aktion": {
+    "de": "Aktion",
+    "en": "Action",
+    "es": "Acción",
+    "zh": "操作",
+    "ja": "操作",
+    "ru": "Действие"
+  },
+  "Aktive Patterns": {
+    "de": "Aktive Patterns",
+    "en": "Active Patterns",
+    "es": "Patrones activos",
+    "zh": "活动模式",
+    "ja": "アクティブなパターン",
+    "ru": "Активные шаблоны"
+  },
+  "Aktiviert die Auswertung regulärer Ausdrücke im Suchbegriff.": {
+    "de": "Aktiviert die Auswertung regulärer Ausdrücke im Suchbegriff.",
+    "en": "Enables evaluation of regular expressions in the search term.",
+    "es": "Activa la evaluación de expresiones regulares en el término de búsqueda.",
+    "zh": "启用对搜索词中正则表达式的解析。",
+    "ja": "検索語での正規表現の評価を有効にします。",
+    "ru": "Включает обработку регулярных выражений в поисковом запросе."
+  },
+  "Aktueller Ampelstatus": {
+    "de": "Aktueller Ampelstatus",
+    "en": "Current traffic light status",
+    "es": "Estado actual del semáforo",
+    "zh": "当前信号灯状态",
+    "ja": "現在の信号の状態",
+    "ru": "Текущее состояние светофора"
+  },
+  "Aktueller Ordnerpfad": {
+    "de": "Aktueller Ordnerpfad",
+    "en": "Current folder path",
+    "es": "Ruta de carpeta actual",
+    "zh": "当前文件夹路径",
+    "ja": "現在のフォルダーのパス",
+    "ru": "Текущий путь к папке"
+  },
+  "Aktueller Ordnerpfad: {path}": {
+    "de": "Aktueller Ordnerpfad: {path}",
+    "en": "Current folder path: {path}",
+    "es": "Ruta de carpeta actual: {path}",
+    "zh": "当前文件夹路径：{path}",
+    "ja": "現在のフォルダーのパス: {path}",
+    "ru": "Текущий путь к папке: {path}"
+  },
+  "Aktueller Pfad / Status": {
+    "de": "Aktueller Pfad / Status",
+    "en": "Current path / status",
+    "es": "Ruta actual / estado",
+    "zh": "当前路径 / 状态",
+    "ja": "現在のパス / 状態",
+    "ru": "Текущий путь / состояние"
+  },
+  "Aktueller Pfad: {path}": {
+    "de": "Aktueller Pfad: {path}",
+    "en": "Current path: {path}",
+    "es": "Ruta actual: {path}",
+    "zh": "当前路径：{path}",
+    "ja": "現在のパス: {path}",
+    "ru": "Текущий путь: {path}"
+  },
+  "Alle": {
+    "de": "Alle",
+    "en": "All",
+    "es": "Todos",
+    "zh": "全部",
+    "ja": "すべて",
+    "ru": "Все"
+  },
+  "Alle Dateien": {
+    "de": "Alle Dateien",
+    "en": "All Files",
+    "es": "Todos los archivos",
+    "zh": "所有文件",
+    "ja": "すべてのファイル",
+    "ru": "Все файлы"
+  },
+  "Alle Duplikate auswählen": {
+    "de": "Alle Duplikate auswählen",
+    "en": "Select All Duplicates",
+    "es": "Seleccionar todos los duplicados",
+    "zh": "选择所有重复项",
+    "ja": "すべての重複を選択",
+    "ru": "Выбрать все дубликаты"
+  },
+  "Alle Prüfsummen kopieren": {
+    "de": "Alle Prüfsummen kopieren",
+    "en": "Copy All Checksums",
+    "es": "Copiar todas las sumas de comprobación",
+    "zh": "复制所有校验和",
+    "ja": "すべてのチェックサムをコピー",
+    "ru": "Скопировать все контрольные суммы"
+  },
+  "Alle Prüfsummen wurden formatiert in die Zwischenablage kopiert.": {
+    "de": "Alle Prüfsummen wurden formatiert in die Zwischenablage kopiert.",
+    "en": "All checksums were copied to the clipboard in formatted form.",
+    "es": "Todas las sumas de comprobación se copiaron con formato al portapapeles.",
+    "zh": "所有校验和已格式化并复制到剪贴板。",
+    "ja": "すべてのチェックサムを書式付きでクリップボードにコピーしました。",
+    "ru": "Все контрольные суммы скопированы в буфер обмена в отформатированном виде."
+  },
+  "Alle löschen": {
+    "de": "Alle löschen",
+    "en": "Delete All",
+    "es": "Eliminar todo",
+    "zh": "全部删除",
+    "ja": "すべて削除",
+    "ru": "Удалить все"
+  },
+  "Ampel zurücksetzen": {
+    "de": "Ampel zurücksetzen",
+    "en": "Reset Traffic Light",
+    "es": "Restablecer semáforo",
+    "zh": "重置信号灯",
+    "ja": "信号をリセット",
+    "ru": "Сбросить светофор"
+  },
+  "Analysiere bitte folgende Datei:": {
+    "de": "Analysiere bitte folgende Datei:",
+    "en": "Please analyze the following file:",
+    "es": "Por favor, analiza el siguiente archivo:",
+    "zh": "请分析以下文件：",
+    "ja": "次のファイルを分析してください:",
+    "ru": "Пожалуйста, проанализируйте следующий файл:"
+  },
+  "Analysiere bitte folgenden Ordner:": {
+    "de": "Analysiere bitte folgenden Ordner:",
+    "en": "Please analyze the following folder:",
+    "es": "Por favor, analiza la siguiente carpeta:",
+    "zh": "请分析以下文件夹：",
+    "ja": "次のフォルダーを分析してください:",
+    "ru": "Пожалуйста, проанализируйте следующую папку:"
+  },
+  "Analysiert die Änderungen des ausgewählten Paars ohne Dateien zu übertragen": {
+    "de": "Analysiert die Änderungen des ausgewählten Paars ohne Dateien zu übertragen",
+    "en": "Analyzes the changes of the selected pair without transferring any files",
+    "es": "Analiza los cambios del par seleccionado sin transferir archivos",
+    "zh": "分析所选同步对的更改，但不传输文件",
+    "ja": "ファイルを転送せずに、選択したペアの変更を分析します",
+    "ru": "Анализирует изменения выбранной пары без передачи файлов"
+  },
+  "Anonymisiert:": {
+    "de": "Anonymisiert:",
+    "en": "Anonymized:",
+    "es": "Anonimizado:",
+    "zh": "已匿名化：",
+    "ja": "匿名化済み:",
+    "ru": "Анонимизировано:"
+  },
+  "Ansicht umschalten": {
+    "de": "Ansicht umschalten",
+    "en": "Toggle View",
+    "es": "Cambiar vista",
+    "zh": "切换视图",
+    "ja": "表示を切り替え",
+    "ru": "Переключить вид"
+  },
+  "Anwendungsname": {
+    "de": "Anwendungsname",
+    "en": "Application name",
+    "es": "Nombre de la aplicación",
+    "zh": "应用名称",
+    "ja": "アプリケーション名",
+    "ru": "Название приложения"
+  },
+  "Anzahl der Dateien und Ordner sowie aktuelle Elementauswahl.": {
+    "de": "Anzahl der Dateien und Ordner sowie aktuelle Elementauswahl.",
+    "en": "Number of files and folders and the current item selection.",
+    "es": "Número de archivos y carpetas, y selección actual de elementos.",
+    "zh": "文件和文件夹的数量以及当前选中的项目。",
+    "ja": "ファイルとフォルダーの数、および現在の選択項目です。",
+    "ru": "Количество файлов и папок, а также текущий выбор элементов."
+  },
+  "Anzahl geplanter Synchronisationsänderungen": {
+    "de": "Anzahl geplanter Synchronisationsänderungen",
+    "en": "Number of planned synchronization changes",
+    "es": "Número de cambios de sincronización planificados",
+    "zh": "计划的同步更改数量",
+    "ja": "予定されている同期変更の数",
+    "ru": "Количество запланированных изменений синхронизации"
+  },
+  "Anzeigename der Anwendung im Schnellstarter.": {
+    "de": "Anzeigename der Anwendung im Schnellstarter.",
+    "en": "Display name of the application in the quick launcher.",
+    "es": "Nombre visible de la aplicación en el lanzador rápido.",
+    "zh": "应用在快速启动器中显示的名称。",
+    "ja": "クイックランチャーに表示されるアプリケーション名です。",
+    "ru": "Отображаемое имя приложения в быстром запуске."
+  },
+  "App bearbeiten": {
+    "de": "App bearbeiten",
+    "en": "Edit App",
+    "es": "Editar aplicación",
+    "zh": "编辑应用",
+    "ja": "アプリを編集",
+    "ru": "Изменить приложение"
+  },
+  "App gestartet: {name}": {
+    "de": "App gestartet: {name}",
+    "en": "App started: {name}",
+    "es": "Aplicación iniciada: {name}",
+    "zh": "应用已启动：{name}",
+    "ja": "アプリを起動しました: {name}",
+    "ru": "Приложение запущено: {name}"
+  },
+  "App speichern": {
+    "de": "App speichern",
+    "en": "Save App",
+    "es": "Guardar aplicación",
+    "zh": "保存应用",
+    "ja": "アプリを保存",
+    "ru": "Сохранить приложение"
+  },
+  "App {name}": {
+    "de": "App {name}",
+    "en": "App {name}",
+    "es": "Aplicación {name}",
+    "zh": "应用 {name}",
+    "ja": "アプリ {name}",
+    "ru": "Приложение {name}"
+  },
+  "App-Kategorien": {
+    "de": "App-Kategorien",
+    "en": "App Categories",
+    "es": "Categorías de aplicaciones",
+    "zh": "应用类别",
+    "ja": "アプリのカテゴリ",
+    "ru": "Категории приложений"
+  },
+  "App-Launcher": {
+    "de": "App-Launcher",
+    "en": "App Launcher",
+    "es": "Lanzador de aplicaciones",
+    "zh": "应用启动器",
+    "ja": "アプリランチャー",
+    "ru": "Запуск приложений"
+  },
+  "Apps öffnen": {
+    "de": "Apps öffnen",
+    "en": "Open Apps",
+    "es": "Abrir aplicaciones",
+    "zh": "打开应用",
+    "ja": "アプリを開く",
+    "ru": "Открыть приложения"
+  },
+  "Arbeitsbereich exportieren": {
+    "de": "Arbeitsbereich exportieren",
+    "en": "Export Workspace",
+    "es": "Exportar espacio de trabajo",
+    "zh": "导出工作区",
+    "ja": "ワークスペースをエクスポート",
+    "ru": "Экспортировать рабочую область"
+  },
+  "Aus Datei importieren: {list}": {
+    "de": "Aus Datei importieren: {list}",
+    "en": "Import from file: {list}",
+    "es": "Importar desde archivo: {list}",
+    "zh": "从文件导入：{list}",
+    "ja": "ファイルからインポート: {list}",
+    "ru": "Импортировать из файла: {list}"
+  },
+  "Ausführbare Dateien (*.exe *.bat *.cmd *.py);;Alle": {
+    "de": "Ausführbare Dateien (*.exe *.bat *.cmd *.py);;Alle",
+    "en": "Executable Files (*.exe *.bat *.cmd *.py);;All",
+    "es": "Archivos ejecutables (*.exe *.bat *.cmd *.py);;Todos",
+    "zh": "可执行文件 (*.exe *.bat *.cmd *.py);;全部",
+    "ja": "実行可能ファイル (*.exe *.bat *.cmd *.py);;すべて",
+    "ru": "Исполняемые файлы (*.exe *.bat *.cmd *.py);;Все"
+  },
+  "Ausgabe des ausgeführten Skripts (Standardausgabe und Fehlermeldungen).": {
+    "de": "Ausgabe des ausgeführten Skripts (Standardausgabe und Fehlermeldungen).",
+    "en": "Output of the executed script (standard output and error messages).",
+    "es": "Salida del script ejecutado (salida estándar y mensajes de error).",
+    "zh": "所执行脚本的输出（标准输出和错误信息）。",
+    "ja": "実行したスクリプトの出力（標準出力とエラーメッセージ）。",
+    "ru": "Вывод выполненного скрипта (стандартный вывод и сообщения об ошибках)."
+  },
+  "Ausgeschlossene Dateimuster": {
+    "de": "Ausgeschlossene Dateimuster",
+    "en": "Excluded File Patterns",
+    "es": "Patrones de archivo excluidos",
+    "zh": "排除的文件模式",
+    "ja": "除外するファイルパターン",
+    "ru": "Исключённые шаблоны файлов"
+  },
+  "Ausgewählte Datei öffnen": {
+    "de": "Ausgewählte Datei öffnen",
+    "en": "Open Selected File",
+    "es": "Abrir archivo seleccionado",
+    "zh": "打开所选文件",
+    "ja": "選択したファイルを開く",
+    "ru": "Открыть выбранный файл"
+  },
+  "Ausgewählte Duplikate löschen": {
+    "de": "Ausgewählte Duplikate löschen",
+    "en": "Delete Selected Duplicates",
+    "es": "Eliminar duplicados seleccionados",
+    "zh": "删除所选重复项",
+    "ja": "選択した重複を削除",
+    "ru": "Удалить выбранные дубликаты"
+  },
+  "Ausgewählte Einträge entfernen: {list}": {
+    "de": "Ausgewählte Einträge entfernen: {list}",
+    "en": "Remove selected entries: {list}",
+    "es": "Quitar las entradas seleccionadas: {list}",
+    "zh": "移除所选条目：{list}",
+    "ja": "選択したエントリを削除: {list}",
+    "ru": "Удалить выбранные записи: {list}"
+  },
+  "Ausgewählten Prompt bearbeiten": {
+    "de": "Ausgewählten Prompt bearbeiten",
+    "en": "Edit Selected Prompt",
+    "es": "Editar prompt seleccionado",
+    "zh": "编辑所选提示词",
+    "ja": "選択したプロンプトを編集",
+    "ru": "Изменить выбранный промпт"
+  },
+  "Ausgewählten Prompt kopieren": {
+    "de": "Ausgewählten Prompt kopieren",
+    "en": "Copy Selected Prompt",
+    "es": "Copiar prompt seleccionado",
+    "zh": "复制所选提示词",
+    "ja": "選択したプロンプトをコピー",
+    "ru": "Копировать выбранный промпт"
+  },
+  "Aussagekräftiger Name der Prompt-Vorlage.": {
+    "de": "Aussagekräftiger Name der Prompt-Vorlage.",
+    "en": "Descriptive name of the prompt template.",
+    "es": "Nombre descriptivo de la plantilla de prompt.",
+    "zh": "提示词模板的描述性名称。",
+    "ja": "プロンプトテンプレートのわかりやすい名前です。",
+    "ru": "Понятное название шаблона промпта."
+  },
+  "Ausschließen": {
+    "de": "Ausschließen",
+    "en": "Exclude",
+    "es": "Excluir",
+    "zh": "排除",
+    "ja": "除外",
+    "ru": "Исключить"
+  },
+  "Auswahl der Benutzeroberflächensprache.": {
+    "de": "Auswahl der Benutzeroberflächensprache.",
+    "en": "Selection of the user interface language.",
+    "es": "Selección del idioma de la interfaz de usuario.",
+    "zh": "选择用户界面语言。",
+    "ja": "ユーザーインターフェイスの言語を選択します。",
+    "ru": "Выбор языка интерфейса."
+  },
+  "Auswahl zwischen Index-basierter Duplikatsuche und Verzeichnis-Scan.": {
+    "de": "Auswahl zwischen Index-basierter Duplikatsuche und Verzeichnis-Scan.",
+    "en": "Choose between index-based duplicate search and directory scan.",
+    "es": "Elige entre la búsqueda de duplicados basada en el índice y el análisis de directorios.",
+    "zh": "在基于索引的重复项搜索和目录扫描之间选择。",
+    "ja": "インデックスベースの重複検索とディレクトリスキャンのどちらかを選択します。",
+    "ru": "Выбор между поиском дубликатов по индексу и сканированием каталога."
+  },
+  "Auswahlzähler": {
+    "de": "Auswahlzähler",
+    "en": "Selection counter",
+    "es": "Contador de selección",
+    "zh": "选择计数器",
+    "ja": "選択数カウンター",
+    "ru": "Счётчик выбора"
+  },
+  "Baumansicht der gefundenen Duplikat-Gruppen mit Dateigröße und Speicherpfad.": {
+    "de": "Baumansicht der gefundenen Duplikat-Gruppen mit Dateigröße und Speicherpfad.",
+    "en": "Tree view of the duplicate groups found, with file size and storage path.",
+    "es": "Vista de árbol de los grupos de duplicados encontrados, con tamaño de archivo y ruta de almacenamiento.",
+    "zh": "显示所找到重复项分组的树状视图，包含文件大小和存储路径。",
+    "ja": "見つかった重複グループのツリー表示です。ファイルサイズと保存パスを表示します。",
+    "ru": "Древовидное представление найденных групп дубликатов с размером файла и путём хранения."
+  },
+  "Bearbeitet Allgemein-, Index-, Vorschau-, Datenschutz- und Darstellungseinstellungen von ExplorerPro.": {
+    "de": "Bearbeitet Allgemein-, Index-, Vorschau-, Datenschutz- und Darstellungseinstellungen von ExplorerPro.",
+    "en": "Edits the general, index, preview, privacy and appearance settings of ExplorerPro.",
+    "es": "Edita la configuración general, de índice, de vista previa, de privacidad y de apariencia de ExplorerPro.",
+    "zh": "编辑 ExplorerPro 的常规、索引、预览、隐私和外观设置。",
+    "ja": "ExplorerPro の一般、インデックス、プレビュー、プライバシー、表示の設定を編集します。",
+    "ru": "Изменяет общие настройки ExplorerPro, а также настройки индекса, предпросмотра, конфиденциальности и внешнего вида."
+  },
+  "Beenden": {
+    "de": "Beenden",
+    "en": "Exit",
+    "es": "Salir",
+    "zh": "退出",
+    "ja": "終了",
+    "ru": "Выход"
+  },
+  "Begriff hinzufügen zu: {list}": {
+    "de": "Begriff hinzufügen zu: {list}",
+    "en": "Add term to: {list}",
+    "es": "Agregar término a: {list}",
+    "zh": "添加词条到：{list}",
+    "ja": "用語を追加: {list}",
+    "ru": "Добавить термин в: {list}"
+  },
+  "Begriffe aus TXT (eine Zeile pro Begriff), CSV oder Excel übernehmen": {
+    "de": "Begriffe aus TXT (eine Zeile pro Begriff), CSV oder Excel übernehmen",
+    "en": "Import terms from TXT (one line per term), CSV or Excel",
+    "es": "Importar términos desde TXT (una línea por término), CSV o Excel",
+    "zh": "从 TXT（每行一个词条）、CSV 或 Excel 导入词条",
+    "ja": "TXT（1行に1語）、CSV、Excel から用語を取り込む",
+    "ru": "Импортировать термины из TXT (один термин на строку), CSV или Excel"
+  },
+  "Begriffe exportieren": {
+    "de": "Begriffe exportieren",
+    "en": "Export Terms",
+    "es": "Exportar términos",
+    "zh": "导出词条",
+    "ja": "用語をエクスポート",
+    "ru": "Экспортировать термины"
+  },
+  "Begriffe importieren": {
+    "de": "Begriffe importieren",
+    "en": "Import Terms",
+    "es": "Importar términos",
+    "zh": "导入词条",
+    "ja": "用語をインポート",
+    "ru": "Импортировать термины"
+  },
+  "Bei Konflikten": {
+    "de": "Bei Konflikten",
+    "en": "On conflicts",
+    "es": "En caso de conflicto",
+    "zh": "发生冲突时",
+    "ja": "競合時",
+    "ru": "При конфликтах"
+  },
+  "Beispieltext zum Prüfen": {
+    "de": "Beispieltext zum Prüfen",
+    "en": "Sample text to check",
+    "es": "Texto de ejemplo para comprobar",
+    "zh": "用于检查的示例文本",
+    "ja": "確認用のサンプルテキスト",
+    "ru": "Образец текста для проверки"
+  },
+  "Belegter Speicher: {size}": {
+    "de": "Belegter Speicher: {size}",
+    "en": "Used storage: {size}",
+    "es": "Almacenamiento usado: {size}",
+    "zh": "已用存储空间：{size}",
+    "ja": "使用中のストレージ: {size}",
+    "ru": "Занятое место: {size}"
+  },
+  "Belegter oder berechneter Speicherplatz der Dateien.": {
+    "de": "Belegter oder berechneter Speicherplatz der Dateien.",
+    "en": "Used or calculated storage space of the files.",
+    "es": "Espacio de almacenamiento usado o calculado de los archivos.",
+    "zh": "文件占用或计算得出的存储空间。",
+    "ja": "ファイルが使用している、または計算されたストレージ容量です。",
+    "ru": "Занятое или рассчитанное место на диске, занимаемое файлами."
+  },
+  "Benachrichtigung bei erkannten Datenschutz-Mustern einblenden": {
+    "de": "Benachrichtigung bei erkannten Datenschutz-Mustern einblenden",
+    "en": "Show notification when privacy patterns are detected",
+    "es": "Mostrar notificación cuando se detecten patrones de privacidad",
+    "zh": "检测到隐私模式时显示通知",
+    "ja": "プライバシーパターンを検出したときに通知を表示",
+    "ru": "Показывать уведомление при обнаружении шаблонов конфиденциальных данных"
+  },
+  "Benutzerdefinierte Dateiendungen": {
+    "de": "Benutzerdefinierte Dateiendungen",
+    "en": "Custom File Extensions",
+    "es": "Extensiones de archivo personalizadas",
+    "zh": "自定义文件扩展名",
+    "ja": "カスタムファイル拡張子",
+    "ru": "Пользовательские расширения файлов"
+  },
+  "Berechnen": {
+    "de": "Berechnen",
+    "en": "Calculate",
+    "es": "Calcular",
+    "zh": "计算",
+    "ja": "計算",
+    "ru": "Вычислить"
+  },
+  "Berechnet MD5, SHA-1, SHA-256 und SHA-512 Prüfsummen und ermöglicht den Vergleich.": {
+    "de": "Berechnet MD5, SHA-1, SHA-256 und SHA-512 Prüfsummen und ermöglicht den Vergleich.",
+    "en": "Calculates MD5, SHA-1, SHA-256 and SHA-512 checksums and allows comparing them.",
+    "es": "Calcula sumas de comprobación MD5, SHA-1, SHA-256 y SHA-512 y permite compararlas.",
+    "zh": "计算 MD5、SHA-1、SHA-256 和 SHA-512 校验和并支持比较。",
+    "ja": "MD5、SHA-1、SHA-256、SHA-512 のチェックサムを計算し、比較できます。",
+    "ru": "Вычисляет контрольные суммы MD5, SHA-1, SHA-256 и SHA-512 и позволяет их сравнивать."
+  },
+  "Berechnete Prüfsummen": {
+    "de": "Berechnete Prüfsummen",
+    "en": "Calculated Checksums",
+    "es": "Sumas de comprobación calculadas",
+    "zh": "计算出的校验和",
+    "ja": "計算されたチェックサム",
+    "ru": "Вычисленные контрольные суммы"
+  },
+  "Berechnete {algorithm}-Prüfsumme für die ausgewählte Datei.": {
+    "de": "Berechnete {algorithm}-Prüfsumme für die ausgewählte Datei.",
+    "en": "Calculated {algorithm} checksum for the selected file.",
+    "es": "Suma de comprobación {algorithm} calculada para el archivo seleccionado.",
+    "zh": "所选文件的 {algorithm} 校验和计算结果。",
+    "ja": "選択したファイルの {algorithm} チェックサムの計算結果です。",
+    "ru": "Вычисленная контрольная сумма {algorithm} для выбранного файла."
+  },
+  "Berechnungsfortschritt": {
+    "de": "Berechnungsfortschritt",
+    "en": "Calculation progress",
+    "es": "Progreso del cálculo",
+    "zh": "计算进度",
+    "ja": "計算の進行状況",
+    "ru": "Ход вычисления"
+  },
+  "Beschreibung": {
+    "de": "Beschreibung",
+    "en": "Description",
+    "es": "Descripción",
+    "zh": "描述",
+    "ja": "説明",
+    "ru": "Описание"
+  },
+  "Bezieht versteckte Dateien und Ordner in die Synchronisation ein": {
+    "de": "Bezieht versteckte Dateien und Ordner in die Synchronisation ein",
+    "en": "Includes hidden files and folders in the synchronization",
+    "es": "Incluye los archivos y carpetas ocultos en la sincronización",
+    "zh": "将隐藏的文件和文件夹包含在同步中",
+    "ja": "隠しファイルとフォルダーを同期に含めます",
+    "ru": "Включает скрытые файлы и папки в синхронизацию"
+  },
+  "Bidirektional ↔": {
+    "de": "Bidirektional ↔",
+    "en": "Bidirectional ↔",
+    "es": "Bidireccional ↔",
+    "zh": "双向 ↔",
+    "ja": "双方向 ↔",
+    "ru": "Двусторонняя ↔"
+  },
+  "Bilder": {
+    "de": "Bilder",
+    "en": "Images",
+    "es": "Imágenes",
+    "zh": "图片",
+    "ja": "画像",
+    "ru": "Изображения"
+  },
+  "Bildvorschau ist in den Einstellungen deaktiviert.": {
+    "de": "Bildvorschau ist in den Einstellungen deaktiviert.",
+    "en": "Image preview is disabled in the settings.",
+    "es": "La vista previa de imágenes está desactivada en la configuración.",
+    "zh": "图片预览已在设置中禁用。",
+    "ja": "画像のプレビューは設定で無効になっています。",
+    "ru": "Предпросмотр изображений отключён в настройках."
+  },
+  "Bitte Namen eingeben!": {
+    "de": "Bitte Namen eingeben!",
+    "en": "Please enter a name!",
+    "es": "¡Ingrese un nombre!",
+    "zh": "请输入名称！",
+    "ja": "名前を入力してください！",
+    "ru": "Введите название!"
+  },
+  "Bitte Pfad angeben!": {
+    "de": "Bitte Pfad angeben!",
+    "en": "Please specify a path!",
+    "es": "¡Especifique una ruta!",
+    "zh": "请指定路径！",
+    "ja": "パスを指定してください！",
+    "ru": "Укажите путь!"
+  },
+  "Bitte Prompt-Inhalt eingeben!": {
+    "de": "Bitte Prompt-Inhalt eingeben!",
+    "en": "Please enter the prompt content!",
+    "es": "¡Ingrese el contenido del prompt!",
+    "zh": "请输入提示词内容！",
+    "ja": "プロンプトの内容を入力してください！",
+    "ru": "Введите содержимое промпта!"
+  },
+  "Bitte Quellordner angeben!": {
+    "de": "Bitte Quellordner angeben!",
+    "en": "Please specify a source folder!",
+    "es": "¡Especifique una carpeta de origen!",
+    "zh": "请指定源文件夹！",
+    "ja": "同期元フォルダーを指定してください！",
+    "ru": "Укажите исходную папку!"
+  },
+  "Bitte Zielordner angeben!": {
+    "de": "Bitte Zielordner angeben!",
+    "en": "Please specify a target folder!",
+    "es": "¡Especifique una carpeta de destino!",
+    "zh": "请指定目标文件夹！",
+    "ja": "同期先フォルダーを指定してください！",
+    "ru": "Укажите целевую папку!"
+  },
+  "Bitte einen Titel eingeben!": {
+    "de": "Bitte einen Titel eingeben!",
+    "en": "Please enter a title!",
+    "es": "¡Ingrese un título!",
+    "zh": "请输入标题！",
+    "ja": "タイトルを入力してください！",
+    "ru": "Введите заголовок!"
+  },
+  "Bitte geben Sie mindestens einen Suchbegriff, Dateityp oder Tag an.": {
+    "de": "Bitte geben Sie mindestens einen Suchbegriff, Dateityp oder Tag an.",
+    "en": "Please specify at least one search term, file type or tag.",
+    "es": "Especifique al menos un término de búsqueda, tipo de archivo o etiqueta.",
+    "zh": "请至少指定一个搜索词、文件类型或标签。",
+    "ja": "検索語、ファイルの種類、タグのうち少なくとも1つを指定してください。",
+    "ru": "Укажите хотя бы один поисковый запрос, тип файла или тег."
+  },
+  "Bitte wählen Sie einen Ordner!": {
+    "de": "Bitte wählen Sie einen Ordner!",
+    "en": "Please select a folder!",
+    "es": "¡Seleccione una carpeta!",
+    "zh": "请选择一个文件夹！",
+    "ja": "フォルダーを選択してください！",
+    "ru": "Выберите папку!"
+  },
+  "Bitte zuerst einen Text eingeben.": {
+    "de": "Bitte zuerst einen Text eingeben.",
+    "en": "Please enter some text first.",
+    "es": "Primero ingrese un texto.",
+    "zh": "请先输入文本。",
+    "ja": "先にテキストを入力してください。",
+    "ru": "Сначала введите текст."
+  },
+  "Bitte zuerst speichern!": {
+    "de": "Bitte zuerst speichern!",
+    "en": "Please save first!",
+    "es": "¡Guarde primero!",
+    "zh": "请先保存！",
+    "ja": "先に保存してください！",
+    "ru": "Сначала сохраните!"
+  },
+  "Blacklist": {
+    "de": "Blacklist",
+    "en": "Blacklist",
+    "es": "Lista negra",
+    "zh": "黑名单",
+    "ja": "ブラックリスト",
+    "ru": "Чёрный список"
+  },
+  "Blacklist und Whitelist bearbeiten": {
+    "de": "Blacklist und Whitelist bearbeiten",
+    "en": "Edit Blacklist and Whitelist",
+    "es": "Editar lista negra y lista blanca",
+    "zh": "编辑黑名单和白名单",
+    "ja": "ブラックリストとホワイトリストを編集",
+    "ru": "Изменить чёрный и белый списки"
+  },
+  "Blacklist-Einträge": {
+    "de": "Blacklist-Einträge",
+    "en": "Blacklist Entries",
+    "es": "Entradas de la lista negra",
+    "zh": "黑名单条目",
+    "ja": "ブラックリストのエントリ",
+    "ru": "Записи чёрного списка"
+  },
+  "Blacklist/Whitelist bearbeiten": {
+    "de": "Blacklist/Whitelist bearbeiten",
+    "en": "Edit Blacklist/Whitelist",
+    "es": "Editar lista negra/blanca",
+    "zh": "编辑黑名单/白名单",
+    "ja": "ブラックリスト/ホワイトリストを編集",
+    "ru": "Изменить чёрный/белый список"
+  },
+  "Bricht den laufenden Hintergrund-Scan sofort ab.": {
+    "de": "Bricht den laufenden Hintergrund-Scan sofort ab.",
+    "en": "Cancels the running background scan immediately.",
+    "es": "Cancela de inmediato el análisis en segundo plano en curso.",
+    "zh": "立即取消正在运行的后台扫描。",
+    "ja": "実行中のバックグラウンドスキャンをすぐに中止します。",
+    "ru": "Немедленно отменяет выполняющееся фоновое сканирование."
+  },
+  "Bricht den laufenden Unterprozess ab.": {
+    "de": "Bricht den laufenden Unterprozess ab.",
+    "en": "Cancels the running subprocess.",
+    "es": "Cancela el subproceso en ejecución.",
+    "zh": "取消正在运行的子进程。",
+    "ja": "実行中のサブプロセスを中止します。",
+    "ru": "Отменяет выполняющийся подпроцесс."
+  },
+  "Bricht die Bearbeitung ab": {
+    "de": "Bricht die Bearbeitung ab",
+    "en": "Cancels editing",
+    "es": "Cancela la edición",
+    "zh": "取消编辑",
+    "ja": "編集を中止します",
+    "ru": "Отменяет редактирование"
+  },
+  "Clipboard bei Alarm automatisch leeren": {
+    "de": "Clipboard bei Alarm automatisch leeren",
+    "en": "Automatically clear clipboard on alarm",
+    "es": "Vaciar automáticamente el portapapeles en caso de alarma",
+    "zh": "触发警报时自动清空剪贴板",
+    "ja": "アラート時にクリップボードを自動的に空にする",
+    "ru": "Автоматически очищать буфер обмена при тревоге"
+  },
+  "Clipboard bei ROT automatisch leeren": {
+    "de": "Clipboard bei ROT automatisch leeren",
+    "en": "Automatically clear clipboard on RED",
+    "es": "Vaciar automáticamente el portapapeles en ROJO",
+    "zh": "状态为红色时自动清空剪贴板",
+    "ja": "赤になったらクリップボードを自動的に空にする",
+    "ru": "Автоматически очищать буфер обмена при КРАСНОМ"
+  },
+  "Clipboard ist sicher": {
+    "de": "Clipboard ist sicher",
+    "en": "Clipboard is safe",
+    "es": "El portapapeles es seguro",
+    "zh": "剪贴板安全",
+    "ja": "クリップボードは安全です",
+    "ru": "Буфер обмена безопасен"
+  },
+  "Cloud-Speicher": {
+    "de": "Cloud-Speicher",
+    "en": "Cloud Storage",
+    "es": "Almacenamiento en la nube",
+    "zh": "云存储",
+    "ja": "クラウドストレージ",
+    "ru": "Облачное хранилище"
+  },
+  "Code ausführen": {
+    "de": "Code ausführen",
+    "en": "Run Code",
+    "es": "Ejecutar código",
+    "zh": "运行代码",
+    "ja": "コードを実行",
+    "ru": "Выполнить код"
+  },
+  "Code-Editor": {
+    "de": "Code-Editor",
+    "en": "Code Editor",
+    "es": "Editor de código",
+    "zh": "代码编辑器",
+    "ja": "コードエディター",
+    "ru": "Редактор кода"
+  },
+  "Cursor-Position": {
+    "de": "Cursor-Position",
+    "en": "Cursor position",
+    "es": "Posición del cursor",
+    "zh": "光标位置",
+    "ja": "カーソル位置",
+    "ru": "Позиция курсора"
+  },
+  "Datei 1 durchsuchen": {
+    "de": "Datei 1 durchsuchen",
+    "en": "Browse for file 1",
+    "es": "Examinar archivo 1",
+    "zh": "浏览文件 1",
+    "ja": "ファイル 1 を参照",
+    "ru": "Выбрать файл 1"
+  },
+  "Datei 2 durchsuchen": {
+    "de": "Datei 2 durchsuchen",
+    "en": "Browse for file 2",
+    "es": "Examinar archivo 2",
+    "zh": "浏览文件 2",
+    "ja": "ファイル 2 を参照",
+    "ru": "Выбрать файл 2"
+  },
+  "Datei extern öffnen": {
+    "de": "Datei extern öffnen",
+    "en": "Open File Externally",
+    "es": "Abrir archivo externamente",
+    "zh": "在外部打开文件",
+    "ja": "ファイルを外部で開く",
+    "ru": "Открыть файл во внешней программе"
+  },
+  "Datei für Prüfsummenberechnung auswählen": {
+    "de": "Datei für Prüfsummenberechnung auswählen",
+    "en": "Select file for checksum calculation",
+    "es": "Seleccionar archivo para calcular la suma de comprobación",
+    "zh": "选择用于校验和计算的文件",
+    "ja": "チェックサム計算用のファイルを選択",
+    "ru": "Выбрать файл для вычисления контрольной суммы"
+  },
+  "Datei nicht gefunden:\n{path}": {
+    "de": "Datei nicht gefunden:\n{path}",
+    "en": "File not found:\n{path}",
+    "es": "Archivo no encontrado:\n{path}",
+    "zh": "未找到文件：\n{path}",
+    "ja": "ファイルが見つかりません:\n{path}",
+    "ru": "Файл не найден:\n{path}"
+  },
+  "Datei speichern": {
+    "de": "Datei speichern",
+    "en": "Save File",
+    "es": "Guardar archivo",
+    "zh": "保存文件",
+    "ja": "ファイルを保存",
+    "ru": "Сохранить файл"
+  },
+  "Datei zu groß für die Vorschau ({size} MB, Grenze {limit} MB).": {
+    "de": "Datei zu groß für die Vorschau ({size} MB, Grenze {limit} MB).",
+    "en": "File too large for preview ({size} MB, limit {limit} MB).",
+    "es": "Archivo demasiado grande para la vista previa ({size} MB, límite {limit} MB).",
+    "zh": "文件过大，无法预览（{size} MB，上限 {limit} MB）。",
+    "ja": "ファイルが大きすぎてプレビューできません（{size} MB、上限 {limit} MB）。",
+    "ru": "Файл слишком большой для предпросмотра ({size} МБ, лимит {limit} МБ)."
+  },
+  "Datei öffnen": {
+    "de": "Datei öffnen",
+    "en": "Open File",
+    "es": "Abrir archivo",
+    "zh": "打开文件",
+    "ja": "ファイルを開く",
+    "ru": "Открыть файл"
+  },
+  "Datei-Information": {
+    "de": "Datei-Information",
+    "en": "File Information",
+    "es": "Información del archivo",
+    "zh": "文件信息",
+    "ja": "ファイル情報",
+    "ru": "Информация о файле"
+  },
+  "Datei-Notizen": {
+    "de": "Datei-Notizen",
+    "en": "File Notes",
+    "es": "Notas del archivo",
+    "zh": "文件备注",
+    "ja": "ファイルメモ",
+    "ru": "Заметки к файлу"
+  },
+  "Datei-Tags filtern": {
+    "de": "Datei-Tags filtern",
+    "en": "Filter File Tags",
+    "es": "Filtrar etiquetas de archivo",
+    "zh": "筛选文件标签",
+    "ja": "ファイルタグをフィルター",
+    "ru": "Фильтр тегов файлов"
+  },
+  "Datei-Vergleichs-Dialog": {
+    "de": "Datei-Vergleichs-Dialog",
+    "en": "File Comparison Dialog",
+    "es": "Cuadro de diálogo de comparación de archivos",
+    "zh": "文件比较对话框",
+    "ja": "ファイル比較ダイアログ",
+    "ru": "Диалог сравнения файлов"
+  },
+  "Datei: {name}": {
+    "de": "Datei: {name}",
+    "en": "File: {name}",
+    "es": "Archivo: {name}",
+    "zh": "文件：{name}",
+    "ja": "ファイル: {name}",
+    "ru": "Файл: {name}"
+  },
+  "Dateien jetzt umbenennen": {
+    "de": "Dateien jetzt umbenennen",
+    "en": "Rename Files Now",
+    "es": "Cambiar nombre de archivos ahora",
+    "zh": "立即重命名文件",
+    "ja": "今すぐファイル名を変更",
+    "ru": "Переименовать файлы сейчас"
+  },
+  "Dateien unter dieser Mindestgröße werden beim Scan ignoriert.": {
+    "de": "Dateien unter dieser Mindestgröße werden beim Scan ignoriert.",
+    "en": "Files below this minimum size are ignored during the scan.",
+    "es": "Los archivos por debajo de este tamaño mínimo se ignoran durante el análisis.",
+    "zh": "扫描时将忽略小于此最小大小的文件。",
+    "ja": "この最小サイズ未満のファイルはスキャン時に無視されます。",
+    "ru": "Файлы меньше этого минимального размера пропускаются при сканировании."
+  },
+  "Dateien vergleichen": {
+    "de": "Dateien vergleichen",
+    "en": "Compare Files",
+    "es": "Comparar archivos",
+    "zh": "比较文件",
+    "ja": "ファイルを比較",
+    "ru": "Сравнить файлы"
+  },
+  "Dateiliste": {
+    "de": "Dateiliste",
+    "en": "File list",
+    "es": "Lista de archivos",
+    "zh": "文件列表",
+    "ja": "ファイル一覧",
+    "ru": "Список файлов"
+  },
+  "Dateinamen-Präfix": {
+    "de": "Dateinamen-Präfix",
+    "en": "Filename prefix",
+    "es": "Prefijo del nombre de archivo",
+    "zh": "文件名前缀",
+    "ja": "ファイル名の接頭辞",
+    "ru": "Префикс имени файла"
+  },
+  "Dateinamen-Suffix": {
+    "de": "Dateinamen-Suffix",
+    "en": "Filename suffix",
+    "es": "Sufijo del nombre de archivo",
+    "zh": "文件名后缀",
+    "ja": "ファイル名の接尾辞",
+    "ru": "Суффикс имени файла"
+  },
+  "Dateipfad der ersten Datei (Basis) für den Vergleich.": {
+    "de": "Dateipfad der ersten Datei (Basis) für den Vergleich.",
+    "en": "File path of the first file (base) for the comparison.",
+    "es": "Ruta del primer archivo (base) para la comparación.",
+    "zh": "用于比较的第一个文件（基准）的路径。",
+    "ja": "比較に使用する最初のファイル（基準）のパスです。",
+    "ru": "Путь к первому файлу (базовому) для сравнения."
+  },
+  "Dateipfad der zweiten Datei für den Vergleich.": {
+    "de": "Dateipfad der zweiten Datei für den Vergleich.",
+    "en": "File path of the second file for the comparison.",
+    "es": "Ruta del segundo archivo para la comparación.",
+    "zh": "用于比较的第二个文件的路径。",
+    "ja": "比較に使用する2番目のファイルのパスです。",
+    "ru": "Путь ко второму файлу для сравнения."
+  },
+  "Dateipfad zur ausführbaren Datei oder zum Skript.": {
+    "de": "Dateipfad zur ausführbaren Datei oder zum Skript.",
+    "en": "File path to the executable or script.",
+    "es": "Ruta del archivo ejecutable o del script.",
+    "zh": "可执行文件或脚本的路径。",
+    "ja": "実行可能ファイルまたはスクリプトのパス。",
+    "ru": "Путь к исполняемому файлу или скрипту."
+  },
+  "Dateisuche": {
+    "de": "Dateisuche",
+    "en": "File Search",
+    "es": "Búsqueda de archivos",
+    "zh": "文件搜索",
+    "ja": "ファイル検索",
+    "ru": "Поиск файлов"
+  },
+  "Dateityp-Filter": {
+    "de": "Dateityp-Filter",
+    "en": "File type filter",
+    "es": "Filtro de tipo de archivo",
+    "zh": "文件类型筛选",
+    "ja": "ファイルの種類フィルター",
+    "ru": "Фильтр по типу файла"
+  },
+  "Datenbank-gestützter Volltextsuche": {
+    "de": "Datenbank-gestützter Volltextsuche",
+    "en": "Database-backed full-text search",
+    "es": "Búsqueda de texto completo respaldada por base de datos",
+    "zh": "基于数据库的全文搜索",
+    "ja": "データベースベースの全文検索",
+    "ru": "Полнотекстовый поиск на основе базы данных"
+  },
+  "Datenschutz prüfen": {
+    "de": "Datenschutz prüfen",
+    "en": "Check Privacy",
+    "es": "Comprobar privacidad",
+    "zh": "检查隐私",
+    "ja": "プライバシーを確認",
+    "ru": "Проверить конфиденциальность"
+  },
+  "Datenschutz-Ampel": {
+    "de": "Datenschutz-Ampel",
+    "en": "Privacy Indicator",
+    "es": "Indicador de privacidad",
+    "zh": "隐私指示灯",
+    "ja": "プライバシーインジケーター",
+    "ru": "Индикатор конфиденциальности"
+  },
+  "Datenschutz-Bereiche": {
+    "de": "Datenschutz-Bereiche",
+    "en": "Privacy Areas",
+    "es": "Áreas de privacidad",
+    "zh": "隐私区域",
+    "ja": "プライバシー領域",
+    "ru": "Области конфиденциальности"
+  },
+  "Datenschutz-Monitor inaktiv": {
+    "de": "Datenschutz-Monitor inaktiv",
+    "en": "Privacy monitor inactive",
+    "es": "Monitor de privacidad inactivo",
+    "zh": "隐私监控未启用",
+    "ja": "プライバシーモニターは無効です",
+    "ru": "Монитор конфиденциальности неактивен"
+  },
+  "Datenschutz-Monitor nicht initialisiert.": {
+    "de": "Datenschutz-Monitor nicht initialisiert.",
+    "en": "Privacy monitor not initialized.",
+    "es": "El monitor de privacidad no está inicializado.",
+    "zh": "隐私监控尚未初始化。",
+    "ja": "プライバシーモニターが初期化されていません。",
+    "ru": "Монитор конфиденциальности не инициализирован."
+  },
+  "Datenschutz-Prüfung": {
+    "de": "Datenschutz-Prüfung",
+    "en": "Privacy Check",
+    "es": "Comprobación de privacidad",
+    "zh": "隐私检查",
+    "ja": "プライバシーチェック",
+    "ru": "Проверка конфиденциальности"
+  },
+  "Datenschutz-Prüfung nur für Text-Dateien verfügbar.": {
+    "de": "Datenschutz-Prüfung nur für Text-Dateien verfügbar.",
+    "en": "Privacy check is only available for text files.",
+    "es": "La comprobación de privacidad solo está disponible para archivos de texto.",
+    "zh": "隐私检查仅适用于文本文件。",
+    "ja": "プライバシーチェックはテキストファイルでのみ利用できます。",
+    "ru": "Проверка конфиденциальности доступна только для текстовых файлов."
+  },
+  "Datenschutz-Status": {
+    "de": "Datenschutz-Status",
+    "en": "Privacy Status",
+    "es": "Estado de privacidad",
+    "zh": "隐私状态",
+    "ja": "プライバシーの状態",
+    "ru": "Состояние конфиденциальности"
+  },
+  "Datenschutz-Status: Gelb. Warnung vor potenziell sensiblen Daten in der Zwischenablage.": {
+    "de": "Datenschutz-Status: Gelb. Warnung vor potenziell sensiblen Daten in der Zwischenablage.",
+    "en": "Privacy status: Yellow. Warning about potentially sensitive data in the clipboard.",
+    "es": "Estado de privacidad: amarillo. Advertencia sobre datos potencialmente confidenciales en el portapapeles.",
+    "zh": "隐私状态：黄色。剪贴板中可能包含敏感数据，请注意。",
+    "ja": "プライバシーの状態：黄。クリップボードに機密の可能性があるデータが含まれています。",
+    "ru": "Состояние конфиденциальности: жёлтое. Предупреждение о потенциально конфиденциальных данных в буфере обмена."
+  },
+  "Datenschutz-Status: Grau. Datenschutz-Monitor ist inaktiv.": {
+    "de": "Datenschutz-Status: Grau. Datenschutz-Monitor ist inaktiv.",
+    "en": "Privacy status: Gray. Privacy monitor is inactive.",
+    "es": "Estado de privacidad: gris. El monitor de privacidad está inactivo.",
+    "zh": "隐私状态：灰色。隐私监控未启用。",
+    "ja": "プライバシーの状態：グレー。プライバシーモニターは無効です。",
+    "ru": "Состояние конфиденциальности: серое. Монитор конфиденциальности неактивен."
+  },
+  "Datenschutz-Status: Grün. Zwischenablage ist sicher und unbedenklich.": {
+    "de": "Datenschutz-Status: Grün. Zwischenablage ist sicher und unbedenklich.",
+    "en": "Privacy status: Green. The clipboard is safe and unproblematic.",
+    "es": "Estado de privacidad: verde. El portapapeles es seguro y no presenta problemas.",
+    "zh": "隐私状态：绿色。剪贴板安全，没有问题。",
+    "ja": "プライバシーの状態：緑。クリップボードは安全で、問題ありません。",
+    "ru": "Состояние конфиденциальности: зелёное. Буфер обмена безопасен, проблем нет."
+  },
+  "Datenschutz-Status: Rot. Sensible Daten wurden im Zwischenspeicher blockiert.": {
+    "de": "Datenschutz-Status: Rot. Sensible Daten wurden im Zwischenspeicher blockiert.",
+    "en": "Privacy status: Red. Sensitive data was blocked in the clipboard.",
+    "es": "Estado de privacidad: rojo. Se bloquearon datos confidenciales en el portapapeles.",
+    "zh": "隐私状态：红色。剪贴板中的敏感数据已被拦截。",
+    "ja": "プライバシーの状態：赤。クリップボード内の機密データがブロックされました。",
+    "ru": "Состояние конфиденциальности: красное. Конфиденциальные данные в буфере обмена заблокированы."
+  },
+  "Datenschutz-Status: {status}": {
+    "de": "Datenschutz-Status: {status}",
+    "en": "Privacy status: {status}",
+    "es": "Estado de privacidad: {status}",
+    "zh": "隐私状态：{status}",
+    "ja": "プライバシーの状態：{status}",
+    "ru": "Состояние конфиденциальности: {status}"
+  },
+  "Datenschutz-Warnung": {
+    "de": "Datenschutz-Warnung",
+    "en": "Privacy Warning",
+    "es": "Advertencia de privacidad",
+    "zh": "隐私警告",
+    "ja": "プライバシー警告",
+    "ru": "Предупреждение о конфиденциальности"
+  },
+  "Datenschutz-Überwachung aktiviert": {
+    "de": "Datenschutz-Überwachung aktiviert",
+    "en": "Privacy monitoring enabled",
+    "es": "Supervisión de privacidad activada",
+    "zh": "隐私监控已启用",
+    "ja": "プライバシー監視を有効にしました",
+    "ru": "Мониторинг конфиденциальности включён"
+  },
+  "Datenschutz-Überwachung deaktiviert": {
+    "de": "Datenschutz-Überwachung deaktiviert",
+    "en": "Privacy monitoring disabled",
+    "es": "Supervisión de privacidad desactivada",
+    "zh": "隐私监控已停用",
+    "ja": "プライバシー監視を無効にしました",
+    "ru": "Мониторинг конфиденциальности отключён"
+  },
+  "Datenschutz: Alles OK": {
+    "de": "Datenschutz: Alles OK",
+    "en": "Privacy: All OK",
+    "es": "Privacidad: todo correcto",
+    "zh": "隐私：一切正常",
+    "ja": "プライバシー：問題なし",
+    "ru": "Конфиденциальность: всё в порядке"
+  },
+  "Datenschutz: Blockiert!": {
+    "de": "Datenschutz: Blockiert!",
+    "en": "Privacy: Blocked!",
+    "es": "Privacidad: ¡bloqueado!",
+    "zh": "隐私：已拦截！",
+    "ja": "プライバシー：ブロックしました！",
+    "ru": "Конфиденциальность: заблокировано!"
+  },
+  "Datenschutz: Warnung": {
+    "de": "Datenschutz: Warnung",
+    "en": "Privacy: Warning",
+    "es": "Privacidad: advertencia",
+    "zh": "隐私：警告",
+    "ja": "プライバシー：警告",
+    "ru": "Конфиденциальность: предупреждение"
+  },
+  "Der Ordner konnte nicht geöffnet werden:\n{path}\n\n{error}": {
+    "de": "Der Ordner konnte nicht geöffnet werden:\n{path}\n\n{error}",
+    "en": "The folder could not be opened:\n{path}\n\n{error}",
+    "es": "No se pudo abrir la carpeta:\n{path}\n\n{error}",
+    "zh": "无法打开文件夹：\n{path}\n\n{error}",
+    "ja": "フォルダーを開けませんでした：\n{path}\n\n{error}",
+    "ru": "Не удалось открыть папку:\n{path}\n\n{error}"
+  },
+  "Der Pfad konnte nicht geöffnet werden:\n{path}\n\n{error}": {
+    "de": "Der Pfad konnte nicht geöffnet werden:\n{path}\n\n{error}",
+    "en": "The path could not be opened:\n{path}\n\n{error}",
+    "es": "No se pudo abrir la ruta:\n{path}\n\n{error}",
+    "zh": "无法打开路径：\n{path}\n\n{error}",
+    "ja": "パスを開けませんでした：\n{path}\n\n{error}",
+    "ru": "Не удалось открыть путь:\n{path}\n\n{error}"
+  },
+  "Desktop": {
+    "de": "Desktop",
+    "en": "Desktop",
+    "es": "Escritorio",
+    "zh": "桌面",
+    "ja": "デスクトップ",
+    "ru": "Рабочий стол"
+  },
+  "Detaillierte Dateisuche mit Filtern für Suchbereich, Dateityp, Änderungsdatum, Dateigröße und Tags.": {
+    "de": "Detaillierte Dateisuche mit Filtern für Suchbereich, Dateityp, Änderungsdatum, Dateigröße und Tags.",
+    "en": "Detailed file search with filters for search scope, file type, modification date, file size and tags.",
+    "es": "Búsqueda detallada de archivos con filtros de ámbito de búsqueda, tipo de archivo, fecha de modificación, tamaño de archivo y etiquetas.",
+    "zh": "详细的文件搜索，可按搜索范围、文件类型、修改日期、文件大小和标签筛选。",
+    "ja": "検索範囲、ファイルの種類、更新日、ファイルサイズ、タグで絞り込める詳細なファイル検索です。",
+    "ru": "Подробный поиск файлов с фильтрами по области поиска, типу файла, дате изменения, размеру файла и тегам."
+  },
+  "Deutsche SVN": {
+    "de": "Deutsche SVN",
+    "en": "German SVN (social insurance number)",
+    "es": "SVN alemán (número de la seguridad social)",
+    "zh": "德国社会保险号 (SVN)",
+    "ja": "ドイツ社会保険番号 (SVN)",
+    "ru": "Немецкий SVN (номер социального страхования)"
+  },
+  "Deutsche/EU Kontonummern": {
+    "de": "Deutsche/EU Kontonummern",
+    "en": "German/EU account numbers",
+    "es": "Números de cuenta alemanes/de la UE",
+    "zh": "德国/欧盟账号",
+    "ja": "ドイツ/EUの口座番号",
+    "ru": "Немецкие/европейские номера счетов"
+  },
+  "Dialog schließen": {
+    "de": "Dialog schließen",
+    "en": "Close Dialog",
+    "es": "Cerrar cuadro de diálogo",
+    "zh": "关闭对话框",
+    "ja": "ダイアログを閉じる",
+    "ru": "Закрыть диалог"
+  },
+  "Dialog zur Konfiguration von Prompt-Titel, Kategorie, Tags und Vorlagentext mit Variablen.": {
+    "de": "Dialog zur Konfiguration von Prompt-Titel, Kategorie, Tags und Vorlagentext mit Variablen.",
+    "en": "Dialog for configuring the prompt title, category, tags and template text with variables.",
+    "es": "Cuadro de diálogo para configurar el título, la categoría, las etiquetas y el texto de plantilla con variables del prompt.",
+    "zh": "用于配置提示词标题、分类、标签以及带变量的模板文本的对话框。",
+    "ja": "プロンプトのタイトル、カテゴリ、タグ、変数を含むテンプレートテキストを設定するダイアログです。",
+    "ru": "Диалог для настройки названия, категории, тегов и текста шаблона с переменными для промпта."
+  },
+  "Die Datei konnte nicht gelesen werden:": {
+    "de": "Die Datei konnte nicht gelesen werden:",
+    "en": "The file could not be read:",
+    "es": "No se pudo leer el archivo:",
+    "zh": "无法读取文件：",
+    "ja": "ファイルを読み取れませんでした：",
+    "ru": "Не удалось прочитать файл:"
+  },
+  "Die Datei konnte nicht geschrieben werden:": {
+    "de": "Die Datei konnte nicht geschrieben werden:",
+    "en": "The file could not be written:",
+    "es": "No se pudo escribir el archivo:",
+    "zh": "无法写入文件：",
+    "ja": "ファイルを書き込めませんでした：",
+    "ru": "Не удалось записать файл:"
+  },
+  "Die Datei konnte nicht geöffnet werden:": {
+    "de": "Die Datei konnte nicht geöffnet werden:",
+    "en": "The file could not be opened:",
+    "es": "No se pudo abrir el archivo:",
+    "zh": "无法打开文件：",
+    "ja": "ファイルを開けませんでした：",
+    "ru": "Не удалось открыть файл:"
+  },
+  "Die Einstellungen werden in der Konfigurationsdatei des Benutzerprofils gespeichert.": {
+    "de": "Die Einstellungen werden in der Konfigurationsdatei des Benutzerprofils gespeichert.",
+    "en": "Settings are saved in the configuration file of the user profile.",
+    "es": "La configuración se guarda en el archivo de configuración del perfil de usuario.",
+    "zh": "设置将保存在用户配置文件的配置文件中。",
+    "ja": "設定はユーザープロファイルの設定ファイルに保存されます。",
+    "ru": "Настройки сохраняются в файле конфигурации профиля пользователя."
+  },
+  "Die Liste kann über einen Klick auf die Datenschutz-Ampel bearbeitet werden.": {
+    "de": "Die Liste kann über einen Klick auf die Datenschutz-Ampel bearbeitet werden.",
+    "en": "The list can be edited by clicking the privacy indicator.",
+    "es": "La lista se puede editar haciendo clic en el indicador de privacidad.",
+    "zh": "单击隐私指示灯即可编辑此列表。",
+    "ja": "プライバシーインジケーターをクリックすると、この一覧を編集できます。",
+    "ru": "Список можно изменить, щёлкнув индикатор конфиденциальности."
+  },
+  "Diese Datei ist nur online verfügbar.": {
+    "de": "Diese Datei ist nur online verfügbar.",
+    "en": "This file is only available online.",
+    "es": "Este archivo solo está disponible en línea.",
+    "zh": "此文件仅在线可用。",
+    "ja": "このファイルはオンラインでのみ利用できます。",
+    "ru": "Этот файл доступен только онлайн."
+  },
+  "Diff in Zwischenablage kopieren": {
+    "de": "Diff in Zwischenablage kopieren",
+    "en": "Copy Diff to Clipboard",
+    "es": "Copiar diff al portapapeles",
+    "zh": "将差异复制到剪贴板",
+    "ja": "差分をクリップボードにコピー",
+    "ru": "Скопировать diff в буфер обмена"
+  },
+  "Diff-Ergebnistabelle": {
+    "de": "Diff-Ergebnistabelle",
+    "en": "Diff results table",
+    "es": "Tabla de resultados del diff",
+    "zh": "差异结果表",
+    "ja": "差分結果の表",
+    "ru": "Таблица результатов сравнения"
+  },
+  "Dokumente": {
+    "de": "Dokumente",
+    "en": "Documents",
+    "es": "Documentos",
+    "zh": "文档",
+    "ja": "ドキュメント",
+    "ru": "Документы"
+  },
+  "Doppelklick bearbeitet einen Eintrag, Entf entfernt die Auswahl.": {
+    "de": "Doppelklick bearbeitet einen Eintrag, Entf entfernt die Auswahl.",
+    "en": "Double-click edits an entry, Delete removes the selection.",
+    "es": "Haga doble clic para editar una entrada; Supr elimina la selección.",
+    "zh": "双击可编辑条目，按 Delete 键可删除所选项。",
+    "ja": "ダブルクリックでエントリを編集し、Delete キーで選択項目を削除します。",
+    "ru": "Двойной щелчок изменяет запись, клавиша Delete удаляет выделенное."
+  },
+  "Downloads": {
+    "de": "Downloads",
+    "en": "Downloads",
+    "es": "Descargas",
+    "zh": "下载",
+    "ja": "ダウンロード",
+    "ru": "Загрузки"
+  },
+  "Drag & Drop": {
+    "de": "Drag & Drop",
+    "en": "Drag & Drop",
+    "es": "Arrastrar y soltar",
+    "zh": "拖放",
+    "ja": "ドラッグ＆ドロップ",
+    "ru": "Перетаскивание"
+  },
+  "Duplikate löschen": {
+    "de": "Duplikate löschen",
+    "en": "Delete Duplicates",
+    "es": "Eliminar duplicados",
+    "zh": "删除重复项",
+    "ja": "重複を削除",
+    "ru": "Удалить дубликаты"
+  },
+  "Duplikate-Ergebnisliste": {
+    "de": "Duplikate-Ergebnisliste",
+    "en": "Duplicates results list",
+    "es": "Lista de resultados de duplicados",
+    "zh": "重复项结果列表",
+    "ja": "重複の検索結果一覧",
+    "ru": "Список результатов поиска дубликатов"
+  },
+  "Duplikatsuche ist nicht verfügbar.": {
+    "de": "Duplikatsuche ist nicht verfügbar.",
+    "en": "Duplicate search is not available.",
+    "es": "La búsqueda de duplicados no está disponible.",
+    "zh": "重复项搜索不可用。",
+    "ja": "重複の検索は利用できません。",
+    "ru": "Поиск дубликатов недоступен."
+  },
+  "E-Mail Adressen": {
+    "de": "E-Mail Adressen",
+    "en": "Email addresses",
+    "es": "Direcciones de correo electrónico",
+    "zh": "电子邮件地址",
+    "ja": "メールアドレス",
+    "ru": "Адреса электронной почты"
+  },
+  "Editor öffnen": {
+    "de": "Editor öffnen",
+    "en": "Open Editor",
+    "es": "Abrir editor",
+    "zh": "打开编辑器",
+    "ja": "エディターを開く",
+    "ru": "Открыть редактор"
+  },
+  "Ein Element namens '{name}' existiert bereits in diesem Verzeichnis.": {
+    "de": "Ein Element namens '{name}' existiert bereits in diesem Verzeichnis.",
+    "en": "An item named '{name}' already exists in this directory.",
+    "es": "Ya existe un elemento llamado '{name}' en este directorio.",
+    "zh": "此目录中已存在名为“{name}”的项目。",
+    "ja": "このディレクトリには '{name}' という名前の項目が既に存在します。",
+    "ru": "В этом каталоге уже существует элемент с именем '{name}'."
+  },
+  "Ein Ordner oder eine Datei mit dem Namen '{name}' existiert bereits.": {
+    "de": "Ein Ordner oder eine Datei mit dem Namen '{name}' existiert bereits.",
+    "en": "A folder or file named '{name}' already exists.",
+    "es": "Ya existe una carpeta o un archivo llamado '{name}'.",
+    "zh": "已存在名为“{name}”的文件夹或文件。",
+    "ja": "'{name}' という名前のフォルダーまたはファイルが既に存在します。",
+    "ru": "Папка или файл с именем '{name}' уже существует."
+  },
+  "Ein intelligenter Datei-Explorer mit:": {
+    "de": "Ein intelligenter Datei-Explorer mit:",
+    "en": "A smart file explorer with:",
+    "es": "Un explorador de archivos inteligente con:",
+    "zh": "智能文件资源管理器，具有：",
+    "ja": "次の機能を備えたスマートなファイルエクスプローラー：",
+    "ru": "Интеллектуальный проводник с функциями:"
+  },
+  "Eindeutiger Name für dieses Synchronisationspaar": {
+    "de": "Eindeutiger Name für dieses Synchronisationspaar",
+    "en": "Unique name for this sync pair",
+    "es": "Nombre único para este par de sincronización",
+    "zh": "此同步对的唯一名称",
+    "ja": "この同期ペアの一意の名前",
+    "ru": "Уникальное имя для этой пары синхронизации"
+  },
+  "Einfügen": {
+    "de": "Einfügen",
+    "en": "Paste",
+    "es": "Pegar",
+    "zh": "粘贴",
+    "ja": "貼り付け",
+    "ru": "Вставить"
+  },
+  "Eingabefeld für den Vergleichs-Hash. Erkennt automatisch den passenden Prüfsummen-Algorithmus.": {
+    "de": "Eingabefeld für den Vergleichs-Hash. Erkennt automatisch den passenden Prüfsummen-Algorithmus.",
+    "en": "Input field for the comparison hash. Automatically detects the matching checksum algorithm.",
+    "es": "Campo de entrada para el hash de comparación. Detecta automáticamente el algoritmo de suma de comprobación adecuado.",
+    "zh": "用于输入比较哈希值的输入框。会自动识别匹配的校验和算法。",
+    "ja": "比較用ハッシュの入力欄です。適合するチェックサムアルゴリズムを自動的に判別します。",
+    "ru": "Поле ввода для хеша сравнения. Автоматически определяет подходящий алгоритм контрольной суммы."
+  },
+  "Eingefügt": {
+    "de": "Eingefügt",
+    "en": "Pasted",
+    "es": "Pegado",
+    "zh": "已粘贴",
+    "ja": "貼り付け済み",
+    "ru": "Вставлено"
+  },
+  "Einige Dateien konnten nicht übertragen werden:": {
+    "de": "Einige Dateien konnten nicht übertragen werden:",
+    "en": "Some files could not be transferred:",
+    "es": "No se pudieron transferir algunos archivos:",
+    "zh": "部分文件无法传输：",
+    "ja": "一部のファイルを転送できませんでした：",
+    "ru": "Не удалось передать некоторые файлы:"
+  },
+  "Einstellungen gespeichert": {
+    "de": "Einstellungen gespeichert",
+    "en": "Settings saved",
+    "es": "Configuración guardada",
+    "zh": "设置已保存",
+    "ja": "設定を保存しました",
+    "ru": "Настройки сохранены"
+  },
+  "Einstellungen speichern": {
+    "de": "Einstellungen speichern",
+    "en": "Save Settings",
+    "es": "Guardar configuración",
+    "zh": "保存设置",
+    "ja": "設定を保存",
+    "ru": "Сохранить настройки"
+  },
+  "Einstellungen übernehmen": {
+    "de": "Einstellungen übernehmen",
+    "en": "Apply Settings",
+    "es": "Aplicar configuración",
+    "zh": "应用设置",
+    "ja": "設定を適用",
+    "ru": "Применить настройки"
+  },
+  "Einstellungen...": {
+    "de": "Einstellungen...",
+    "en": "Settings...",
+    "es": "Configuración...",
+    "zh": "设置...",
+    "ja": "設定...",
+    "ru": "Настройки..."
+  },
+  "Einstellungsbereiche": {
+    "de": "Einstellungsbereiche",
+    "en": "Settings sections",
+    "es": "Secciones de configuración",
+    "zh": "设置分区",
+    "ja": "設定のセクション",
+    "ru": "Разделы настроек"
+  },
+  "Einträge: {list}": {
+    "de": "Einträge: {list}",
+    "en": "Entries: {list}",
+    "es": "Entradas: {list}",
+    "zh": "条目：{list}",
+    "ja": "エントリ：{list}",
+    "ru": "Записи: {list}"
+  },
+  "Elementanzahl": {
+    "de": "Elementanzahl",
+    "en": "Item count",
+    "es": "Número de elementos",
+    "zh": "项目数",
+    "ja": "項目数",
+    "ru": "Количество элементов"
+  },
+  "Entfernen": {
+    "de": "Entfernen",
+    "en": "Remove",
+    "es": "Quitar",
+    "zh": "移除",
+    "ja": "削除",
+    "ru": "Удалить"
+  },
+  "Enthaltenden Ordner öffnen": {
+    "de": "Enthaltenden Ordner öffnen",
+    "en": "Open Containing Folder",
+    "es": "Abrir carpeta contenedora",
+    "zh": "打开所在文件夹",
+    "ja": "保存先のフォルダーを開く",
+    "ru": "Открыть содержащую папку"
+  },
+  "Entwicklung": {
+    "de": "Entwicklung",
+    "en": "Development",
+    "es": "Desarrollo",
+    "zh": "开发",
+    "ja": "開発",
+    "ru": "Разработка"
+  },
+  "Erfolgreich": {
+    "de": "Erfolgreich",
+    "en": "Successful",
+    "es": "Correcto",
+    "zh": "成功",
+    "ja": "成功",
+    "ru": "Успешно"
+  },
+  "Ergebnis: {status}": {
+    "de": "Ergebnis: {status}",
+    "en": "Result: {status}",
+    "es": "Resultado: {status}",
+    "zh": "结果：{status}",
+    "ja": "結果：{status}",
+    "ru": "Результат: {status}"
+  },
+  "Ergebnisse": {
+    "de": "Ergebnisse",
+    "en": "Results",
+    "es": "Resultados",
+    "zh": "结果",
+    "ja": "結果",
+    "ru": "Результаты"
+  },
+  "Erkannt:": {
+    "de": "Erkannt:",
+    "en": "Detected:",
+    "es": "Detectado:",
+    "zh": "检测到：",
+    "ja": "検出：",
+    "ru": "Обнаружено:"
+  },
+  "Erkannt: {items}": {
+    "de": "Erkannt: {items}",
+    "en": "Detected: {items}",
+    "es": "Detectado: {items}",
+    "zh": "检测到：{items}",
+    "ja": "検出：{items}",
+    "ru": "Обнаружено: {items}"
+  },
+  "Erkannte Muster:": {
+    "de": "Erkannte Muster:",
+    "en": "Detected patterns:",
+    "es": "Patrones detectados:",
+    "zh": "检测到的模式：",
+    "ja": "検出されたパターン：",
+    "ru": "Обнаруженные шаблоны:"
+  },
+  "Erkennung": {
+    "de": "Erkennung",
+    "en": "Detection",
+    "es": "Detección",
+    "zh": "检测",
+    "ja": "検出",
+    "ru": "Обнаружение"
+  },
+  "Erkennungsmuster": {
+    "de": "Erkennungsmuster",
+    "en": "Detection patterns",
+    "es": "Patrones de detección",
+    "zh": "检测模式",
+    "ja": "検出パターン",
+    "ru": "Шаблоны обнаружения"
+  },
+  "Erkennungsmuster, Blacklist und Whitelist werden im Dialog Datenschutz-Einstellungen gepflegt (auch per Klick auf die Ampel).": {
+    "de": "Erkennungsmuster, Blacklist und Whitelist werden im Dialog Datenschutz-Einstellungen gepflegt (auch per Klick auf die Ampel).",
+    "en": "Detection patterns, blacklist and whitelist are managed in the Privacy Settings dialog (also by clicking the indicator).",
+    "es": "Los patrones de detección, la lista negra y la lista blanca se gestionan en el cuadro de diálogo Configuración de privacidad (también haciendo clic en el indicador).",
+    "zh": "检测模式、黑名单和白名单在“隐私设置”对话框中管理（也可单击指示灯打开）。",
+    "ja": "検出パターン、ブラックリスト、ホワイトリストは「プライバシー設定」ダイアログで管理します（インジケーターのクリックでも開けます）。",
+    "ru": "Шаблоны обнаружения, чёрный и белый списки настраиваются в диалоге «Настройки конфиденциальности» (его также можно открыть щелчком по индикатору)."
+  },
+  "Ersetzungstext": {
+    "de": "Ersetzungstext",
+    "en": "Replacement text",
+    "es": "Texto de reemplazo",
+    "zh": "替换文本",
+    "ja": "置換テキスト",
+    "ru": "Текст замены"
+  },
+  "Erwartete Prüfsumme zur Verifikation": {
+    "de": "Erwartete Prüfsumme zur Verifikation",
+    "en": "Expected checksum for verification",
+    "es": "Suma de comprobación esperada para la verificación",
+    "zh": "用于验证的预期校验和",
+    "ja": "検証用の期待されるチェックサム",
+    "ru": "Ожидаемая контрольная сумма для проверки"
+  },
+  "Erweiterte Dateisuche": {
+    "de": "Erweiterte Dateisuche",
+    "en": "Advanced File Search",
+    "es": "Búsqueda avanzada de archivos",
+    "zh": "高级文件搜索",
+    "ja": "詳細ファイル検索",
+    "ru": "Расширенный поиск файлов"
+  },
+  "Erweiterte Suche öffnen": {
+    "de": "Erweiterte Suche öffnen",
+    "en": "Open Advanced Search",
+    "es": "Abrir búsqueda avanzada",
+    "zh": "打开高级搜索",
+    "ja": "詳細検索を開く",
+    "ru": "Открыть расширенный поиск"
+  },
+  "Es gibt ungespeicherte Änderungen.": {
+    "de": "Es gibt ungespeicherte Änderungen.",
+    "en": "There are unsaved changes.",
+    "es": "Hay cambios sin guardar.",
+    "zh": "有未保存的更改。",
+    "ja": "保存されていない変更があります。",
+    "ru": "Есть несохранённые изменения."
+  },
+  "Excel-Arbeitsblatt": {
+    "de": "Excel-Arbeitsblatt",
+    "en": "Excel worksheet",
+    "es": "Hoja de cálculo de Excel",
+    "zh": "Excel 工作表",
+    "ja": "Excel ワークシート",
+    "ru": "Лист Excel"
+  },
+  "ExplorerPro": {
+    "de": "ExplorerPro",
+    "en": "ExplorerPro",
+    "es": "ExplorerPro",
+    "zh": "ExplorerPro",
+    "ja": "ExplorerPro",
+    "ru": "ExplorerPro"
+  },
+  "Export fehlgeschlagen": {
+    "de": "Export fehlgeschlagen",
+    "en": "Export failed",
+    "es": "Error al exportar",
+    "zh": "导出失败",
+    "ja": "エクスポートに失敗しました",
+    "ru": "Не удалось экспортировать"
+  },
+  "Exportieren": {
+    "de": "Exportieren",
+    "en": "Export",
+    "es": "Exportar",
+    "zh": "导出",
+    "ja": "エクスポート",
+    "ru": "Экспортировать"
+  },
+  "Exportiert: {path}": {
+    "de": "Exportiert: {path}",
+    "en": "Exported: {path}",
+    "es": "Exportado: {path}",
+    "zh": "已导出：{path}",
+    "ja": "エクスポートしました：{path}",
+    "ru": "Экспортировано: {path}"
+  },
+  "Externes Öffnen fehlgeschlagen: {error}": {
+    "de": "Externes Öffnen fehlgeschlagen: {error}",
+    "en": "External open failed: {error}",
+    "es": "Error al abrir externamente: {error}",
+    "zh": "外部打开失败：{error}",
+    "ja": "外部で開けませんでした：{error}",
+    "ru": "Не удалось открыть во внешней программе: {error}"
+  },
+  "Farbschema": {
+    "de": "Farbschema",
+    "en": "Color scheme",
+    "es": "Combinación de colores",
+    "zh": "配色方案",
+    "ja": "配色",
+    "ru": "Цветовая схема"
+  },
+  "Fehler beim Dateivergleich:\n{error}": {
+    "de": "Fehler beim Dateivergleich:\n{error}",
+    "en": "Error comparing files:\n{error}",
+    "es": "Error al comparar archivos:\n{error}",
+    "zh": "比较文件时出错：\n{error}",
+    "ja": "ファイルの比較中にエラーが発生しました：\n{error}",
+    "ru": "Ошибка при сравнении файлов:\n{error}"
+  },
+  "Fehler beim Laden:\n{error}": {
+    "de": "Fehler beim Laden:\n{error}",
+    "en": "Error loading:\n{error}",
+    "es": "Error al cargar:\n{error}",
+    "zh": "加载时出错：\n{error}",
+    "ja": "読み込み中にエラーが発生しました：\n{error}",
+    "ru": "Ошибка при загрузке:\n{error}"
+  },
+  "Fehler beim Laden: {error}": {
+    "de": "Fehler beim Laden: {error}",
+    "en": "Error loading: {error}",
+    "es": "Error al cargar: {error}",
+    "zh": "加载时出错：{error}",
+    "ja": "読み込み中にエラーが発生しました：{error}",
+    "ru": "Ошибка при загрузке: {error}"
+  },
+  "Fehler beim Lesen: {error}": {
+    "de": "Fehler beim Lesen: {error}",
+    "en": "Error reading: {error}",
+    "es": "Error al leer: {error}",
+    "zh": "读取时出错：{error}",
+    "ja": "読み取り中にエラーが発生しました：{error}",
+    "ru": "Ошибка при чтении: {error}"
+  },
+  "Fehler beim Löschen": {
+    "de": "Fehler beim Löschen",
+    "en": "Error deleting",
+    "es": "Error al eliminar",
+    "zh": "删除时出错",
+    "ja": "削除中にエラーが発生しました",
+    "ru": "Ошибка при удалении"
+  },
+  "Fehler beim Speichern:\n{error}": {
+    "de": "Fehler beim Speichern:\n{error}",
+    "en": "Error saving:\n{error}",
+    "es": "Error al guardar:\n{error}",
+    "zh": "保存时出错：\n{error}",
+    "ja": "保存中にエラーが発生しました：\n{error}",
+    "ru": "Ошибка при сохранении:\n{error}"
+  },
+  "Fehler: {error}": {
+    "de": "Fehler: {error}",
+    "en": "Error: {error}",
+    "es": "Error: {error}",
+    "zh": "错误：{error}",
+    "ja": "エラー：{error}",
+    "ru": "Ошибка: {error}"
+  },
+  "Fehlgeschlagen": {
+    "de": "Fehlgeschlagen",
+    "en": "Failed",
+    "es": "Error",
+    "zh": "失败",
+    "ja": "失敗",
+    "ru": "Не удалось"
+  },
+  "Fertig": {
+    "de": "Fertig",
+    "en": "Done",
+    "es": "Listo",
+    "zh": "完成",
+    "ja": "完了",
+    "ru": "Готово"
+  },
+  "Filtert die Anwendungsliste nach Name.": {
+    "de": "Filtert die Anwendungsliste nach Name.",
+    "en": "Filters the application list by name.",
+    "es": "Filtra la lista de aplicaciones por nombre.",
+    "zh": "按名称筛选应用程序列表。",
+    "ja": "アプリケーション一覧を名前で絞り込みます。",
+    "ru": "Фильтрует список приложений по имени."
+  },
+  "Filtert gespeicherte Prompts nach Titel, Kategorie oder Tags.": {
+    "de": "Filtert gespeicherte Prompts nach Titel, Kategorie oder Tags.",
+    "en": "Filters saved prompts by title, category or tags.",
+    "es": "Filtra los prompts guardados por título, categoría o etiquetas.",
+    "zh": "按标题、分类或标签筛选已保存的提示词。",
+    "ja": "保存済みのプロンプトをタイトル、カテゴリ、タグで絞り込みます。",
+    "ru": "Фильтрует сохранённые промпты по названию, категории или тегам."
+  },
+  "Folgende Elemente konnten nicht gelöscht werden:": {
+    "de": "Folgende Elemente konnten nicht gelöscht werden:",
+    "en": "The following items could not be deleted:",
+    "es": "No se pudieron eliminar los siguientes elementos:",
+    "zh": "无法删除以下项目：",
+    "ja": "次の項目を削除できませんでした：",
+    "ru": "Не удалось удалить следующие элементы:"
+  },
+  "Fortschritt der Prüfsummenberechnung in Prozent.": {
+    "de": "Fortschritt der Prüfsummenberechnung in Prozent.",
+    "en": "Progress of the checksum calculation in percent.",
+    "es": "Progreso del cálculo de la suma de comprobación en porcentaje.",
+    "zh": "校验和计算进度（百分比）。",
+    "ja": "チェックサム計算の進行状況（パーセント）です。",
+    "ru": "Ход вычисления контрольной суммы в процентах."
+  },
+  "Fortschritt der Synchronisationsanalyse": {
+    "de": "Fortschritt der Synchronisationsanalyse",
+    "en": "Progress of the sync analysis",
+    "es": "Progreso del análisis de sincronización",
+    "zh": "同步分析进度",
+    "ja": "同期分析の進行状況",
+    "ru": "Ход анализа синхронизации"
+  },
+  "Fusion aus: {tools}": {
+    "de": "Fusion aus: {tools}",
+    "en": "Merged from: {tools}",
+    "es": "Fusión de: {tools}",
+    "zh": "合并自：{tools}",
+    "ja": "統合元：{tools}",
+    "ru": "Объединено из: {tools}"
+  },
+  "Fügt den aktuellen Ordnerpfad zur Favoritenliste hinzu.": {
+    "de": "Fügt den aktuellen Ordnerpfad zur Favoritenliste hinzu.",
+    "en": "Adds the current folder path to the favorites list.",
+    "es": "Agrega la ruta de la carpeta actual a la lista de favoritos.",
+    "zh": "将当前文件夹路径添加到收藏列表。",
+    "ja": "現在のフォルダーのパスをお気に入りの一覧に追加します。",
+    "ru": "Добавляет путь к текущей папке в список избранного."
+  },
+  "Führt das aktuelle Skript im Unterprozess aus.": {
+    "de": "Führt das aktuelle Skript im Unterprozess aus.",
+    "en": "Runs the current script in a subprocess.",
+    "es": "Ejecuta el script actual en un subproceso.",
+    "zh": "在子进程中运行当前脚本。",
+    "ja": "現在のスクリプトをサブプロセスで実行します。",
+    "ru": "Запускает текущий скрипт в подпроцессе."
+  },
+  "Gefundene Duplikate": {
+    "de": "Gefundene Duplikate",
+    "en": "Duplicates found",
+    "es": "Duplicados encontrados",
+    "zh": "找到的重复项",
+    "ja": "見つかった重複",
+    "ru": "Найденные дубликаты"
+  },
+  "Gehe zu Zeile": {
+    "de": "Gehe zu Zeile",
+    "en": "Go to Line",
+    "es": "Ir a la línea",
+    "zh": "转到行",
+    "ja": "行へ移動",
+    "ru": "Перейти к строке"
+  },
+  "Gelb – potenziell sensible Daten erkannt": {
+    "de": "Gelb – potenziell sensible Daten erkannt",
+    "en": "Yellow – potentially sensitive data detected",
+    "es": "Amarillo: se detectaron datos potencialmente confidenciales",
+    "zh": "黄色 – 检测到可能的敏感数据",
+    "ja": "黄 – 機密の可能性があるデータを検出",
+    "ru": "Жёлтый – обнаружены потенциально конфиденциальные данные"
+  },
+  "Geplante Synchronisationsänderungen": {
+    "de": "Geplante Synchronisationsänderungen",
+    "en": "Scheduled sync changes",
+    "es": "Cambios de sincronización programados",
+    "zh": "计划的同步更改",
+    "ja": "予定されている同期の変更",
+    "ru": "Запланированные изменения синхронизации"
+  },
+  "Geändert": {
+    "de": "Geändert",
+    "en": "Modified",
+    "es": "Modificado",
+    "zh": "已修改",
+    "ja": "更新日時",
+    "ru": "Изменено"
+  },
+  "Geändert bis Datum": {
+    "de": "Geändert bis Datum",
+    "en": "Modified until date",
+    "es": "Modificado hasta la fecha",
+    "zh": "修改日期截止",
+    "ja": "更新日（終了）",
+    "ru": "Изменено до даты"
+  },
+  "Geändert von Datum": {
+    "de": "Geändert von Datum",
+    "en": "Modified from date",
+    "es": "Modificado desde la fecha",
+    "zh": "修改日期起始",
+    "ja": "更新日（開始）",
+    "ru": "Изменено с даты"
+  },
+  "Grafik": {
+    "de": "Grafik",
+    "en": "Image",
+    "es": "Imagen",
+    "zh": "图片",
+    "ja": "画像",
+    "ru": "Изображение"
+  },
+  "Grau – Überwachung inaktiv": {
+    "de": "Grau – Überwachung inaktiv",
+    "en": "Gray – monitoring inactive",
+    "es": "Gris: supervisión inactiva",
+    "zh": "灰色 – 监控未启用",
+    "ja": "グレー – 監視は無効",
+    "ru": "Серый – мониторинг неактивен"
+  },
+  "Groß- und Kleinschreibung beachten": {
+    "de": "Groß- und Kleinschreibung beachten",
+    "en": "Case sensitive",
+    "es": "Distinguir mayúsculas y minúsculas",
+    "zh": "区分大小写",
+    "ja": "大文字と小文字を区別",
+    "ru": "Учитывать регистр"
+  },
+  "Grund": {
+    "de": "Grund",
+    "en": "Reason",
+    "es": "Motivo",
+    "zh": "原因",
+    "ja": "理由",
+    "ru": "Причина"
+  },
+  "Größe": {
+    "de": "Größe",
+    "en": "Size",
+    "es": "Tamaño",
+    "zh": "大小",
+    "ja": "サイズ",
+    "ru": "Размер"
+  },
+  "Größe: {size}": {
+    "de": "Größe: {size}",
+    "en": "Size: {size}",
+    "es": "Tamaño: {size}",
+    "zh": "大小：{size}",
+    "ja": "サイズ：{size}",
+    "ru": "Размер: {size}"
+  },
+  "Größere Datei gewinnt": {
+    "de": "Größere Datei gewinnt",
+    "en": "Larger file wins",
+    "es": "Gana el archivo más grande",
+    "zh": "保留较大的文件",
+    "ja": "サイズの大きいファイルを優先",
+    "ru": "Побеждает файл большего размера"
+  },
+  "Grün": {
+    "de": "Grün",
+    "en": "Green",
+    "es": "Verde",
+    "zh": "绿色",
+    "ja": "緑",
+    "ru": "Зелёный"
+  },
+  "Grün – keine sensiblen Daten erkannt": {
+    "de": "Grün – keine sensiblen Daten erkannt",
+    "en": "Green – no sensitive data detected",
+    "es": "Verde: no se detectaron datos confidenciales",
+    "zh": "绿色 – 未检测到敏感数据",
+    "ja": "緑 – 機密データは検出されませんでした",
+    "ru": "Зелёный – конфиденциальные данные не обнаружены"
+  },
+  "Hierarchische Struktur aller lokalen Laufwerke und Schnellzugriff-Verzeichnisse.": {
+    "de": "Hierarchische Struktur aller lokalen Laufwerke und Schnellzugriff-Verzeichnisse.",
+    "en": "Hierarchical structure of all local drives and quick access directories.",
+    "es": "Estructura jerárquica de todas las unidades locales y los directorios de acceso rápido.",
+    "zh": "所有本地驱动器和快速访问目录的层级结构。",
+    "ja": "すべてのローカルドライブとクイックアクセスのディレクトリの階層構造です。",
+    "ru": "Иерархическая структура всех локальных дисков и каталогов быстрого доступа."
+  },
+  "Hinweis": {
+    "de": "Hinweis",
+    "en": "Note",
+    "es": "Nota",
+    "zh": "提示",
+    "ja": "メモ",
+    "ru": "Примечание"
+  },
+  "Hinweis: {count} Muster erkannt": {
+    "de": "Hinweis: {count} Muster erkannt",
+    "en": "Note: {count} patterns detected",
+    "es": "Nota: {count} patrones detectados",
+    "zh": "提示：检测到 {count} 个模式",
+    "ja": "メモ：{count} 件のパターンを検出",
+    "ru": "Примечание: обнаружено шаблонов: {count}"
+  },
+  "Hinzufügen": {
+    "de": "Hinzufügen",
+    "en": "Add",
+    "es": "Agregar",
+    "zh": "添加",
+    "ja": "追加",
+    "ru": "Добавить"
+  },
+  "Home": {
+    "de": "Home",
+    "en": "Home",
+    "es": "Inicio",
+    "zh": "主页",
+    "ja": "ホーム",
+    "ru": "Домашняя папка"
+  },
+  "Im Dateiinhalt suchen": {
+    "de": "Im Dateiinhalt suchen",
+    "en": "Search in file content",
+    "es": "Buscar en el contenido del archivo",
+    "zh": "在文件内容中搜索",
+    "ja": "ファイルの内容を検索",
+    "ru": "Искать в содержимом файла"
+  },
+  "Im Dateinamen suchen": {
+    "de": "Im Dateinamen suchen",
+    "en": "Search in file name",
+    "es": "Buscar en el nombre del archivo",
+    "zh": "在文件名中搜索",
+    "ja": "ファイル名を検索",
+    "ru": "Искать в имени файла"
+  },
+  "Im Pfad suchen": {
+    "de": "Im Pfad suchen",
+    "en": "Search in path",
+    "es": "Buscar en la ruta",
+    "zh": "在路径中搜索",
+    "ja": "パスを検索",
+    "ru": "Искать в пути"
+  },
+  "Import abgeschlossen": {
+    "de": "Import abgeschlossen",
+    "en": "Import completed",
+    "es": "Importación completada",
+    "zh": "导入完成",
+    "ja": "インポートが完了しました",
+    "ru": "Импорт завершён"
+  },
+  "Import fehlgeschlagen": {
+    "de": "Import fehlgeschlagen",
+    "en": "Import failed",
+    "es": "Error al importar",
+    "zh": "导入失败",
+    "ja": "インポートに失敗しました",
+    "ru": "Не удалось импортировать"
+  },
+  "Importieren": {
+    "de": "Importieren",
+    "en": "Import",
+    "es": "Importar",
+    "zh": "导入",
+    "ja": "インポート",
+    "ru": "Импортировать"
+  },
+  "In Datei exportieren: {list}": {
+    "de": "In Datei exportieren: {list}",
+    "en": "Export to file: {list}",
+    "es": "Exportar a archivo: {list}",
+    "zh": "导出到文件：{list}",
+    "ja": "ファイルにエクスポート：{list}",
+    "ru": "Экспортировать в файл: {list}"
+  },
+  "In Editor öffnen": {
+    "de": "In Editor öffnen",
+    "en": "Open in Editor",
+    "es": "Abrir en el editor",
+    "zh": "在编辑器中打开",
+    "ja": "エディターで開く",
+    "ru": "Открыть в редакторе"
+  },
+  "In Index suchen": {
+    "de": "In Index suchen",
+    "en": "Search in index",
+    "es": "Buscar en el índice",
+    "zh": "在索引中搜索",
+    "ja": "インデックス内を検索",
+    "ru": "Искать в индексе"
+  },
+  "In die Zwischenablage kopiert": {
+    "de": "In die Zwischenablage kopiert",
+    "en": "Copied to clipboard",
+    "es": "Copiado al portapapeles",
+    "zh": "已复制到剪贴板",
+    "ja": "クリップボードにコピーしました",
+    "ru": "Скопировано в буфер обмена"
+  },
+  "In externer Anwendung öffnen": {
+    "de": "In externer Anwendung öffnen",
+    "en": "Open in external application",
+    "es": "Abrir en una aplicación externa",
+    "zh": "在外部应用程序中打开",
+    "ja": "外部アプリケーションで開く",
+    "ru": "Открыть во внешнем приложении"
+  },
+  "Indiziere: {current}/{total}": {
+    "de": "Indiziere: {current}/{total}",
+    "en": "Indexing: {current}/{total}",
+    "es": "Indexando: {current}/{total}",
+    "zh": "正在索引：{current}/{total}",
+    "ja": "インデックス作成中: {current}/{total}",
+    "ru": "Индексирование: {current}/{total}"
+  },
+  "Indizierung ist nicht verfügbar.": {
+    "de": "Indizierung ist nicht verfügbar.",
+    "en": "Indexing is not available.",
+    "es": "La indexación no está disponible.",
+    "zh": "索引功能不可用。",
+    "ja": "インデックス作成は利用できません。",
+    "ru": "Индексирование недоступно."
+  },
+  "Integrierter Code-Bearbeitung": {
+    "de": "Integrierter Code-Bearbeitung",
+    "en": "Integrated code editing",
+    "es": "Edición de código integrada",
+    "zh": "集成代码编辑",
+    "ja": "統合コード編集",
+    "ru": "Встроенное редактирование кода"
+  },
+  "Internet": {
+    "de": "Internet",
+    "en": "Internet",
+    "es": "Internet",
+    "zh": "互联网",
+    "ja": "インターネット",
+    "ru": "Интернет"
+  },
+  "JSON-Dateien (*.json)": {
+    "de": "JSON-Dateien (*.json)",
+    "en": "JSON files (*.json)",
+    "es": "Archivos JSON (*.json)",
+    "zh": "JSON 文件 (*.json)",
+    "ja": "JSON ファイル (*.json)",
+    "ru": "Файлы JSON (*.json)"
+  },
+  "Kategorie": {
+    "de": "Kategorie",
+    "en": "Category",
+    "es": "Categoría",
+    "zh": "类别",
+    "ja": "カテゴリ",
+    "ru": "Категория"
+  },
+  "Kategorie zur Gruppierung im Schnellstarter.": {
+    "de": "Kategorie zur Gruppierung im Schnellstarter.",
+    "en": "Category used for grouping in the quick launcher.",
+    "es": "Categoría para agrupar en el inicio rápido.",
+    "zh": "用于在快速启动器中分组的类别。",
+    "ja": "クイックランチャーでグループ化するためのカテゴリです。",
+    "ru": "Категория для группировки в быстром запуске."
+  },
+  "Kein Index verfügbar!": {
+    "de": "Kein Index verfügbar!",
+    "en": "No index available!",
+    "es": "¡No hay índice disponible!",
+    "zh": "无可用索引！",
+    "ja": "インデックスが利用できません！",
+    "ru": "Индекс недоступен!"
+  },
+  "Keine Ausführung für {ext} unterstützt": {
+    "de": "Keine Ausführung für {ext} unterstützt",
+    "en": "Running {ext} files is not supported",
+    "es": "No se admite la ejecución de {ext}",
+    "zh": "不支持运行 {ext}",
+    "ja": "{ext} の実行はサポートされていません",
+    "ru": "Запуск файлов {ext} не поддерживается"
+  },
+  "Keine Dateien in der Zwischenablage": {
+    "de": "Keine Dateien in der Zwischenablage",
+    "en": "No files in clipboard",
+    "es": "No hay archivos en el portapapeles",
+    "zh": "剪贴板中没有文件",
+    "ja": "クリップボードにファイルがありません",
+    "ru": "В буфере обмена нет файлов"
+  },
+  "Keine Grenze": {
+    "de": "Keine Grenze",
+    "en": "No limit",
+    "es": "Sin límite",
+    "zh": "无限制",
+    "ja": "制限なし",
+    "ru": "Без ограничений"
+  },
+  "Keine Treffer für: {query}": {
+    "de": "Keine Treffer für: {query}",
+    "en": "No results for: {query}",
+    "es": "Sin resultados para: {query}",
+    "zh": "没有找到：{query}",
+    "ja": "「{query}」に一致する結果はありません",
+    "ru": "Нет результатов для: {query}"
+  },
+  "Keine sensiblen Daten erkannt": {
+    "de": "Keine sensiblen Daten erkannt",
+    "en": "No sensitive data detected",
+    "es": "No se detectaron datos confidenciales",
+    "zh": "未检测到敏感数据",
+    "ja": "機密データは検出されませんでした",
+    "ru": "Конфиденциальные данные не обнаружены"
+  },
+  "Keine sensiblen Daten erkannt.": {
+    "de": "Keine sensiblen Daten erkannt.",
+    "en": "No sensitive data detected.",
+    "es": "No se detectaron datos confidenciales.",
+    "zh": "未检测到敏感数据。",
+    "ja": "機密データは検出されませんでした。",
+    "ru": "Конфиденциальные данные не обнаружены."
+  },
+  "Klicken: Datenschutz-Einstellungen · Rechtsklick: Schnellmenü": {
+    "de": "Klicken: Datenschutz-Einstellungen · Rechtsklick: Schnellmenü",
+    "en": "Click: Privacy Settings · Right-click: Quick menu",
+    "es": "Clic: configuración de privacidad · Clic derecho: menú rápido",
+    "zh": "单击：隐私设置 · 右键单击：快捷菜单",
+    "ja": "クリック: プライバシー設定 · 右クリック: クイックメニュー",
+    "ru": "Щелчок: настройки конфиденциальности · Правый щелчок: быстрое меню"
+  },
+  "Kommagetrennte Muster für Dateien und Ordner, die nicht synchronisiert werden": {
+    "de": "Kommagetrennte Muster für Dateien und Ordner, die nicht synchronisiert werden",
+    "en": "Comma-separated patterns for files and folders that are not synchronized",
+    "es": "Patrones separados por comas para archivos y carpetas que no se sincronizarán",
+    "zh": "以逗号分隔的不同步文件和文件夹模式",
+    "ja": "同期しないファイルとフォルダーのパターン（カンマ区切り）",
+    "ru": "Шаблоны файлов и папок через запятую, которые не синхронизируются"
+  },
+  "Kommandozeilenparameter": {
+    "de": "Kommandozeilenparameter",
+    "en": "Command-line parameters",
+    "es": "Parámetros de línea de comandos",
+    "zh": "命令行参数",
+    "ja": "コマンドラインパラメーター",
+    "ru": "Параметры командной строки"
+  },
+  "Konfiguration von Erkennungsmustern, Blacklist, Whitelist und automatischer Bereinigung.": {
+    "de": "Konfiguration von Erkennungsmustern, Blacklist, Whitelist und automatischer Bereinigung.",
+    "en": "Configuration of detection patterns, blacklist, whitelist and automatic cleanup.",
+    "es": "Configuración de patrones de detección, lista negra (Blacklist), lista blanca (Whitelist) y limpieza automática.",
+    "zh": "配置检测模式、Blacklist、Whitelist 和自动清理。",
+    "ja": "検出パターン、Blacklist、Whitelist、自動クリーンアップの設定です。",
+    "ru": "Настройка шаблонов обнаружения, Blacklist, Whitelist и автоматической очистки."
+  },
+  "Konfigurationsdialog für Name, Programmpfad, Kategorie, Beschreibung und Startargumente.": {
+    "de": "Konfigurationsdialog für Name, Programmpfad, Kategorie, Beschreibung und Startargumente.",
+    "en": "Configuration dialog for name, program path, category, description and launch arguments.",
+    "es": "Cuadro de diálogo de configuración para el nombre, la ruta del programa, la categoría, la descripción y los argumentos de inicio.",
+    "zh": "用于设置名称、程序路径、类别、描述和启动参数的配置对话框。",
+    "ja": "名前、プログラムのパス、カテゴリ、説明、起動引数を設定するダイアログです。",
+    "ru": "Диалог настройки имени, пути к программе, категории, описания и аргументов запуска."
+  },
+  "Konfliktlösung": {
+    "de": "Konfliktlösung",
+    "en": "Conflict resolution",
+    "es": "Resolución de conflictos",
+    "zh": "冲突解决",
+    "ja": "競合の解決",
+    "ru": "Разрешение конфликтов"
+  },
+  "Konnte Datei nicht erstellen:": {
+    "de": "Konnte Datei nicht erstellen:",
+    "en": "Could not create file:",
+    "es": "No se pudo crear el archivo:",
+    "zh": "无法创建文件：",
+    "ja": "ファイルを作成できませんでした:",
+    "ru": "Не удалось создать файл:"
+  },
+  "Konnte Datei nicht prüfen: {error}": {
+    "de": "Konnte Datei nicht prüfen: {error}",
+    "en": "Could not check file: {error}",
+    "es": "No se pudo comprobar el archivo: {error}",
+    "zh": "无法检查文件：{error}",
+    "ja": "ファイルを確認できませんでした: {error}",
+    "ru": "Не удалось проверить файл: {error}"
+  },
+  "Konnte Element nicht umbenennen:": {
+    "de": "Konnte Element nicht umbenennen:",
+    "en": "Could not rename item:",
+    "es": "No se pudo cambiar el nombre del elemento:",
+    "zh": "无法重命名项目：",
+    "ja": "項目の名前を変更できませんでした:",
+    "ru": "Не удалось переименовать элемент:"
+  },
+  "Konnte Ordner nicht erstellen:": {
+    "de": "Konnte Ordner nicht erstellen:",
+    "en": "Could not create folder:",
+    "es": "No se pudo crear la carpeta:",
+    "zh": "无法创建文件夹：",
+    "ja": "フォルダーを作成できませんでした:",
+    "ru": "Не удалось создать папку:"
+  },
+  "Konnte Ordner nicht öffnen:\n{error}": {
+    "de": "Konnte Ordner nicht öffnen:\n{error}",
+    "en": "Could not open folder:\n{error}",
+    "es": "No se pudo abrir la carpeta:\n{error}",
+    "zh": "无法打开文件夹：\n{error}",
+    "ja": "フォルダーを開けませんでした:\n{error}",
+    "ru": "Не удалось открыть папку:\n{error}"
+  },
+  "Konnte Terminal nicht öffnen:": {
+    "de": "Konnte Terminal nicht öffnen:",
+    "en": "Could not open terminal:",
+    "es": "No se pudo abrir el terminal:",
+    "zh": "无法打开终端：",
+    "ja": "ターミナルを開けませんでした:",
+    "ru": "Не удалось открыть терминал:"
+  },
+  "Konnte nicht starten:\n{error}": {
+    "de": "Konnte nicht starten:\n{error}",
+    "en": "Could not start:\n{error}",
+    "es": "No se pudo iniciar:\n{error}",
+    "zh": "无法启动：\n{error}",
+    "ja": "起動できませんでした:\n{error}",
+    "ru": "Не удалось запустить:\n{error}"
+  },
+  "Kopiert alle berechneten Hash-Werte strukturiert in die Zwischenablage.": {
+    "de": "Kopiert alle berechneten Hash-Werte strukturiert in die Zwischenablage.",
+    "en": "Copies all calculated hash values to the clipboard in a structured format.",
+    "es": "Copia todos los valores hash calculados al portapapeles de forma estructurada.",
+    "zh": "将所有已计算的哈希值以结构化格式复制到剪贴板。",
+    "ja": "計算したすべてのハッシュ値を構造化してクリップボードにコピーします。",
+    "ru": "Копирует все вычисленные хеш-значения в буфер обмена в структурированном виде."
+  },
+  "Kopiert den Prompt in die Zwischenablage": {
+    "de": "Kopiert den Prompt in die Zwischenablage",
+    "en": "Copies the prompt to the clipboard",
+    "es": "Copia el prompt al portapapeles",
+    "zh": "将 Prompt 复制到剪贴板",
+    "ja": "プロンプトをクリップボードにコピーします",
+    "ru": "Копирует промпт в буфер обмена"
+  },
+  "Kopiert den Unified Diff in die Zwischenablage": {
+    "de": "Kopiert den Unified Diff in die Zwischenablage",
+    "en": "Copies the unified diff to the clipboard",
+    "es": "Copia el unified diff al portapapeles",
+    "zh": "将统一 Diff 复制到剪贴板",
+    "ja": "Unified Diff をクリップボードにコピーします",
+    "ru": "Копирует unified diff в буфер обмена"
+  },
+  "Kopiert die berechnete {algorithm}-Prüfsumme in die Zwischenablage.": {
+    "de": "Kopiert die berechnete {algorithm}-Prüfsumme in die Zwischenablage.",
+    "en": "Copies the calculated {algorithm} checksum to the clipboard.",
+    "es": "Copia la suma de comprobación {algorithm} calculada al portapapeles.",
+    "zh": "将已计算的 {algorithm} 校验和复制到剪贴板。",
+    "ja": "計算した {algorithm} チェックサムをクリップボードにコピーします。",
+    "ru": "Копирует вычисленную контрольную сумму {algorithm} в буфер обмена."
+  },
+  "Laufwerke": {
+    "de": "Laufwerke",
+    "en": "Drives",
+    "es": "Unidades",
+    "zh": "驱动器",
+    "ja": "ドライブ",
+    "ru": "Диски"
+  },
+  "Leer = Benutzerordner": {
+    "de": "Leer = Benutzerordner",
+    "en": "Empty = user folder",
+    "es": "Vacío = carpeta de usuario",
+    "zh": "留空 = 用户文件夹",
+    "ja": "空欄 = ユーザーフォルダー",
+    "ru": "Пусто = папка пользователя"
+  },
+  "Leert das Suchfeld und entfernt die aktuellen Suchergebnisse.": {
+    "de": "Leert das Suchfeld und entfernt die aktuellen Suchergebnisse.",
+    "en": "Clears the search field and removes the current search results.",
+    "es": "Borra el campo de búsqueda y elimina los resultados de búsqueda actuales.",
+    "zh": "清空搜索框并移除当前搜索结果。",
+    "ja": "検索ボックスを空にし、現在の検索結果を消去します。",
+    "ru": "Очищает поле поиска и удаляет текущие результаты поиска."
+  },
+  "Leert die Zwischenablage, sobald die Ampel auf Rot springt.": {
+    "de": "Leert die Zwischenablage, sobald die Ampel auf Rot springt.",
+    "en": "Clears the clipboard as soon as the traffic light turns red.",
+    "es": "Vacía el portapapeles en cuanto el semáforo se pone en rojo.",
+    "zh": "一旦指示灯变为红色，就清空剪贴板。",
+    "ja": "信号が赤に変わると同時にクリップボードを空にします。",
+    "ru": "Очищает буфер обмена, как только светофор переключается на красный."
+  },
+  "Legt fest, ob Dateien von Quelle zu Ziel, von Ziel zu Quelle oder in beide Richtungen übertragen werden": {
+    "de": "Legt fest, ob Dateien von Quelle zu Ziel, von Ziel zu Quelle oder in beide Richtungen übertragen werden",
+    "en": "Determines whether files are transferred from source to target, from target to source, or in both directions",
+    "es": "Define si los archivos se transfieren del origen al destino, del destino al origen o en ambas direcciones",
+    "zh": "决定文件是从源传输到目标、从目标传输到源，还是双向传输",
+    "ja": "ファイルを、ソースからターゲット、ターゲットからソース、または双方向のどれで転送するかを指定します",
+    "ru": "Определяет, передаются ли файлы из источника в цель, из цели в источник или в обоих направлениях"
+  },
+  "Legt fest, ob alle Dateien oder nur ausgewählte Kategorien in den Suchergebnissen erscheinen.": {
+    "de": "Legt fest, ob alle Dateien oder nur ausgewählte Kategorien in den Suchergebnissen erscheinen.",
+    "en": "Determines whether all files or only selected categories appear in the search results.",
+    "es": "Define si en los resultados de búsqueda aparecen todos los archivos o solo las categorías seleccionadas.",
+    "zh": "决定搜索结果中显示所有文件还是仅显示所选类别。",
+    "ja": "検索結果にすべてのファイルを表示するか、選択したカテゴリのみを表示するかを指定します。",
+    "ru": "Определяет, будут ли в результатах поиска отображаться все файлы или только выбранные категории."
+  },
+  "Legt fest, welche Datei bei unterschiedlichen Versionen behalten wird": {
+    "de": "Legt fest, welche Datei bei unterschiedlichen Versionen behalten wird",
+    "en": "Determines which file is kept when versions differ",
+    "es": "Define qué archivo se conserva cuando las versiones son distintas",
+    "zh": "决定版本不同时保留哪个文件",
+    "ja": "バージョンが異なる場合にどちらのファイルを残すかを指定します",
+    "ru": "Определяет, какой файл сохраняется при различии версий"
+  },
+  "Letzte 30 Tage": {
+    "de": "Letzte 30 Tage",
+    "en": "Last 30 days",
+    "es": "Últimos 30 días",
+    "zh": "最近 30 天",
+    "ja": "過去 30 日間",
+    "ru": "Последние 30 дней"
+  },
+  "Letzte 7 Tage": {
+    "de": "Letzte 7 Tage",
+    "en": "Last 7 days",
+    "es": "Últimos 7 días",
+    "zh": "最近 7 天",
+    "ja": "過去 7 日間",
+    "ru": "Последние 7 дней"
+  },
+  "Letzte Umbenennung rückgängig machen": {
+    "de": "Letzte Umbenennung rückgängig machen",
+    "en": "Undo last rename",
+    "es": "Deshacer el último cambio de nombre",
+    "zh": "撤销上次重命名",
+    "ja": "最後の名前変更を元に戻す",
+    "ru": "Отменить последнее переименование"
+  },
+  "Letztes Jahr": {
+    "de": "Letztes Jahr",
+    "en": "Last year",
+    "es": "Último año",
+    "zh": "最近一年",
+    "ja": "過去 1 年間",
+    "ru": "Последний год"
+  },
+  "Liste aller gespeicherten Prompts der ausgewählten Kategorie.": {
+    "de": "Liste aller gespeicherten Prompts der ausgewählten Kategorie.",
+    "en": "List of all saved prompts in the selected category.",
+    "es": "Lista de todos los prompts guardados de la categoría seleccionada.",
+    "zh": "所选类别中所有已保存 Prompt 的列表。",
+    "ja": "選択したカテゴリに保存されているすべてのプロンプトの一覧です。",
+    "ru": "Список всех сохранённых промптов выбранной категории."
+  },
+  "Liste der gefundenen Dateien. Mit den Pfeiltasten auswählen und mit Enter oder Doppelklick öffnen.": {
+    "de": "Liste der gefundenen Dateien. Mit den Pfeiltasten auswählen und mit Enter oder Doppelklick öffnen.",
+    "en": "List of found files. Select with the arrow keys and open with Enter or double-click.",
+    "es": "Lista de archivos encontrados. Selecciónelos con las teclas de flecha y ábralos con Intro o doble clic.",
+    "zh": "找到的文件列表。使用方向键选择，按 Enter 键或双击打开。",
+    "ja": "見つかったファイルの一覧です。矢印キーで選択し、Enter キーまたはダブルクリックで開きます。",
+    "ru": "Список найденных файлов. Выбирайте клавишами со стрелками и открывайте клавишей Enter или двойным щелчком."
+  },
+  "Liste der gespeicherten Schnellzugriff-Favoriten.": {
+    "de": "Liste der gespeicherten Schnellzugriff-Favoriten.",
+    "en": "List of saved quick-access favorites.",
+    "es": "Lista de los favoritos de acceso rápido guardados.",
+    "zh": "已保存的快速访问收藏夹列表。",
+    "ja": "保存されているクイックアクセスのお気に入りの一覧です。",
+    "ru": "Список сохранённых избранных элементов быстрого доступа."
+  },
+  "Liste der gespeicherten Synchronisationspaare; mit Doppelklick wird eine Vorschau geöffnet": {
+    "de": "Liste der gespeicherten Synchronisationspaare; mit Doppelklick wird eine Vorschau geöffnet",
+    "en": "List of saved sync pairs; double-click to open a preview",
+    "es": "Lista de pares de sincronización guardados; haga doble clic para abrir una vista previa",
+    "zh": "已保存的同步对列表；双击可打开预览",
+    "ja": "保存されている同期ペアの一覧です。ダブルクリックでプレビューを開きます",
+    "ru": "Список сохранённых пар синхронизации; двойной щелчок открывает предпросмотр"
+  },
+  "Liste filtern": {
+    "de": "Liste filtern",
+    "en": "Filter list",
+    "es": "Filtrar lista",
+    "zh": "筛选列表",
+    "ja": "リストをフィルター",
+    "ru": "Фильтровать список"
+  },
+  "Liste filtern: {list}": {
+    "de": "Liste filtern: {list}",
+    "en": "Filter list: {list}",
+    "es": "Filtrar lista: {list}",
+    "zh": "筛选列表：{list}",
+    "ja": "リストをフィルター: {list}",
+    "ru": "Фильтровать список: {list}"
+  },
+  "Liste gefundener Dateien mit Pfad, Typ, Größe und Datum.": {
+    "de": "Liste gefundener Dateien mit Pfad, Typ, Größe und Datum.",
+    "en": "List of found files with path, type, size and date.",
+    "es": "Lista de archivos encontrados con ruta, tipo, tamaño y fecha.",
+    "zh": "找到的文件列表，包含路径、类型、大小和日期。",
+    "ja": "見つかったファイルのパス、種類、サイズ、日付を表示する一覧です。",
+    "ru": "Список найденных файлов с путём, типом, размером и датой."
+  },
+  "Liste leeren": {
+    "de": "Liste leeren",
+    "en": "Clear list",
+    "es": "Vaciar lista",
+    "zh": "清空列表",
+    "ja": "リストを空にする",
+    "ru": "Очистить список"
+  },
+  "Liste vollständig leeren: {list}": {
+    "de": "Liste vollständig leeren: {list}",
+    "en": "Clear entire list: {list}",
+    "es": "Vaciar la lista por completo: {list}",
+    "zh": "完全清空列表：{list}",
+    "ja": "リストをすべて空にする: {list}",
+    "ru": "Полностью очистить список: {list}"
+  },
+  "Löschen bestätigen": {
+    "de": "Löschen bestätigen",
+    "en": "Confirm deletion",
+    "es": "Confirmar eliminación",
+    "zh": "确认删除",
+    "ja": "削除の確認",
+    "ru": "Подтверждение удаления"
+  },
+  "Löscht alle markierten Duplikat-Dateien unwiderruflich von der Festplatte.": {
+    "de": "Löscht alle markierten Duplikat-Dateien unwiderruflich von der Festplatte.",
+    "en": "Permanently deletes all marked duplicate files from the disk.",
+    "es": "Elimina de forma irreversible del disco todos los archivos duplicados marcados.",
+    "zh": "从磁盘上永久删除所有已标记的重复文件。",
+    "ja": "マークされたすべての重複ファイルをディスクから完全に削除します。",
+    "ru": "Безвозвратно удаляет с диска все отмеченные файлы-дубликаты."
+  },
+  "Maximale Dateigröße für den Index": {
+    "de": "Maximale Dateigröße für den Index",
+    "en": "Maximum file size for the index",
+    "es": "Tamaño máximo de archivo para el índice",
+    "zh": "索引的最大文件大小",
+    "ja": "インデックス対象の最大ファイルサイズ",
+    "ru": "Максимальный размер файла для индекса"
+  },
+  "Maximale Dateigröße für die Vorschau": {
+    "de": "Maximale Dateigröße für die Vorschau",
+    "en": "Maximum file size for preview",
+    "es": "Tamaño máximo de archivo para la vista previa",
+    "zh": "预览的最大文件大小",
+    "ja": "プレビュー対象の最大ファイルサイズ",
+    "ru": "Максимальный размер файла для предпросмотра"
+  },
+  "Maximale Dateigröße in Kilobyte": {
+    "de": "Maximale Dateigröße in Kilobyte",
+    "en": "Maximum file size in kilobytes",
+    "es": "Tamaño máximo de archivo en kilobytes",
+    "zh": "最大文件大小（KB）",
+    "ja": "最大ファイルサイズ（キロバイト）",
+    "ru": "Максимальный размер файла в килобайтах"
+  },
+  "Mehrere Begriffe können durch Zeilenumbruch oder Semikolon getrennt werden.": {
+    "de": "Mehrere Begriffe können durch Zeilenumbruch oder Semikolon getrennt werden.",
+    "en": "Multiple terms can be separated by a line break or semicolon.",
+    "es": "Se pueden separar varios términos con un salto de línea o un punto y coma.",
+    "zh": "多个词条可以用换行或分号分隔。",
+    "ja": "複数の語句は、改行またはセミコロンで区切ることができます。",
+    "ru": "Несколько терминов можно разделять переводом строки или точкой с запятой."
+  },
+  "Mehrfachumbenennung": {
+    "de": "Mehrfachumbenennung",
+    "en": "Batch rename",
+    "es": "Cambio de nombre múltiple",
+    "zh": "批量重命名",
+    "ja": "一括名前変更",
+    "ru": "Пакетное переименование"
+  },
+  "Mehrzeiliger Quelltext-Editor mit Zeilennummern und Syntax-Hervorhebung.": {
+    "de": "Mehrzeiliger Quelltext-Editor mit Zeilennummern und Syntax-Hervorhebung.",
+    "en": "Multi-line source code editor with line numbers and syntax highlighting.",
+    "es": "Editor de código fuente de varias líneas con números de línea y resaltado de sintaxis.",
+    "zh": "带行号和语法高亮的多行源代码编辑器。",
+    "ja": "行番号とシンタックスハイライト付きの複数行ソースコードエディターです。",
+    "ru": "Многострочный редактор исходного кода с номерами строк и подсветкой синтаксиса."
+  },
+  "Metadaten anzeigen": {
+    "de": "Metadaten anzeigen",
+    "en": "Show metadata",
+    "es": "Mostrar metadatos",
+    "zh": "显示元数据",
+    "ja": "メタデータを表示",
+    "ru": "Показать метаданные"
+  },
+  "Metadaten-Tags": {
+    "de": "Metadaten-Tags",
+    "en": "Metadata tags",
+    "es": "Etiquetas de metadatos",
+    "zh": "元数据标签",
+    "ja": "メタデータタグ",
+    "ru": "Теги метаданных"
+  },
+  "Mindeststellenanzahl": {
+    "de": "Mindeststellenanzahl",
+    "en": "Minimum number of digits",
+    "es": "Número mínimo de dígitos",
+    "zh": "最少位数",
+    "ja": "最小桁数",
+    "ru": "Минимальное количество разрядов"
+  },
+  "Minimale Dateigröße": {
+    "de": "Minimale Dateigröße",
+    "en": "Minimum file size",
+    "es": "Tamaño mínimo de archivo",
+    "zh": "最小文件大小",
+    "ja": "最小ファイルサイズ",
+    "ru": "Минимальный размер файла"
+  },
+  "Multimedia": {
+    "de": "Multimedia",
+    "en": "Multimedia",
+    "es": "Multimedia",
+    "zh": "多媒体",
+    "ja": "マルチメディア",
+    "ru": "Мультимедиа"
+  },
+  "Musik": {
+    "de": "Musik",
+    "en": "Music",
+    "es": "Música",
+    "zh": "音乐",
+    "ja": "ミュージック",
+    "ru": "Музыка"
+  },
+  "Möchten Sie '{name}' wirklich unwiderruflich löschen?": {
+    "de": "Möchten Sie '{name}' wirklich unwiderruflich löschen?",
+    "en": "Do you really want to permanently delete '{name}'?",
+    "es": "¿Seguro que desea eliminar '{name}' de forma permanente?",
+    "zh": "确定要永久删除'{name}'吗？",
+    "ja": "'{name}' を完全に削除しますか？",
+    "ru": "Вы действительно хотите безвозвратно удалить '{name}'?"
+  },
+  "Möchten Sie die Änderungen speichern?": {
+    "de": "Möchten Sie die Änderungen speichern?",
+    "en": "Do you want to save the changes?",
+    "es": "¿Desea guardar los cambios?",
+    "zh": "要保存更改吗？",
+    "ja": "変更を保存しますか？",
+    "ru": "Сохранить изменения?"
+  },
+  "Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?": {
+    "de": "Möchten Sie diese {count} Elemente wirklich unwiderruflich löschen?",
+    "en": "Do you really want to permanently delete these {count} items?",
+    "es": "¿Seguro que desea eliminar de forma permanente estos {count} elementos?",
+    "zh": "确定要永久删除这 {count} 个项目吗？",
+    "ja": "これらの {count} 個の項目を完全に削除しますか？",
+    "ru": "Вы действительно хотите безвозвратно удалить эти элементы ({count})?"
+  },
+  "Möchten Sie {count} Dateien löschen?\n\nGesamtgröße: {size}\n\nDiese Aktion kann nicht rückgängig gemacht werden!": {
+    "de": "Möchten Sie {count} Dateien löschen?\n\nGesamtgröße: {size}\n\nDiese Aktion kann nicht rückgängig gemacht werden!",
+    "en": "Do you want to delete {count} files?\n\nTotal size: {size}\n\nThis action cannot be undone!",
+    "es": "¿Desea eliminar {count} archivos?\n\nTamaño total: {size}\n\n¡Esta acción no se puede deshacer!",
+    "zh": "要删除 {count} 个文件吗？\n\n总大小：{size}\n\n此操作无法撤销！",
+    "ja": "{count} 個のファイルを削除しますか？\n\n合計サイズ: {size}\n\nこの操作は元に戻せません！",
+    "ru": "Удалить файлы ({count})?\n\nОбщий размер: {size}\n\nЭто действие нельзя отменить!"
+  },
+  "Name": {
+    "de": "Name",
+    "en": "Name",
+    "es": "Nombre",
+    "zh": "名称",
+    "ja": "名前",
+    "ru": "Имя"
+  },
+  "Name der Anwendung eingeben": {
+    "de": "Name der Anwendung eingeben",
+    "en": "Enter application name",
+    "es": "Introduzca el nombre de la aplicación",
+    "zh": "输入应用程序名称",
+    "ja": "アプリケーション名を入力",
+    "ru": "Введите имя приложения"
+  },
+  "Name des Synchronisationspaars": {
+    "de": "Name des Synchronisationspaars",
+    "en": "Name of the sync pair",
+    "es": "Nombre del par de sincronización",
+    "zh": "同步对名称",
+    "ja": "同期ペアの名前",
+    "ru": "Имя пары синхронизации"
+  },
+  "Neue App": {
+    "de": "Neue App",
+    "en": "New app",
+    "es": "Nueva aplicación",
+    "zh": "新建应用",
+    "ja": "新しいアプリ",
+    "ru": "Новое приложение"
+  },
+  "Neue App hinzufügen": {
+    "de": "Neue App hinzufügen",
+    "en": "Add new app",
+    "es": "Agregar aplicación nueva",
+    "zh": "添加新应用",
+    "ja": "新しいアプリを追加",
+    "ru": "Добавить новое приложение"
+  },
+  "Neue Dateiendung": {
+    "de": "Neue Dateiendung",
+    "en": "New file extension",
+    "es": "Nueva extensión de archivo",
+    "zh": "新文件扩展名",
+    "ja": "新しい拡張子",
+    "ru": "Новое расширение файла"
+  },
+  "Neue Dateiendung mit Punkt, oder leer lassen um bestehende Endung zu behalten.": {
+    "de": "Neue Dateiendung mit Punkt, oder leer lassen um bestehende Endung zu behalten.",
+    "en": "New file extension with a dot, or leave empty to keep the existing extension.",
+    "es": "Nueva extensión de archivo con punto, o déjelo vacío para conservar la extensión actual.",
+    "zh": "带点的新文件扩展名；留空则保留现有扩展名。",
+    "ja": "ドット付きの新しい拡張子を入力します。空欄の場合は現在の拡張子を維持します。",
+    "ru": "Новое расширение файла с точкой; оставьте пустым, чтобы сохранить текущее расширение."
+  },
+  "Neue Endung eingeben oder leer lassen": {
+    "de": "Neue Endung eingeben oder leer lassen",
+    "en": "Enter new extension or leave empty",
+    "es": "Introduzca la nueva extensión o déjelo vacío",
+    "zh": "输入新扩展名或留空",
+    "ja": "新しい拡張子を入力、または空欄のまま",
+    "ru": "Введите новое расширение или оставьте пустым"
+  },
+  "Neuen Begriff eingeben und Enter drücken": {
+    "de": "Neuen Begriff eingeben und Enter drücken",
+    "en": "Enter a new term and press Enter",
+    "es": "Introduzca un término nuevo y pulse Intro",
+    "zh": "输入新词条并按 Enter 键",
+    "ja": "新しい語句を入力して Enter キーを押してください",
+    "ru": "Введите новый термин и нажмите Enter"
+  },
+  "Neuer Begriff für: {list}": {
+    "de": "Neuer Begriff für: {list}",
+    "en": "New term for: {list}",
+    "es": "Término nuevo para: {list}",
+    "zh": "{list} 的新词条",
+    "ja": "新しい語句: {list}",
+    "ru": "Новый термин для: {list}"
+  },
+  "Neuer Prompt": {
+    "de": "Neuer Prompt",
+    "en": "New prompt",
+    "es": "Nuevo prompt",
+    "zh": "新建 Prompt",
+    "ja": "新しいプロンプト",
+    "ru": "Новый промпт"
+  },
+  "Neuer Text, der anstelle des Suchbegriffs eingesetzt wird.": {
+    "de": "Neuer Text, der anstelle des Suchbegriffs eingesetzt wird.",
+    "en": "New text that is inserted in place of the search term.",
+    "es": "Texto nuevo que se inserta en lugar del término de búsqueda.",
+    "zh": "用于替换搜索词的新文本。",
+    "ja": "検索語句の代わりに挿入される新しいテキストです。",
+    "ru": "Новый текст, который подставляется вместо поискового запроса."
+  },
+  "Neuere Version gewinnt": {
+    "de": "Neuere Version gewinnt",
+    "en": "Newer version wins",
+    "es": "Prevalece la versión más reciente",
+    "zh": "较新的版本优先",
+    "ja": "新しいバージョンを優先",
+    "ru": "Побеждает более новая версия"
+  },
+  "Neues Fenster": {
+    "de": "Neues Fenster",
+    "en": "New window",
+    "es": "Nueva ventana",
+    "zh": "新建窗口",
+    "ja": "新しいウィンドウ",
+    "ru": "Новое окно"
+  },
+  "Neues Synchronisationspaar erstellen": {
+    "de": "Neues Synchronisationspaar erstellen",
+    "en": "Create new sync pair",
+    "es": "Crear un par de sincronización nuevo",
+    "zh": "创建新的同步对",
+    "ja": "新しい同期ペアを作成",
+    "ru": "Создать новую пару синхронизации"
+  },
+  "Nicht lesbar": {
+    "de": "Nicht lesbar",
+    "en": "Not readable",
+    "es": "No se puede leer",
+    "zh": "无法读取",
+    "ja": "読み取れません",
+    "ru": "Не читается"
+  },
+  "Notizen": {
+    "de": "Notizen",
+    "en": "Notes",
+    "es": "Notas",
+    "zh": "备注",
+    "ja": "メモ",
+    "ru": "Заметки"
+  },
+  "Nur im Inhalt suchen": {
+    "de": "Nur im Inhalt suchen",
+    "en": "Search content only",
+    "es": "Buscar solo en el contenido",
+    "zh": "仅在内容中搜索",
+    "ja": "内容のみを検索",
+    "ru": "Искать только в содержимом"
+  },
+  "Office": {
+    "de": "Office",
+    "en": "Office",
+    "es": "Office",
+    "zh": "办公",
+    "ja": "Office",
+    "ru": "Офис"
+  },
+  "Optionale Beschreibung": {
+    "de": "Optionale Beschreibung",
+    "en": "Optional description",
+    "es": "Descripción opcional",
+    "zh": "可选描述",
+    "ja": "説明（省略可）",
+    "ru": "Описание (необязательно)"
+  },
+  "Optionale Beschreibung der Anwendung.": {
+    "de": "Optionale Beschreibung der Anwendung.",
+    "en": "Optional description of the application.",
+    "es": "Descripción opcional de la aplicación.",
+    "zh": "应用程序的可选描述。",
+    "ja": "アプリケーションの説明です（省略可）。",
+    "ru": "Необязательное описание приложения."
+  },
+  "Optionen": {
+    "de": "Optionen",
+    "en": "Options",
+    "es": "Opciones",
+    "zh": "选项",
+    "ja": "オプション",
+    "ru": "Параметры"
+  },
+  "Ordner auswählen": {
+    "de": "Ordner auswählen",
+    "en": "Select folder",
+    "es": "Seleccionar carpeta",
+    "zh": "选择文件夹",
+    "ja": "フォルダーを選択",
+    "ru": "Выбрать папку"
+  },
+  "Ordner indizieren": {
+    "de": "Ordner indizieren",
+    "en": "Index folder",
+    "es": "Indexar carpeta",
+    "zh": "索引文件夹",
+    "ja": "フォルダーをインデックス化",
+    "ru": "Индексировать папку"
+  },
+  "Ordner kann nicht in seinen eigenen Unterordner kopiert oder verschoben werden.": {
+    "de": "Ordner kann nicht in seinen eigenen Unterordner kopiert oder verschoben werden.",
+    "en": "A folder cannot be copied or moved into its own subfolder.",
+    "es": "Una carpeta no se puede copiar ni mover a su propia subcarpeta.",
+    "zh": "文件夹不能复制或移动到其自身的子文件夹中。",
+    "ja": "フォルダーを自身のサブフォルダーにコピーまたは移動することはできません。",
+    "ru": "Папку нельзя копировать или перемещать в её собственную вложенную папку."
+  },
+  "Ordner konnte nicht gelesen werden:": {
+    "de": "Ordner konnte nicht gelesen werden:",
+    "en": "Folder could not be read:",
+    "es": "No se pudo leer la carpeta:",
+    "zh": "无法读取文件夹：",
+    "ja": "フォルダーを読み取れませんでした:",
+    "ru": "Не удалось прочитать папку:"
+  },
+  "Ordner scannen": {
+    "de": "Ordner scannen",
+    "en": "Scan folder",
+    "es": "Escanear carpeta",
+    "zh": "扫描文件夹",
+    "ja": "フォルダーをスキャン",
+    "ru": "Сканировать папку"
+  },
+  "Ordner wählen": {
+    "de": "Ordner wählen",
+    "en": "Select folder",
+    "es": "Seleccionar carpeta",
+    "zh": "选择文件夹",
+    "ja": "フォルダーを選択",
+    "ru": "Выбрать папку"
+  },
+  "Ordner, aus dem Dateien abhängig von der gewählten Richtung übertragen werden": {
+    "de": "Ordner, aus dem Dateien abhängig von der gewählten Richtung übertragen werden",
+    "en": "Folder from which files are transferred, depending on the selected direction",
+    "es": "Carpeta desde la que se transfieren los archivos, según la dirección seleccionada",
+    "zh": "根据所选方向传出文件的文件夹",
+    "ja": "選択した方向に応じて、ファイルの転送元となるフォルダー",
+    "ru": "Папка, из которой передаются файлы, в зависимости от выбранного направления"
+  },
+  "Ordner, in den Dateien abhängig von der gewählten Richtung übertragen werden": {
+    "de": "Ordner, in den Dateien abhängig von der gewählten Richtung übertragen werden",
+    "en": "Folder to which files are transferred, depending on the selected direction",
+    "es": "Carpeta a la que se transfieren los archivos, según la dirección seleccionada",
+    "zh": "根据所选方向接收文件的文件夹",
+    "ja": "選択した方向に応じて、ファイルの転送先となるフォルダー",
+    "ru": "Папка, в которую передаются файлы, в зависимости от выбранного направления"
+  },
+  "Ordner: {path}": {
+    "de": "Ordner: {path}",
+    "en": "Folder: {path}",
+    "es": "Carpeta: {path}",
+    "zh": "文件夹：{path}",
+    "ja": "フォルダー: {path}",
+    "ru": "Папка: {path}"
+  },
+  "Ordnerbaum": {
+    "de": "Ordnerbaum",
+    "en": "Folder tree",
+    "es": "Árbol de carpetas",
+    "zh": "文件夹树",
+    "ja": "フォルダーツリー",
+    "ru": "Дерево папок"
+  },
+  "Ordnername": {
+    "de": "Ordnername",
+    "en": "Folder name",
+    "es": "Nombre de la carpeta",
+    "zh": "文件夹名称",
+    "ja": "フォルダー名",
+    "ru": "Имя папки"
+  },
+  "Ordnerpfad": {
+    "de": "Ordnerpfad",
+    "en": "Folder path",
+    "es": "Ruta de la carpeta",
+    "zh": "文件夹路径",
+    "ja": "フォルダーのパス",
+    "ru": "Путь к папке"
+  },
+  "PDF-Vorschau ist in den Einstellungen deaktiviert.": {
+    "de": "PDF-Vorschau ist in den Einstellungen deaktiviert.",
+    "en": "PDF preview is disabled in the settings.",
+    "es": "La vista previa de PDF está desactivada en la configuración.",
+    "zh": "PDF 预览已在设置中禁用。",
+    "ja": "PDF のプレビューは設定で無効になっています。",
+    "ru": "Предпросмотр PDF отключён в настройках."
+  },
+  "Passwort: xyz": {
+    "de": "Passwort: xyz",
+    "en": "Password: xyz",
+    "es": "Contraseña: xyz",
+    "zh": "密码：xyz",
+    "ja": "パスワード: xyz",
+    "ru": "Пароль: xyz"
+  },
+  "Persönlicher Ordner": {
+    "de": "Persönlicher Ordner",
+    "en": "Personal folder",
+    "es": "Carpeta personal",
+    "zh": "个人文件夹",
+    "ja": "個人用フォルダー",
+    "ru": "Личная папка"
+  },
+  "Pfad": {
+    "de": "Pfad",
+    "en": "Path",
+    "es": "Ruta",
+    "zh": "路径",
+    "ja": "パス",
+    "ru": "Путь"
+  },
+  "Pfad als Prompt speichern": {
+    "de": "Pfad als Prompt speichern",
+    "en": "Save path as prompt",
+    "es": "Guardar la ruta como prompt",
+    "zh": "将路径保存为 Prompt",
+    "ja": "パスをプロンプトとして保存",
+    "ru": "Сохранить путь как промпт"
+  },
+  "Pfad eingeben": {
+    "de": "Pfad eingeben",
+    "en": "Enter path",
+    "es": "Introduzca la ruta",
+    "zh": "输入路径",
+    "ja": "パスを入力",
+    "ru": "Введите путь"
+  },
+  "Pfad ist keine Datei:\n{path}": {
+    "de": "Pfad ist keine Datei:\n{path}",
+    "en": "Path is not a file:\n{path}",
+    "es": "La ruta no es un archivo:\n{path}",
+    "zh": "路径不是文件：\n{path}",
+    "ja": "パスはファイルではありません:\n{path}",
+    "ru": "Путь не является файлом:\n{path}"
+  },
+  "Pfad zu Datei 1": {
+    "de": "Pfad zu Datei 1",
+    "en": "Path to file 1",
+    "es": "Ruta al archivo 1",
+    "zh": "文件 1 的路径",
+    "ja": "ファイル 1 のパス",
+    "ru": "Путь к файлу 1"
+  },
+  "Pfad zu Datei 2": {
+    "de": "Pfad zu Datei 2",
+    "en": "Path to file 2",
+    "es": "Ruta al archivo 2",
+    "zh": "文件 2 的路径",
+    "ja": "ファイル 2 のパス",
+    "ru": "Путь к файлу 2"
+  },
+  "Pfad:  {path}": {
+    "de": "Pfad:  {path}",
+    "en": "Path:  {path}",
+    "es": "Ruta:  {path}",
+    "zh": "路径：  {path}",
+    "ja": "パス:  {path}",
+    "ru": "Путь:  {path}"
+  },
+  "Pfad: {name}": {
+    "de": "Pfad: {name}",
+    "en": "Path: {name}",
+    "es": "Ruta: {name}",
+    "zh": "路径：{name}",
+    "ja": "パス: {name}",
+    "ru": "Путь: {name}"
+  },
+  "Position der Nummerierung": {
+    "de": "Position der Nummerierung",
+    "en": "Numbering position",
+    "es": "Posición de la numeración",
+    "zh": "编号位置",
+    "ja": "番号の位置",
+    "ru": "Позиция нумерации"
+  },
+  "Potenziell sensible Daten erkannt": {
+    "de": "Potenziell sensible Daten erkannt",
+    "en": "Potentially sensitive data detected",
+    "es": "Se detectaron datos potencialmente confidenciales",
+    "zh": "检测到可能的敏感数据",
+    "ja": "機密の可能性があるデータが検出されました",
+    "ru": "Обнаружены потенциально конфиденциальные данные"
+  },
+  "Programm wählen": {
+    "de": "Programm wählen",
+    "en": "Choose program",
+    "es": "Elegir programa",
+    "zh": "选择程序",
+    "ja": "プログラムを選択",
+    "ru": "Выбрать программу"
+  },
+  "Programmausgabe": {
+    "de": "Programmausgabe",
+    "en": "Program output",
+    "es": "Salida del programa",
+    "zh": "程序输出",
+    "ja": "プログラムの出力",
+    "ru": "Вывод программы"
+  },
+  "Programmdatei durchsuchen": {
+    "de": "Programmdatei durchsuchen",
+    "en": "Browse for program file",
+    "es": "Buscar archivo de programa",
+    "zh": "浏览程序文件",
+    "ja": "プログラムファイルを参照",
+    "ru": "Выбрать файл программы"
+  },
+  "Programmpfad": {
+    "de": "Programmpfad",
+    "en": "Program path",
+    "es": "Ruta del programa",
+    "zh": "程序路径",
+    "ja": "プログラムのパス",
+    "ru": "Путь к программе"
+  },
+  "Prompt": {
+    "de": "Prompt",
+    "en": "Prompt",
+    "es": "Prompt",
+    "zh": "Prompt",
+    "ja": "プロンプト",
+    "ru": "Промпт"
+  },
+  "Prompt bearbeiten": {
+    "de": "Prompt bearbeiten",
+    "en": "Edit prompt",
+    "es": "Editar prompt",
+    "zh": "编辑 Prompt",
+    "ja": "プロンプトを編集",
+    "ru": "Редактировать промпт"
+  },
+  "Prompt für '{name}' wurde in der Bibliothek gespeichert.": {
+    "de": "Prompt für '{name}' wurde in der Bibliothek gespeichert.",
+    "en": "Prompt for '{name}' was saved to the library.",
+    "es": "El prompt de '{name}' se guardó en la biblioteca.",
+    "zh": "'{name}' 的 Prompt 已保存到库中。",
+    "ja": "'{name}' のプロンプトをライブラリに保存しました。",
+    "ru": "Промпт для '{name}' сохранён в библиотеке."
+  },
+  "Prompt gespeichert": {
+    "de": "Prompt gespeichert",
+    "en": "Prompt saved",
+    "es": "Prompt guardado",
+    "zh": "Prompt 已保存",
+    "ja": "プロンプトを保存しました",
+    "ru": "Промпт сохранён"
+  },
+  "Prompt in Zwischenablage": {
+    "de": "Prompt in Zwischenablage",
+    "en": "Prompt to clipboard",
+    "es": "Prompt al portapapeles",
+    "zh": "Prompt 到剪贴板",
+    "ja": "プロンプトをクリップボードへ",
+    "ru": "Промпт в буфер обмена"
+  },
+  "Prompt kopiert: {text}": {
+    "de": "Prompt kopiert: {text}",
+    "en": "Prompt copied: {text}",
+    "es": "Prompt copiado: {text}",
+    "zh": "已复制提示词：{text}",
+    "ja": "プロンプトをコピーしました: {text}",
+    "ru": "Промпт скопирован: {text}"
+  },
+  "Prompt speichern": {
+    "de": "Prompt speichern",
+    "en": "Save prompt",
+    "es": "Guardar prompt",
+    "zh": "保存提示词",
+    "ja": "プロンプトを保存",
+    "ru": "Сохранить промпт"
+  },
+  "Prompt-Bibliothek": {
+    "de": "Prompt-Bibliothek",
+    "en": "Prompt library",
+    "es": "Biblioteca de prompts",
+    "zh": "提示词库",
+    "ja": "プロンプトライブラリ",
+    "ru": "Библиотека промптов"
+  },
+  "Prompt-Inhaltstext": {
+    "de": "Prompt-Inhaltstext",
+    "en": "Prompt content text",
+    "es": "Texto del contenido del prompt",
+    "zh": "提示词内容文本",
+    "ja": "プロンプトの内容テキスト",
+    "ru": "Текст содержимого промпта"
+  },
+  "Prompt-Kategorie": {
+    "de": "Prompt-Kategorie",
+    "en": "Prompt category",
+    "es": "Categoría del prompt",
+    "zh": "提示词分类",
+    "ja": "プロンプトのカテゴリ",
+    "ru": "Категория промпта"
+  },
+  "Prompt-Kategorien": {
+    "de": "Prompt-Kategorien",
+    "en": "Prompt categories",
+    "es": "Categorías de prompts",
+    "zh": "提示词分类列表",
+    "ja": "プロンプトのカテゴリ一覧",
+    "ru": "Категории промптов"
+  },
+  "Prompt-Liste": {
+    "de": "Prompt-Liste",
+    "en": "Prompt list",
+    "es": "Lista de prompts",
+    "zh": "提示词列表",
+    "ja": "プロンプト一覧",
+    "ru": "Список промптов"
+  },
+  "Prompt-Tags": {
+    "de": "Prompt-Tags",
+    "en": "Prompt tags",
+    "es": "Etiquetas del prompt",
+    "zh": "提示词标签",
+    "ja": "プロンプトのタグ",
+    "ru": "Теги промпта"
+  },
+  "Prompt-Text hier eingeben": {
+    "de": "Prompt-Text hier eingeben",
+    "en": "Enter prompt text here",
+    "es": "Introduzca aquí el texto del prompt",
+    "zh": "在此输入提示词文本",
+    "ja": "ここにプロンプトのテキストを入力",
+    "ru": "Введите текст промпта здесь"
+  },
+  "Prompt-Titel": {
+    "de": "Prompt-Titel",
+    "en": "Prompt title",
+    "es": "Título del prompt",
+    "zh": "提示词标题",
+    "ja": "プロンプトのタイトル",
+    "ru": "Название промпта"
+  },
+  "Prompt-Vorlage für '{name}' in die Zwischenablage kopiert.": {
+    "de": "Prompt-Vorlage für '{name}' in die Zwischenablage kopiert.",
+    "en": "Prompt template for '{name}' copied to clipboard.",
+    "es": "Plantilla de prompt de '{name}' copiada al portapapeles.",
+    "zh": "已将“{name}”的提示词模板复制到剪贴板。",
+    "ja": "'{name}' のプロンプトテンプレートをクリップボードにコピーしました。",
+    "ru": "Шаблон промпта '{name}' скопирован в буфер обмена."
+  },
+  "Prompt-Vorschautext": {
+    "de": "Prompt-Vorschautext",
+    "en": "Prompt preview text",
+    "es": "Texto de vista previa del prompt",
+    "zh": "提示词预览文本",
+    "ja": "プロンプトのプレビューテキスト",
+    "ru": "Текст предпросмотра промпта"
+  },
+  "Prompts": {
+    "de": "Prompts",
+    "en": "Prompts",
+    "es": "Prompts",
+    "zh": "提示词",
+    "ja": "プロンプト",
+    "ru": "Промпты"
+  },
+  "Prompts durchsuchen": {
+    "de": "Prompts durchsuchen",
+    "en": "Search prompts",
+    "es": "Buscar prompts",
+    "zh": "搜索提示词",
+    "ja": "プロンプトを検索",
+    "ru": "Поиск промптов"
+  },
+  "Prompts öffnen": {
+    "de": "Prompts öffnen",
+    "en": "Open prompts",
+    "es": "Abrir prompts",
+    "zh": "打开提示词",
+    "ja": "プロンプトを開く",
+    "ru": "Открыть промпты"
+  },
+  "Prüfe: {name}": {
+    "de": "Prüfe: {name}",
+    "en": "Checking: {name}",
+    "es": "Comprobando: {name}",
+    "zh": "正在检查：{name}",
+    "ja": "確認中: {name}",
+    "ru": "Проверка: {name}"
+  },
+  "Prüfe: {name}...": {
+    "de": "Prüfe: {name}...",
+    "en": "Checking: {name}...",
+    "es": "Comprobando: {name}...",
+    "zh": "正在检查：{name}...",
+    "ja": "確認中: {name}...",
+    "ru": "Проверка: {name}..."
+  },
+  "Prüfen": {
+    "de": "Prüfen",
+    "en": "Check",
+    "es": "Comprobar",
+    "zh": "检查",
+    "ja": "確認",
+    "ru": "Проверить"
+  },
+  "Prüfergebnis": {
+    "de": "Prüfergebnis",
+    "en": "Check result",
+    "es": "Resultado de la comprobación",
+    "zh": "检查结果",
+    "ja": "確認結果",
+    "ru": "Результат проверки"
+  },
+  "Prüfsumme vergleichen": {
+    "de": "Prüfsumme vergleichen",
+    "en": "Compare checksum",
+    "es": "Comparar suma de comprobación",
+    "zh": "比较校验和",
+    "ja": "チェックサムを比較",
+    "ru": "Сравнить контрольную сумму"
+  },
+  "Prüfsummen": {
+    "de": "Prüfsummen",
+    "en": "Checksums",
+    "es": "Sumas de comprobación",
+    "zh": "校验和",
+    "ja": "チェックサム",
+    "ru": "Контрольные суммы"
+  },
+  "Prüfsummen berechnen": {
+    "de": "Prüfsummen berechnen",
+    "en": "Calculate checksums",
+    "es": "Calcular sumas de comprobación",
+    "zh": "计算校验和",
+    "ja": "チェックサムを計算",
+    "ru": "Вычислить контрольные суммы"
+  },
+  "Prüfsummen — {name}": {
+    "de": "Prüfsummen — {name}",
+    "en": "Checksums — {name}",
+    "es": "Sumas de comprobación — {name}",
+    "zh": "校验和 — {name}",
+    "ja": "チェックサム — {name}",
+    "ru": "Контрольные суммы — {name}"
+  },
+  "Prüfsummen-Dialog": {
+    "de": "Prüfsummen-Dialog",
+    "en": "Checksums dialog",
+    "es": "Cuadro de diálogo de sumas de comprobación",
+    "zh": "校验和对话框",
+    "ja": "チェックサムのダイアログ",
+    "ru": "Диалог контрольных сумм"
+  },
+  "PyMuPDF nicht installiert.\nPDF-Vorschau nicht verfügbar.": {
+    "de": "PyMuPDF nicht installiert.\nPDF-Vorschau nicht verfügbar.",
+    "en": "PyMuPDF not installed.\nPDF preview not available.",
+    "es": "PyMuPDF no está instalado.\nVista previa de PDF no disponible.",
+    "zh": "未安装 PyMuPDF。\nPDF 预览不可用。",
+    "ja": "PyMuPDF がインストールされていません。\nPDF プレビューは利用できません。",
+    "ru": "PyMuPDF не установлен.\nПредварительный просмотр PDF недоступен."
+  },
+  "Python (*.py);;Alle": {
+    "de": "Python (*.py);;Alle",
+    "en": "Python (*.py);;All",
+    "es": "Python (*.py);;Todos",
+    "zh": "Python (*.py);;全部",
+    "ja": "Python (*.py);;すべて",
+    "ru": "Python (*.py);;Все"
+  },
+  "Python-Skript ausführen": {
+    "de": "Python-Skript ausführen",
+    "en": "Run Python script",
+    "es": "Ejecutar script de Python",
+    "zh": "运行 Python 脚本",
+    "ja": "Python スクリプトを実行",
+    "ru": "Запустить скрипт Python"
+  },
+  "Quelle": {
+    "de": "Quelle",
+    "en": "Source",
+    "es": "Origen",
+    "zh": "源",
+    "ja": "ソース",
+    "ru": "Источник"
+  },
+  "Quelle gewinnt immer": {
+    "de": "Quelle gewinnt immer",
+    "en": "Source always wins",
+    "es": "El origen siempre prevalece",
+    "zh": "始终以源为准",
+    "ja": "常にソースを優先",
+    "ru": "Источник всегда приоритетен"
+  },
+  "Quelle nicht gefunden: {path}": {
+    "de": "Quelle nicht gefunden: {path}",
+    "en": "Source not found: {path}",
+    "es": "Origen no encontrado: {path}",
+    "zh": "未找到源：{path}",
+    "ja": "ソースが見つかりません: {path}",
+    "ru": "Источник не найден: {path}"
+  },
+  "Quelle → Ziel": {
+    "de": "Quelle → Ziel",
+    "en": "Source → Target",
+    "es": "Origen → Destino",
+    "zh": "源 → 目标",
+    "ja": "ソース → ターゲット",
+    "ru": "Источник → Назначение"
+  },
+  "Quellordner": {
+    "de": "Quellordner",
+    "en": "Source folder",
+    "es": "Carpeta de origen",
+    "zh": "源文件夹",
+    "ja": "ソースフォルダー",
+    "ru": "Исходная папка"
+  },
+  "Quellordner existiert nicht: {path}": {
+    "de": "Quellordner existiert nicht: {path}",
+    "en": "Source folder does not exist: {path}",
+    "es": "La carpeta de origen no existe: {path}",
+    "zh": "源文件夹不存在：{path}",
+    "ja": "ソースフォルダーが存在しません: {path}",
+    "ru": "Исходная папка не существует: {path}"
+  },
+  "Quick Editor - {name}": {
+    "de": "Quick Editor - {name}",
+    "en": "Quick Editor - {name}",
+    "es": "Quick Editor - {name}",
+    "zh": "Quick Editor - {name}",
+    "ja": "Quick Editor - {name}",
+    "ru": "Quick Editor - {name}"
+  },
+  "Regelbasierte Umbenennung mehrerer Dateien mit konfigurierbaren Ersetzungen, Präfixen, Suffixen und Nummerierung.": {
+    "de": "Regelbasierte Umbenennung mehrerer Dateien mit konfigurierbaren Ersetzungen, Präfixen, Suffixen und Nummerierung.",
+    "en": "Rule-based renaming of multiple files with configurable replacements, prefixes, suffixes and numbering.",
+    "es": "Cambio de nombre basado en reglas de varios archivos con reemplazos, prefijos, sufijos y numeración configurables.",
+    "zh": "基于规则批量重命名多个文件，支持可配置的替换、前缀、后缀和编号。",
+    "ja": "設定可能な置換、プレフィックス、サフィックス、連番を使って、複数のファイル名をルールに基づいて一括変更します。",
+    "ru": "Пакетное переименование нескольких файлов по правилам с настраиваемыми заменами, префиксами, суффиксами и нумерацией."
+  },
+  "Reguläre Ausdrücke": {
+    "de": "Reguläre Ausdrücke",
+    "en": "Regular expressions",
+    "es": "Expresiones regulares",
+    "zh": "正则表达式",
+    "ja": "正規表現",
+    "ru": "Регулярные выражения"
+  },
+  "Richtung": {
+    "de": "Richtung",
+    "en": "Direction",
+    "es": "Dirección",
+    "zh": "方向",
+    "ja": "方向",
+    "ru": "Направление"
+  },
+  "Rot – sensible Daten erkannt": {
+    "de": "Rot – sensible Daten erkannt",
+    "en": "Red – sensitive data detected",
+    "es": "Rojo: datos sensibles detectados",
+    "zh": "红色 – 检测到敏感数据",
+    "ja": "赤 – 機密データを検出",
+    "ru": "Красный – обнаружены конфиденциальные данные"
+  },
+  "Scan abbrechen": {
+    "de": "Scan abbrechen",
+    "en": "Cancel scan",
+    "es": "Cancelar análisis",
+    "zh": "取消扫描",
+    "ja": "スキャンをキャンセル",
+    "ru": "Отменить сканирование"
+  },
+  "Scan-Fortschritt": {
+    "de": "Scan-Fortschritt",
+    "en": "Scan progress",
+    "es": "Progreso del análisis",
+    "zh": "扫描进度",
+    "ja": "スキャンの進行状況",
+    "ru": "Ход сканирования"
+  },
+  "Scan-Optionen": {
+    "de": "Scan-Optionen",
+    "en": "Scan options",
+    "es": "Opciones de análisis",
+    "zh": "扫描选项",
+    "ja": "スキャンのオプション",
+    "ru": "Параметры сканирования"
+  },
+  "Scan-Quelle": {
+    "de": "Scan-Quelle",
+    "en": "Scan source",
+    "es": "Origen del análisis",
+    "zh": "扫描源",
+    "ja": "スキャン対象",
+    "ru": "Источник сканирования"
+  },
+  "Schaltet die sequentielle Dateinummerierung ein.": {
+    "de": "Schaltet die sequentielle Dateinummerierung ein.",
+    "en": "Enables sequential file numbering.",
+    "es": "Activa la numeración secuencial de archivos.",
+    "zh": "启用文件顺序编号。",
+    "ja": "ファイルの連番付けを有効にします。",
+    "ru": "Включает последовательную нумерацию файлов."
+  },
+  "Schließt die Vorschau ohne Dateien zu übertragen": {
+    "de": "Schließt die Vorschau ohne Dateien zu übertragen",
+    "en": "Closes the preview without transferring any files",
+    "es": "Cierra la vista previa sin transferir archivos",
+    "zh": "关闭预览，不传输任何文件",
+    "ja": "ファイルを転送せずにプレビューを閉じます",
+    "ru": "Закрывает предпросмотр без передачи файлов"
+  },
+  "Schnellzugriff": {
+    "de": "Schnellzugriff",
+    "en": "Quick access",
+    "es": "Acceso rápido",
+    "zh": "快速访问",
+    "ja": "クイックアクセス",
+    "ru": "Быстрый доступ"
+  },
+  "Schreibweisenumwandlung": {
+    "de": "Schreibweisenumwandlung",
+    "en": "Case conversion",
+    "es": "Conversión de mayúsculas y minúsculas",
+    "zh": "大小写转换",
+    "ja": "大文字・小文字の変換",
+    "ru": "Преобразование регистра"
+  },
+  "Schriftgröße": {
+    "de": "Schriftgröße",
+    "en": "Font size",
+    "es": "Tamaño de fuente",
+    "zh": "字体大小",
+    "ja": "フォントサイズ",
+    "ru": "Размер шрифта"
+  },
+  "Schrittweite der Nummerierung": {
+    "de": "Schrittweite der Nummerierung",
+    "en": "Numbering step size",
+    "es": "Incremento de la numeración",
+    "zh": "编号步长",
+    "ja": "連番の増分",
+    "ru": "Шаг нумерации"
+  },
+  "Schweregrad: {severity}": {
+    "de": "Schweregrad: {severity}",
+    "en": "Severity: {severity}",
+    "es": "Gravedad: {severity}",
+    "zh": "严重程度：{severity}",
+    "ja": "重大度: {severity}",
+    "ru": "Серьезность: {severity}"
+  },
+  "Sensible Daten wurden blockiert": {
+    "de": "Sensible Daten wurden blockiert",
+    "en": "Sensitive data was blocked",
+    "es": "Se bloquearon datos sensibles",
+    "zh": "敏感数据已被拦截",
+    "ja": "機密データをブロックしました",
+    "ru": "Конфиденциальные данные заблокированы"
+  },
+  "Setzt eine gelbe oder rote Ampel wieder auf Grün": {
+    "de": "Setzt eine gelbe oder rote Ampel wieder auf Grün",
+    "en": "Resets a yellow or red traffic light back to green",
+    "es": "Restablece un semáforo amarillo o rojo a verde",
+    "zh": "将黄色或红色指示灯重置为绿色",
+    "ja": "黄色または赤のインジケーターを緑に戻します",
+    "ru": "Сбрасывает желтый или красный индикатор обратно на зеленый"
+  },
+  "Sidebar anzeigen": {
+    "de": "Sidebar anzeigen",
+    "en": "Show sidebar",
+    "es": "Mostrar barra lateral",
+    "zh": "显示侧边栏",
+    "ja": "サイドバーを表示",
+    "ru": "Показать боковую панель"
+  },
+  "Sollen wirklich alle {count} Einträge entfernt werden?": {
+    "de": "Sollen wirklich alle {count} Einträge entfernt werden?",
+    "en": "Do you really want to remove all {count} entries?",
+    "es": "¿Realmente desea eliminar las {count} entradas?",
+    "zh": "确定要删除全部 {count} 个条目吗？",
+    "ja": "本当に {count} 件のエントリをすべて削除しますか?",
+    "ru": "Действительно удалить все записи ({count})?"
+  },
+  "Speichern unter": {
+    "de": "Speichern unter",
+    "en": "Save as",
+    "es": "Guardar como",
+    "zh": "另存为",
+    "ja": "名前を付けて保存",
+    "ru": "Сохранить как"
+  },
+  "Speicherplatzanzeige": {
+    "de": "Speicherplatzanzeige",
+    "en": "Storage space indicator",
+    "es": "Indicador de espacio de almacenamiento",
+    "zh": "存储空间指示器",
+    "ja": "ストレージ容量の表示",
+    "ru": "Индикатор свободного места"
+  },
+  "Speicherplatzanzeige: {size}": {
+    "de": "Speicherplatzanzeige: {size}",
+    "en": "Storage space indicator: {size}",
+    "es": "Indicador de espacio de almacenamiento: {size}",
+    "zh": "存储空间指示器：{size}",
+    "ja": "ストレージ容量の表示: {size}",
+    "ru": "Индикатор свободного места: {size}"
+  },
+  "Speichert den Inhalt des Editors in die aktuelle Datei.": {
+    "de": "Speichert den Inhalt des Editors in die aktuelle Datei.",
+    "en": "Saves the editor content to the current file.",
+    "es": "Guarda el contenido del editor en el archivo actual.",
+    "zh": "将编辑器内容保存到当前文件。",
+    "ja": "エディターの内容を現在のファイルに保存します。",
+    "ru": "Сохраняет содержимое редактора в текущий файл."
+  },
+  "Speichert den Prompt": {
+    "de": "Speichert den Prompt",
+    "en": "Saves the prompt",
+    "es": "Guarda el prompt",
+    "zh": "保存提示词",
+    "ja": "プロンプトを保存します",
+    "ru": "Сохраняет промпт"
+  },
+  "Spiele": {
+    "de": "Spiele",
+    "en": "Games",
+    "es": "Juegos",
+    "zh": "游戏",
+    "ja": "ゲーム",
+    "ru": "Игры"
+  },
+  "Sprachauswahl": {
+    "de": "Sprachauswahl",
+    "en": "Language selection",
+    "es": "Selección de idioma",
+    "zh": "语言选择",
+    "ja": "言語の選択",
+    "ru": "Выбор языка"
+  },
+  "Sprachänderungen werden sofort übernommen; einzelne Texte erst nach einem Neustart.": {
+    "de": "Sprachänderungen werden sofort übernommen; einzelne Texte erst nach einem Neustart.",
+    "en": "Language changes apply immediately; some texts only after a restart.",
+    "es": "Los cambios de idioma se aplican de inmediato; algunos textos solo después de reiniciar.",
+    "zh": "语言更改立即生效；部分文本需重启后才会更新。",
+    "ja": "言語の変更はすぐに反映されます。一部のテキストは再起動後に反映されます。",
+    "ru": "Изменения языка применяются сразу; некоторые тексты — только после перезапуска."
+  },
+  "Standardordner, der beim Start der Anwendung geöffnet wird.": {
+    "de": "Standardordner, der beim Start der Anwendung geöffnet wird.",
+    "en": "Default folder that is opened when the application starts.",
+    "es": "Carpeta predeterminada que se abre al iniciar la aplicación.",
+    "zh": "应用程序启动时打开的默认文件夹。",
+    "ja": "アプリケーションの起動時に開くデフォルトのフォルダーです。",
+    "ru": "Папка по умолчанию, которая открывается при запуске приложения."
+  },
+  "Startargumente": {
+    "de": "Startargumente",
+    "en": "Startup arguments",
+    "es": "Argumentos de inicio",
+    "zh": "启动参数",
+    "ja": "起動引数",
+    "ru": "Аргументы запуска"
+  },
+  "Starten": {
+    "de": "Starten",
+    "en": "Launch",
+    "es": "Iniciar",
+    "zh": "启动",
+    "ja": "起動",
+    "ru": "Запустить"
+  },
+  "Startet die Anwendung {name}. Dateipfad: {path}": {
+    "de": "Startet die Anwendung {name}. Dateipfad: {path}",
+    "en": "Launches the application {name}. File path: {path}",
+    "es": "Inicia la aplicación {name}. Ruta del archivo: {path}",
+    "zh": "启动应用程序 {name}。文件路径：{path}",
+    "ja": "アプリケーション {name} を起動します。ファイルパス: {path}",
+    "ru": "Запускает приложение {name}. Путь к файлу: {path}"
+  },
+  "Startet die Dateisuche mit dem aktuellen Suchbegriff.": {
+    "de": "Startet die Dateisuche mit dem aktuellen Suchbegriff.",
+    "en": "Starts the file search with the current search term.",
+    "es": "Inicia la búsqueda de archivos con el término de búsqueda actual.",
+    "zh": "使用当前搜索词开始文件搜索。",
+    "ja": "現在の検索語でファイル検索を開始します。",
+    "ru": "Запускает поиск файлов по текущему запросу."
+  },
+  "Startet die Differenzanalyse zwischen Datei 1 und Datei 2.": {
+    "de": "Startet die Differenzanalyse zwischen Datei 1 und Datei 2.",
+    "en": "Starts the difference analysis between file 1 and file 2.",
+    "es": "Inicia el análisis de diferencias entre el archivo 1 y el archivo 2.",
+    "zh": "开始分析文件 1 与文件 2 之间的差异。",
+    "ja": "ファイル 1 とファイル 2 の差分の分析を開始します。",
+    "ru": "Запускает анализ различий между файлом 1 и файлом 2."
+  },
+  "Startet die Suche nach Dateiduplikaten anhand von SHA-256 Hashes.": {
+    "de": "Startet die Suche nach Dateiduplikaten anhand von SHA-256 Hashes.",
+    "en": "Starts the search for duplicate files using SHA-256 hashes.",
+    "es": "Inicia la búsqueda de archivos duplicados mediante hashes SHA-256.",
+    "zh": "使用 SHA-256 哈希开始搜索重复文件。",
+    "ja": "SHA-256 ハッシュを使って重複ファイルの検索を開始します。",
+    "ru": "Запускает поиск дубликатов файлов по хешам SHA-256."
+  },
+  "Startet die Synchronisation des ausgewählten Paars nach einer Bestätigung": {
+    "de": "Startet die Synchronisation des ausgewählten Paars nach einer Bestätigung",
+    "en": "Starts the synchronization of the selected pair after confirmation",
+    "es": "Inicia la sincronización del par seleccionado tras una confirmación",
+    "zh": "确认后开始同步所选的同步对",
+    "ja": "確認後、選択したペアの同期を開始します",
+    "ru": "Запускает синхронизацию выбранной пары после подтверждения"
+  },
+  "Startordner": {
+    "de": "Startordner",
+    "en": "Start folder",
+    "es": "Carpeta de inicio",
+    "zh": "启动文件夹",
+    "ja": "開始フォルダー",
+    "ru": "Начальная папка"
+  },
+  "Startordner auswählen": {
+    "de": "Startordner auswählen",
+    "en": "Select start folder",
+    "es": "Seleccionar carpeta de inicio",
+    "zh": "选择启动文件夹",
+    "ja": "開始フォルダーを選択",
+    "ru": "Выбрать начальную папку"
+  },
+  "Startwert der Nummerierung": {
+    "de": "Startwert der Nummerierung",
+    "en": "Starting number for the numbering",
+    "es": "Valor inicial de la numeración",
+    "zh": "编号起始值",
+    "ja": "連番の開始番号",
+    "ru": "Начальное значение нумерации"
+  },
+  "Statistik": {
+    "de": "Statistik",
+    "en": "Statistics",
+    "es": "Estadísticas",
+    "zh": "统计",
+    "ja": "統計",
+    "ru": "Статистика"
+  },
+  "Status der Dateisynchronisierung (aktuell oder aktiv).": {
+    "de": "Status der Dateisynchronisierung (aktuell oder aktiv).",
+    "en": "Status of file synchronization (up to date or active).",
+    "es": "Estado de la sincronización de archivos (actualizada o activa).",
+    "zh": "文件同步状态（已是最新或正在进行）。",
+    "ja": "ファイル同期の状態 (最新または実行中)。",
+    "ru": "Состояние синхронизации файлов (актуально или выполняется)."
+  },
+  "Status: {status}": {
+    "de": "Status: {status}",
+    "en": "Status: {status}",
+    "es": "Estado: {status}",
+    "zh": "状态：{status}",
+    "ja": "状態: {status}",
+    "ru": "Статус: {status}"
+  },
+  "Stellenanzahl mit führenden Nullen": {
+    "de": "Stellenanzahl mit führenden Nullen",
+    "en": "Number of digits with leading zeros",
+    "es": "Cantidad de dígitos con ceros iniciales",
+    "zh": "带前导零的位数",
+    "ja": "先頭にゼロを付ける桁数",
+    "ru": "Количество разрядов с ведущими нулями"
+  },
+  "Suchbegriff": {
+    "de": "Suchbegriff",
+    "en": "Search term",
+    "es": "Término de búsqueda",
+    "zh": "搜索词",
+    "ja": "検索語",
+    "ru": "Поисковый запрос"
+  },
+  "Suchbegriff eingeben": {
+    "de": "Suchbegriff eingeben",
+    "en": "Enter search term",
+    "es": "Introduzca un término de búsqueda",
+    "zh": "输入搜索词",
+    "ja": "検索語を入力",
+    "ru": "Введите поисковый запрос"
+  },
+  "Suchbegriff eingeben und mit Enter oder der Schaltfläche Suchen starten.": {
+    "de": "Suchbegriff eingeben und mit Enter oder der Schaltfläche Suchen starten.",
+    "en": "Enter a search term and start the search with Enter or the Search button.",
+    "es": "Introduzca un término de búsqueda e inicie la búsqueda con Enter o con el botón Buscar.",
+    "zh": "输入搜索词，然后按 Enter 键或点击“搜索”按钮开始搜索。",
+    "ja": "検索語を入力し、Enter キーまたは [検索] ボタンで検索を開始します。",
+    "ru": "Введите поисковый запрос и начните поиск клавишей Enter или кнопкой «Поиск»."
+  },
+  "Suchbegriff für Dateiname, Inhalt oder Pfad.": {
+    "de": "Suchbegriff für Dateiname, Inhalt oder Pfad.",
+    "en": "Search term for file name, content or path.",
+    "es": "Término de búsqueda para el nombre, el contenido o la ruta del archivo.",
+    "zh": "用于文件名、内容或路径的搜索词。",
+    "ja": "ファイル名、内容、またはパスの検索語です。",
+    "ru": "Поисковый запрос для имени файла, содержимого или пути."
+  },
+  "Suchbegriff für Umbenennung": {
+    "de": "Suchbegriff für Umbenennung",
+    "en": "Search term for renaming",
+    "es": "Término de búsqueda para el cambio de nombre",
+    "zh": "用于重命名的搜索词",
+    "ja": "名前変更用の検索語",
+    "ru": "Поисковый запрос для переименования"
+  },
+  "Suchbegriff für die Volltextsuche im Dateiindex eingeben. Mindestens zwei Zeichen starten die Suche.": {
+    "de": "Suchbegriff für die Volltextsuche im Dateiindex eingeben. Mindestens zwei Zeichen starten die Suche.",
+    "en": "Enter a search term for the full-text search in the file index. At least two characters start the search.",
+    "es": "Introduzca un término de búsqueda para la búsqueda de texto completo en el índice de archivos. La búsqueda se inicia con al menos dos caracteres.",
+    "zh": "输入用于在文件索引中进行全文搜索的搜索词。至少输入两个字符才会开始搜索。",
+    "ja": "ファイルインデックスの全文検索に使う検索語を入力します。2 文字以上で検索が開始されます。",
+    "ru": "Введите поисковый запрос для полнотекстового поиска по индексу файлов. Поиск начинается при вводе не менее двух символов."
+  },
+  "Suche ausführen": {
+    "de": "Suche ausführen",
+    "en": "Run search",
+    "es": "Ejecutar búsqueda",
+    "zh": "执行搜索",
+    "ja": "検索を実行",
+    "ru": "Выполнить поиск"
+  },
+  "Suche in": {
+    "de": "Suche in",
+    "en": "Search in",
+    "es": "Buscar en",
+    "zh": "搜索范围",
+    "ja": "検索場所",
+    "ru": "Где искать"
+  },
+  "Suche löschen": {
+    "de": "Suche löschen",
+    "en": "Clear search",
+    "es": "Borrar búsqueda",
+    "zh": "清除搜索",
+    "ja": "検索をクリア",
+    "ru": "Очистить поиск"
+  },
+  "Suche nach '{query}'...": {
+    "de": "Suche nach '{query}'...",
+    "en": "Searching for '{query}'...",
+    "es": "Buscando '{query}'...",
+    "zh": "正在搜索“{query}”...",
+    "ja": "'{query}' を検索中...",
+    "ru": "Поиск '{query}'..."
+  },
+  "Suche starten": {
+    "de": "Suche starten",
+    "en": "Start search",
+    "es": "Iniciar búsqueda",
+    "zh": "开始搜索",
+    "ja": "検索を開始",
+    "ru": "Начать поиск"
+  },
+  "Suchergebnisse": {
+    "de": "Suchergebnisse",
+    "en": "Search results",
+    "es": "Resultados de la búsqueda",
+    "zh": "搜索结果",
+    "ja": "検索結果",
+    "ru": "Результаты поиска"
+  },
+  "Suchfilter zurücksetzen": {
+    "de": "Suchfilter zurücksetzen",
+    "en": "Reset search filters",
+    "es": "Restablecer filtros de búsqueda",
+    "zh": "重置搜索筛选器",
+    "ja": "検索フィルターをリセット",
+    "ru": "Сбросить фильтры поиска"
+  },
+  "Suchfortschritt": {
+    "de": "Suchfortschritt",
+    "en": "Search progress",
+    "es": "Progreso de la búsqueda",
+    "zh": "搜索进度",
+    "ja": "検索の進行状況",
+    "ru": "Ход поиска"
+  },
+  "Suchkriterien": {
+    "de": "Suchkriterien",
+    "en": "Search criteria",
+    "es": "Criterios de búsqueda",
+    "zh": "搜索条件",
+    "ja": "検索条件",
+    "ru": "Критерии поиска"
+  },
+  "Suchstatus": {
+    "de": "Suchstatus",
+    "en": "Search status",
+    "es": "Estado de la búsqueda",
+    "zh": "搜索状态",
+    "ja": "検索の状態",
+    "ru": "Состояние поиска"
+  },
+  "Symbolgröße": {
+    "de": "Symbolgröße",
+    "en": "Icon size",
+    "es": "Tamaño de iconos",
+    "zh": "图标大小",
+    "ja": "アイコンサイズ",
+    "ru": "Размер значков"
+  },
+  "Sync": {
+    "de": "Sync",
+    "en": "Sync",
+    "es": "Sincronizar",
+    "zh": "同步",
+    "ja": "同期",
+    "ru": "Синхронизация"
+  },
+  "Sync öffnen": {
+    "de": "Sync öffnen",
+    "en": "Open Sync",
+    "es": "Abrir sincronización",
+    "zh": "打开同步",
+    "ja": "同期を開く",
+    "ru": "Открыть синхронизацию"
+  },
+  "Sync-Paar bearbeiten": {
+    "de": "Sync-Paar bearbeiten",
+    "en": "Edit sync pair",
+    "es": "Editar par de sincronización",
+    "zh": "编辑同步对",
+    "ja": "同期ペアを編集",
+    "ru": "Изменить пару синхронизации"
+  },
+  "Sync-Vorschau: {name}": {
+    "de": "Sync-Vorschau: {name}",
+    "en": "Sync preview: {name}",
+    "es": "Vista previa de sincronización: {name}",
+    "zh": "同步预览：{name}",
+    "ja": "同期プレビュー: {name}",
+    "ru": "Предпросмотр синхронизации: {name}"
+  },
+  "Synchronisation": {
+    "de": "Synchronisation",
+    "en": "Synchronization",
+    "es": "Sincronización",
+    "zh": "同步",
+    "ja": "同期",
+    "ru": "Синхронизация"
+  },
+  "Synchronisation abgeschlossen: {count} Dateien": {
+    "de": "Synchronisation abgeschlossen: {count} Dateien",
+    "en": "Synchronization completed: {count} files",
+    "es": "Sincronización completada: {count} archivos",
+    "zh": "同步完成：{count} 个文件",
+    "ja": "同期が完了しました: {count} 個のファイル",
+    "ru": "Синхронизация завершена: файлов — {count}"
+  },
+  "Synchronisation ist aktuell und auf dem neuesten Stand.": {
+    "de": "Synchronisation ist aktuell und auf dem neuesten Stand.",
+    "en": "Synchronization is up to date.",
+    "es": "La sincronización está al día.",
+    "zh": "同步已是最新状态。",
+    "ja": "同期は最新の状態です。",
+    "ru": "Синхронизация актуальна."
+  },
+  "Synchronisation starten": {
+    "de": "Synchronisation starten",
+    "en": "Start synchronization",
+    "es": "Iniciar sincronización",
+    "zh": "开始同步",
+    "ja": "同期を開始",
+    "ru": "Начать синхронизацию"
+  },
+  "Synchronisation wird derzeit im Hintergrund ausgeführt.": {
+    "de": "Synchronisation wird derzeit im Hintergrund ausgeführt.",
+    "en": "Synchronization is currently running in the background.",
+    "es": "La sincronización se está ejecutando actualmente en segundo plano.",
+    "zh": "同步当前正在后台运行。",
+    "ja": "同期は現在バックグラウンドで実行中です。",
+    "ru": "Синхронизация сейчас выполняется в фоновом режиме."
+  },
+  "Synchronisationspaare": {
+    "de": "Synchronisationspaare",
+    "en": "Sync pairs",
+    "es": "Pares de sincronización",
+    "zh": "同步对",
+    "ja": "同期ペア",
+    "ru": "Пары синхронизации"
+  },
+  "Synchronisationsrichtung": {
+    "de": "Synchronisationsrichtung",
+    "en": "Sync direction",
+    "es": "Dirección de sincronización",
+    "zh": "同步方向",
+    "ja": "同期の方向",
+    "ru": "Направление синхронизации"
+  },
+  "Synchronisationsstatus": {
+    "de": "Synchronisationsstatus",
+    "en": "Sync status",
+    "es": "Estado de sincronización",
+    "zh": "同步状态",
+    "ja": "同期の状態",
+    "ru": "Состояние синхронизации"
+  },
+  "Synchronisationsvorschau öffnen": {
+    "de": "Synchronisationsvorschau öffnen",
+    "en": "Open sync preview",
+    "es": "Abrir vista previa de sincronización",
+    "zh": "打开同步预览",
+    "ja": "同期プレビューを開く",
+    "ru": "Открыть предпросмотр синхронизации"
+  },
+  "Synchronisieren": {
+    "de": "Synchronisieren",
+    "en": "Synchronize",
+    "es": "Sincronizar",
+    "zh": "同步",
+    "ja": "同期する",
+    "ru": "Синхронизировать"
+  },
+  "Synchronisierung: Aktuell": {
+    "de": "Synchronisierung: Aktuell",
+    "en": "Synchronization: Up to date",
+    "es": "Sincronización: al día",
+    "zh": "同步：已是最新",
+    "ja": "同期: 最新",
+    "ru": "Синхронизация: актуально"
+  },
+  "Syntax validieren": {
+    "de": "Syntax validieren",
+    "en": "Validate syntax",
+    "es": "Validar sintaxis",
+    "zh": "验证语法",
+    "ja": "構文を検証",
+    "ru": "Проверить синтаксис"
+  },
+  "System": {
+    "de": "System",
+    "en": "System",
+    "es": "Sistema",
+    "zh": "系统",
+    "ja": "システム",
+    "ru": "Система"
+  },
+  "Systemstandard": {
+    "de": "Systemstandard",
+    "en": "System default",
+    "es": "Predeterminado del sistema",
+    "zh": "系统默认",
+    "ja": "システムの既定",
+    "ru": "Системная по умолчанию"
+  },
+  "Tabelle der Dateien und Ordner im aktuellen Verzeichnis. Navigieren mit Pfeiltasten, Öffnen mit Enter oder Doppelklick.": {
+    "de": "Tabelle der Dateien und Ordner im aktuellen Verzeichnis. Navigieren mit Pfeiltasten, Öffnen mit Enter oder Doppelklick.",
+    "en": "Table of the files and folders in the current directory. Navigate with the arrow keys, open with Enter or double-click.",
+    "es": "Tabla de los archivos y carpetas del directorio actual. Navegue con las teclas de flecha y abra con Enter o doble clic.",
+    "zh": "当前目录中的文件和文件夹表格。使用方向键导航，按 Enter 键或双击打开。",
+    "ja": "現在のディレクトリ内のファイルとフォルダーの表です。方向キーで移動し、Enter キーまたはダブルクリックで開きます。",
+    "ru": "Таблица файлов и папок в текущем каталоге. Перемещайтесь стрелками, открывайте клавишей Enter или двойным щелчком."
+  },
+  "Tabelle mit Aktion, Datei, Richtung und Grund jeder geplanten Synchronisationsänderung": {
+    "de": "Tabelle mit Aktion, Datei, Richtung und Grund jeder geplanten Synchronisationsänderung",
+    "en": "Table with the action, file, direction and reason of each planned synchronization change",
+    "es": "Tabla con la acción, el archivo, la dirección y el motivo de cada cambio de sincronización planificado",
+    "zh": "列出每项计划同步更改的操作、文件、方向和原因的表格",
+    "ja": "計画されている各同期変更の操作、ファイル、方向、理由を示す表",
+    "ru": "Таблица с действием, файлом, направлением и причиной каждого запланированного изменения синхронизации"
+  },
+  "Tabellenvorschau": {
+    "de": "Tabellenvorschau",
+    "en": "Table preview",
+    "es": "Vista previa de tabla",
+    "zh": "表格预览",
+    "ja": "表のプレビュー",
+    "ru": "Предпросмотр таблицы"
+  },
+  "Tags": {
+    "de": "Tags",
+    "en": "Tags",
+    "es": "Etiquetas",
+    "zh": "标签",
+    "ja": "タグ",
+    "ru": "Теги"
+  },
+  "Tags bearbeiten": {
+    "de": "Tags bearbeiten",
+    "en": "Edit tags",
+    "es": "Editar etiquetas",
+    "zh": "编辑标签",
+    "ja": "タグを編集",
+    "ru": "Изменить теги"
+  },
+  "Tags/Notizen konnten nicht gelesen werden: %s": {
+    "de": "Tags/Notizen konnten nicht gelesen werden: %s",
+    "en": "Tags/notes could not be read: %s",
+    "es": "No se pudieron leer las etiquetas/notas: %s",
+    "zh": "无法读取标签/备注：%s",
+    "ja": "タグ/メモを読み込めませんでした: %s",
+    "ru": "Не удалось прочитать теги/заметки: %s"
+  },
+  "Tags/Notizen konnten nicht gespeichert werden: %s": {
+    "de": "Tags/Notizen konnten nicht gespeichert werden: %s",
+    "en": "Tags/notes could not be saved: %s",
+    "es": "No se pudieron guardar las etiquetas/notas: %s",
+    "zh": "无法保存标签/备注：%s",
+    "ja": "タグ/メモを保存できませんでした: %s",
+    "ru": "Не удалось сохранить теги/заметки: %s"
+  },
+  "Teilweise gelöscht": {
+    "de": "Teilweise gelöscht",
+    "en": "Partially deleted",
+    "es": "Eliminado parcialmente",
+    "zh": "部分已删除",
+    "ja": "一部削除済み",
+    "ru": "Частично удалено"
+  },
+  "Telefonnummern": {
+    "de": "Telefonnummern",
+    "en": "Phone numbers",
+    "es": "Números de teléfono",
+    "zh": "电话号码",
+    "ja": "電話番号",
+    "ru": "Номера телефонов"
+  },
+  "Testen": {
+    "de": "Testen",
+    "en": "Test",
+    "es": "Probar",
+    "zh": "测试",
+    "ja": "テスト",
+    "ru": "Проверить"
+  },
+  "Testtext für die Datenschutz-Prüfung": {
+    "de": "Testtext für die Datenschutz-Prüfung",
+    "en": "Test text for the privacy check",
+    "es": "Texto de prueba para la comprobación de privacidad",
+    "zh": "用于隐私检查的测试文本",
+    "ja": "プライバシーチェック用のテストテキスト",
+    "ru": "Тестовый текст для проверки конфиденциальности"
+  },
+  "Testtext prüfen": {
+    "de": "Testtext prüfen",
+    "en": "Check test text",
+    "es": "Comprobar texto de prueba",
+    "zh": "检查测试文本",
+    "ja": "テストテキストを確認",
+    "ru": "Проверить тестовый текст"
+  },
+  "Text der Prompt-Vorlage. Variablen in doppelten geschweiften Klammern werden beim Verwenden abgefragt.": {
+    "de": "Text der Prompt-Vorlage. Variablen in doppelten geschweiften Klammern werden beim Verwenden abgefragt.",
+    "en": "Text of the prompt template. Variables in double curly braces are requested when the prompt is used.",
+    "es": "Texto de la plantilla de prompt. Las variables entre llaves dobles se solicitan al utilizar el prompt.",
+    "zh": "提示词模板的文本。使用时会询问双花括号中的变量。",
+    "ja": "プロンプトテンプレートのテキストです。二重波括弧で囲んだ変数は、使用時に入力を求められます。",
+    "ru": "Текст шаблона промпта. Переменные в двойных фигурных скобках запрашиваются при использовании промпта."
+  },
+  "Text einfügen und prüfen, wie die Ampel mit den aktuellen (auch noch nicht gespeicherten) Einstellungen reagieren würde.": {
+    "de": "Text einfügen und prüfen, wie die Ampel mit den aktuellen (auch noch nicht gespeicherten) Einstellungen reagieren würde.",
+    "en": "Paste text and check how the traffic light would react with the current settings (including those not yet saved).",
+    "es": "Pegue un texto y compruebe cómo reaccionaría el semáforo con la configuración actual (incluso la que aún no se ha guardado).",
+    "zh": "粘贴文本，查看指示灯在当前设置（包括尚未保存的设置）下会如何反应。",
+    "ja": "テキストを貼り付けて、現在の設定 (未保存の設定を含む) でインジケーターがどう反応するかを確認します。",
+    "ru": "Вставьте текст и проверьте, как отреагирует индикатор при текущих настройках (в том числе еще не сохраненных)."
+  },
+  "Text, der an das Ende des Dateinamens vor die Dateiendung gehängt wird.": {
+    "de": "Text, der an das Ende des Dateinamens vor die Dateiendung gehängt wird.",
+    "en": "Text that is appended to the end of the file name, before the file extension.",
+    "es": "Texto que se añade al final del nombre de archivo, antes de la extensión.",
+    "zh": "附加在文件名末尾、扩展名之前的文本。",
+    "ja": "ファイル名の末尾、拡張子の前に追加されるテキストです。",
+    "ru": "Текст, добавляемый в конец имени файла перед расширением."
+  },
+  "Text, der vor jeden Dateinamen eingefügt wird.": {
+    "de": "Text, der vor jeden Dateinamen eingefügt wird.",
+    "en": "Text that is inserted before each file name.",
+    "es": "Texto que se inserta antes de cada nombre de archivo.",
+    "zh": "插入到每个文件名之前的文本。",
+    "ja": "各ファイル名の先頭に挿入されるテキストです。",
+    "ru": "Текст, добавляемый в начало каждого имени файла."
+  },
+  "Textvorschau ist in den Einstellungen deaktiviert.": {
+    "de": "Textvorschau ist in den Einstellungen deaktiviert.",
+    "en": "Text preview is disabled in the settings.",
+    "es": "La vista previa de texto está desactivada en la configuración.",
+    "zh": "文本预览已在设置中禁用。",
+    "ja": "テキストのプレビューは設定で無効になっています。",
+    "ru": "Предпросмотр текста отключен в настройках."
+  },
+  "Titel der Vorlage eingeben": {
+    "de": "Titel der Vorlage eingeben",
+    "en": "Enter template title",
+    "es": "Introducir el título de la plantilla",
+    "zh": "输入模板标题",
+    "ja": "テンプレートのタイトルを入力",
+    "ru": "Введите название шаблона"
+  },
+  "Titel des ausgewählten Prompts": {
+    "de": "Titel des ausgewählten Prompts",
+    "en": "Title of the selected prompt",
+    "es": "Título del prompt seleccionado",
+    "zh": "所选提示词的标题",
+    "ja": "選択したプロンプトのタイトル",
+    "ru": "Название выбранного промпта"
+  },
+  "Umbenennungs-Vorschautabelle": {
+    "de": "Umbenennungs-Vorschautabelle",
+    "en": "Rename preview table",
+    "es": "Tabla de vista previa del cambio de nombre",
+    "zh": "重命名预览表",
+    "ja": "名前変更プレビュー表",
+    "ru": "Таблица предпросмотра переименования"
+  },
+  "Ungespeicherte Änderungen": {
+    "de": "Ungespeicherte Änderungen",
+    "en": "Unsaved changes",
+    "es": "Cambios sin guardar",
+    "zh": "未保存的更改",
+    "ja": "未保存の変更",
+    "ru": "Несохранённые изменения"
+  },
+  "Unterscheidet zwischen Groß- und Kleinbuchstaben beim Suchen.": {
+    "de": "Unterscheidet zwischen Groß- und Kleinbuchstaben beim Suchen.",
+    "en": "Distinguishes between uppercase and lowercase letters when searching.",
+    "es": "Distingue entre mayúsculas y minúsculas al buscar.",
+    "zh": "搜索时区分大小写。",
+    "ja": "検索時に大文字と小文字を区別します。",
+    "ru": "Учитывает регистр букв при поиске."
+  },
+  "Validieren": {
+    "de": "Validieren",
+    "en": "Validate",
+    "es": "Validar",
+    "zh": "验证",
+    "ja": "検証",
+    "ru": "Проверить"
+  },
+  "Validiert die Syntax der aktuellen Datei (z. B. JSON, TOML).": {
+    "de": "Validiert die Syntax der aktuellen Datei (z. B. JSON, TOML).",
+    "en": "Validates the syntax of the current file (e.g. JSON, TOML).",
+    "es": "Valida la sintaxis del archivo actual (p. ej., JSON, TOML).",
+    "zh": "验证当前文件的语法（例如 JSON、TOML）。",
+    "ja": "現在のファイルの構文を検証します（例：JSON、TOML）。",
+    "ru": "Проверяет синтаксис текущего файла (например, JSON, TOML)."
+  },
+  "Variable: {name}": {
+    "de": "Variable: {name}",
+    "en": "Variable: {name}",
+    "es": "Variable: {name}",
+    "zh": "变量：{name}",
+    "ja": "変数：{name}",
+    "ru": "Переменная: {name}"
+  },
+  "Variablen: {{variable}} werden beim Kopieren abgefragt": {
+    "de": "Variablen: {{variable}} werden beim Kopieren abgefragt",
+    "en": "Variables: {{variable}} will be requested when copying",
+    "es": "Variables: se solicitará {{variable}} al copiar",
+    "zh": "变量：复制时将询问 {{variable}}",
+    "ja": "変数：コピー時に {{variable}} の入力を求められます",
+    "ru": "Переменные: значения {{variable}} будут запрошены при копировании"
+  },
+  "Vergleichsstatistik": {
+    "de": "Vergleichsstatistik",
+    "en": "Comparison statistics",
+    "es": "Estadísticas de comparación",
+    "zh": "比较统计",
+    "ja": "比較統計",
+    "ru": "Статистика сравнения"
+  },
+  "Vergleichsstatus": {
+    "de": "Vergleichsstatus",
+    "en": "Comparison status",
+    "es": "Estado de la comparación",
+    "zh": "比较状态",
+    "ja": "比較ステータス",
+    "ru": "Состояние сравнения"
+  },
+  "Vergleicht zwei Dateien zeilenweise mit visueller Gegenüberstellung und Syntax-Hervorhebung.": {
+    "de": "Vergleicht zwei Dateien zeilenweise mit visueller Gegenüberstellung und Syntax-Hervorhebung.",
+    "en": "Compares two files line by line with a visual side-by-side view and syntax highlighting.",
+    "es": "Compara dos archivos línea por línea con una vista comparativa visual y resaltado de sintaxis.",
+    "zh": "逐行比较两个文件，提供可视化对照和语法高亮。",
+    "ja": "2つのファイルを行ごとに比較し、並べて表示して構文を強調表示します。",
+    "ru": "Построчно сравнивает два файла с наглядным сопоставлением и подсветкой синтаксиса."
+  },
+  "Verifikationsergebnis": {
+    "de": "Verifikationsergebnis",
+    "en": "Verification result",
+    "es": "Resultado de la verificación",
+    "zh": "验证结果",
+    "ja": "検証結果",
+    "ru": "Результат проверки"
+  },
+  "Verknüpfung konnte nicht aufgelöst werden\noder das Ziel existiert nicht.": {
+    "de": "Verknüpfung konnte nicht aufgelöst werden\noder das Ziel existiert nicht.",
+    "en": "Shortcut could not be resolved\nor the target does not exist.",
+    "es": "No se pudo resolver el acceso directo\no el destino no existe.",
+    "zh": "快捷方式无法解析\n或目标不存在。",
+    "ja": "ショートカットを解決できませんでした\nまたはターゲットが存在しません。",
+    "ru": "Не удалось разрешить ярлык\nили целевой объект не существует."
+  },
+  "Verknüpfung: {name}": {
+    "de": "Verknüpfung: {name}",
+    "en": "Shortcut: {name}",
+    "es": "Acceso directo: {name}",
+    "zh": "快捷方式：{name}",
+    "ja": "ショートカット：{name}",
+    "ru": "Ярлык: {name}"
+  },
+  "Version {version}": {
+    "de": "Version {version}",
+    "en": "Version {version}",
+    "es": "Versión {version}",
+    "zh": "版本 {version}",
+    "ja": "バージョン {version}",
+    "ru": "Версия {version}"
+  },
+  "Videos": {
+    "de": "Videos",
+    "en": "Videos",
+    "es": "Vídeos",
+    "zh": "视频",
+    "ja": "ビデオ",
+    "ru": "Видео"
+  },
+  "Vollständiger Pfad in die Zwischenablage kopiert:\n\n{path}": {
+    "de": "Vollständiger Pfad in die Zwischenablage kopiert:\n\n{path}",
+    "en": "Full path copied to clipboard:\n\n{path}",
+    "es": "Ruta completa copiada al portapapeles:\n\n{path}",
+    "zh": "完整路径已复制到剪贴板：\n\n{path}",
+    "ja": "完全なパスをクリップボードにコピーしました：\n\n{path}",
+    "ru": "Полный путь скопирован в буфер обмена:\n\n{path}"
+  },
+  "Volltextsuche": {
+    "de": "Volltextsuche",
+    "en": "Full-text search",
+    "es": "Búsqueda de texto completo",
+    "zh": "全文搜索",
+    "ja": "全文検索",
+    "ru": "Полнотекстовый поиск"
+  },
+  "Vorschau anzeigen": {
+    "de": "Vorschau anzeigen",
+    "en": "Show preview",
+    "es": "Mostrar vista previa",
+    "zh": "显示预览",
+    "ja": "プレビューを表示",
+    "ru": "Показать предпросмотр"
+  },
+  "Vorschau nicht verfügbar\nfür diesen Dateityp": {
+    "de": "Vorschau nicht verfügbar\nfür diesen Dateityp",
+    "en": "Preview not available\nfor this file type",
+    "es": "Vista previa no disponible\npara este tipo de archivo",
+    "zh": "此文件类型\n不支持预览",
+    "ja": "このファイル形式のプレビューは\n利用できません",
+    "ru": "Предварительный просмотр недоступен\nдля этого типа файла"
+  },
+  "Vorschau nicht verfügbar: {reason}": {
+    "de": "Vorschau nicht verfügbar: {reason}",
+    "en": "Preview not available: {reason}",
+    "es": "Vista previa no disponible: {reason}",
+    "zh": "预览不可用：{reason}",
+    "ja": "プレビューは利用できません：{reason}",
+    "ru": "Предпросмотр недоступен: {reason}"
+  },
+  "Vorschau-Hinweis": {
+    "de": "Vorschau-Hinweis",
+    "en": "Preview notice",
+    "es": "Aviso de vista previa",
+    "zh": "预览提示",
+    "ja": "プレビューの注意",
+    "ru": "Примечание к предпросмотру"
+  },
+  "Vorschau: {path}": {
+    "de": "Vorschau: {path}",
+    "en": "Preview: {path}",
+    "es": "Vista previa: {path}",
+    "zh": "预览：{path}",
+    "ja": "プレビュー：{path}",
+    "ru": "Предпросмотр: {path}"
+  },
+  "Vorschautabelle der Excel-Zellendaten.": {
+    "de": "Vorschautabelle der Excel-Zellendaten.",
+    "en": "Preview table of the Excel cell data.",
+    "es": "Tabla de vista previa de los datos de celdas de Excel.",
+    "zh": "Excel 单元格数据的预览表。",
+    "ja": "Excel セルデータのプレビュー表です。",
+    "ru": "Таблица предпросмотра данных ячеек Excel."
+  },
+  "Vorschauänderungen synchronisieren": {
+    "de": "Vorschauänderungen synchronisieren",
+    "en": "Sync previewed changes",
+    "es": "Sincronizar los cambios de la vista previa",
+    "zh": "同步预览的更改",
+    "ja": "プレビューの変更を同期",
+    "ru": "Синхронизировать изменения из предпросмотра"
+  },
+  "WARNUNG: {count} sensible Muster erkannt!": {
+    "de": "WARNUNG: {count} sensible Muster erkannt!",
+    "en": "WARNING: {count} sensitive patterns detected!",
+    "es": "ADVERTENCIA: ¡Se detectaron {count} patrones sensibles!",
+    "zh": "警告：检测到 {count} 个敏感模式！",
+    "ja": "警告：{count} 件の機密パターンを検出しました！",
+    "ru": "ПРЕДУПРЕЖДЕНИЕ: обнаружено конфиденциальных шаблонов: {count}!"
+  },
+  "Wandelt die Schreibweise aller Dateinamen einheitlich um.": {
+    "de": "Wandelt die Schreibweise aller Dateinamen einheitlich um.",
+    "en": "Converts the capitalization of all file names uniformly.",
+    "es": "Convierte de forma uniforme el uso de mayúsculas y minúsculas de todos los nombres de archivo.",
+    "zh": "统一转换所有文件名的大小写格式。",
+    "ja": "すべてのファイル名の表記（大文字・小文字）を統一して変換します。",
+    "ru": "Единообразно преобразует написание (регистр) всех имён файлов."
+  },
+  "Warnhinweis bei roter Ampel als Dialog anzeigen": {
+    "de": "Warnhinweis bei roter Ampel als Dialog anzeigen",
+    "en": "Show warning as a dialog when the traffic light is red",
+    "es": "Mostrar la advertencia como diálogo cuando el semáforo esté en rojo",
+    "zh": "红灯时以对话框形式显示警告",
+    "ja": "赤信号のときに警告をダイアログで表示",
+    "ru": "Показывать предупреждение в диалоге при красном светофоре"
+  },
+  "Warnhinweis bei roter Ampel anzeigen": {
+    "de": "Warnhinweis bei roter Ampel anzeigen",
+    "en": "Show warning when the traffic light is red",
+    "es": "Mostrar advertencia cuando el semáforo esté en rojo",
+    "zh": "红灯时显示警告",
+    "ja": "赤信号のときに警告を表示",
+    "ru": "Показывать предупреждение при красном светофоре"
+  },
+  "Warnung": {
+    "de": "Warnung",
+    "en": "Warning",
+    "es": "Advertencia",
+    "zh": "警告",
+    "ja": "警告",
+    "ru": "Предупреждение"
+  },
+  "Warte auf Abschluss der Berechnung": {
+    "de": "Warte auf Abschluss der Berechnung",
+    "en": "Waiting for the calculation to finish",
+    "es": "Esperando a que finalice el cálculo",
+    "zh": "正在等待计算完成",
+    "ja": "計算の完了を待機中",
+    "ru": "Ожидание завершения вычисления"
+  },
+  "Wechselt zur Seitenleiste für den Ordnerabgleich.": {
+    "de": "Wechselt zur Seitenleiste für den Ordnerabgleich.",
+    "en": "Switches to the sidebar for folder synchronization.",
+    "es": "Cambia a la barra lateral de sincronización de carpetas.",
+    "zh": "切换到用于文件夹同步的侧边栏。",
+    "ja": "フォルダー同期用のサイドバーに切り替えます。",
+    "ru": "Переключает на боковую панель синхронизации папок."
+  },
+  "Wechselt zur Seitenleiste für die Volltext- und Dateisuche.": {
+    "de": "Wechselt zur Seitenleiste für die Volltext- und Dateisuche.",
+    "en": "Switches to the sidebar for full-text and file search.",
+    "es": "Cambia a la barra lateral de búsqueda de texto completo y de archivos.",
+    "zh": "切换到用于全文和文件搜索的侧边栏。",
+    "ja": "全文検索とファイル検索用のサイドバーに切り替えます。",
+    "ru": "Переключает на боковую панель полнотекстового поиска и поиска файлов."
+  },
+  "Wechselt zur Seitenleiste mit Laufwerken und Schnellzugriff.": {
+    "de": "Wechselt zur Seitenleiste mit Laufwerken und Schnellzugriff.",
+    "en": "Switches to the sidebar with drives and quick access.",
+    "es": "Cambia a la barra lateral con unidades y acceso rápido.",
+    "zh": "切换到包含驱动器和快速访问的侧边栏。",
+    "ja": "ドライブとクイックアクセスのサイドバーに切り替えます。",
+    "ru": "Переключает на боковую панель с дисками и быстрым доступом."
+  },
+  "Wechselt zur Seitenleiste mit gespeicherten Favoritenordnern.": {
+    "de": "Wechselt zur Seitenleiste mit gespeicherten Favoritenordnern.",
+    "en": "Switches to the sidebar with saved favorite folders.",
+    "es": "Cambia a la barra lateral con las carpetas favoritas guardadas.",
+    "zh": "切换到包含已保存收藏文件夹的侧边栏。",
+    "ja": "保存したお気に入りフォルダーのサイドバーに切り替えます。",
+    "ru": "Переключает на боковую панель с сохранёнными избранными папками."
+  },
+  "Wechselt zur Seitenleiste mit häufig genutzten Programmen.": {
+    "de": "Wechselt zur Seitenleiste mit häufig genutzten Programmen.",
+    "en": "Switches to the sidebar with frequently used programs.",
+    "es": "Cambia a la barra lateral con los programas de uso frecuente.",
+    "zh": "切换到包含常用程序的侧边栏。",
+    "ja": "よく使うプログラムのサイドバーに切り替えます。",
+    "ru": "Переключает на боковую панель с часто используемыми программами."
+  },
+  "Wechselt zur Seitenleiste mit lokalen Prompt-Vorlagen.": {
+    "de": "Wechselt zur Seitenleiste mit lokalen Prompt-Vorlagen.",
+    "en": "Switches to the sidebar with local prompt templates.",
+    "es": "Cambia a la barra lateral con las plantillas de prompts locales.",
+    "zh": "切换到包含本地提示词模板的侧边栏。",
+    "ja": "ローカルのプロンプトテンプレートのサイドバーに切り替えます。",
+    "ru": "Переключает на боковую панель с локальными шаблонами промптов."
+  },
+  "Wenn aktiviert, sucht ExplorerPro nur im Dateiinhalt und nicht im Dateinamen.": {
+    "de": "Wenn aktiviert, sucht ExplorerPro nur im Dateiinhalt und nicht im Dateinamen.",
+    "en": "When enabled, ExplorerPro searches only in the file content and not in the file name.",
+    "es": "Si está activado, ExplorerPro busca solo en el contenido del archivo y no en el nombre.",
+    "zh": "启用后，ExplorerPro 仅在文件内容中搜索，而不在文件名中搜索。",
+    "ja": "有効にすると、ExplorerPro はファイル名ではなくファイルの内容のみを検索します。",
+    "ru": "Если включено, ExplorerPro ищет только в содержимом файлов, а не в их именах."
+  },
+  "Wert für '{name}' eingeben:": {
+    "de": "Wert für '{name}' eingeben:",
+    "en": "Enter a value for '{name}':",
+    "es": "Introduzca un valor para '{name}':",
+    "zh": "输入“{name}”的值：",
+    "ja": "'{name}' の値を入力：",
+    "ru": "Введите значение для '{name}':"
+  },
+  "Whitelist": {
+    "de": "Whitelist",
+    "en": "Whitelist",
+    "es": "Lista blanca",
+    "zh": "白名单",
+    "ja": "ホワイトリスト",
+    "ru": "Белый список"
+  },
+  "Whitelist-Einträge": {
+    "de": "Whitelist-Einträge",
+    "en": "Whitelist entries",
+    "es": "Entradas de la lista blanca",
+    "zh": "白名单条目",
+    "ja": "ホワイトリストのエントリ",
+    "ru": "Записи белого списка"
+  },
+  "Wird berechnet": {
+    "de": "Wird berechnet",
+    "en": "Calculating",
+    "es": "Calculando",
+    "zh": "正在计算",
+    "ja": "計算中",
+    "ru": "Вычисляется"
+  },
+  "Wählt alle Duplikate außer dem jeweils ersten Eintrag jeder Gruppe zum Löschen aus.": {
+    "de": "Wählt alle Duplikate außer dem jeweils ersten Eintrag jeder Gruppe zum Löschen aus.",
+    "en": "Selects all duplicates for deletion except the first entry of each group.",
+    "es": "Selecciona para eliminar todos los duplicados excepto la primera entrada de cada grupo.",
+    "zh": "选择每组中除第一项以外的所有重复项进行删除。",
+    "ja": "各グループの最初のエントリを除くすべての重複を削除対象として選択します。",
+    "ru": "Выбирает для удаления все дубликаты, кроме первой записи в каждой группе."
+  },
+  "Wählt neuere Duplikate aus und behält die älteste Datei.": {
+    "de": "Wählt neuere Duplikate aus und behält die älteste Datei.",
+    "en": "Selects newer duplicates and keeps the oldest file.",
+    "es": "Selecciona los duplicados más recientes y conserva el archivo más antiguo.",
+    "zh": "选择较新的重复项并保留最旧的文件。",
+    "ja": "新しい重複を選択し、最も古いファイルを残します。",
+    "ru": "Выбирает более новые дубликаты и сохраняет самый старый файл."
+  },
+  "Wählt ältere Duplikate aus und behält die neueste Datei.": {
+    "de": "Wählt ältere Duplikate aus und behält die neueste Datei.",
+    "en": "Selects older duplicates and keeps the newest file.",
+    "es": "Selecciona los duplicados más antiguos y conserva el archivo más reciente.",
+    "zh": "选择较旧的重复项并保留最新的文件。",
+    "ja": "古い重複を選択し、最も新しいファイルを残します。",
+    "ru": "Выбирает более старые дубликаты и сохраняет самый новый файл."
+  },
+  "Zeichenkodierung": {
+    "de": "Zeichenkodierung",
+    "en": "Character encoding",
+    "es": "Codificación de caracteres",
+    "zh": "字符编码",
+    "ja": "文字エンコーディング",
+    "ru": "Кодировка символов"
+  },
+  "Zeigt Originalnamen, vorgeschlagene neue Namen und eventuelle Konflikte.": {
+    "de": "Zeigt Originalnamen, vorgeschlagene neue Namen und eventuelle Konflikte.",
+    "en": "Shows original names, proposed new names and any conflicts.",
+    "es": "Muestra los nombres originales, los nuevos nombres propuestos y los posibles conflictos.",
+    "zh": "显示原始名称、建议的新名称以及可能的冲突。",
+    "ja": "元の名前、提案された新しい名前、および競合がある場合はその内容を表示します。",
+    "ru": "Показывает исходные имена, предлагаемые новые имена и возможные конфликты."
+  },
+  "Zeigt das aktuelle Arbeitsverzeichnis oder den Systemstatus an.": {
+    "de": "Zeigt das aktuelle Arbeitsverzeichnis oder den Systemstatus an.",
+    "en": "Shows the current working directory or the system status.",
+    "es": "Muestra el directorio de trabajo actual o el estado del sistema.",
+    "zh": "显示当前工作目录或系统状态。",
+    "ja": "現在の作業ディレクトリまたはシステムの状態を表示します。",
+    "ru": "Показывает текущий рабочий каталог или состояние системы."
+  },
+  "Zeigt den aktuellen Ordnerpfad und erlaubt direkte Navigation per Enter.": {
+    "de": "Zeigt den aktuellen Ordnerpfad und erlaubt direkte Navigation per Enter.",
+    "en": "Shows the current folder path and allows direct navigation by pressing Enter.",
+    "es": "Muestra la ruta de la carpeta actual y permite navegar directamente pulsando Enter.",
+    "zh": "显示当前文件夹路径，并允许按 Enter 键直接导航。",
+    "ja": "現在のフォルダーパスを表示し、Enter キーで直接移動できます。",
+    "ru": "Показывает путь к текущей папке и позволяет перейти по нему нажатием Enter."
+  },
+  "Zeile: 1, Spalte: 1": {
+    "de": "Zeile: 1, Spalte: 1",
+    "en": "Line: 1, Column: 1",
+    "es": "Línea: 1, Columna: 1",
+    "zh": "行：1，列：1",
+    "ja": "行：1、列：1",
+    "ru": "Строка: 1, столбец: 1"
+  },
+  "Zeile: {line}, Spalte: {column}": {
+    "de": "Zeile: {line}, Spalte: {column}",
+    "en": "Line: {line}, Column: {column}",
+    "es": "Línea: {line}, Columna: {column}",
+    "zh": "行：{line}，列：{column}",
+    "ja": "行：{line}、列：{column}",
+    "ru": "Строка: {line}, столбец: {column}"
+  },
+  "Zeilennummer": {
+    "de": "Zeilennummer",
+    "en": "Line number",
+    "es": "Número de línea",
+    "zh": "行号",
+    "ja": "行番号",
+    "ru": "Номер строки"
+  },
+  "Zeilenweiser Vergleich beider Dateien: Grün = hinzugefügt, Rot = entfernt.": {
+    "de": "Zeilenweiser Vergleich beider Dateien: Grün = hinzugefügt, Rot = entfernt.",
+    "en": "Line-by-line comparison of both files: green = added, red = removed.",
+    "es": "Comparación línea por línea de ambos archivos: verde = añadido, rojo = eliminado.",
+    "zh": "两个文件的逐行比较：绿色 = 已添加，红色 = 已删除。",
+    "ja": "両方のファイルの行単位の比較：緑 = 追加、赤 = 削除。",
+    "ru": "Построчное сравнение обоих файлов: зелёный = добавлено, красный = удалено."
+  },
+  "Ziel gewinnt immer": {
+    "de": "Ziel gewinnt immer",
+    "en": "Target always wins",
+    "es": "El destino siempre prevalece",
+    "zh": "始终以目标为准",
+    "ja": "常にターゲットを優先",
+    "ru": "Целевая папка всегда приоритетна"
+  },
+  "Ziel → Quelle": {
+    "de": "Ziel → Quelle",
+    "en": "Target → Source",
+    "es": "Destino → Origen",
+    "zh": "目标 → 源",
+    "ja": "ターゲット → ソース",
+    "ru": "Цель → Источник"
+  },
+  "Ziel: {path}": {
+    "de": "Ziel: {path}",
+    "en": "Target: {path}",
+    "es": "Destino: {path}",
+    "zh": "目标：{path}",
+    "ja": "ターゲット：{path}",
+    "ru": "Цель: {path}"
+  },
+  "Zielordner": {
+    "de": "Zielordner",
+    "en": "Target folder",
+    "es": "Carpeta de destino",
+    "zh": "目标文件夹",
+    "ja": "ターゲットフォルダー",
+    "ru": "Целевая папка"
+  },
+  "Zielordner existiert nicht: {path}": {
+    "de": "Zielordner existiert nicht: {path}",
+    "en": "Target folder does not exist: {path}",
+    "es": "La carpeta de destino no existe: {path}",
+    "zh": "目标文件夹不存在：{path}",
+    "ja": "ターゲットフォルダーが存在しません：{path}",
+    "ru": "Целевая папка не существует: {path}"
+  },
+  "Zu Favoriten hinzufügen": {
+    "de": "Zu Favoriten hinzufügen",
+    "en": "Add to favorites",
+    "es": "Agregar a favoritos",
+    "zh": "添加到收藏夹",
+    "ja": "お気に入りに追加",
+    "ru": "Добавить в избранное"
+  },
+  "Zu suchender Text im ursprünglichen Dateinamen.": {
+    "de": "Zu suchender Text im ursprünglichen Dateinamen.",
+    "en": "Text to search for in the original file name.",
+    "es": "Texto que se buscará en el nombre de archivo original.",
+    "zh": "要在原始文件名中搜索的文本。",
+    "ja": "元のファイル名内で検索するテキストです。",
+    "ru": "Текст для поиска в исходном имени файла."
+  },
+  "Zum Öffnen doppelklicken – die Datei wird dabei heruntergeladen.": {
+    "de": "Zum Öffnen doppelklicken – die Datei wird dabei heruntergeladen.",
+    "en": "Double-click to open – the file will be downloaded.",
+    "es": "Haga doble clic para abrir: el archivo se descargará.",
+    "zh": "双击打开 – 文件将被下载。",
+    "ja": "ダブルクリックで開きます – ファイルがダウンロードされます。",
+    "ru": "Дважды щёлкните, чтобы открыть – файл будет загружен."
+  },
+  "Zur Blacklist hinzufügen": {
+    "de": "Zur Blacklist hinzufügen",
+    "en": "Add to Blacklist",
+    "es": "Agregar a la lista negra",
+    "zh": "添加到黑名单",
+    "ja": "ブラックリストに追加",
+    "ru": "Добавить в чёрный список"
+  },
+  "Zusammenfassung der Umbenennung": {
+    "de": "Zusammenfassung der Umbenennung",
+    "en": "Rename summary",
+    "es": "Resumen del cambio de nombre",
+    "zh": "重命名摘要",
+    "ja": "名前変更の概要",
+    "ru": "Сводка переименования"
+  },
+  "Zusätzliche Befehlszeilenargumente für den Programmaufruf.": {
+    "de": "Zusätzliche Befehlszeilenargumente für den Programmaufruf.",
+    "en": "Additional command-line arguments for launching the program.",
+    "es": "Argumentos de línea de comandos adicionales para iniciar el programa.",
+    "zh": "启动程序时使用的附加命令行参数。",
+    "ja": "プログラム起動時に渡す追加のコマンドライン引数です。",
+    "ru": "Дополнительные аргументы командной строки для запуска программы."
+  },
+  "Zwischenablage automatisch leeren, wenn sensible Daten erkannt werden": {
+    "de": "Zwischenablage automatisch leeren, wenn sensible Daten erkannt werden",
+    "en": "Automatically clear clipboard when sensitive data is detected",
+    "es": "Vaciar automáticamente el portapapeles cuando se detecten datos sensibles",
+    "zh": "检测到敏感数据时自动清空剪贴板",
+    "ja": "機密データを検出したらクリップボードを自動的にクリア",
+    "ru": "Автоматически очищать буфер обмена при обнаружении конфиденциальных данных"
+  },
+  "tag1, tag2,": {
+    "de": "tag1, tag2,",
+    "en": "tag1, tag2,",
+    "es": "tag1, tag2,",
+    "zh": "tag1, tag2,",
+    "ja": "tag1, tag2,",
+    "ru": "tag1, tag2,"
+  },
+  "tag1, tag2, tag3": {
+    "de": "tag1, tag2, tag3",
+    "en": "tag1, tag2, tag3",
+    "es": "tag1, tag2, tag3",
+    "zh": "tag1, tag2, tag3",
+    "ja": "tag1, tag2, tag3",
+    "ru": "tag1, tag2, tag3"
+  },
+  "z.B. --verbose --config=config.ini": {
+    "de": "z.B. --verbose --config=config.ini",
+    "en": "e.g. --verbose --config=config.ini",
+    "es": "p. ej. --verbose --config=config.ini",
+    "zh": "例如 --verbose --config=config.ini",
+    "ja": "例：--verbose --config=config.ini",
+    "ru": "напр. --verbose --config=config.ini"
+  },
+  "{added} neue Begriffe übernommen ({total} in der Datei).": {
+    "de": "{added} neue Begriffe übernommen ({total} in der Datei).",
+    "en": "{added} new terms added ({total} in the file).",
+    "es": "Se añadieron {added} términos nuevos ({total} en el archivo).",
+    "zh": "已添加 {added} 个新词条（文件中共 {total} 个）。",
+    "ja": "{added} 件の新しい用語を追加しました（ファイル内は合計 {total} 件）。",
+    "ru": "Добавлено новых терминов: {added} (всего в файле: {total})."
+  },
+  "{algorithm} Prüfsumme": {
+    "de": "{algorithm} Prüfsumme",
+    "en": "{algorithm} checksum",
+    "es": "Suma de comprobación {algorithm}",
+    "zh": "{algorithm} 校验和",
+    "ja": "{algorithm} チェックサム",
+    "ru": "Контрольная сумма {algorithm}"
+  },
+  "{algorithm} Prüfsumme kopieren": {
+    "de": "{algorithm} Prüfsumme kopieren",
+    "en": "Copy {algorithm} checksum",
+    "es": "Copiar suma de comprobación {algorithm}",
+    "zh": "复制 {algorithm} 校验和",
+    "ja": "{algorithm} チェックサムをコピー",
+    "ru": "Копировать контрольную сумму {algorithm}"
+  },
+  "{algorithm}-Prüfsumme in die Zwischenablage kopieren": {
+    "de": "{algorithm}-Prüfsumme in die Zwischenablage kopieren",
+    "en": "Copy {algorithm} checksum to clipboard",
+    "es": "Copiar la suma de comprobación {algorithm} al portapapeles",
+    "zh": "将 {algorithm} 校验和复制到剪贴板",
+    "ja": "{algorithm} チェックサムをクリップボードにコピー",
+    "ru": "Скопировать контрольную сумму {algorithm} в буфер обмена"
+  },
+  "{count} Dateien ausgewählt": {
+    "de": "{count} Dateien ausgewählt",
+    "en": "{count} files selected",
+    "es": "{count} archivos seleccionados",
+    "zh": "已选择 {count} 个文件",
+    "ja": "{count} 個のファイルを選択",
+    "ru": "Выбрано файлов: {count}"
+  },
+  "{count} Dateien erfolgreich umbenannt.": {
+    "de": "{count} Dateien erfolgreich umbenannt.",
+    "en": "{count} files successfully renamed.",
+    "es": "{count} archivos renombrados correctamente.",
+    "zh": "已成功重命名 {count} 个文件。",
+    "ja": "{count} 個のファイルの名前を変更しました。",
+    "ru": "Успешно переименовано файлов: {count}."
+  },
+  "{count} Dateien indiziert": {
+    "de": "{count} Dateien indiziert",
+    "en": "{count} files indexed",
+    "es": "{count} archivos indexados",
+    "zh": "已索引 {count} 个文件",
+    "ja": "{count} 個のファイルをインデックス済み",
+    "ru": "Проиндексировано файлов: {count}"
+  },
+  "{count} Dateien umbenannt, aber Fehler aufgetreten:\n\n{errors}": {
+    "de": "{count} Dateien umbenannt, aber Fehler aufgetreten:\n\n{errors}",
+    "en": "{count} files renamed, but errors occurred:\n\n{errors}",
+    "es": "{count} archivos renombrados, pero se produjeron errores:\n\n{errors}",
+    "zh": "已重命名 {count} 个文件，但发生错误：\n\n{errors}",
+    "ja": "{count} 個のファイルの名前を変更しましたが、エラーが発生しました：\n\n{errors}",
+    "ru": "Переименовано файлов: {count}, но возникли ошибки:\n\n{errors}"
+  },
+  "{count} Dateien werden umbenannt.": {
+    "de": "{count} Dateien werden umbenannt.",
+    "en": "{count} files will be renamed.",
+    "es": "Se renombrarán {count} archivos.",
+    "zh": "将重命名 {count} 个文件。",
+    "ja": "{count} 個のファイルの名前が変更されます。",
+    "ru": "Будет переименовано файлов: {count}."
+  },
+  "{count} Dateien wurden auf die ursprünglichen Namen zurückgesetzt.": {
+    "de": "{count} Dateien wurden auf die ursprünglichen Namen zurückgesetzt.",
+    "en": "{count} files were restored to their original names.",
+    "es": "{count} archivos se restauraron a sus nombres originales.",
+    "zh": "已将 {count} 个文件恢复为原始名称。",
+    "ja": "{count} 個のファイルを元の名前に戻しました。",
+    "ru": "Файлов, возвращённых к исходным именам: {count}."
+  },
+  "{count} Dateien wurden gelöscht.\nFreigegeben: {size}": {
+    "de": "{count} Dateien wurden gelöscht.\nFreigegeben: {size}",
+    "en": "{count} files were deleted.\nFreed: {size}",
+    "es": "Se eliminaron {count} archivos.\nEspacio liberado: {size}",
+    "zh": "已删除 {count} 个文件。\n已释放：{size}",
+    "ja": "{count} 個のファイルを削除しました。\n解放された容量：{size}",
+    "ru": "Удалено файлов: {count}.\nОсвобождено: {size}"
+  },
+  "{count} Dateien zurückgesetzt, Fehler:\n{errors}": {
+    "de": "{count} Dateien zurückgesetzt, Fehler:\n{errors}",
+    "en": "{count} files restored, errors:\n{errors}",
+    "es": "{count} archivos restaurados, errores:\n{errors}",
+    "zh": "已恢复 {count} 个文件，错误：\n{errors}",
+    "ja": "{count} 個のファイルを元に戻しました。エラー：\n{errors}",
+    "ru": "Файлов восстановлено: {count}, ошибки:\n{errors}"
+  },
+  "{count} Einträge": {
+    "de": "{count} Einträge",
+    "en": "{count} entries",
+    "es": "{count} entradas",
+    "zh": "{count} 个条目",
+    "ja": "{count} 件のエントリ",
+    "ru": "Записей: {count}"
+  },
+  "{count} Elemente": {
+    "de": "{count} Elemente",
+    "en": "{count} items",
+    "es": "{count} elementos",
+    "zh": "{count} 个项目",
+    "ja": "{count} 個のアイテム",
+    "ru": "Элементов: {count}"
+  },
+  "{count} Ergebnis": {
+    "de": "{count} Ergebnis",
+    "en": "{count} result",
+    "es": "{count} resultado",
+    "zh": "{count} 个结果",
+    "ja": "{count} 件の結果",
+    "ru": "Результатов: {count}"
+  },
+  "{count} Ergebnis gefunden": {
+    "de": "{count} Ergebnis gefunden",
+    "en": "{count} result found",
+    "es": "{count} resultado encontrado",
+    "zh": "找到 {count} 个结果",
+    "ja": "{count} 件の結果が見つかりました",
+    "ru": "Найдено результатов: {count}"
+  },
+  "{count} Ergebnisse": {
+    "de": "{count} Ergebnisse",
+    "en": "{count} results",
+    "es": "{count} resultados",
+    "zh": "{count} 个结果",
+    "ja": "{count} 件の結果",
+    "ru": "Результатов: {count}"
+  },
+  "{count} Ergebnisse gefunden": {
+    "de": "{count} Ergebnisse gefunden",
+    "en": "{count} results found",
+    "es": "{count} resultados encontrados",
+    "zh": "找到 {count} 个结果",
+    "ja": "{count} 件の結果が見つかりました",
+    "ru": "Найдено результатов: {count}"
+  },
+  "{count} Treffer für: {query}": {
+    "de": "{count} Treffer für: {query}",
+    "en": "{count} matches for: {query}",
+    "es": "{count} coincidencias para: {query}",
+    "zh": "“{query}”的 {count} 个匹配项：",
+    "ja": "{query} の一致：{count} 件",
+    "ru": "Совпадений для «{query}»: {count}"
+  },
+  "{count} zu ändern, Konflikte oder ungültige Namen gefunden!": {
+    "de": "{count} zu ändern, Konflikte oder ungültige Namen gefunden!",
+    "en": "{count} to change, conflicts or invalid names found!",
+    "es": "{count} por cambiar, ¡se encontraron conflictos o nombres no válidos!",
+    "zh": "{count} 个待更改，发现冲突或无效名称！",
+    "ja": "変更対象 {count} 件、競合または無効な名前が見つかりました！",
+    "ru": "К изменению: {count}, обнаружены конфликты или недопустимые имена!"
+  },
+  "{deleted} von {total} Dateien gelöscht.\n\nFehler:\n{errors}": {
+    "de": "{deleted} von {total} Dateien gelöscht.\n\nFehler:\n{errors}",
+    "en": "{deleted} of {total} files deleted.\n\nErrors:\n{errors}",
+    "es": "Se eliminaron {deleted} de {total} archivos.\n\nErrores:\n{errors}",
+    "zh": "已删除 {total} 个文件中的 {deleted} 个。\n\n错误：\n{errors}",
+    "ja": "{total} 個中 {deleted} 個のファイルを削除しました。\n\nエラー：\n{errors}",
+    "ru": "Удалено файлов: {deleted} из {total}.\n\nОшибки:\n{errors}"
+  },
+  "{files} Dateien, {folders} Ordner": {
+    "de": "{files} Dateien, {folders} Ordner",
+    "en": "{files} files, {folders} folders",
+    "es": "{files} archivos, {folders} carpetas",
+    "zh": "{files} 个文件，{folders} 个文件夹",
+    "ja": "{files} 個のファイル、{folders} 個のフォルダー",
+    "ru": "Файлов: {files}, папок: {folders}"
+  },
+  "{mode}: Analysiere...": {
+    "de": "{mode}: Analysiere...",
+    "en": "{mode}: Analyzing...",
+    "es": "{mode}: Analizando...",
+    "zh": "{mode}：正在分析...",
+    "ja": "{mode}：分析中...",
+    "ru": "{mode}: Анализ..."
+  },
+  "{name1} ({size1} Bytes) ↔ {name2} ({size2} Bytes)": {
+    "de": "{name1} ({size1} Bytes) ↔ {name2} ({size2} Bytes)",
+    "en": "{name1} ({size1} bytes) ↔ {name2} ({size2} bytes)",
+    "es": "{name1} ({size1} bytes) ↔ {name2} ({size2} bytes)",
+    "zh": "{name1}（{size1} 字节）↔ {name2}（{size2} 字节）",
+    "ja": "{name1}（{size1} バイト）↔ {name2}（{size2} バイト）",
+    "ru": "{name1} ({size1} байт) ↔ {name2} ({size2} байт)"
+  },
+  "{selected} von {count} ausgewählt": {
+    "de": "{selected} von {count} ausgewählt",
+    "en": "{selected} of {count} selected",
+    "es": "{selected} de {count} seleccionados",
+    "zh": "已选择 {selected}/{count}",
+    "ja": "{count} 個中 {selected} 個を選択",
+    "ru": "Выбрано {selected} из {count}"
+  },
+  "{shown} von {total} Prompts": {
+    "de": "{shown} von {total} Prompts",
+    "en": "{shown} of {total} prompts",
+    "es": "{shown} de {total} prompts",
+    "zh": "{total} 个提示词中的 {shown} 个",
+    "ja": "{total} 件中 {shown} 件のプロンプト",
+    "ru": "{shown} из {total} промптов"
+  },
+  "{type}-Datei ({extension})": {
+    "de": "{type}-Datei ({extension})",
+    "en": "{type} file ({extension})",
+    "es": "Archivo {type} ({extension})",
+    "zh": "{type} 文件 ({extension})",
+    "ja": "{type} ファイル ({extension})",
+    "ru": "Файл {type} ({extension})"
+  },
+  "Änderungen anwenden, ohne den Dialog zu schließen": {
+    "de": "Änderungen anwenden, ohne den Dialog zu schließen",
+    "en": "Apply changes without closing the dialog",
+    "es": "Aplicar los cambios sin cerrar el cuadro de diálogo",
+    "zh": "应用更改而不关闭对话框",
+    "ja": "ダイアログを閉じずに変更を適用",
+    "ru": "Применить изменения, не закрывая диалог"
+  },
+  "Änderungsstatus": {
+    "de": "Änderungsstatus",
+    "en": "Change status",
+    "es": "Estado de los cambios",
+    "zh": "更改状态",
+    "ja": "変更ステータス",
+    "ru": "Состояние изменений"
+  },
+  "Änderungszeitraum": {
+    "de": "Änderungszeitraum",
+    "en": "Modification period",
+    "es": "Período de modificación",
+    "zh": "修改时间范围",
+    "ja": "更新期間",
+    "ru": "Период изменения"
+  },
+  "Öffnet das Menü für Ansichtsoptionen sowie App-, Prompt- und Sync-Bereiche.": {
+    "de": "Öffnet das Menü für Ansichtsoptionen sowie App-, Prompt- und Sync-Bereiche.",
+    "en": "Opens the menu for view options as well as the app, prompt and sync areas.",
+    "es": "Abre el menú con las opciones de vista y las áreas de la aplicación, de prompts y de sincronización.",
+    "zh": "打开包含视图选项以及应用、提示词和同步区域的菜单。",
+    "ja": "表示オプションと、アプリ・プロンプト・同期の各領域のメニューを開きます。",
+    "ru": "Открывает меню с параметрами вида, а также разделами приложения, промптов и синхронизации."
+  },
+  "Öffnet den Dialog mit erweiterten Suchfiltern wie Größe, Datum und regulären Ausdrücken.": {
+    "de": "Öffnet den Dialog mit erweiterten Suchfiltern wie Größe, Datum und regulären Ausdrücken.",
+    "en": "Opens the dialog with advanced search filters such as size, date and regular expressions.",
+    "es": "Abre el cuadro de diálogo con filtros de búsqueda avanzados, como tamaño, fecha y expresiones regulares.",
+    "zh": "打开包含大小、日期和正则表达式等高级搜索筛选条件的对话框。",
+    "ja": "サイズ、日付、正規表現などの詳細な検索フィルターのダイアログを開きます。",
+    "ru": "Открывает диалог с расширенными фильтрами поиска, такими как размер, дата и регулярные выражения."
+  },
+  "Öffnet den Dialog zum Anlegen eines neuen Synchronisationspaars": {
+    "de": "Öffnet den Dialog zum Anlegen eines neuen Synchronisationspaars",
+    "en": "Opens the dialog for creating a new sync pair",
+    "es": "Abre el cuadro de diálogo para crear un nuevo par de sincronización",
+    "zh": "打开用于创建新同步对的对话框",
+    "ja": "新しい同期ペアを作成するダイアログを開きます",
+    "ru": "Открывает диалог создания новой пары синхронизации"
+  },
+  "Öffnet den Dialog zum Erstellen einer neuen Prompt-Vorlage.": {
+    "de": "Öffnet den Dialog zum Erstellen einer neuen Prompt-Vorlage.",
+    "en": "Opens the dialog for creating a new prompt template.",
+    "es": "Abre el cuadro de diálogo para crear una nueva plantilla de prompt.",
+    "zh": "打开用于创建新提示词模板的对话框。",
+    "ja": "新しいプロンプトテンプレートを作成するダイアログを開きます。",
+    "ru": "Открывает диалог создания нового шаблона промпта."
+  },
+  "Öffnet den Dialog zum Hinzufügen einer Anwendung zum Starter.": {
+    "de": "Öffnet den Dialog zum Hinzufügen einer Anwendung zum Starter.",
+    "en": "Opens the dialog for adding an application to the launcher.",
+    "es": "Abre el cuadro de diálogo para añadir una aplicación al lanzador.",
+    "zh": "打开用于向启动器添加应用程序的对话框。",
+    "ja": "ランチャーにアプリケーションを追加するダイアログを開きます。",
+    "ru": "Открывает диалог добавления приложения в панель запуска."
+  },
+  "Öffnet den Dialog zur Berechnung und Verifizierung von Hash-Prüfsummen.": {
+    "de": "Öffnet den Dialog zur Berechnung und Verifizierung von Hash-Prüfsummen.",
+    "en": "Opens the dialog for calculating and verifying hash checksums.",
+    "es": "Abre el cuadro de diálogo para calcular y verificar sumas de comprobación hash.",
+    "zh": "打开用于计算和验证哈希校验和的对话框。",
+    "ja": "ハッシュチェックサムの計算と検証を行うダイアログを開きます。",
+    "ru": "Открывает диалог вычисления и проверки хеш-сумм."
+  },
+  "Öffnet die Datenschutz-Einstellungen mit Black- und Whitelist": {
+    "de": "Öffnet die Datenschutz-Einstellungen mit Black- und Whitelist",
+    "en": "Opens the privacy settings with Blacklist and Whitelist",
+    "es": "Abre la configuración de privacidad con la lista negra y la lista blanca",
+    "zh": "打开包含黑名单和白名单的隐私设置",
+    "ja": "ブラックリストとホワイトリストを含むプライバシー設定を開きます",
+    "ru": "Открывает настройки конфиденциальности с чёрным и белым списками"
+  },
+  "Öffnet die Ordnerauswahl für den Quellordner": {
+    "de": "Öffnet die Ordnerauswahl für den Quellordner",
+    "en": "Opens the folder picker for the source folder",
+    "es": "Abre el selector de carpetas para la carpeta de origen",
+    "zh": "打开源文件夹的文件夹选择器",
+    "ja": "ソースフォルダーのフォルダー選択を開きます",
+    "ru": "Открывает выбор папки для исходной папки"
+  },
+  "Öffnet die Ordnerauswahl für den Zielordner": {
+    "de": "Öffnet die Ordnerauswahl für den Zielordner",
+    "en": "Opens the folder picker for the target folder",
+    "es": "Abre el selector de carpetas para la carpeta de destino",
+    "zh": "打开目标文件夹的文件夹选择器",
+    "ja": "ターゲットフォルダーのフォルダー選択を開きます",
+    "ru": "Открывает выбор папки для целевой папки"
+  },
+  "Öffnet einen Dialog zur Auswahl des zu scannenden Verzeichnisses.": {
+    "de": "Öffnet einen Dialog zur Auswahl des zu scannenden Verzeichnisses.",
+    "en": "Opens a dialog for selecting the directory to scan.",
+    "es": "Abre un cuadro de diálogo para seleccionar el directorio que se va a escanear.",
+    "zh": "打开用于选择要扫描的目录的对话框。",
+    "ja": "スキャンするディレクトリを選択するダイアログを開きます。",
+    "ru": "Открывает диалог выбора каталога для сканирования."
+  },
+  "Über ExplorerPro": {
+    "de": "Über ExplorerPro",
+    "en": "About ExplorerPro",
+    "es": "Acerca de ExplorerPro",
+    "zh": "关于 ExplorerPro",
+    "ja": "ExplorerPro について",
+    "ru": "О программе ExplorerPro"
+  },
+  "Übereinstimmung gefunden! ({algorithm})": {
+    "de": "Übereinstimmung gefunden! ({algorithm})",
+    "en": "Match found! ({algorithm})",
+    "es": "¡Coincidencia encontrada! ({algorithm})",
+    "zh": "找到匹配项！({algorithm})",
+    "ja": "一致しました！({algorithm})",
+    "ru": "Совпадение найдено! ({algorithm})"
+  },
+  "Überträgt alle in der Vorschau gezeigten Änderungen": {
+    "de": "Überträgt alle in der Vorschau gezeigten Änderungen",
+    "en": "Applies all changes shown in the preview",
+    "es": "Aplica todos los cambios mostrados en la vista previa",
+    "zh": "应用预览中显示的所有更改",
+    "ja": "プレビューに表示されたすべての変更を適用します",
+    "ru": "Применяет все изменения, показанные в предпросмотре"
+  },
+  "▶ Starte: {path}": {
+    "de": "▶ Starte: {path}",
+    "en": "▶ Starting: {path}",
+    "es": "▶ Iniciando: {path}",
+    "zh": "▶ 正在启动：{path}",
+    "ja": "▶ 起動中：{path}",
+    "ru": "▶ Запуск: {path}"
+  },
+  "⚠️ {synced} synchronisiert, {errors} Fehler": {
+    "de": "⚠️ {synced} synchronisiert, {errors} Fehler",
+    "en": "⚠️ {synced} synchronized, {errors} errors",
+    "es": "⚠️ {synced} sincronizados, {errors} errores",
+    "zh": "⚠️ 已同步 {synced} 个，{errors} 个错误",
+    "ja": "⚠️ {synced} 件を同期、エラー {errors} 件",
+    "ru": "⚠️ Синхронизировано: {synced}, ошибок: {errors}"
+  },
+  "✅ '{title}' kopiert!": {
+    "de": "✅ '{title}' kopiert!",
+    "en": "✅ '{title}' copied!",
+    "es": "✅ ¡'{title}' copiado!",
+    "zh": "✅ 已复制“{title}”！",
+    "ja": "✅ '{title}' をコピーしました！",
+    "ru": "✅ '{title}' скопировано!"
+  },
+  "✅ Keine Duplikate gefunden ({count} Dateien geprüft)": {
+    "de": "✅ Keine Duplikate gefunden ({count} Dateien geprüft)",
+    "en": "✅ No duplicates found ({count} files checked)",
+    "es": "✅ No se encontraron duplicados ({count} archivos comprobados)",
+    "zh": "✅ 未发现重复项（已检查 {count} 个文件）",
+    "ja": "✅ 重複は見つかりませんでした（{count} 個のファイルを確認）",
+    "ru": "✅ Дубликаты не найдены (проверено файлов: {count})"
+  },
+  "✅ {count} Dateien synchronisiert": {
+    "de": "✅ {count} Dateien synchronisiert",
+    "en": "✅ {count} files synchronized",
+    "es": "✅ {count} archivos sincronizados",
+    "zh": "✅ 已同步 {count} 个文件",
+    "ja": "✅ {count} 個のファイルを同期しました",
+    "ru": "✅ Синхронизировано файлов: {count}"
+  },
+  "✅ {groups} Duplikat-Gruppen gefunden ({count} doppelte Dateien)": {
+    "de": "✅ {groups} Duplikat-Gruppen gefunden ({count} doppelte Dateien)",
+    "en": "✅ {groups} duplicate groups found ({count} duplicate files)",
+    "es": "✅ Se encontraron {groups} grupos de duplicados ({count} archivos duplicados)",
+    "zh": "✅ 发现 {groups} 个重复组（{count} 个重复文件）",
+    "ja": "✅ 重複グループが {groups} 件見つかりました（重複ファイル {count} 個）",
+    "ru": "✅ Найдено групп дубликатов: {groups} (дублирующихся файлов: {count})"
+  },
+  "✓ Beendet (Exit-Code: {code})": {
+    "de": "✓ Beendet (Exit-Code: {code})",
+    "en": "✓ Finished (exit code: {code})",
+    "es": "✓ Finalizado (código de salida: {code})",
+    "zh": "✓ 已结束（退出代码：{code}）",
+    "ja": "✓ 終了しました（終了コード：{code}）",
+    "ru": "✓ Завершено (код выхода: {code})"
+  },
+  "✓ Gespeichert: {path}": {
+    "de": "✓ Gespeichert: {path}",
+    "en": "✓ Saved: {path}",
+    "es": "✓ Guardado: {path}",
+    "zh": "✓ 已保存：{path}",
+    "ja": "✓ 保存しました：{path}",
+    "ru": "✓ Сохранено: {path}"
+  },
+  "✗ Beendet mit Fehler (Exit-Code: {code})": {
+    "de": "✗ Beendet mit Fehler (Exit-Code: {code})",
+    "en": "✗ Finished with error (exit code: {code})",
+    "es": "✗ Finalizado con error (código de salida: {code})",
+    "zh": "✗ 因错误而结束（退出代码：{code}）",
+    "ja": "✗ エラーで終了しました（終了コード：{code}）",
+    "ru": "✗ Завершено с ошибкой (код выхода: {code})"
+  },
+  "✗ Ungültiges JSON: {error}": {
+    "de": "✗ Ungültiges JSON: {error}",
+    "en": "✗ Invalid JSON: {error}",
+    "es": "✗ JSON no válido: {error}",
+    "zh": "✗ 无效的 JSON：{error}",
+    "ja": "✗ 無効な JSON：{error}",
+    "ru": "✗ Недопустимый JSON: {error}"
+  },
+  "✗ Ungültiges TOML: {error}": {
+    "de": "✗ Ungültiges TOML: {error}",
+    "en": "✗ Invalid TOML: {error}",
+    "es": "✗ TOML no válido: {error}",
+    "zh": "✗ 无效的 TOML：{error}",
+    "ja": "✗ 無効な TOML：{error}",
+    "ru": "✗ Недопустимый TOML: {error}"
+  },
+  "❌ Fehler: {error}": {
+    "de": "❌ Fehler: {error}",
+    "en": "❌ Error: {error}",
+    "es": "❌ Error: {error}",
+    "zh": "❌ 错误：{error}",
+    "ja": "❌ エラー：{error}",
+    "ru": "❌ Ошибка: {error}"
+  },
+  "💾 Verschwendeter Speicher: {size}": {
+    "de": "💾 Verschwendeter Speicher: {size}",
+    "en": "💾 Wasted space: {size}",
+    "es": "💾 Espacio desperdiciado: {size}",
+    "zh": "💾 浪费的空间：{size}",
+    "ja": "💾 無駄な容量：{size}",
+    "ru": "💾 Впустую занято: {size}"
+  },
+  "📁 {count} Dateien": {
+    "de": "📁 {count} Dateien",
+    "en": "📁 {count} files",
+    "es": "📁 {count} archivos",
+    "zh": "📁 {count} 个文件",
+    "ja": "📁 {count} 個のファイル",
+    "ru": "📁 Файлов: {count}"
+  },
+  "📊 {count} Änderungen gefunden:": {
+    "de": "📊 {count} Änderungen gefunden:",
+    "en": "📊 {count} changes found:",
+    "es": "📊 Se encontraron {count} cambios:",
+    "zh": "📊 发现 {count} 处更改：",
+    "ja": "📊 {count} 件の変更が見つかりました：",
+    "ru": "📊 Найдено изменений ({count}):"
+  },
+  "📊 {count}x verwendet": {
+    "de": "📊 {count}x verwendet",
+    "en": "📊 Used {count}x",
+    "es": "📊 Usado {count} veces",
+    "zh": "📊 已使用 {count} 次",
+    "ja": "📊 {count} 回使用",
+    "ru": "📊 Использовано раз: {count}"
+  },
+  "Bis": {
+    "de": "Bis",
+    "en": "To",
+    "es": "Hasta",
+    "zh": "至",
+    "ja": "まで",
+    "ru": "До"
+  },
+  "Von": {
+    "de": "Von",
+    "en": "From",
+    "es": "Desde",
+    "zh": "从",
+    "ja": "から",
+    "ru": "От"
+  },
+  "Typ": {
+    "de": "Typ",
+    "en": "Type",
+    "es": "Tipo",
+    "zh": "类型",
+    "ja": "種類",
+    "ru": "Тип"
+  },
+  "Max": {
+    "de": "Max",
+    "en": "Max",
+    "es": "Máx.",
+    "zh": "最大",
+    "ja": "最大",
+    "ru": "Макс."
+  },
+  "Min": {
+    "de": "Min",
+    "en": "Min",
+    "es": "Mín.",
+    "zh": "最小",
+    "ja": "最小",
+    "ru": "Мин."
+  },
+  "nur online": {
+    "de": "nur online",
+    "en": "online only",
+    "es": "solo en línea",
+    "zh": "仅在线",
+    "ja": "オンラインのみ",
+    "ru": "только онлайн"
+  },
+  "Begriffe der Blacklist gelten immer als sensibel (z. B. Namen, Projekt- oder Kundennummern). Sie färben die Ampel, sobald sie in der Zwischenablage auftauchen.": {
+    "de": "Begriffe der Blacklist gelten immer als sensibel (z. B. Namen, Projekt- oder Kundennummern). Sie färben die Ampel, sobald sie in der Zwischenablage auftauchen.",
+    "en": "Blacklist terms are always treated as sensitive (e.g. names, project or customer numbers). They change the traffic light as soon as they appear in the clipboard.",
+    "es": "Los términos de la lista negra siempre se consideran sensibles (p. ej., nombres, números de proyecto o de cliente). Cambian el semáforo en cuanto aparecen en el portapapeles.",
+    "zh": "黑名单中的词语始终被视为敏感信息（例如姓名、项目编号或客户编号）。一旦出现在剪贴板中，信号灯就会变色。",
+    "ja": "ブラックリストの語句は常に機密情報として扱われます（例: 氏名、プロジェクト番号、顧客番号）。クリップボードに現れるとすぐに信号の色が変わります。",
+    "ru": "Термины из черного списка всегда считаются конфиденциальными (например, имена, номера проектов или клиентов). Как только они появляются в буфере обмена, светофор меняет цвет."
+  },
+  "Begriffe der Whitelist werden nie als sensibel gemeldet – auch wenn ein Muster passt (z. B. die eigene Firmen-E-Mail-Adresse).": {
+    "de": "Begriffe der Whitelist werden nie als sensibel gemeldet – auch wenn ein Muster passt (z. B. die eigene Firmen-E-Mail-Adresse).",
+    "en": "Whitelist terms are never reported as sensitive – even if a pattern matches (e.g. your own company e-mail address).",
+    "es": "Los términos de la lista blanca nunca se notifican como sensibles, aunque coincida un patrón (p. ej., la dirección de correo de su empresa).",
+    "zh": "白名单中的词语永远不会被报告为敏感信息——即使匹配了某个模式（例如您自己的公司电子邮件地址）。",
+    "ja": "ホワイトリストの語句は、パターンに一致しても機密情報として報告されません（例: 自社のメールアドレス）。",
+    "ru": "Термины из белого списка никогда не считаются конфиденциальными — даже если совпадает шаблон (например, собственный корпоративный адрес эл. почты)."
+  },
+  "Beispieltext zum Prüfen...": {
+    "de": "Beispieltext zum Prüfen...",
+    "en": "Sample text to check...",
+    "es": "Texto de ejemplo para comprobar...",
+    "zh": "用于检查的示例文本...",
+    "ja": "確認用のサンプルテキスト...",
+    "ru": "Образец текста для проверки..."
+  },
+  "Blacklist/Whitelist bearbeiten...": {
+    "de": "Blacklist/Whitelist bearbeiten...",
+    "en": "Edit Blacklist/Whitelist...",
+    "es": "Editar lista negra/blanca...",
+    "zh": "编辑黑名单/白名单...",
+    "ja": "ブラックリスト/ホワイトリストを編集...",
+    "ru": "Изменить чёрный/белый список..."
+  },
+  "Exportieren...": {
+    "de": "Exportieren...",
+    "en": "Export...",
+    "es": "Exportar...",
+    "zh": "导出...",
+    "ja": "エクスポート...",
+    "ru": "Экспортировать..."
+  },
+  "Importieren...": {
+    "de": "Importieren...",
+    "en": "Import...",
+    "es": "Importar...",
+    "zh": "导入...",
+    "ja": "インポート...",
+    "ru": "Импортировать..."
+  },
+  "Liste filtern...": {
+    "de": "Liste filtern...",
+    "en": "Filter list...",
+    "es": "Filtrar lista...",
+    "zh": "筛选列表...",
+    "ja": "リストをフィルター...",
+    "ru": "Фильтровать список..."
+  },
+  "Zurück": {
+    "de": "Zurück",
+    "en": "Back",
+    "es": "Atrás",
+    "zh": "后退",
+    "ja": "戻る",
+    "ru": "Назад"
+  },
+  "Vorwärts": {
+    "de": "Vorwärts",
+    "en": "Forward",
+    "es": "Adelante",
+    "zh": "前进",
+    "ja": "進む",
+    "ru": "Вперёд"
+  },
+  "Übergeordneter Ordner": {
+    "de": "Übergeordneter Ordner",
+    "en": "Parent folder",
+    "es": "Carpeta superior",
+    "zh": "上级文件夹",
+    "ja": "親フォルダー",
+    "ru": "Родительская папка"
+  },
+  "Zum vorherigen Ordner wechseln.": {
+    "de": "Zum vorherigen Ordner wechseln.",
+    "en": "Go to the previous folder.",
+    "es": "Ir a la carpeta anterior.",
+    "zh": "转到上一个文件夹。",
+    "ja": "前のフォルダーに移動します。",
+    "ru": "Перейти к предыдущей папке."
+  },
+  "Zum nächsten Ordner in der Navigation wechseln.": {
+    "de": "Zum nächsten Ordner in der Navigation wechseln.",
+    "en": "Go to the next folder in the navigation history.",
+    "es": "Ir a la siguiente carpeta del historial de navegación.",
+    "zh": "转到导航历史中的下一个文件夹。",
+    "ja": "ナビゲーション履歴の次のフォルダーに移動します。",
+    "ru": "Перейти к следующей папке в истории навигации."
+  },
+  "Eine Ebene nach oben im aktuellen Ordnerpfad wechseln.": {
+    "de": "Eine Ebene nach oben im aktuellen Ordnerpfad wechseln.",
+    "en": "Go up one level in the current folder path.",
+    "es": "Subir un nivel en la ruta de carpeta actual.",
+    "zh": "在当前文件夹路径中向上一级。",
+    "ja": "現在のフォルダーパスで 1 つ上の階層に移動します。",
+    "ru": "Перейти на уровень выше в текущем пути."
+  },
+  "Suche": {
+    "de": "Suche",
+    "en": "Search",
+    "es": "Búsqueda",
+    "zh": "搜索",
+    "ja": "検索",
+    "ru": "Поиск"
+  },
+  "Apps": {
+    "de": "Apps",
+    "en": "Apps",
+    "es": "Aplicaciones",
+    "zh": "应用",
+    "ja": "アプリ",
+    "ru": "Приложения"
+  },
+  "Gelb": {
+    "de": "Gelb",
+    "en": "Yellow",
+    "es": "Amarillo",
+    "zh": "黄色",
+    "ja": "黄",
+    "ru": "Жёлтый"
+  },
+  "Rot": {
+    "de": "Rot",
+    "en": "Red",
+    "es": "Rojo",
+    "zh": "红色",
+    "ja": "赤",
+    "ru": "Красный"
+  },
+  "Inaktiv": {
+    "de": "Inaktiv",
+    "en": "Inactive",
+    "es": "Inactivo",
+    "zh": "未启用",
+    "ja": "無効",
+    "ru": "Неактивно"
+  },
+  "hoch": {
+    "de": "hoch",
+    "en": "high",
+    "es": "alta",
+    "zh": "高",
+    "ja": "高",
+    "ru": "высокая"
+  },
+  "mittel": {
+    "de": "mittel",
+    "en": "medium",
+    "es": "media",
+    "zh": "中",
+    "ja": "中",
+    "ru": "средняя"
+  },
+  "niedrig": {
+    "de": "niedrig",
+    "en": "low",
+    "es": "baja",
+    "zh": "低",
+    "ja": "低",
+    "ru": "низкая"
+  },
+  "Systemvorgabe": {
+    "de": "Systemvorgabe",
+    "en": "System default",
+    "es": "Predeterminado del sistema",
+    "zh": "系统默认",
+    "ja": "システムの既定",
+    "ru": "Системная настройка"
+  },
+  "Hell": {
+    "de": "Hell",
+    "en": "Light",
+    "es": "Claro",
+    "zh": "浅色",
+    "ja": "ライト",
+    "ru": "Светлая"
+  },
+  "Dunkel": {
+    "de": "Dunkel",
+    "en": "Dark",
+    "es": "Oscuro",
+    "zh": "深色",
+    "ja": "ダーク",
+    "ru": "Тёмная"
+  },
+  "IBAN (Kontonummer)": {
+    "de": "IBAN (Kontonummer)",
+    "en": "IBAN (account number)",
+    "es": "IBAN (número de cuenta)",
+    "zh": "IBAN（账号）",
+    "ja": "IBAN（口座番号）",
+    "ru": "IBAN (номер счёта)"
+  },
+  "Telefonnummern (DE)": {
+    "de": "Telefonnummern (DE)",
+    "en": "Phone numbers (DE)",
+    "es": "Números de teléfono (DE)",
+    "zh": "电话号码（德国）",
+    "ja": "電話番号（DE）",
+    "ru": "Номера телефонов (DE)"
+  },
+  "Kreditkarten": {
+    "de": "Kreditkarten",
+    "en": "Credit cards",
+    "es": "Tarjetas de crédito",
+    "zh": "信用卡",
+    "ja": "クレジットカード",
+    "ru": "Кредитные карты"
+  },
+  "Sozialversicherungsnr.": {
+    "de": "Sozialversicherungsnr.",
+    "en": "Social security no.",
+    "es": "N.º de seguridad social",
+    "zh": "社会保险号",
+    "ja": "社会保険番号",
+    "ru": "Номер соц. страхования"
+  },
+  "Passwort-Hinweise": {
+    "de": "Passwort-Hinweise",
+    "en": "Password hints",
+    "es": "Indicios de contraseña",
+    "zh": "密码提示",
+    "ja": "パスワードの手がかり",
+    "ru": "Признаки паролей"
   }
 }

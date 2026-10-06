@@ -40,18 +40,18 @@ class SettingsManager:
             "preview_images": True,
             "preview_pdfs": True,
             "preview_code": True,
-            "max_preview_size_mb": 10,
+            "max_preview_size_mb": 50,
         },
         "privacy": {
             "enable_clipboard_monitor": True,
-            "auto_block_sensitive": True,
+            "auto_block_sensitive": False,
             "blacklist_patterns": [],
             "show_notifications": True,
         },
         "appearance": {
             "theme": "system",  # system, light, dark
-            "font_size": 10,
-            "icon_size": 24,
+            "font_size": 0,  # 0 = Systemstandard
+            "icon_size": 16,
         },
     }
 

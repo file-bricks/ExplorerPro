@@ -45,7 +45,7 @@ def test_language_survives_dialog_save_and_restart(isolated_settings, monkeypatc
     try:
         assert reopened.language_cb.currentData() == language
         assert reopened.start_folder_edit.toolTip() == tr.translations["Standardverzeichnis beim Programmstart"][language]
-        assert reopened.language_cb.toolTip().splitlines()[1] == tr.translations["Sprachänderungen werden beim nächsten Start übernommen."][language]
+        assert reopened.language_cb.toolTip().splitlines()[1] == tr.translations["Sprachänderungen werden sofort übernommen; einzelne Texte erst nach einem Neustart."][language]
         assert app is QApplication.instance()
     finally:
         shiboken6.delete(reopened)

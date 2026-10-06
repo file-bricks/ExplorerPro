@@ -186,7 +186,7 @@ class FilePropertiesDialog(QDialog):
         try:
             st = os.stat(self.target_path)
         except OSError as exc:
-            self.type_subtitle.setText(f"{t('Fehler beim Lesen')}: {exc}")
+            self.type_subtitle.setText(t("Fehler beim Lesen: {error}").format(error=exc))
             return
 
         # Dateityp ermitteln
@@ -194,7 +194,7 @@ class FilePropertiesDialog(QDialog):
         if self.is_dir:
             type_str = t("Dateiordner")
         elif ext:
-            type_str = f"{ext[1:].upper()}-{t('Datei')} ({ext})"
+            type_str = t("{type}-Datei ({extension})").format(type=ext[1:].upper(), extension=ext)
         else:
             type_str = t("Datei")
         self.type_subtitle.setText(type_str)
@@ -209,7 +209,9 @@ class FilePropertiesDialog(QDialog):
         if self.is_dir:
             file_count, dir_count, total_bytes = calculate_folder_stats(self.target_path)
             size_str = format_size(total_bytes)
-            contains_str = f"{file_count:,} {t('Dateien')}, {dir_count:,} {t('Ordner')}".replace(",", ".")
+            contains_str = t("{files} Dateien, {folders} Ordner").format(
+                files=f"{file_count:,}", folders=f"{dir_count:,}"
+            ).replace(",", ".")
             self._add_form_row(t("Größe:"), size_str)
             self._add_form_row(t("Inhalt:"), contains_str)
         else:
@@ -304,8 +306,8 @@ class FilePropertiesDialog(QDialog):
                 self.sha256_edit.setText(hashes.get("sha256", ""))
                 self.md5_edit.setText(hashes.get("md5", ""))
             except Exception as exc:
-                self.sha256_edit.setText(f"{t('Fehler')}: {exc}")
-                self.md5_edit.setText(f"{t('Fehler')}: {exc}")
+                self.sha256_edit.setText(t("Fehler: {error}").format(error=exc))
+                self.md5_edit.setText(t("Fehler: {error}").format(error=exc))
         else:
             self.sha256_edit.setPlaceholderText(t("Datei > 50 MB: Klick zum Berechnen"))
             self.md5_edit.setPlaceholderText(t("Datei > 50 MB: Klick zum Berechnen"))
@@ -359,7 +361,7 @@ class FilePropertiesDialog(QDialog):
         QMessageBox.information(
             self,
             t("Pfad kopiert"),
-            f"{t('Vollständiger Pfad in die Zwischenablage kopiert:')}\n\n{self.target_path}"
+            t("Vollständiger Pfad in die Zwischenablage kopiert:\n\n{path}").format(path=self.target_path)
         )
 
     def _copy_to_clip(self, text: str) -> None:
@@ -371,4 +373,4 @@ class FilePropertiesDialog(QDialog):
         try:
             open_path_with_system(target)
         except Exception as exc:
-            QMessageBox.warning(self, t("Dateimanager öffnen"), f"{t('Konnte Ordner nicht öffnen')}:\n{exc}")
+            QMessageBox.warning(self, t("Dateimanager öffnen"), t("Konnte Ordner nicht öffnen:\n{error}").format(error=exc))

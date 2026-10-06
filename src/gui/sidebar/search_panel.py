@@ -15,6 +15,7 @@ from PySide6.QtGui import QAction, QCursor
 from pathlib import Path
 from dataclasses import dataclass
 from datetime import datetime
+from translator import t
 
 
 @dataclass
@@ -53,10 +54,11 @@ class SearchResultItem(QListWidgetItem):
         self.setText(f"{icon} {result.name}")
 
         # Tooltip mit Details
+        modified_txt = result.modified.strftime('%d.%m.%Y %H:%M') if result.modified else t('Unbekannt')
         tooltip = f"""<b>{result.name}</b><br>
         📁 {result.path}<br>
         📏 {self._format_size(result.size)}<br>
-        📅 {result.modified.strftime('%d.%m.%Y %H:%M') if result.modified else 'Unbekannt'}"""
+        📅 {modified_txt}"""
 
         if result.snippet:
             tooltip += f"<br><br><i>...{result.snippet[:200]}...</i>"
@@ -298,7 +300,7 @@ class SearchPanel(QWidget):
         self.search_started.emit()
         self.progress_bar.setRange(0, 0)  # Indeterminate
         self.progress_bar.show()
-        self.status_label.setText(f"Suche nach '{query}'...")
+        self.status_label.setText(t("Suche nach '{query}'...").format(query=query))
         self.results_list.clear()
 
         # Suche starten
@@ -330,7 +332,9 @@ class SearchPanel(QWidget):
             self.results_list.addItem(item)
 
         count = len(results)
-        self.status_label.setText(f"✅ {count} Ergebnis{'se' if count != 1 else ''}")
+        self.status_label.setText(
+            "✅ " + (t("{count} Ergebnis") if count == 1 else t("{count} Ergebnisse")).format(count=count)
+        )
         self.clear_btn.setVisible(count > 0)
         self.search_finished.emit(count)
 
@@ -338,7 +342,7 @@ class SearchPanel(QWidget):
     def _on_search_error(self, error: str):
         """Fehler bei Suche"""
         self.progress_bar.hide()
-        self.status_label.setText(f"❌ Fehler: {error}")
+        self.status_label.setText("❌ " + t("Fehler: {error}").format(error=error))
 
     def _on_item_clicked(self, item: QListWidgetItem):
         """Item angeklickt"""

@@ -23,6 +23,8 @@ from PySide6.QtGui import (
     QPainter, QColor, QTextFormat, QShortcut
 )
 
+from translator import t
+
 from .syntax_highlighter import get_lexer_for_extension
 
 
@@ -57,7 +59,7 @@ def _validate_json(text: str) -> tuple:
         json.loads(text)
         return True, "✓ Gültiges JSON"
     except json.JSONDecodeError as e:
-        return False, f"✗ Ungültiges JSON: {e}"
+        return False, t("✗ Ungültiges JSON: {error}").format(error=e)
 
 
 def _validate_toml(text: str) -> tuple:
@@ -73,7 +75,7 @@ def _validate_toml(text: str) -> tuple:
         tomllib.loads(text)
         return True, "✓ Gültiges TOML"
     except Exception as e:
-        return False, f"✗ Ungültiges TOML: {e}"
+        return False, t("✗ Ungültiges TOML: {error}").format(error=e)
 
 
 class LineNumberArea(QPlainTextEdit):
@@ -429,7 +431,7 @@ class QuickEditorDialog(QDialog):
             self.editor.set_highlighter(path.suffix)
 
             self.file_label.setText(path.name)
-            self.setWindowTitle(f"Quick Editor - {path.name}")
+            self.setWindowTitle(t("Quick Editor - {name}").format(name=path.name))
 
             self.editor.document().setModified(False)
             self._modified = False
@@ -441,7 +443,7 @@ class QuickEditorDialog(QDialog):
             self.editor.setTextCursor(cursor)
 
         except Exception as e:
-            QMessageBox.critical(self, "Fehler", f"Fehler beim Laden:\n{e}")
+            QMessageBox.critical(self, "Fehler", t("Fehler beim Laden:\n{error}").format(error=e))
 
     def _save_file(self):
         """Speichert die Datei"""
@@ -462,13 +464,13 @@ class QuickEditorDialog(QDialog):
             self._modified = False
             self.modified_label.setText("")
             self.file_label.setText(Path(self.filepath).name)
-            self.setWindowTitle(f"Quick Editor - {Path(self.filepath).name}")
+            self.setWindowTitle(t("Quick Editor - {name}").format(name=Path(self.filepath).name))
 
             self.file_saved.emit(self.filepath)
-            self._add_output(f"✓ Gespeichert: {self.filepath}\n", "#4EC9B0")
+            self._add_output(t("✓ Gespeichert: {path}").format(path=self.filepath) + "\n", "#4EC9B0")
 
         except Exception as e:
-            QMessageBox.critical(self, "Fehler", f"Fehler beim Speichern:\n{e}")
+            QMessageBox.critical(self, "Fehler", t("Fehler beim Speichern:\n{error}").format(error=e))
 
     def _validate_file(self):
         """Validiert den Editor-Inhalt als JSON oder TOML"""
@@ -502,7 +504,7 @@ class QuickEditorDialog(QDialog):
         cursor = self.editor.textCursor()
         line = cursor.blockNumber() + 1
         col = cursor.columnNumber() + 1
-        self.line_label.setText(f"Zeile: {line}, Spalte: {col}")
+        self.line_label.setText(t("Zeile: {line}, Spalte: {column}").format(line=line, column=col))
 
     def _run_code(self):
         """Führt den Code aus"""
@@ -517,7 +519,7 @@ class QuickEditorDialog(QDialog):
         ext = Path(self.filepath).suffix.lower()
 
         self.output.clear()
-        self._add_output(f"▶ Starte: {self.filepath}\n", "#569CD6")
+        self._add_output(t("▶ Starte: {path}").format(path=self.filepath) + "\n", "#569CD6")
         self._add_output("-" * 50 + "\n", "#3C3C3C")
 
         # Process starten
@@ -538,7 +540,7 @@ class QuickEditorDialog(QDialog):
         elif ext == '.js':
             self._process.start('node', [self.filepath])
         else:
-            self._add_output(f"Keine Ausführung für {ext} unterstützt\n", "#F14C4C")
+            self._add_output(t("Keine Ausführung für {ext} unterstützt").format(ext=ext) + "\n", "#F14C4C")
             return
 
         self.btn_run.setEnabled(False)
@@ -564,9 +566,9 @@ class QuickEditorDialog(QDialog):
         """Handler für Prozess-Ende"""
         self._add_output("-" * 50 + "\n", "#3C3C3C")
         if exit_code == 0:
-            self._add_output(f"✓ Beendet (Exit-Code: {exit_code})\n", "#4EC9B0")
+            self._add_output(t("✓ Beendet (Exit-Code: {code})").format(code=exit_code) + "\n", "#4EC9B0")
         else:
-            self._add_output(f"✗ Beendet mit Fehler (Exit-Code: {exit_code})\n", "#F14C4C")
+            self._add_output(t("✗ Beendet mit Fehler (Exit-Code: {code})").format(code=exit_code) + "\n", "#F14C4C")
 
         self.btn_run.setEnabled(True)
         self.btn_stop.setEnabled(False)

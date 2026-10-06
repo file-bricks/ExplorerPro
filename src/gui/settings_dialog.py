@@ -8,6 +8,7 @@ privacy, appearance) und schreibt sie beim Bestätigen in die
 settings.json des Benutzerprofils.
 """
 
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QTabWidget, QWidget,
     QCheckBox, QComboBox, QSpinBox, QLineEdit, QPushButton, QLabel,
@@ -21,15 +22,19 @@ from translator import TranslationSystem, t
 class SettingsDialog(QDialog):
     """Dialog für die Anwendungseinstellungen."""
 
+    # Bittet das Hauptfenster, den Black-/Whitelist-Editor zu öffnen.
+    privacy_lists_requested = Signal()
+
     THEMES = [
         ("system", "Systemvorgabe"),
         ("light", "Hell"),
         ("dark", "Dunkel"),
     ]
 
-    def __init__(self, parent=None, settings: SettingsManager = None):
+    def __init__(self, parent=None, settings: SettingsManager = None, privacy_monitor=None):
         super().__init__(parent)
         self.settings = settings or SettingsManager.instance()
+        self.privacy_monitor = privacy_monitor
         self.setWindowTitle("Einstellungen")
         self.setMinimumWidth(520)
         self.setAccessibleName("Einstellungen")
@@ -94,7 +99,7 @@ class SettingsDialog(QDialog):
         self.language_cb.setAccessibleDescription("Auswahl der Benutzeroberflächensprache.")
         self.language_cb.setToolTip(
             t("Programmsprache für Menüs und Dialoge") + "\n"
-            + t("Sprachänderungen werden beim nächsten Start übernommen.")
+            + t("Sprachänderungen werden sofort übernommen; einzelne Texte erst nach einem Neustart.")
         )
         for code, display in TranslationSystem.get_language_display_names().items():
             self.language_cb.addItem(display, code)
@@ -186,20 +191,29 @@ class SettingsDialog(QDialog):
 
         self.auto_block_cb = QCheckBox("Sensible Inhalte automatisch blockieren")
         self.auto_block_cb.setAccessibleName("Sensible Inhalte automatisch blockieren")
-        self.auto_block_cb.setToolTip(t("Kopieren hochsensibler Daten wie Passwörter und API-Keys blockieren"))
+        self.auto_block_cb.setToolTip(
+            t("Kopieren hochsensibler Daten wie Passwörter und API-Keys blockieren") + "\n"
+            + t("Leert die Zwischenablage, sobald die Ampel auf Rot springt.")
+        )
         form.addRow(self.auto_block_cb)
 
-        self.notifications_cb = QCheckBox("Hinweise anzeigen")
+        self.notifications_cb = QCheckBox("Warnhinweis bei roter Ampel als Dialog anzeigen")
         self.notifications_cb.setAccessibleName("Hinweise anzeigen")
         self.notifications_cb.setToolTip("Benachrichtigung bei erkannten Datenschutz-Mustern einblenden")
         form.addRow(self.notifications_cb)
 
         note = QLabel(
-            "Erkennungsmuster werden unter Tools, Datenschutz-Einstellungen "
-            "gepflegt."
+            "Erkennungsmuster, Blacklist und Whitelist werden im Dialog "
+            "Datenschutz-Einstellungen gepflegt (auch per Klick auf die Ampel)."
         )
         note.setWordWrap(True)
         form.addRow(note)
+
+        self.privacy_lists_btn = QPushButton("Blacklist/Whitelist bearbeiten...")
+        self.privacy_lists_btn.setAccessibleName("Blacklist und Whitelist bearbeiten")
+        self.privacy_lists_btn.setToolTip("Öffnet die Datenschutz-Einstellungen mit Black- und Whitelist")
+        self.privacy_lists_btn.clicked.connect(self.privacy_lists_requested.emit)
+        form.addRow(self.privacy_lists_btn)
 
         return page
 
@@ -215,7 +229,10 @@ class SettingsDialog(QDialog):
         form.addRow("Farbschema:", self.theme_combo)
 
         self.font_size_spin = QSpinBox()
-        self.font_size_spin.setRange(6, 32)
+        self.font_size_spin.setRange(5, 32)
+        # Der Minimalwert steht für "Systemstandard" und wird als 0 gespeichert.
+        self.font_size_spin.setSpecialValueText(t("Systemstandard"))
+        self.font_size_spin.setSuffix(" pt")
         self.font_size_spin.setAccessibleName("Schriftgröße")
         self.font_size_spin.setToolTip(t("Basisschriftgröße in Punkten"))
         form.addRow("Schriftgröße:", self.font_size_spin)
@@ -252,25 +269,38 @@ class SettingsDialog(QDialog):
 
         self.auto_index_cb.setChecked(bool(get("index", "auto_index", True)))
         self.index_startup_cb.setChecked(bool(get("index", "index_on_startup", False)))
-        self.max_file_size_spin.setValue(int(get("index", "max_file_size_mb", 100)))
+        self.max_file_size_spin.setValue(self._int(get("index", "max_file_size_mb", 100), 100))
 
         self.show_preview_cb.setChecked(bool(get("preview", "show_preview", True)))
         self.preview_images_cb.setChecked(bool(get("preview", "preview_images", True)))
         self.preview_pdfs_cb.setChecked(bool(get("preview", "preview_pdfs", True)))
         self.preview_code_cb.setChecked(bool(get("preview", "preview_code", True)))
-        self.max_preview_spin.setValue(int(get("preview", "max_preview_size_mb", 10)))
+        self.max_preview_spin.setValue(self._int(get("preview", "max_preview_size_mb", 50), 50))
 
         self.clipboard_monitor_cb.setChecked(
             bool(get("privacy", "enable_clipboard_monitor", True))
         )
-        self.auto_block_cb.setChecked(bool(get("privacy", "auto_block_sensitive", True)))
+        if self.privacy_monitor is not None:
+            # privacy_config.json ist maßgeblich für das automatische Leeren.
+            self.auto_block_cb.setChecked(bool(self.privacy_monitor.auto_clear))
+            self.clipboard_monitor_cb.setChecked(bool(self.privacy_monitor.enabled))
+        else:
+            self.auto_block_cb.setChecked(bool(get("privacy", "auto_block_sensitive", False)))
         self.notifications_cb.setChecked(bool(get("privacy", "show_notifications", True)))
 
         theme = get("appearance", "theme", "system")
         index = self.theme_combo.findData(theme)
         self.theme_combo.setCurrentIndex(index if index >= 0 else 0)
-        self.font_size_spin.setValue(int(get("appearance", "font_size", 10)))
-        self.icon_size_spin.setValue(int(get("appearance", "icon_size", 24)))
+        font_size = self._int(get("appearance", "font_size", 0), 0)
+        self.font_size_spin.setValue(font_size if 6 <= font_size <= 32 else self.font_size_spin.minimum())
+        self.icon_size_spin.setValue(self._int(get("appearance", "icon_size", 16), 16))
+
+    @staticmethod
+    def _int(value, default: int) -> int:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return default
 
     def collect_settings(self) -> dict:
         """Liest die Bedienelemente aus und gibt die Werte als Dict zurück."""
@@ -301,7 +331,10 @@ class SettingsDialog(QDialog):
             },
             "appearance": {
                 "theme": self.theme_combo.currentData(),
-                "font_size": self.font_size_spin.value(),
+                "font_size": (
+                    0 if self.font_size_spin.value() == self.font_size_spin.minimum()
+                    else self.font_size_spin.value()
+                ),
                 "icon_size": self.icon_size_spin.value(),
             },
         }

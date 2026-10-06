@@ -31,6 +31,7 @@ from PySide6.QtCore import Qt, QTranslator, QLibraryInfo
 from PySide6.QtGui import QIcon
 
 from app import ExplorerProApp
+from core.crash_log import install_crash_logging
 from version import __version__
 from core.gui_gc import install_gui_gc
 from gui.sidebar.drive_capacity import shutdown_capacity_executor
@@ -59,13 +60,30 @@ def load_app_icon() -> QIcon:
 
 def install_qt_translations(app: QApplication, lang: str):
     """Lädt Qts eigene Übersetzung (qtbase_<lang>.qm), damit Standard-Buttons
-    wie Ja/Nein, Speichern/Verwerfen/Abbrechen in der UI-Sprache erscheinen."""
+    wie Ja/Nein, Speichern/Verwerfen/Abbrechen in der UI-Sprache erscheinen.
+
+    Ein zuvor installierter Qt-Übersetzer wird entfernt, damit ein
+    Sprachwechsel zur Laufzeit nicht die alte Sprache weiter bevorzugt.
+    """
+    previous = getattr(app, "_ep_qt_translator", None)
+    if previous is not None:
+        app.removeTranslator(previous)
+        app._ep_qt_translator = None
     translator = QTranslator(app)
     path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
     if translator.load(f"qtbase_{lang}", path):
         app.installTranslator(translator)
+        app._ep_qt_translator = translator
         return translator
     return None
+
+
+def install_runtime_translation(app: QApplication, translator) -> None:
+    """Übersetzt alle Widgets zur Laufzeit und folgt Sprachwechseln live."""
+    from core.ui_translator import install_ui_translator
+
+    install_ui_translator(app)
+    translator.add_language_listener(lambda lang: install_qt_translations(app, lang))
 
 
 def set_application_version(app: QApplication) -> None:
@@ -90,6 +108,7 @@ def main():
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
     )
 
+    install_crash_logging()
     app = QApplication(sys.argv)
     collector = install_gui_gc(app)
     try:
@@ -97,6 +116,7 @@ def main():
         app.setOrganizationName("ExplorerPro")
         translator = configure_application_language()
         install_qt_translations(app, translator.get_language())
+        install_runtime_translation(app, translator)
         set_application_version(app)
         icon = load_app_icon()
         if not icon.isNull():
@@ -116,6 +136,9 @@ def main():
         explorer.show()
         exit_code = app.exec()
     finally:
+        from core.ui_translator import uninstall_ui_translator
+
+        uninstall_ui_translator(app)
         try:
             shutdown_capacity_executor()
         finally:

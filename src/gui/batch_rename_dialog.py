@@ -67,7 +67,7 @@ class BatchRenameDialog(QDialog):
         main_layout.setSpacing(10)
 
         # Info-Kopfzeile
-        count_lbl = QLabel(f"{len(self.file_paths)} " + t("Dateien ausgewählt"))
+        count_lbl = QLabel(t("{count} Dateien ausgewählt").format(count=len(self.file_paths)))
         font = count_lbl.font()
         font.setBold(True)
         count_lbl.setFont(font)
@@ -347,7 +347,7 @@ class BatchRenameDialog(QDialog):
         # Zusammenfassung
         if has_conflicts:
             self.summary_label.setText(
-                f"⚠️ {actionable_count} " + t("zu ändern, Konflikte oder ungültige Namen gefunden!")
+                "⚠️ " + t("{count} zu ändern, Konflikte oder ungültige Namen gefunden!").format(count=actionable_count)
             )
             self.summary_label.setStyleSheet("color: #c62828; font-weight: bold;")
             self.rename_btn.setEnabled(False)
@@ -357,7 +357,7 @@ class BatchRenameDialog(QDialog):
             self.rename_btn.setEnabled(False)
         else:
             self.summary_label.setText(
-                f"✓ {actionable_count} " + t("Dateien werden umbenannt.")
+                "✓ " + t("{count} Dateien werden umbenannt.").format(count=actionable_count)
             )
             self.summary_label.setStyleSheet("color: #2e7d32; font-weight: bold;")
             self.rename_btn.setEnabled(True)
@@ -369,16 +369,18 @@ class BatchRenameDialog(QDialog):
         if errors:
             err_text = "\n".join(errors[:5])
             if len(errors) > 5:
-                err_text += f"\n... und {len(errors) - 5} weitere"
+                err_text += "\n" + t("... und {count} weitere").format(count=len(errors) - 5)
             QMessageBox.warning(
                 self, t("Fehler beim Umbenennen"),
-                f"{success_count} " + t("Dateien umbenannt, aber Fehler aufgetreten:\n\n") + err_text
+                t("{count} Dateien umbenannt, aber Fehler aufgetreten:\n\n{errors}").format(
+                    count=success_count, errors=err_text
+                )
             )
         else:
             self._has_renamed = True
             QMessageBox.information(
                 self, t("Erfolg"),
-                f"{success_count} " + t("Dateien erfolgreich umbenannt.")
+                t("{count} Dateien erfolgreich umbenannt.").format(count=success_count)
             )
 
         if self.history:
@@ -414,12 +416,14 @@ class BatchRenameDialog(QDialog):
         if errors:
             QMessageBox.warning(
                 self, t("Rollback unvollständig"),
-                f"{restored} " + t("Dateien zurückgesetzt, Fehler:\n") + "\n".join(errors)
+                t("{count} Dateien zurückgesetzt, Fehler:\n{errors}").format(
+                    count=restored, errors="\n".join(errors)
+                )
             )
         else:
             QMessageBox.information(
                 self, t("Rollback erfolgreich"),
-                f"{restored} " + t("Dateien wurden auf die ursprünglichen Namen zurückgesetzt.")
+                t("{count} Dateien wurden auf die ursprünglichen Namen zurückgesetzt.").format(count=restored)
             )
 
         self._update_preview()

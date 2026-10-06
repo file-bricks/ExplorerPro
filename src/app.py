@@ -14,6 +14,8 @@ from PySide6.QtCore import QSettings
 from gui.main_window import MainWindow
 from modules.privacy.privacy_monitor import PrivacyMonitor
 from core.file_index import FileIndex
+from core.settings_manager import SettingsManager
+from translator import t
 
 logging.basicConfig(level=logging.INFO)
 
@@ -42,6 +44,7 @@ class ExplorerProApp(MainWindow):
         # Einstellungen & Verbindungen
         self._load_settings()
         self._setup_connections()
+        self._apply_settings(startup=True)
 
         logging.info("ExplorerPro gestartet")
 
@@ -57,8 +60,11 @@ class ExplorerProApp(MainWindow):
         self.privacy_monitor.warning.connect(self._on_privacy_warning)
         self.privacy_monitor.alert.connect(self._on_privacy_alert)
 
-        # Monitor starten
-        self.privacy_monitor.start()
+        # Monitor starten (sofern in den Einstellungen nicht deaktiviert)
+        if SettingsManager.instance().get("privacy", "enable_clipboard_monitor", True):
+            self.privacy_monitor.start()
+        else:
+            self.privacy_monitor.stop()
         logging.info("PrivacyMonitor initialisiert")
 
     def _init_file_index(self):
@@ -79,7 +85,8 @@ class ExplorerProApp(MainWindow):
         settings = QSettings()
 
         # Fenstergeometrie
-        geometry = settings.value("window/geometry")
+        remember = SettingsManager.instance().get("general", "remember_window_size", True)
+        geometry = settings.value("window/geometry") if remember else None
         if geometry:
             self.restoreGeometry(geometry)
         else:
@@ -118,6 +125,7 @@ class ExplorerProApp(MainWindow):
 
         # Browser -> Preview
         self.file_browser.file_selected.connect(self.preview_panel.show_preview)
+        self.file_browser.path_changed.connect(lambda _path: self.preview_panel.clear_preview())
 
         # Browser -> StatusBar
         self.file_browser.path_changed.connect(self.status_widget.update_path)
@@ -149,14 +157,14 @@ class ExplorerProApp(MainWindow):
 
         if results:
             self.statusBar().showMessage(
-                f"{len(results)} Treffer für: {query}", 5000
+                t("{count} Treffer für: {query}").format(count=len(results), query=query), 5000
             )
             # Ergebnisse im SearchPanel anzeigen
             self.sidebar.search_panel.show_results(results)
             # Zum Such-Tab wechseln
             self.sidebar.switch_to_search()
         else:
-            self.statusBar().showMessage(f"Keine Treffer für: {query}", 3000)
+            self.statusBar().showMessage(t("Keine Treffer für: {query}").format(query=query), 3000)
 
     def _on_privacy_warning(self, message: str):
         """Handler für Datenschutz-Warnungen"""
@@ -164,25 +172,37 @@ class ExplorerProApp(MainWindow):
 
     def _on_privacy_alert(self, alert):
         """Handler für Datenschutz-Alerts"""
-        if alert.status.value == 'red':
-            QMessageBox.warning(
-                self,
-                "Datenschutz-Warnung",
-                f"{alert.message}\n\nErkannt: {', '.join(alert.detected_patterns)}"
-            )
+        if alert.status.value != 'red':
+            return
+        if not SettingsManager.instance().get("privacy", "show_notifications", True):
+            return
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Icon.Warning)
+        box.setWindowTitle(t("Datenschutz-Warnung"))
+        box.setText(alert.message)
+        box.setInformativeText(
+            t("Erkannt: {items}").format(items=", ".join(alert.detected_patterns))
+        )
+        box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        settings_btn = box.addButton(t("Einstellungen..."), QMessageBox.ButtonRole.ActionRole)
+        box.exec()
+        if box.clickedButton() is settings_btn:
+            self._show_privacy_settings()
 
     def _on_app_launched(self, path: str):
         """Handler für gestartete Apps"""
-        self.statusBar().showMessage(f"🚀 App gestartet: {Path(path).name}", 3000)
+        self.statusBar().showMessage("🚀 " + t("App gestartet: {name}").format(name=Path(path).name), 3000)
 
     def _on_prompt_copied(self, content: str):
         """Handler für kopierte Prompts"""
         preview = content[:50] + "..." if len(content) > 50 else content
-        self.statusBar().showMessage(f"📋 Prompt kopiert: {preview}", 3000)
+        self.statusBar().showMessage("📋 " + t("Prompt kopiert: {text}").format(text=preview), 3000)
 
     def _on_sync_finished(self, count: int):
         """Handler für abgeschlossene Synchronisation"""
-        self.statusBar().showMessage(f"🔄 Synchronisation abgeschlossen: {count} Dateien", 5000)
+        self.statusBar().showMessage(
+            "🔄 " + t("Synchronisation abgeschlossen: {count} Dateien").format(count=count), 5000
+        )
 
     def index_current_folder(self):
         """Indiziert den aktuellen Ordner"""
@@ -195,10 +215,14 @@ class ExplorerProApp(MainWindow):
         # Worker starten
         self.index_worker = IndexWorker(self.file_index, current_path)
         self.index_worker.progress.connect(
-            lambda c, t: self.statusBar().showMessage(f"Indiziere: {c}/{t}")
+            lambda current, total: self.statusBar().showMessage(
+                t("Indiziere: {current}/{total}").format(current=current, total=total)
+            )
         )
         self.index_worker.finished_indexing.connect(
-            lambda n: self.statusBar().showMessage(f"✅ {n} Dateien indiziert", 5000)
+            lambda n: self.statusBar().showMessage(
+                "✅ " + t("{count} Dateien indiziert").format(count=n), 5000
+            )
         )
         self.index_worker.start()
 
@@ -251,7 +275,8 @@ class ExplorerProApp(MainWindow):
 
         # Einstellungen speichern
         settings = QSettings()
-        settings.setValue("window/geometry", self.saveGeometry())
+        if SettingsManager.instance().get("general", "remember_window_size", True):
+            settings.setValue("window/geometry", self.saveGeometry())
         for key, splitter in (
             ("splitter/main", self.main_splitter),
             ("splitter/right", self.right_splitter),

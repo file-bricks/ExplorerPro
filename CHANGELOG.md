@@ -5,6 +5,14 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Review & Fehlerbehebung: Cloud-Ordner, Vorschau, Datenschutz, Sprache (2026-10-06)
+- **Cloud-Ordner sichtbar:** Unter Windows blendete die Dateiliste OneDrive-/Cloud-Platzhalter (Reparse-Points) und Verknüpfungen (`*.lnk`) aus; der Filter enthält jetzt `QDir.System`. Neue Seitenleisten-Gruppe **Cloud-Speicher** (OneDrive privat/geschäftlich, Dropbox, Google Drive, iCloud, Nextcloud u. a.; Windows-SyncRootManager nur lesend). Schnellzugriff-Einträge sind aufklappbar.
+- **Ordnernamen statt „Ordner“:** Typ- und Datumsspalte nutzten `ResizeToContents` und konnten die Namensspalte auf wenige Pixel zusammendrücken. Feste, verstellbare Breiten; die Namensspalte behält mindestens 160 px, lange Namen werden mittig gekürzt.
+- **Absturz/Hänger bei Klick auf Datei:** Vorschau fängt jeden Fehler ab, lädt keine Cloud-Platzhalter („nur online“) mehr herunter, beachtet die maximale Vorschaugröße und die Vorschau-Schalter, dekodiert Bilder verkleinert (inkl. EXIF-Drehung), rendert PDFs speicherbegrenzt und kopiert den Pixelpuffer. Windows-Verknüpfungen werden mit einem nativen Parser statt per PowerShell-Prozess aufgelöst. Dateizählung blockiert den GUI-Thread nicht mehr. Native Abstürze und unbehandelte Ausnahmen werden lokal in `~/.explorerpro/logs/crash.log` protokolliert.
+- **Datenschutz-Ampel bedienbar:** Klick öffnet die Datenschutz-Einstellungen, Rechtsklick ein Schnellmenü (Überwachung ein/aus, Ampel zurücksetzen). Neuer Dialog mit editierbarer **Blacklist** und **Whitelist** (Hinzufügen, Bearbeiten, Filtern, Import/Export TXT/CSV/XLSX) und Testbereich. Die Überwachung lässt sich wieder einschalten, nachdem sie gestoppt wurde.
+- **Spracheinstellung wirkt:** Ein Laufzeit-Übersetzer übersetzt alle Fenster, Menüs, Tooltips und Barrierefreiheitstexte und schaltet beim Speichern der Einstellungen live um. Dynamische Meldungen nutzen `t()`-Vorlagen; der Katalog wurde um die fehlenden Texte in allen sechs Sprachen ergänzt. Zur Laufzeit wird `translations.json` nicht mehr beschrieben (im Store-Paket schreibgeschützt).
+- **Einstellungen werden angewendet:** Startordner, versteckte Dateien, Farbschema, Schriftgröße (0 = Systemstandard), Symbolgröße, Vorschau-Optionen, Überwachung und Hinweisdialoge sowie „Fenstergröße merken“. Indizierung beachtet maximale Dateigröße und Ausschlussmuster und liest keine Cloud-Platzhalter.
+
 ### Übersetzte Hilfetexte und gespeicherte Sprache (2026-10-01)
 - 86 bislang fehlende Hilfetexte, Beschriftungen und Fehlermeldungen im Katalog ergänzt; Hilfetexte über die Übersetzungsfunktion angebunden (DE, EN, ES, ZH, JA, RU).
 - Die Sprachauswahl erklärt in allen sechs Sprachen, dass Sprachänderungen beim nächsten Start übernommen werden.

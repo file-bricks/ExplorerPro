@@ -31,7 +31,7 @@ class ChecksumDialog(QDialog):
         self._close_timer.timeout.connect(self._finish_pending_close)
 
         filename = os.path.basename(filepath)
-        self.setWindowTitle(f"Prüfsummen — {filename}")
+        self.setWindowTitle(t("Prüfsummen — {name}").format(name=filename))
         self.setMinimumWidth(580)
         self.setAccessibleName("Prüfsummen-Dialog")
         self.setAccessibleDescription(
@@ -90,15 +90,19 @@ class ChecksumDialog(QDialog):
             edit.setReadOnly(True)
             edit.setFont(mono_font)
             edit.setPlaceholderText("Wird berechnet...")
-            edit.setAccessibleName(f"{algo.upper()} Prüfsumme")
-            edit.setAccessibleDescription(f"Berechnete {algo.upper()}-Prüfsumme für die ausgewählte Datei.")
+            edit.setAccessibleName(t("{algorithm} Prüfsumme").format(algorithm=algo.upper()))
+            edit.setAccessibleDescription(
+                t("Berechnete {algorithm}-Prüfsumme für die ausgewählte Datei.").format(algorithm=algo.upper())
+            )
             self.hash_edits[algo] = edit
             row_layout.addWidget(edit, 1)
 
             btn = QPushButton("Kopieren")
-            btn.setAccessibleName(f"{algo.upper()} Prüfsumme kopieren")
-            btn.setAccessibleDescription(f"Kopiert die berechnete {algo.upper()}-Prüfsumme in die Zwischenablage.")
-            btn.setToolTip(f"{algo.upper()}-Prüfsumme in die Zwischenablage kopieren")
+            btn.setAccessibleName(t("{algorithm} Prüfsumme kopieren").format(algorithm=algo.upper()))
+            btn.setAccessibleDescription(
+                t("Kopiert die berechnete {algorithm}-Prüfsumme in die Zwischenablage.").format(algorithm=algo.upper())
+            )
+            btn.setToolTip(t("{algorithm}-Prüfsumme in die Zwischenablage kopieren").format(algorithm=algo.upper()))
             btn.clicked.connect(lambda checked=False, a=algo: self._copy_hash(a))
             row_layout.addWidget(btn)
 
@@ -194,7 +198,7 @@ class ChecksumDialog(QDialog):
     @Slot(str)
     def _on_error(self, error_msg: str):
         self.progress_bar.setFormat("Fehlgeschlagen")
-        self.verify_result_label.setText(f"Fehler: {error_msg}")
+        self.verify_result_label.setText(t("Fehler: {error}").format(error=error_msg))
         self.verify_result_label.setStyleSheet("color: red; font-weight: bold;")
 
     def _copy_hash(self, algo: str):
@@ -208,9 +212,9 @@ class ChecksumDialog(QDialog):
         filename = os.path.basename(self.filepath)
         size_str = self.size_label.text() if hasattr(self, "size_label") else ""
         lines = [
-            f"Datei: {filename}",
-            f"Pfad:  {self.filepath}",
-            f"Größe: {size_str}",
+            t("Datei: {name}").format(name=filename),
+            t("Pfad:  {path}").format(path=self.filepath),
+            t("Größe: {size}").format(size=size_str),
             "-" * 40,
         ]
         for algo in ("md5", "sha1", "sha256", "sha512"):
@@ -241,7 +245,9 @@ class ChecksumDialog(QDialog):
         match = verify_hash(self._calculated_hashes, text)
         if match:
             algo, _ = match
-            self.verify_result_label.setText(f"✓ Übereinstimmung gefunden! ({algo.upper()})")
+            self.verify_result_label.setText(
+                "✓ " + t("Übereinstimmung gefunden! ({algorithm})").format(algorithm=algo.upper())
+            )
             self.verify_result_label.setStyleSheet("color: #0d8050; font-weight: bold;")
         else:
             self.verify_result_label.setText("✗ Keine Übereinstimmung mit berechneten Prüfsummen.")

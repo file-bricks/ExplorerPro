@@ -55,9 +55,11 @@ class AppButton(QPushButton):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setToolTip(f"{self.app.name}\n{self.app.path}")
-        self.setAccessibleName(f"App {self.app.name}")
+        self.setAccessibleName(t("App {name}").format(name=self.app.name))
         self.setAccessibleDescription(
-            f"Startet die Anwendung {self.app.name}. Dateipfad: {self.app.path}"
+            t("Startet die Anwendung {name}. Dateipfad: {path}").format(
+                name=self.app.name, path=self.app.path
+            )
         )
 
         layout = QVBoxLayout(self)
@@ -118,7 +120,11 @@ class AppButton(QPushButton):
         try:
             open_path_with_system(folder)
         except (OSError, subprocess.CalledProcessError) as exc:
-            QMessageBox.warning(self, "Ordner öffnen", f"Der Ordner konnte nicht geöffnet werden:\n{folder}\n\n{exc}")
+            QMessageBox.warning(
+                self,
+                "Ordner öffnen",
+                t("Der Ordner konnte nicht geöffnet werden:\n{path}\n\n{error}").format(path=folder, error=exc),
+            )
 
 
 class AppEditDialog(QDialog):
@@ -406,7 +412,7 @@ class AppsPanel(QWidget):
 
     def _delete_app(self, app: AppEntry):
         if QMessageBox.question(
-            self, "Entfernen", f"'{app.name}' entfernen?",
+            self, "Entfernen", t("'{name}' entfernen?").format(name=app.name),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         ) == QMessageBox.StandardButton.Yes:
             self.apps.remove(app)
@@ -425,4 +431,4 @@ class AppsPanel(QWidget):
                 subprocess.Popen([app.path] + arg_list)
             self.app_launched.emit(app.path)
         except Exception as e:
-            QMessageBox.warning(self, "Fehler", f"Konnte nicht starten:\n{e}")
+            QMessageBox.warning(self, "Fehler", t("Konnte nicht starten:\n{error}").format(error=e))

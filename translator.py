@@ -43,6 +43,12 @@ LANGUAGE_DISPLAY_NAMES: Dict[str, str] = {
 }
 
 
+# "📂 Öffnen", "⚠️ Hinweis", "• Eintrag": Symbolpräfix ohne Buchstaben/Ziffern.
+_PREFIX_RE = re.compile(r"^([^\w(\[\"'„“]+\s+)(\S.*)$", re.S)
+# "Name:", "Neue Datei...", "Zurück (Alt+Left)", "Suche …".
+_SUFFIX_RE = re.compile(r"^(.*?)(\s*(?:\.\.\.|…|:|\([^()]*\))\s*)$", re.S)
+
+
 def detect_system_language() -> str:
     """Ermittelt die Systemsprache, Fallback auf 'de'."""
     try:
@@ -104,6 +110,9 @@ class TranslationSystem:
         ]
 
         self.translations: Dict[str, Dict[str, str]] = {}
+        self.missing_keys: Set[str] = set()
+        self._reverse_index: Optional[Dict[str, Dict[str, str]]] = None
+        self._listeners: list = []
         self._load_translations()
 
     def _load_translations(self):
@@ -111,12 +120,15 @@ class TranslationSystem:
             try:
                 with open(self.translations_file, "r", encoding="utf-8") as f:
                     self.translations = json.load(f)
+                if not isinstance(self.translations, dict):
+                    self.translations = {}
             except Exception:
                 self.translations = {}
         else:
             self.translations = {}
 
     def _save_translations(self):
+        self._reverse_index = None
         self.translations_file.parent.mkdir(parents=True, exist_ok=True)
         with open(self.translations_file, "w", encoding="utf-8") as f:
             json.dump(self.translations, f, indent=2, ensure_ascii=False)
@@ -140,16 +152,147 @@ class TranslationSystem:
                     return value
             return key
 
+        # Dekorierte Varianten ("🟢 Grün", "Name:", "Neue Datei...") über
+        # den Kern-Schlüssel auflösen.
+        decorated = self._translate_parts(key, 0, self.current_lang)
+        if decorated is not None:
+            return decorated
+
+        # Fehlende Schlüssel nur im Speicher vormerken: Zur Laufzeit darf der
+        # Katalog nicht geschrieben werden (im Store-/EXE-Paket schreibgeschützt,
+        # ein PermissionError würde sonst die aufrufende GUI-Aktion abbrechen).
+        # Neue Strings pflegt `python manage_translations.py`.
         if self._is_german(key):
-            self.translations[key] = self._new_translation_entry(key, "")
-            self._save_translations()
+            self.missing_keys.add(key)
 
         return key
 
+    # ===== Übersetzung zusammengesetzter GUI-Texte =====
+
+    def has_key(self, key: str) -> bool:
+        """True, wenn *key* als Eintrag im Katalog existiert."""
+        return isinstance(self.translations.get(key), dict)
+
+    def _lookup(self, key: str) -> Optional[str]:
+        """Übersetzt *key* ohne Seiteneffekte; None, wenn kein Katalogeintrag existiert."""
+        entry = self.translations.get(key)
+        if not isinstance(entry, dict):
+            return None
+        for lang in (self.current_lang, *FALLBACK_CHAIN):
+            value = entry.get(lang)
+            if isinstance(value, str) and value.strip():
+                return value
+        return key
+
+    def _source_for(self, text: str, source_lang: Optional[str] = None) -> Optional[str]:
+        """Findet den deutschen Schlüssel zu *text*.
+
+        Akzeptiert den Schlüssel selbst oder seine Übersetzung in der *aktiven*
+        Sprache (z. B. bereits per ``t()`` übersetzte Tooltips). Werte anderer
+        Sprachen werden bewusst nicht zurückgeführt, damit Nutzerdaten wie
+        Ordnernamen in der aktiven Sprache unverändert bleiben.
+        """
+        if self.has_key(text):
+            return text
+        lang = source_lang or self.current_lang
+        if self._reverse_index is None:
+            self._reverse_index = {}
+        reverse = self._reverse_index.get(lang)
+        if reverse is None:
+            reverse = {}
+            for key, entry in self.translations.items():
+                if not isinstance(entry, dict):
+                    continue
+                value = entry.get(lang)
+                if isinstance(value, str) and value.strip():
+                    reverse.setdefault(value, key)
+            self._reverse_index[lang] = reverse
+        return reverse.get(text)
+
+    def source_text(self, text: str) -> Optional[str]:
+        """Öffentliche Variante von :meth:`_source_for` für den UI-Übersetzer."""
+        return self._source_for(text) if text else None
+
+    def translate_text(self, text: str) -> str:
+        """Übersetzt einen GUI-Text tolerant gegenüber Präfixen und Suffixen.
+
+        Neben exakten Katalogtreffern werden typische Dekorationen erkannt und
+        beibehalten: Emoji-/Symbolpräfixe ("📂 Öffnen"), Doppelpunkte
+        ("Name:"), Auslassungspunkte ("Neue Datei..."), Tastenkürzel in
+        Klammern ("Zurück (Alt+Left)"), Mnemonics ("&Datei") und mehrzeilige
+        Texte. Ohne Treffer wird *text* unverändert zurückgegeben.
+        """
+        return self.translate_text_from(text, self.current_lang)
+
+    def translate_text_from(self, text: str, source_lang: str) -> str:
+        """Wie :meth:`translate_text`, wobei *text* in *source_lang* vorliegen darf."""
+        result = self._translate_parts(text, 0, source_lang)
+        return text if result is None else result
+
+    def _translate_parts(self, text: str, depth: int, source_lang: str) -> Optional[str]:
+        if not text or not text.strip() or depth > 4:
+            return None
+
+        source = self._source_for(text, source_lang)
+        if source is not None:
+            return self._lookup(source)
+
+        if "\n" in text:
+            lines = text.split("\n")
+            translated = [self._translate_parts(line, depth + 1, source_lang) for line in lines]
+            if any(item is not None for item in translated):
+                return "\n".join(
+                    item if item is not None else line for line, item in zip(lines, translated)
+                )
+            return None
+
+        stripped = text.strip()
+        if stripped != text:
+            inner = self._translate_parts(stripped, depth + 1, source_lang)
+            if inner is None:
+                return None
+            start = text.index(stripped)
+            return text[:start] + inner + text[start + len(stripped):]
+
+        if "&" in text and "&&" not in text:
+            plain = text.replace("&", "", 1)
+            inner = self._translate_parts(plain, depth + 1, source_lang)
+            if inner is not None:
+                return "&" + inner if not inner.startswith("&") else inner
+
+        match = _PREFIX_RE.match(text)
+        if match:
+            inner = self._translate_parts(match.group(2), depth + 1, source_lang)
+            if inner is not None:
+                return match.group(1) + inner
+
+        match = _SUFFIX_RE.match(text)
+        if match and match.group(1).strip():
+            inner = self._translate_parts(match.group(1), depth + 1, source_lang)
+            if inner is not None:
+                return inner + match.group(2)
+
+        return None
+
+    def add_language_listener(self, callback) -> None:
+        """Registriert einen Callback, der nach jedem Sprachwechsel aufgerufen wird."""
+        if callback not in self._listeners:
+            self._listeners.append(callback)
+
+    def remove_language_listener(self, callback) -> None:
+        if callback in self._listeners:
+            self._listeners.remove(callback)
+
     def set_language(self, lang: str):
-        """Setzt die aktive Zielsprache."""
-        if lang in SUPPORTED_LANGUAGES:
+        """Setzt die aktive Zielsprache und benachrichtigt registrierte Listener."""
+        if lang in SUPPORTED_LANGUAGES and lang != self.current_lang:
             self.current_lang = lang
+            for callback in list(self._listeners):
+                try:
+                    callback(lang)
+                except Exception:
+                    # Ein defekter Listener darf den Sprachwechsel nicht blockieren.
+                    pass
 
     def get_language(self) -> str:
         """Liefert die aktive Zielsprache zurück."""
