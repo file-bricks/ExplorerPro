@@ -4,6 +4,7 @@
 test_checksum_dialog.py - UI- und Funktionstests für den ChecksumDialog
 """
 
+import hashlib
 import os
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
@@ -33,14 +34,16 @@ def test_checksum_dialog_initialization(tmp_path: Path, qtbot):
     assert "sha256" in dlg.hash_edits
     assert "md5" in dlg.hash_edits
 
-    # Warten auf Abschluss des Workers
-    if dlg.worker and dlg.worker.isRunning():
-        dlg.worker.wait(2000)
-    QApplication.processEvents()
-
-    assert dlg.hash_edits["sha256"].text() != ""
-    assert dlg.hash_edits["md5"].text() != ""
-    assert dlg.copy_all_btn.isEnabled()
+    # Warten auf das sichtbare Ergebnis, einschließlich GUI-Signalzustellung.
+    content = sample.read_bytes()
+    expected_sha256 = hashlib.sha256(content).hexdigest()
+    expected_md5 = hashlib.md5(content).hexdigest()
+    qtbot.waitUntil(
+        lambda: dlg.hash_edits["sha256"].text() == expected_sha256
+        and dlg.hash_edits["md5"].text() == expected_md5
+        and dlg.copy_all_btn.isEnabled(),
+        timeout=5000,
+    )
 
     # Verifikation testen: exakter SHA-256
     computed_sha256 = dlg.hash_edits["sha256"].text()
