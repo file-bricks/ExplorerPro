@@ -2,7 +2,7 @@
 
 # ExplorerPro Suite
 
-Der aktuelle Quellcode zeigt in der Ordner-Seitenleiste die Speicherbelegung je Laufwerk: Balken, Prozentanteil und freier/belegter/gesamter Speicher in GiB/TiB. Die Abfrage läuft im Hintergrund; **Laufwerksbelegung aktualisieren** erneuert die Werte. Nicht verfügbare Geräte werden verständlich gekennzeichnet. Diese Ergänzung ist noch nicht Bestandteil eines neu gebauten Releases.
+Der aktuelle Quellcode zeigt in der Ordner-Seitenleiste die Speicherbelegung je Laufwerk: Balken, Prozentanteil und freier/belegter/gesamter Speicher in GiB/TiB. Die Abfrage läuft im Hintergrund; **Laufwerksbelegung aktualisieren** erneuert die Werte. Nicht verfügbare Geräte werden verständlich gekennzeichnet. Diese Funktion ist im Release-Paket 1.0.8 enthalten.
 
 [English](README.md) | **[Deutsch](README_de.md)** | [Maschinenlesbarer Kontext (llms.txt)](llms.txt)
 
@@ -23,7 +23,7 @@ Der aktuelle Quellcode zeigt in der Ordner-Seitenleiste die Speicherbelegung je 
 [![Dachverband: open--bricks](https://img.shields.io/badge/Dachverband-open--bricks-blue.svg)](https://github.com/open-bricks)
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
-[![Version: 1.0.7](https://img.shields.io/badge/Version-1.0.7-orange.svg)](CHANGELOG.md)
+[![Version: 1.0.8](https://img.shields.io/badge/Version-1.0.8-orange.svg)](CHANGELOG.md)
 [![Stand](https://img.shields.io/badge/Stand-2026--09--30-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]

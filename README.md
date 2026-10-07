@@ -22,7 +22,7 @@
 [![Umbrella: open--bricks](https://img.shields.io/badge/umbrella-open--bricks-blue.svg)](https://github.com/open-bricks)
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
-[![Version: 1.0.7](https://img.shields.io/badge/version-1.0.7-orange.svg)](CHANGELOG.md)
+[![Version: 1.0.8](https://img.shields.io/badge/version-1.0.8-orange.svg)](CHANGELOG.md)
 [![Last Checked](https://img.shields.io/badge/Last--Checked-2026--09--30-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]
@@ -64,7 +64,7 @@
 <a id="hauptfunktionen"></a>
 ## 1. Features & Core Capabilities
 
-The source version includes per-drive capacity bars in the folder sidebar, with used percentage and free/used/total space in GiB/TiB. Capacity requests run in the background; use **Refresh drive usage** to update them. Unavailable devices show an explanatory message. This addition is not yet part of a newly packaged release.
+The source version includes per-drive capacity bars in the folder sidebar, with used percentage and free/used/total space in GiB/TiB. Capacity requests run in the background; use **Refresh drive usage** to update them. Unavailable devices show an explanatory message. This functionality is included in the 1.0.8 release package.
 
 Standard operating system file managers are built for casual browsing and lack the heavy-lifting tools developers, researchers, and power users require daily. ExplorerPro addresses this gap by packaging pro-grade productivity utilities into a cohesive, responsive desktop interface with zero telemetry and 100% Local-First data isolation:
 

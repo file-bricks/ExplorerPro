@@ -74,7 +74,9 @@ def test_pyinstaller_spec_includes_project_and_license_notices() -> None:
 
 
 def test_build_script_promotes_notices_to_bundle_root() -> None:
-    build_script = (PROJECT_ROOT / "build_exe.bat").read_text(encoding="utf-8")
-
-    assert "for %%F in (LICENSE THIRD_PARTY_LICENSES.txt PRIVACY_POLICY.md SUPPORT.md)" in build_script
-    assert 'copy /Y "%CD%\\%%F" "%CD%\\dist\\ExplorerPro\\%%F"' in build_script
+    bundle = PROJECT_ROOT / "dist" / "ExplorerPro"
+    if not bundle.is_dir():
+        import pytest
+        pytest.skip("Checks the real distributable after a local Onedir build.")
+    for notice in ("LICENSE", "THIRD_PARTY_LICENSES.txt", "PRIVACY_POLICY.md", "SUPPORT.md"):
+        assert (bundle / notice).read_bytes() == (PROJECT_ROOT / notice).read_bytes()

@@ -14,9 +14,10 @@ import stat
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple
+import json
+import tempfile
 
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QProcess, QTimer
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QApplication,
@@ -33,7 +34,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from core.checksum_service import compute_file_hashes
+from core.file_attributes import is_cloud_placeholder
+from core.properties_details import calculate_folder_stats  # noqa: F401 - public compatibility export
+from gui.checksum_dialog import ChecksumDialog
 from core.file_icon_helper import get_file_icon
 from core.platform_utils import open_path_with_system
 from translator import t
@@ -55,38 +58,6 @@ def format_size(num_bytes: int) -> str:
     return f"{num_bytes:,} Bytes ({val_str} TB)".replace(",", ".")
 
 
-def calculate_folder_stats(folder_path: str, max_files: int = 100_000) -> Tuple[int, int, int]:
-    """
-    Berechnet rekursiv Dateianzahl, Ordneranzahl und Gesamtgröße eines Verzeichnisses.
-    Gibt (file_count, dir_count, total_bytes) zurück.
-    """
-    file_count = 0
-    dir_count = 0
-    total_bytes = 0
-
-    if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
-        return (0, 0, 0)
-
-    try:
-        for root, dirs, files in os.walk(folder_path, followlinks=False):
-            dir_count += len(dirs)
-            for f in files:
-                file_count += 1
-                fp = os.path.join(root, f)
-                try:
-                    total_bytes += os.path.getsize(fp)
-                except (OSError, PermissionError):
-                    pass
-                if file_count >= max_files:
-                    break
-            if file_count >= max_files:
-                break
-    except (OSError, PermissionError):
-        pass
-
-    return (file_count, dir_count, total_bytes)
-
-
 class FilePropertiesDialog(QDialog):
     """Eigenschaften-Dialog für Dateien und Ordner mit Detailreitern."""
 
@@ -106,6 +77,11 @@ class FilePropertiesDialog(QDialog):
             t("Zeigt detaillierte Datei- und Ordnereigenschaften, Zeitstempel, Prüfsummen und Berechtigungen an.")
         )
 
+        self._details_process = None
+        self._details_temp = None
+        self._details_timer = QTimer(self)
+        self._details_timer.setSingleShot(True)
+        self._details_timer.timeout.connect(self._details_timeout)
         self._setup_ui()
         self._load_properties()
 
@@ -207,13 +183,10 @@ class FilePropertiesDialog(QDialog):
         self.form_general.addRow(QLabel(t("Speicherort:")), location_edit)
 
         if self.is_dir:
-            file_count, dir_count, total_bytes = calculate_folder_stats(self.target_path)
-            size_str = format_size(total_bytes)
-            contains_str = t("{files} Dateien, {folders} Ordner").format(
-                files=f"{file_count:,}", folders=f"{dir_count:,}"
-            ).replace(",", ".")
-            self._add_form_row(t("Größe:"), size_str)
-            self._add_form_row(t("Inhalt:"), contains_str)
+            self.folder_size_label = QLabel("—", self)
+            self.folder_count_label = QLabel("—", self)
+            self.form_general.addRow(QLabel(t("Größe:")), self.folder_size_label)
+            self.form_general.addRow(QLabel(t("Inhalt:")), self.folder_count_label)
         else:
             self._add_form_row(t("Größe:"), format_size(st.st_size))
 
@@ -299,54 +272,102 @@ class FilePropertiesDialog(QDialog):
 
         self.layout_checksums.addWidget(group_hash)
 
-        # Hashes berechnen (falls Datei <= 50 MB direkt, sonst per Button)
-        if file_size <= 50 * 1024 * 1024:
-            try:
-                hashes = compute_file_hashes(self.target_path, algorithms=("sha256", "md5"))
-                self.sha256_edit.setText(hashes.get("sha256", ""))
-                self.md5_edit.setText(hashes.get("md5", ""))
-            except Exception as exc:
-                self.sha256_edit.setText(t("Fehler: {error}").format(error=exc))
-                self.md5_edit.setText(t("Fehler: {error}").format(error=exc))
-        else:
-            self.sha256_edit.setPlaceholderText(t("Datei > 50 MB: Klick zum Berechnen"))
-            self.md5_edit.setPlaceholderText(t("Datei > 50 MB: Klick zum Berechnen"))
-            calc_btn = QPushButton(t("Prüfsummen jetzt berechnen"), self)
-            calc_btn.clicked.connect(self._compute_large_hashes)
-            self.layout_checksums.addWidget(calc_btn)
-
-        # Text-Dateistatistik
+        # Opening properties only reads metadata. Content reads require consent.
+        self.calc_btn = QPushButton(t("Prüfsummen jetzt berechnen"), self)
+        self.calc_btn.clicked.connect(self._compute_large_hashes)
+        self.layout_checksums.addWidget(self.calc_btn)
         ext = Path(self.target_path).suffix.lower()
         text_extensions = {".txt", ".py", ".md", ".json", ".xml", ".html", ".css", ".js", ".yaml", ".yml", ".ini", ".log"}
         if ext in text_extensions and file_size <= 5 * 1024 * 1024:
-            self._setup_text_stats()
+            self.text_stats_btn = QPushButton(t("Text-Metriken"), self)
+            self.text_stats_btn.clicked.connect(lambda: self._start_details("text"))
+            self.layout_checksums.addWidget(self.text_stats_btn)
+        if is_cloud_placeholder(self.target_path):
+            message = t("Nur online verfügbar. Datei zuerst lokal verfügbar machen.")
+            self.sha256_edit.setPlaceholderText(message)
+            self.md5_edit.setPlaceholderText(message)
+            self.calc_btn.setEnabled(False)
+            if hasattr(self, "text_stats_btn"):
+                self.text_stats_btn.setEnabled(False)
 
         self.layout_checksums.addStretch()
 
     def _compute_large_hashes(self) -> None:
-        try:
-            hashes = compute_file_hashes(self.target_path, algorithms=("sha256", "md5"))
-            self.sha256_edit.setText(hashes.get("sha256", ""))
-            self.md5_edit.setText(hashes.get("md5", ""))
-        except Exception as exc:
-            QMessageBox.warning(self, t("Prüfsummen-Fehler"), str(exc))
+        if is_cloud_placeholder(self.target_path):
+            return
+        dialog = ChecksumDialog(self.target_path, self)
+        dialog.exec()
+        hashes = dialog._calculated_hashes
+        self.sha256_edit.setText(hashes.get("sha256", ""))
+        self.md5_edit.setText(hashes.get("md5", ""))
+        dialog.deleteLater()
 
-    def _setup_text_stats(self) -> None:
-        try:
-            with open(self.target_path, "r", encoding="utf-8", errors="ignore") as f:
-                lines = f.readlines()
-            line_count = len(lines)
-            word_count = sum(len(line.split()) for line in lines)
-            char_count = sum(len(line) for line in lines)
+    def _start_details(self, kind: str) -> None:
+        if self._details_process is not None or is_cloud_placeholder(self.target_path):
+            return
+        self._details_temp = tempfile.TemporaryDirectory(prefix="explorerpro-properties-")
+        self._details_result = Path(self._details_temp.name) / "result.json"
+        self._details_kind = kind
+        process = QProcess(self)
+        self._details_process = process
+        process.finished.connect(self._details_finished)
+        process.errorOccurred.connect(self._details_failed)
+        args = [] if getattr(sys, "frozen", False) else [str(Path(__file__).resolve().parents[1] / "main.py")]
+        process.start(sys.executable, args + ["--properties-details-query", kind, self.target_path, str(self._details_result)])
+        self._details_timer.start(10_000)
 
-            group_text = QGroupBox(t("Text-Metriken"), self)
-            form_text = QFormLayout(group_text)
-            form_text.addRow(QLabel(t("Zeilen:")), QLabel(f"{line_count:,}".replace(",", ".")))
-            form_text.addRow(QLabel(t("Wörter:")), QLabel(f"{word_count:,}".replace(",", ".")))
-            form_text.addRow(QLabel(t("Zeichen:")), QLabel(f"{char_count:,}".replace(",", ".")))
-            self.layout_checksums.addWidget(group_text)
-        except Exception:
-            pass
+    def _details_finished(self, *args) -> None:
+        self._details_timer.stop()
+        try:
+            payload = json.loads(self._details_result.read_text(encoding="utf-8"))
+            if "error" in payload:
+                raise ValueError(payload["error"])
+            result = payload["result"]
+            if self._details_kind == "folder":
+                prefix = "≥ " if result["partial"] else ""
+                self.folder_size_label.setText(prefix + format_size(result["bytes"]))
+                self.folder_count_label.setText(prefix + t("{files} Dateien, {folders} Ordner").format(files=result["files"], folders=result["folders"]))
+            else:
+                group = QGroupBox(t("Text-Metriken"), self)
+                form = QFormLayout(group)
+                for key, label in (("lines", "Zeilen:"), ("words", "Wörter:"), ("chars", "Zeichen:")):
+                    form.addRow(QLabel(t(label)), QLabel(str(result[key])))
+                self.layout_checksums.insertWidget(self.layout_checksums.count() - 1, group)
+                self.text_stats_btn.setEnabled(False)
+        except (OSError, ValueError, KeyError) as exc:
+            self.type_subtitle.setText(t("Fehler: {error}").format(error=exc))
+        finally:
+            self._cleanup_details()
+
+    def _details_failed(self, *args) -> None:
+        self._details_timer.stop()
+        self.type_subtitle.setText(t("Fehler: {error}").format(error="properties query failed"))
+        self._cleanup_details()
+
+    def _details_timeout(self) -> None:
+        self.type_subtitle.setText(t("Fehler: {error}").format(error="properties query timeout"))
+        self._cleanup_details()
+
+    def _cleanup_details(self) -> None:
+        self._details_timer.stop()
+        process, self._details_process = self._details_process, None
+        if process is not None:
+            process.blockSignals(True)
+            if process.state() != QProcess.ProcessState.NotRunning:
+                process.kill()
+                process.waitForFinished(1000)
+            process.deleteLater()
+        if self._details_temp is not None:
+            self._details_temp.cleanup()
+            self._details_temp = None
+
+    def done(self, result) -> None:
+        self._cleanup_details()
+        super().done(result)
+
+    def closeEvent(self, event) -> None:
+        self._cleanup_details()
+        super().closeEvent(event)
 
     def _setup_folder_details(self) -> None:
         group_info = QGroupBox(t("Ordner-Struktur"), self)
@@ -354,6 +375,10 @@ class FilePropertiesDialog(QDialog):
         rel_path = os.path.relpath(self.target_path, os.path.dirname(self.target_path))
         form_info.addRow(QLabel(t("Relativer Pfad:")), QLabel(rel_path))
         self.layout_checksums.addWidget(group_info)
+        self.folder_stats_btn = QPushButton(t("Ordner-Struktur"), self)
+        self.folder_stats_btn.clicked.connect(lambda: self._start_details("folder"))
+        self.folder_stats_btn.setEnabled(not is_cloud_placeholder(self.target_path))
+        self.layout_checksums.addWidget(self.folder_stats_btn)
         self.layout_checksums.addStretch()
 
     def _copy_full_path(self) -> None:
