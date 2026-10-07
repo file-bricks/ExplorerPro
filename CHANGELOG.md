@@ -5,6 +5,25 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-10-07
+
+ExplorerPro 1.0.8
+• Cloud-Ordner und Windows-Verknüpfungen erscheinen wieder in der Dateiliste; lange Ordnernamen bleiben lesbar.
+• Die Vorschau ist stabiler und lädt Dateien, die nur online verfügbar sind, nicht ungefragt herunter.
+• Blacklist und Whitelist lassen sich bearbeiten sowie als TXT, CSV oder XLSX importieren und exportieren. Begriffe mit führendem „=“ bleiben im XLSX-Export erhalten.
+• Die Spracheinstellung wirkt auf mehr Bedienelemente. Gespeicherte Kategorien werden beim Sprachwechsel nicht mehr verändert.
+• Eigenschaften öffnen ohne automatische Inhaltsprüfung. Prüfsummen und Text-/Ordnerstatistik starten auf Wunsch; Ordnerabfragen laufen mit Zeitlimit. Unvollständige Statistiken sind gekennzeichnet.
+• Mehrfachumbenennung, Löschbestätigung und das Beenden laufender Prüfsummen wurden robuster.
+
+ExplorerPro 1.0.8
+• Cloud folders and Windows shortcuts appear in the file list again; long folder names remain readable.
+• Preview is more stable and does not automatically download online-only files.
+• Edit and import/export privacy blacklists and whitelists as TXT, CSV or XLSX. XLSX exports preserve terms starting with '='.
+• The language setting updates more controls. Switching languages no longer changes saved categories.
+• Properties open without automatic content reads. Start checksums and text/folder statistics when needed; folder queries have a time limit and incomplete statistics are marked.
+• More reliable batch renaming, deletion confirmation and checksum shutdown.
+
+
 ### Review & Fehlerbehebung: Cloud-Ordner, Vorschau, Datenschutz, Sprache (2026-10-06)
 - **Cloud-Ordner sichtbar:** Unter Windows blendete die Dateiliste OneDrive-/Cloud-Platzhalter (Reparse-Points) und Verknüpfungen (`*.lnk`) aus; der Filter enthält jetzt `QDir.System`. Neue Seitenleisten-Gruppe **Cloud-Speicher** (OneDrive privat/geschäftlich, Dropbox, Google Drive, iCloud, Nextcloud u. a.; Windows-SyncRootManager nur lesend). Schnellzugriff-Einträge sind aufklappbar.
 - **Ordnernamen statt „Ordner“:** Typ- und Datumsspalte nutzten `ResizeToContents` und konnten die Namensspalte auf wenige Pixel zusammendrücken. Feste, verstellbare Breiten; die Namensspalte behält mindestens 160 px, lange Namen werden mittig gekürzt.

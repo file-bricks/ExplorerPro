@@ -82,8 +82,10 @@ def write_terms(path: str, terms: Iterable[str]) -> None:
         workbook = openpyxl.Workbook()
         sheet = workbook.active
         sheet.title = "Begriffe"
-        for item in items:
-            sheet.append([item])
+        for row, item in enumerate(items, start=1):
+            cell = sheet.cell(row=row, column=1, value=item)
+            # Terms are literal data, including leading "=" characters.
+            cell.data_type = "s"
         workbook.save(file_path)
         return
 

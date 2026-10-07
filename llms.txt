@@ -8,7 +8,7 @@ License: AGPL-3.0
 Microsoft Store Identity: Geiger.ExplorerPro (Store-ID: 9P0X52WSHZ3Q)
 
 Last-checked: 2026-09-30 (Previous: 2026-09-29)
-Version: 1.0.7
+Version: 1.0.8
 
 ## Search Phrases
 

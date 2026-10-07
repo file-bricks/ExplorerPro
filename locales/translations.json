@@ -8398,5 +8398,13 @@
     "zh": "密码提示",
     "ja": "パスワードの手がかり",
     "ru": "Признаки паролей"
+  },
+  "Nur online verfügbar. Datei zuerst lokal verfügbar machen.": {
+    "de": "Nur online verfügbar. Datei zuerst lokal verfügbar machen.",
+    "en": "Available online only. Make the file available locally first.",
+    "es": "Disponible solo en línea. Haga que el archivo esté disponible localmente primero.",
+    "zh": "仅在线可用。请先将文件下载到本地。",
+    "ja": "オンラインでのみ利用可能です。先にファイルをローカルで利用できるようにしてください。",
+    "ru": "Доступно только онлайн. Сначала сделайте файл доступным локально."
   }
 }

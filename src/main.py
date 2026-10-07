@@ -26,6 +26,10 @@ if __name__ == '__main__' and len(sys.argv) == 4 and sys.argv[1] == '--drive-cap
     from core.drive_usage import capacity_query_main
     sys.exit(capacity_query_main(sys.argv[2], sys.argv[3]))
 
+if __name__ == '__main__' and len(sys.argv) == 5 and sys.argv[1] == '--properties-details-query':
+    from core.properties_details import details_query_main
+    sys.exit(details_query_main(sys.argv[2], sys.argv[3], sys.argv[4]))
+
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo
 from PySide6.QtGui import QIcon
@@ -103,6 +107,10 @@ def configure_application_language():
 
 def main():
     """Haupteinstiegspunkt für ExplorerPro"""
+    if len(sys.argv) == 3 and sys.argv[1] == "--release-smoke":
+        from release_smoke import run_release_smoke
+        run_release_smoke(sys.argv[2])
+        return
     # High DPI Support
     QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough

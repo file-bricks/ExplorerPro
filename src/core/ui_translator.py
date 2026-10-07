@@ -183,6 +183,9 @@ class UiTranslator(QObject):
             action.setProperty(_RECORD, record)
 
     def _translate_combo(self, combo: QComboBox, record: dict) -> bool:
+        # Editable choices are persisted user data, including catalog-like names.
+        if combo.isEditable():
+            return False
         changed = False
         blocked = combo.blockSignals(True)
         try:

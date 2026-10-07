@@ -1,6 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 from pathlib import Path
+import json
+import os
 
 project_root = Path.cwd()
 src_dir = project_root / 'src'
@@ -25,18 +27,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[
-        'IPython',
-        'black',
-        'blib2to3',
-        'cv2',
-        'matplotlib',
-        'notebook',
-        'pytest',
-        'scipy',
-        'sklearn',
-        'torch',
-    ],
+    excludes=json.loads(os.environ["PYINSTALLER_EXCLUDES"]),
     noarchive=False,
     optimize=0,
 )

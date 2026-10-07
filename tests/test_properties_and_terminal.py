@@ -213,8 +213,9 @@ class TestFilePropertiesDialog:
         dlg = FilePropertiesDialog(str(f))
         assert dlg.name_edit.text() == "notiz.txt"
         assert dlg.tabs.count() == 2
-        assert dlg.sha256_edit.text() != ""
-        assert dlg.md5_edit.text() != ""
+        assert dlg.sha256_edit.text() == ""
+        assert dlg.md5_edit.text() == ""
+        assert dlg.calc_btn.isEnabled()
         dlg.close()
 
     def test_dialog_for_directory(self, tmp_path):

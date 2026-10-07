@@ -17,6 +17,7 @@ Validates that ExplorerPro complies with portfolio standards:
 """
 
 import json
+import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -228,7 +229,9 @@ def test_llms_txt_structure():
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
     assert any(d in content for d in ("Last-checked: 2026-09-30", "Last-checked: 2026-09-29"))
-    assert "1.0.7" in content
+    pyproject_text = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    current_version = re.search(r'^version\s*=\s*"([^"]+)"', pyproject_text, re.MULTILINE).group(1)
+    assert f"Version: {current_version}" in content
     assert "ci.yml" in content
 
 
@@ -270,9 +273,11 @@ def test_version_parity():
     claude_text = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
     changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
-    assert 'version = "1.0.7"' in pyproject_text
-    assert "version: 1.0.7" in claude_text
-    assert "## [1.0.7]" in changelog_text
+    current_version = re.search(r'^version\s*=\s*"([^"]+)"', pyproject_text, re.MULTILINE).group(1)
+    assert f"version: {current_version}" in claude_text
+    assert f"## [{current_version}]" in changelog_text
+    package = json.loads((REPO_ROOT / "store_package.json").read_text(encoding="utf-8"))
+    assert package["version"] == current_version + ".0"
 
 
 def test_readme_18_point_navigation_parity():
