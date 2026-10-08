@@ -8406,5 +8406,1013 @@
     "zh": "仅在线可用。请先将文件下载到本地。",
     "ja": "オンラインでのみ利用可能です。先にファイルをローカルで利用できるようにしてください。",
     "ru": "Доступно только онлайн. Сначала сделайте файл доступным локально."
+  },
+  "Öffnet den Dialog zum Entpacken des Archivs": {
+    "de": "Öffnet den Dialog zum Entpacken des Archivs",
+    "en": "Opens the dialog to extract the archive",
+    "es": "Abre el diálogo para extraer el archivo",
+    "zh": "打开解压缩文档对话框",
+    "ja": "アーカイブ解凍ダイアログを開きます",
+    "ru": "Открывает диалог распаковки архива"
+  },
+  "Öffnet den vollen Archiv-Inspektor mit Filterung und Tests": {
+    "de": "Öffnet den vollen Archiv-Inspektor mit Filterung und Tests",
+    "en": "Opens the full archive inspector with filtering and tests",
+    "es": "Abre el inspector completo de archivos con filtros y pruebas",
+    "zh": "打开包含过滤与测试功能的完整归档检查器",
+    "ja": "フィルタとテスト機能を備えたアーカイブインスペクターを開きます",
+    "ru": "Открывает полный инспектор архивов с фильтрацией и проверками"
+  },
+  "🔍 Durchsuchen...": {
+    "de": "🔍 Durchsuchen...",
+    "en": "🔍 Browse...",
+    "es": "🔍 Explorar...",
+    "zh": "🔍 浏览...",
+    "ja": "🔍 参照...",
+    "ru": "🔍 Обзор..."
+  },
+  "Zu ZIP-Archiv komprimieren": {
+    "de": "Zu ZIP-Archiv komprimieren",
+    "en": "Compress to ZIP archive",
+    "es": "Comprimir en archivo ZIP",
+    "zh": "压缩为 ZIP 文档",
+    "ja": "ZIP アーカイブに圧縮",
+    "ru": "Сжать в ZIP-архив"
+  },
+  "ZIP-Archiv erstellen": {
+    "de": "ZIP-Archiv erstellen",
+    "en": "Create ZIP archive",
+    "es": "Crear archivo ZIP",
+    "zh": "创建 ZIP 文档",
+    "ja": "ZIP アーカイブを作成",
+    "ru": "Создать ZIP-архив"
+  },
+  "Ermöglicht das Komprimieren von Dateien und Ordnern in ein ZIP-Archiv.": {
+    "de": "Ermöglicht das Komprimieren von Dateien und Ordnern in ein ZIP-Archiv.",
+    "en": "Allows compressing files and folders into a ZIP archive.",
+    "es": "Permite comprimir archivos y carpetas en un archivo ZIP.",
+    "zh": "允许将文件和文件夹压缩为 ZIP 文档。",
+    "ja": "ファイルやフォルダーを ZIP アーカイブに圧縮できます。",
+    "ru": "Позволяет сжимать файлы и папки в ZIP-архив."
+  },
+  "Ausgewählte Elemente": {
+    "de": "Ausgewählte Elemente",
+    "en": "Selected items",
+    "es": "Elementos seleccionados",
+    "zh": "已选项目",
+    "ja": "選択項目",
+    "ru": "Выбранные элементы"
+  },
+  "Zielarchiv": {
+    "de": "Zielarchiv",
+    "en": "Target archive",
+    "es": "Archivo de destino",
+    "zh": "目标文档",
+    "ja": "対象アーカイブ",
+    "ru": "Целевой архив"
+  },
+  "Zielpfad für das ZIP-Archiv": {
+    "de": "Zielpfad für das ZIP-Archiv",
+    "en": "Target path for ZIP archive",
+    "es": "Ruta de destino para el archivo ZIP",
+    "zh": "ZIP 文档的目标路径",
+    "ja": "ZIP アーカイブの保存先パス",
+    "ru": "Целевой путь для ZIP-архива"
+  },
+  "Geben Sie den vollständigen Pfad für die neue ZIP-Datei an": {
+    "de": "Geben Sie den vollständigen Pfad für die neue ZIP-Datei an",
+    "en": "Enter the full path for the new ZIP file",
+    "es": "Introduzca la ruta completa para el nuevo archivo ZIP",
+    "zh": "请输入新 ZIP 文件的完整路径",
+    "ja": "新しい ZIP ファイルの完全なパスを入力してください",
+    "ru": "Укажите полный путь для нового ZIP-файла"
+  },
+  "Zielverzeichnis durchsuchen": {
+    "de": "Zielverzeichnis durchsuchen",
+    "en": "Browse target directory",
+    "es": "Examinar directorio de destino",
+    "zh": "浏览目标目录",
+    "ja": "保存先フォルダーを参照",
+    "ru": "Обзор целевой папки"
+  },
+  "Kompressionsoptionen": {
+    "de": "Kompressionsoptionen",
+    "en": "Compression options",
+    "es": "Opciones de compresión",
+    "zh": "压缩选项",
+    "ja": "圧縮オプション",
+    "ru": "Параметры сжатия"
+  },
+  "Kompressionsmethode": {
+    "de": "Kompressionsmethode",
+    "en": "Compression method",
+    "es": "Método de compresión",
+    "zh": "压缩方法",
+    "ja": "圧縮方式",
+    "ru": "Метод сжатия"
+  },
+  "Standard (DEFLATED, Stufe 6)": {
+    "de": "Standard (DEFLATED, Stufe 6)",
+    "en": "Standard (DEFLATED, level 6)",
+    "es": "Estándar (DEFLATED, nivel 6)",
+    "zh": "标准 (DEFLATED, 级别 6)",
+    "ja": "標準 (DEFLATED、レベル 6)",
+    "ru": "Стандартный (DEFLATED, уровень 6)"
+  },
+  "Maximal (DEFLATED, Stufe 9)": {
+    "de": "Maximal (DEFLATED, Stufe 9)",
+    "en": "Maximum (DEFLATED, level 9)",
+    "es": "Máximo (DEFLATED, nivel 9)",
+    "zh": "最大 (DEFLATED, 级别 9)",
+    "ja": "最大 (DEFLATED、レベル 9)",
+    "ru": "Максимальный (DEFLATED, уровень 9)"
+  },
+  "Schnell (DEFLATED, Stufe 1)": {
+    "de": "Schnell (DEFLATED, Stufe 1)",
+    "en": "Fast (DEFLATED, level 1)",
+    "es": "Rápido (DEFLATED, nivel 1)",
+    "zh": "快速 (DEFLATED, 级别 1)",
+    "ja": "高速 (DEFLATED、レベル 1)",
+    "ru": "Быстрый (DEFLATED, уровень 1)"
+  },
+  "Keine Kompression (STORED)": {
+    "de": "Keine Kompression (STORED)",
+    "en": "No compression (STORED)",
+    "es": "Sin compresión (STORED)",
+    "zh": "不压缩 (STORED)",
+    "ja": "無圧縮 (STORED)",
+    "ru": "Без сжатия (STORED)"
+  },
+  "BZIP2 Kompression": {
+    "de": "BZIP2 Kompression",
+    "en": "BZIP2 compression",
+    "es": "Compresión BZIP2",
+    "zh": "BZIP2 压缩",
+    "ja": "BZIP2 圧縮",
+    "ru": "Сжатие BZIP2"
+  },
+  "LZMA Kompression": {
+    "de": "LZMA Kompression",
+    "en": "LZMA compression",
+    "es": "Compresión LZMA",
+    "zh": "LZMA 压缩",
+    "ja": "LZMA 圧縮",
+    "ru": "Сжатие LZMA"
+  },
+  "Methode:": {
+    "de": "Methode:",
+    "en": "Method:",
+    "es": "Método:",
+    "zh": "方法:",
+    "ja": "方式:",
+    "ru": "Метод:"
+  },
+  "Komprimierungsfortschritt": {
+    "de": "Komprimierungsfortschritt",
+    "en": "Compression progress",
+    "es": "Progreso de compresión",
+    "zh": "压缩进度",
+    "ja": "圧縮の進行状況",
+    "ru": "Прогресс сжатия"
+  },
+  "📦 Archiv erstellen": {
+    "de": "📦 Archiv erstellen",
+    "en": "📦 Create archive",
+    "es": "📦 Crear archivo",
+    "zh": "📦 创建文档",
+    "ja": "📦 アーカイブ作成",
+    "ru": "📦 Создать архив"
+  },
+  "Archiverstellung starten": {
+    "de": "Archiverstellung starten",
+    "en": "Start creating archive",
+    "es": "Iniciar creación de archivo",
+    "zh": "开始创建文档",
+    "ja": "アーカイブ作成を開始",
+    "ru": "Начать создание архива"
+  },
+  "Ziel-ZIP-Datei auswählen": {
+    "de": "Ziel-ZIP-Datei auswählen",
+    "en": "Select destination ZIP file",
+    "es": "Seleccionar archivo ZIP de destino",
+    "zh": "选择目标 ZIP 文件",
+    "ja": "保存先 ZIP ファイルを選択",
+    "ru": "Выберите целевой ZIP-файл"
+  },
+  "ZIP-Archive (*.zip);;Alle Dateien (*.*)": {
+    "de": "ZIP-Archive (*.zip);;Alle Dateien (*.*)",
+    "en": "ZIP archives (*.zip);;All files (*.*)",
+    "es": "Archivos ZIP (*.zip);;Todos los archivos (*.*)",
+    "zh": "ZIP 归档 (*.zip);;所有文件 (*.*)",
+    "ja": "ZIP アーカイブ (*.zip);;すべてのファイル (*.*)",
+    "ru": "ZIP-архивы (*.zip);;Все файлы (*.*)"
+  },
+  "Bitte geben Sie einen Zielpfad an.": {
+    "de": "Bitte geben Sie einen Zielpfad an.",
+    "en": "Please specify a destination path.",
+    "es": "Especifique una ruta de destino.",
+    "zh": "请指定目标路径。",
+    "ja": "保存先パスを指定してください。",
+    "ru": "Пожалуйста, укажите целевой путь."
+  },
+  "Die Zieldatei existiert bereits. Möchten Sie sie überschreiben?\n": {
+    "de": "Die Zieldatei existiert bereits. Möchten Sie sie überschreiben?\n",
+    "en": "The destination file already exists. Do you want to overwrite it?\n",
+    "es": "El archivo de destino ya existe. ¿Desea sobrescribirlo?\n",
+    "zh": "目标文件已存在。是否要覆盖？\n",
+    "ja": "保存先ファイルは既に存在します。上書きしますか？\n",
+    "ru": "Целевой файл уже существует. Перезаписать его?\n"
+  },
+  "Komprimierung wird vorbereitet...": {
+    "de": "Komprimierung wird vorbereitet...",
+    "en": "Preparing compression...",
+    "es": "Preparando compresión...",
+    "zh": "正在准备压缩...",
+    "ja": "圧縮を準備中...",
+    "ru": "Подготовка сжатия..."
+  },
+  "Archiv erstellt": {
+    "de": "Archiv erstellt",
+    "en": "Archive created",
+    "es": "Archivo creado",
+    "zh": "文档已创建",
+    "ja": "アーカイブが作成されました",
+    "ru": "Архив создан"
+  },
+  "Das Archiv wurde erfolgreich erstellt:\n\n": {
+    "de": "Das Archiv wurde erfolgreich erstellt:\n\n",
+    "en": "The archive was successfully created:\n\n",
+    "es": "El archivo se ha creado correctamente:\n\n",
+    "zh": "文档创建成功:\n\n",
+    "ja": "アーカイブが正常に作成されました:\n\n",
+    "ru": "Архив успешно создан:\n\n"
+  },
+  "Elemente": {
+    "de": "Elemente",
+    "en": "Items",
+    "es": "Elementos",
+    "zh": "项目",
+    "ja": "項目",
+    "ru": "Элементы"
+  },
+  "Fehler beim Komprimieren": {
+    "de": "Fehler beim Komprimieren",
+    "en": "Error during compression",
+    "es": "Error al comprimir",
+    "zh": "压缩时出错",
+    "ja": "圧縮エラー",
+    "ru": "Ошибка при сжатии"
+  },
+  "Erstellung fehlgeschlagen.": {
+    "de": "Erstellung fehlgeschlagen.",
+    "en": "Creation failed.",
+    "es": "Error en la creación.",
+    "zh": "创建失败。",
+    "ja": "作成に失敗しました。",
+    "ru": "Создание не удалось."
+  },
+  "ZIP-Archiv entpacken": {
+    "de": "ZIP-Archiv entpacken",
+    "en": "Extract ZIP archive",
+    "es": "Extraer archivo ZIP",
+    "zh": "解压 ZIP 文档",
+    "ja": "ZIP アーカイブを解凍",
+    "ru": "Распаковать ZIP-архив"
+  },
+  "Ermöglicht das sichere Entpacken eines ZIP-Archivs in ein Zielverzeichnis.": {
+    "de": "Ermöglicht das sichere Entpacken eines ZIP-Archivs in ein Zielverzeichnis.",
+    "en": "Enables safe extraction of a ZIP archive into a destination directory.",
+    "es": "Permite la extracción segura de un archivo ZIP en un directorio de destino.",
+    "zh": "支持将 ZIP 文档安全解压到目标目录。",
+    "ja": "ZIP アーカイブを対象フォルダーに安全に解凍できます。",
+    "ru": "Обеспечивает безопасную распаковку ZIP-архива в целевую папку."
+  },
+  "Archiv-Information": {
+    "de": "Archiv-Information",
+    "en": "Archive information",
+    "es": "Información del archivo",
+    "zh": "文档信息",
+    "ja": "アーカイブ情報",
+    "ru": "Информация об архиве"
+  },
+  "Archiv:": {
+    "de": "Archiv:",
+    "en": "Archive:",
+    "es": "Archivo:",
+    "zh": "文档:",
+    "ja": "アーカイブ:",
+    "ru": "Архив:"
+  },
+  "Konnte Archiv nicht analysieren": {
+    "de": "Konnte Archiv nicht analysieren",
+    "en": "Could not analyze archive",
+    "es": "No se pudo analizar el archivo",
+    "zh": "无法分析文档",
+    "ja": "アーカイブを解析できませんでした",
+    "ru": "Не удалось проанализировать архив"
+  },
+  "Zielordner zum Entpacken": {
+    "de": "Zielordner zum Entpacken",
+    "en": "Destination folder for extraction",
+    "es": "Carpeta de destino para la extracción",
+    "zh": "解压缩目标文件夹",
+    "ja": "解凍先フォルダー",
+    "ru": "Целевая папка для распаковки"
+  },
+  "Wählen Sie den Ordner, in den die Dateien entpackt werden sollen": {
+    "de": "Wählen Sie den Ordner, in den die Dateien entpackt werden sollen",
+    "en": "Select the folder where files should be extracted",
+    "es": "Seleccione la carpeta donde se extraerán los archivos",
+    "zh": "选择解压缩文件的目标文件夹",
+    "ja": "ファイルを解凍するフォルダーを選択してください",
+    "ru": "Выберите папку, в которую следует распаковать файлы"
+  },
+  "Zielordner durchsuchen": {
+    "de": "Zielordner durchsuchen",
+    "en": "Browse destination folder",
+    "es": "Examinar carpeta de destino",
+    "zh": "浏览目标文件夹",
+    "ja": "解凍先フォルダーを参照",
+    "ru": "Обзор целевой папки"
+  },
+  "In Unterordner entpacken: ": {
+    "de": "In Unterordner entpacken: ",
+    "en": "Extract to subfolder: ",
+    "es": "Extraer en subcarpeta: ",
+    "zh": "解压到子文件夹: ",
+    "ja": "サブフォルダーに解凍: ",
+    "ru": "Распаковать в подпапку: "
+  },
+  "In separaten Unterordner entpacken": {
+    "de": "In separaten Unterordner entpacken",
+    "en": "Extract into a separate subfolder",
+    "es": "Extraer en una subcarpeta separada",
+    "zh": "解压到独立子文件夹",
+    "ja": "個別のサブフォルダーに解凍",
+    "ru": "Распаковать в отдельную подпапку"
+  },
+  "Vorhandene Dateien überschreiben": {
+    "de": "Vorhandene Dateien überschreiben",
+    "en": "Overwrite existing files",
+    "es": "Sobrescribir archivos existentes",
+    "zh": "覆盖已有文件",
+    "ja": "既存のファイルを上書き",
+    "ru": "Перезаписывать существующие файлы"
+  },
+  "Entpackfortschritt": {
+    "de": "Entpackfortschritt",
+    "en": "Extraction progress",
+    "es": "Progreso de extracción",
+    "zh": "解压进度",
+    "ja": "解凍の進行状況",
+    "ru": "Прогресс распаковки"
+  },
+  "📦 Entpacken": {
+    "de": "📦 Entpacken",
+    "en": "📦 Extract",
+    "es": "📦 Extraer",
+    "zh": "📦 解压缩",
+    "ja": "📦 解凍",
+    "ru": "📦 Распаковать"
+  },
+  "Entpackvorgang starten": {
+    "de": "Entpackvorgang starten",
+    "en": "Start extraction process",
+    "es": "Iniciar proceso de extracción",
+    "zh": "开始解压缩进程",
+    "ja": "解凍処理を開始",
+    "ru": "Запустить процесс распаковки"
+  },
+  "Zielverzeichnis zum Entpacken wählen": {
+    "de": "Zielverzeichnis zum Entpacken wählen",
+    "en": "Select destination directory for extraction",
+    "es": "Seleccionar directorio de destino para la extracción",
+    "zh": "选择解压缩目标目录",
+    "ja": "解凍先ディレクトリーを選択",
+    "ru": "Выберите целевую директорию для распаковки"
+  },
+  "Bitte geben Sie ein Zielverzeichnis an.": {
+    "de": "Bitte geben Sie ein Zielverzeichnis an.",
+    "en": "Please specify a destination directory.",
+    "es": "Especifique un directorio de destino.",
+    "zh": "请指定目标目录。",
+    "ja": "解凍先ディレクトリーを指定してください。",
+    "ru": "Пожалуйста, укажите целевую директорию."
+  },
+  "Entpacken wird gestartet...": {
+    "de": "Entpacken wird gestartet...",
+    "en": "Starting extraction...",
+    "es": "Iniciando extracción...",
+    "zh": "正在开始解压...",
+    "ja": "解凍を開始しています...",
+    "ru": "Запуск распаковки..."
+  },
+  "Erfolgreich entpackt": {
+    "de": "Erfolgreich entpackt",
+    "en": "Successfully extracted",
+    "es": "Extraído con éxito",
+    "zh": "解压成功",
+    "ja": "解凍に成功しました",
+    "ru": "Успешно распаковано"
+  },
+  "Dateien wurden erfolgreich entpackt nach:\n\n": {
+    "de": "Dateien wurden erfolgreich entpackt nach:\n\n",
+    "en": "Files were successfully extracted to:\n\n",
+    "es": "Los archivos se extrajeron correctamente en:\n\n",
+    "zh": "文件已成功解压到:\n\n",
+    "ja": "ファイルが正常に解凍されました:\n\n",
+    "ru": "Файлы успешно распакованы в:\n\n"
+  },
+  "Entpacken fehlgeschlagen.": {
+    "de": "Entpacken fehlgeschlagen.",
+    "en": "Extraction failed.",
+    "es": "Error en la extracción.",
+    "zh": "解压缩失败。",
+    "ja": "解凍に失敗しました。",
+    "ru": "Распаковка не удалась."
+  },
+  "Fehler beim Entpacken": {
+    "de": "Fehler beim Entpacken",
+    "en": "Error during extraction",
+    "es": "Error al extraer",
+    "zh": "解压缩出错",
+    "ja": "解凍エラー",
+    "ru": "Ошибка при распаковке"
+  },
+  "Archiv durchsuchen — ": {
+    "de": "Archiv durchsuchen — ",
+    "en": "Inspect archive — ",
+    "es": "Explorar archivo — ",
+    "zh": "检查归档 — ",
+    "ja": "アーカイブを閲覧 — ",
+    "ru": "Просмотр архива — "
+  },
+  "Archiv-Inspektor-Dialog": {
+    "de": "Archiv-Inspektor-Dialog",
+    "en": "Archive inspector dialog",
+    "es": "Diálogo del inspector de archivos",
+    "zh": "归档检查器对话框",
+    "ja": "アーカイブインスペクターダイアログ",
+    "ru": "Диалог инспектора архивов"
+  },
+  "Zeigt den Inhalt des ZIP-Archivs mit Dateigrößen, Kompressionsraten und Prüfoptionen.": {
+    "de": "Zeigt den Inhalt des ZIP-Archivs mit Dateigrößen, Kompressionsraten und Prüfoptionen.",
+    "en": "Shows ZIP archive contents with file sizes, compression ratios, and test options.",
+    "es": "Muestra el contenido del archivo ZIP con tamaños de archivo, ratios de compresión y opciones de prueba.",
+    "zh": "显示 ZIP 文档内容，包括文件大小、压缩率和校验选项。",
+    "ja": "ファイルサイズ、圧縮率、テストオプションを含む ZIP アーカイブの内容を表示します。",
+    "ru": "Показывает содержимое ZIP-архива с размерами файлов, степенью сжатия и параметрами проверки."
+  },
+  "Archiv-Übersicht": {
+    "de": "Archiv-Übersicht",
+    "en": "Archive overview",
+    "es": "Resumen del archivo",
+    "zh": "归档概览",
+    "ja": "アーカイブの概要",
+    "ru": "Обзор архива"
+  },
+  "Kennzahlen:": {
+    "de": "Kennzahlen:",
+    "en": "Key metrics:",
+    "es": "Métricas clave:",
+    "zh": "关键指标:",
+    "ja": "主要指標:",
+    "ru": "Ключевые показатели:"
+  },
+  "Dateinamen im Archiv filtern...": {
+    "de": "Dateinamen im Archiv filtern...",
+    "en": "Filter filenames in archive...",
+    "es": "Filtrar nombres de archivo en el archivo...",
+    "zh": "过滤文档中的文件名...",
+    "ja": "アーカイブ内のファイル名を絞り込み...",
+    "ru": "Фильтровать имена файлов в архиве..."
+  },
+  "Archiv-Filter": {
+    "de": "Archiv-Filter",
+    "en": "Archive filter",
+    "es": "Filtro de archivo",
+    "zh": "归档过滤器",
+    "ja": "アーカイブフィルター",
+    "ru": "Фильтр архива"
+  },
+  "🧪 Integrität prüfen": {
+    "de": "🧪 Integrität prüfen",
+    "en": "🧪 Test integrity",
+    "es": "🧪 Comprobar integridad",
+    "zh": "🧪 测试完整性",
+    "ja": "🧪 整合性をテスト",
+    "ru": "🧪 Проверить целостность"
+  },
+  "Archiv-Integrität prüfen": {
+    "de": "Archiv-Integrität prüfen",
+    "en": "Check archive integrity",
+    "es": "Comprobar integridad del archivo",
+    "zh": "检查归档完整性",
+    "ja": "アーカイブの整合性を確認",
+    "ru": "Проверить целостность архива"
+  },
+  "Führt einen CRC-Prüfsummentest aller Dateien im Archiv durch": {
+    "de": "Führt einen CRC-Prüfsummentest aller Dateien im Archiv durch",
+    "en": "Performs a CRC checksum test on all files in the archive",
+    "es": "Realiza una prueba de suma de comprobación CRC en todos los archivos del archivo",
+    "zh": "对文档中的所有文件执行 CRC 校验和测试",
+    "ja": "アーカイブ内の全ファイルの CRC チェックサムテストを実行します",
+    "ru": "Выполняет проверку контрольной суммы CRC для всех файлов в архиве"
+  },
+  "Name / Pfad": {
+    "de": "Name / Pfad",
+    "en": "Name / Path",
+    "es": "Nombre / Ruta",
+    "zh": "名称 / 路径",
+    "ja": "名前 / パス",
+    "ru": "Имя / Путь"
+  },
+  "Komprimiert": {
+    "de": "Komprimiert",
+    "en": "Compressed",
+    "es": "Comprimido",
+    "zh": "已压缩",
+    "ja": "圧縮後",
+    "ru": "Сжатый"
+  },
+  "Ersparnis": {
+    "de": "Ersparnis",
+    "en": "Savings",
+    "es": "Ahorro",
+    "zh": "节省",
+    "ja": "節約率",
+    "ru": "Экономия"
+  },
+  "Geändert am": {
+    "de": "Geändert am",
+    "en": "Modified on",
+    "es": "Modificado el",
+    "zh": "修改于",
+    "ja": "変更日時",
+    "ru": "Изменен"
+  },
+  "CRC32": {
+    "de": "CRC32",
+    "en": "CRC32",
+    "es": "CRC32",
+    "zh": "CRC32",
+    "ja": "CRC32",
+    "ru": "CRC32"
+  },
+  "Archiv-Inhaltstabelle": {
+    "de": "Archiv-Inhaltstabelle",
+    "en": "Archive content table",
+    "es": "Tabla de contenido del archivo",
+    "zh": "归档内容表",
+    "ja": "アーカイブ内容テーブル",
+    "ru": "Таблица содержимого архива"
+  },
+  "📦 Ausgewählte entpacken...": {
+    "de": "📦 Ausgewählte entpacken...",
+    "en": "📦 Extract selected...",
+    "es": "📦 Extraer seleccionados...",
+    "zh": "📦 解压所选...",
+    "ja": "📦 選択項目を解凍...",
+    "ru": "📦 Распаковать выбранное..."
+  },
+  "Nur ausgewählte Dateien entpacken": {
+    "de": "Nur ausgewählte Dateien entpacken",
+    "en": "Extract only selected files",
+    "es": "Extraer solo los archivos seleccionados",
+    "zh": "仅解压选定的文件",
+    "ja": "選択したファイルのみを解凍",
+    "ru": "Распаковать только выбранные файлы"
+  },
+  "📦 Alle entpacken...": {
+    "de": "📦 Alle entpacken...",
+    "en": "📦 Extract all...",
+    "es": "📦 Extraer todo...",
+    "zh": "📦 全部解压...",
+    "ja": "📦 すべて解凍...",
+    "ru": "📦 Распаковать все..."
+  },
+  "Gesamtes Archiv entpacken": {
+    "de": "Gesamtes Archiv entpacken",
+    "en": "Extract entire archive",
+    "es": "Extraer el archivo completo",
+    "zh": "解压整个文档",
+    "ja": "アーカイブ全体を解凍",
+    "ru": "Распаковать весь архив"
+  },
+  "Entpackt: ": {
+    "de": "Entpackt: ",
+    "en": "Extracted: ",
+    "es": "Extraído: ",
+    "zh": "解压后: ",
+    "ja": "解凍後: ",
+    "ru": "Распаковано: "
+  },
+  "Komprimiert: ": {
+    "de": "Komprimiert: ",
+    "en": "Compressed: ",
+    "es": "Comprimido: ",
+    "zh": "已压缩: ",
+    "ja": "圧縮後: ",
+    "ru": "Сжато: "
+  },
+  "Verschlüsselt": {
+    "de": "Verschlüsselt",
+    "en": "Encrypted",
+    "es": "Cifrado",
+    "zh": "已加密",
+    "ja": "暗号化済み",
+    "ru": "Зашифровано"
+  },
+  "Archivfehler": {
+    "de": "Archivfehler",
+    "en": "Archive error",
+    "es": "Error de archivo",
+    "zh": "归档错误",
+    "ja": "アーカイブエラー",
+    "ru": "Ошибка архива"
+  },
+  "Archiv konnte nicht gelesen werden:\n": {
+    "de": "Archiv konnte nicht gelesen werden:\n",
+    "en": "Could not read archive:\n",
+    "es": "No se pudo leer el archivo:\n",
+    "zh": "无法读取文档:\n",
+    "ja": "アーカイブを読み取れませんでした:\n",
+    "ru": "Не удалось прочитать архив:\n"
+  },
+  "Integrität wird geprüft...": {
+    "de": "Integrität wird geprüft...",
+    "en": "Checking integrity...",
+    "es": "Comprobando integridad...",
+    "zh": "正在检查完整性...",
+    "ja": "整合性を確認しています...",
+    "ru": "Проверка целостности..."
+  },
+  "Archiv ist fehlerfrei (CRC-Prüfung bestanden)": {
+    "de": "Archiv ist fehlerfrei (CRC-Prüfung bestanden)",
+    "en": "Archive is error-free (CRC check passed)",
+    "es": "El archivo no contiene errores (comprobación CRC superada)",
+    "zh": "文档无错误 (通过 CRC 检查)",
+    "ja": "アーカイブにエラーはありません (CRC チェック合格)",
+    "ru": "В архиве нет ошибок (проверка CRC пройдена)"
+  },
+  "Integritätsfehler: ": {
+    "de": "Integritätsfehler: ",
+    "en": "Integrity error: ",
+    "es": "Error de integridad: ",
+    "zh": "完整性错误: ",
+    "ja": "整合性エラー: ",
+    "ru": "Ошибка целостности: "
+  },
+  "Auswahl erforderlich": {
+    "de": "Auswahl erforderlich",
+    "en": "Selection required",
+    "es": "Selección requerida",
+    "zh": "需要选择",
+    "ja": "選択が必要です",
+    "ru": "Требуется выбор"
+  },
+  "Bitte wählen Sie zuerst die zu entpackenden Dateien in der Tabelle aus.": {
+    "de": "Bitte wählen Sie zuerst die zu entpackenden Dateien in der Tabelle aus.",
+    "en": "Please first select the files to extract from the table.",
+    "es": "Seleccione primero los archivos a extraer de la tabla.",
+    "zh": "请先在表中选择要解压的文件。",
+    "ja": "最初にテーブルから解凍するファイルを選択してください。",
+    "ru": "Сначала выберите файлы для распаковки в таблице."
+  },
+  "Zielverzeichnis für ausgewählte Dateien": {
+    "de": "Zielverzeichnis für ausgewählte Dateien",
+    "en": "Destination directory for selected files",
+    "es": "Directorio de destino para los archivos seleccionados",
+    "zh": "选定文件的目标目录",
+    "ja": "選択したファイルの保存先ディレクトリー",
+    "ru": "Целевая директория для выбранных файлов"
+  },
+  "Auswahl entpackt": {
+    "de": "Auswahl entpackt",
+    "en": "Selection extracted",
+    "es": "Selección extraída",
+    "zh": "已解压所选项",
+    "ja": "選択項目を解凍しました",
+    "ru": "Выборка распакована"
+  },
+  "Die ausgewählten Dateien wurden erfolgreich entpackt nach:\n": {
+    "de": "Die ausgewählten Dateien wurden erfolgreich entpackt nach:\n",
+    "en": "The selected files were successfully extracted to:\n",
+    "es": "Los archivos seleccionados se extrajeron correctamente en:\n",
+    "zh": "选定文件已成功解压到:\n",
+    "ja": "選択したファイルが正常に解凍されました:\n",
+    "ru": "Выбранные файлы успешно распакованы в:\n"
+  },
+  "📦 Archiv durchsuchen...": {
+    "de": "📦 Archiv durchsuchen...",
+    "en": "📦 Inspect archive...",
+    "es": "📦 Explorar archivo...",
+    "zh": "📦 检查归档...",
+    "ja": "📦 アーカイブを閲覧...",
+    "ru": "📦 Просмотреть архив..."
+  },
+  "📦 Hier entpacken (in Unterordner)": {
+    "de": "📦 Hier entpacken (in Unterordner)",
+    "en": "📦 Extract here (into subfolder)",
+    "es": "📦 Extraer aquí (en subcarpeta)",
+    "zh": "📦 解压到此处 (在子文件夹中)",
+    "ja": "📦 ここに解凍 (サブフォルダー内)",
+    "ru": "📦 Распаковать здесь (в подпапку)"
+  },
+  "📦 Entpacken nach...": {
+    "de": "📦 Entpacken nach...",
+    "en": "📦 Extract to...",
+    "es": "📦 Extraer en...",
+    "zh": "📦 解压到...",
+    "ja": "📦 指定先へ解凍...",
+    "ru": "📦 Распаковать в..."
+  },
+  "📦 Zu ZIP-Archiv komprimieren...": {
+    "de": "📦 Zu ZIP-Archiv komprimieren...",
+    "en": "📦 Compress to ZIP archive...",
+    "es": "📦 Comprimir en archivo ZIP...",
+    "zh": "📦 压缩为 ZIP 文档...",
+    "ja": "📦 ZIP アーカイブに圧縮...",
+    "ru": "📦 Сжать в ZIP-архив..."
+  },
+  "📦 Ordnerinhalt als ZIP komprimieren...": {
+    "de": "📦 Ordnerinhalt als ZIP komprimieren...",
+    "en": "📦 Compress folder contents to ZIP...",
+    "es": "📦 Comprimir contenido de carpeta a ZIP...",
+    "zh": "📦 将文件夹内容压缩为 ZIP...",
+    "ja": "📦 フォルダーの内容を ZIP に圧縮...",
+    "ru": "📦 Сжать содержимое папки в ZIP..."
+  },
+  "📦 ZIP-Archiv hier entpacken...": {
+    "de": "📦 ZIP-Archiv hier entpacken...",
+    "en": "📦 Extract ZIP archive here...",
+    "es": "📦 Extraer archivo ZIP aquí...",
+    "zh": "📦 在此处解压 ZIP 文档...",
+    "ja": "📦 ここで ZIP アーカイブを解凍...",
+    "ru": "📦 Распаковать ZIP-архив здесь..."
+  },
+  "📦 ZIP-Archiv entpacken...": {
+    "de": "📦 ZIP-Archiv entpacken...",
+    "en": "📦 Extract ZIP archive...",
+    "es": "📦 Extraer archivo ZIP...",
+    "zh": "📦 解压 ZIP 文档...",
+    "ja": "📦 ZIP アーカイブを解凍...",
+    "ru": "📦 Распаковать ZIP-архив..."
+  },
+  "📦 ZIP-Archiv durchsuchen...": {
+    "de": "📦 ZIP-Archiv durchsuchen...",
+    "en": "📦 Inspect ZIP archive...",
+    "es": "📦 Explorar archivo ZIP...",
+    "zh": "📦 浏览 ZIP 文档...",
+    "ja": "📦 ZIP アーカイブを閲覧...",
+    "ru": "📦 Обзор ZIP-архива..."
+  },
+  "Archiv entpackt": {
+    "de": "Archiv entpackt",
+    "en": "Archive extracted",
+    "es": "Archivo extraído",
+    "zh": "文档已解压",
+    "ja": "アーカイブが解凍されました",
+    "ru": "Архив распакован"
+  },
+  "Archiv wurde erfolgreich entpackt nach:\n": {
+    "de": "Archiv wurde erfolgreich entpackt nach:\n",
+    "en": "Archive was successfully extracted to:\n",
+    "es": "El archivo se extrajo correctamente en:\n",
+    "zh": "文档已成功解压到:\n",
+    "ja": "アーカイブが正常に解凍されました:\n",
+    "ru": "Архив успешно распакован в:\n"
+  },
+  "Integritätsprüfung": {
+    "de": "Integritätsprüfung",
+    "en": "Integrity check",
+    "es": "Comprobación de integridad",
+    "zh": "完整性检查",
+    "ja": "整合性確認",
+    "ru": "Проверка целостности"
+  },
+  "Die Archiv-Integrität ist intakt:\n": {
+    "de": "Die Archiv-Integrität ist intakt:\n",
+    "en": "Archive integrity is intact:\n",
+    "es": "La integridad del archivo está intacta:\n",
+    "zh": "文档完整性完好:\n",
+    "ja": "アーカイブの整合性は正常です:\n",
+    "ru": "Целостность архива в порядке:\n"
+  },
+  "Archiv-Integritätsfehler:\n": {
+    "de": "Archiv-Integritätsfehler:\n",
+    "en": "Archive integrity error:\n",
+    "es": "Error de integridad del archivo:\n",
+    "zh": "文档完整性错误:\n",
+    "ja": "アーカイブ整合性エラー:\n",
+    "ru": "Ошибка целостности архива:\n"
+  },
+  "ZIP-Archiv zum Entpacken wählen": {
+    "de": "ZIP-Archiv zum Entpacken wählen",
+    "en": "Select ZIP archive to extract",
+    "es": "Seleccionar archivo ZIP para extraer",
+    "zh": "选择要解压的 ZIP 文档",
+    "ja": "解凍する ZIP アーカイブを選択",
+    "ru": "Выберите ZIP-архив для распаковки"
+  },
+  "ZIP-Archiv zum Durchsuchen wählen": {
+    "de": "ZIP-Archiv zum Durchsuchen wählen",
+    "en": "Select ZIP archive to inspect",
+    "es": "Seleccionar archivo ZIP para explorar",
+    "zh": "选择要浏览的 ZIP 文档",
+    "ja": "閲覧する ZIP アーカイブを選択",
+    "ru": "Выберите ZIP-архив для просмотра"
+  },
+  "📦 ZIP-Archiv": {
+    "de": "📦 ZIP-Archiv",
+    "en": "📦 ZIP archive",
+    "es": "📦 Archivo ZIP",
+    "zh": "📦 ZIP 文档",
+    "ja": "📦 ZIP アーカイブ",
+    "ru": "📦 ZIP-архив"
+  },
+  "Kompression:": {
+    "de": "Kompression:",
+    "en": "Compression:",
+    "es": "Compresión:",
+    "zh": "压缩率:",
+    "ja": "圧縮率:",
+    "ru": "Сжатие:"
+  },
+  "Archiv-Vorschautabelle": {
+    "de": "Archiv-Vorschautabelle",
+    "en": "Archive preview table",
+    "es": "Tabla de vista previa del archivo",
+    "zh": "归档预览表",
+    "ja": "アーカイブプレビューテーブル",
+    "ru": "Таблица предпросмотра архива"
+  },
+  "Archiv detailliert durchsuchen": {
+    "de": "Archiv detailliert durchsuchen",
+    "en": "Inspect archive in detail",
+    "es": "Explorar archivo detalladamente",
+    "zh": "详细检查归档",
+    "ja": "アーカイブを詳細に閲覧",
+    "ru": "Подробный просмотр архива"
+  },
+  "📦 Entpacken...": {
+    "de": "📦 Entpacken...",
+    "en": "📦 Extract...",
+    "es": "📦 Extraer...",
+    "zh": "📦 解压缩...",
+    "ja": "📦 解凍...",
+    "ru": "📦 Распаковать..."
+  },
+  "Archiv entpacken": {
+    "de": "Archiv entpacken",
+    "en": "Extract archive",
+    "es": "Extraer archivo",
+    "zh": "解压缩归档",
+    "ja": "アーカイブを解凍",
+    "ru": "Распаковать архив"
+  },
+  "Vorgang abbrechen": {
+    "de": "Vorgang abbrechen",
+    "en": "Cancel operation",
+    "es": "Cancelar operación",
+    "zh": "取消操作",
+    "ja": "操作をキャンセル",
+    "ru": "Отменить операцию"
+  },
+  "Wird geladen...": {
+    "de": "Wird geladen...",
+    "en": "Loading...",
+    "es": "Cargando...",
+    "zh": "正在加载...",
+    "ja": "読み込み中...",
+    "ru": "Загрузка..."
+  },
+  "Filter:": {
+    "de": "Filter:",
+    "en": "Filter:",
+    "es": "Filtro:",
+    "zh": "筛选:",
+    "ja": "フィルター:",
+    "ru": "Фильтр:"
+  },
+  "Archiv durchsuchen —": {
+    "de": "Archiv durchsuchen —",
+    "en": "Browse archive —",
+    "es": "Explorar archivo —",
+    "zh": "浏览归档 —",
+    "ja": "アーカイブを参照 —",
+    "ru": "Просмотр архива —"
+  },
+  "Archiv konnte nicht gelesen werden:": {
+    "de": "Archiv konnte nicht gelesen werden:",
+    "en": "Could not read archive:",
+    "es": "No se pudo leer el archivo:",
+    "zh": "无法读取归档：",
+    "ja": "アーカイブを読み取れませんでした：",
+    "ru": "Не удалось прочитать архив:"
+  },
+  "Das Archiv wurde erfolgreich erstellt:": {
+    "de": "Das Archiv wurde erfolgreich erstellt:",
+    "en": "The archive was created successfully:",
+    "es": "El archivo se creó correctamente:",
+    "zh": "归档创建成功：",
+    "ja": "アーカイブが正常に作成されました：",
+    "ru": "Архив успешно создан:"
+  },
+  "Datei überschreiben": {
+    "de": "Datei überschreiben",
+    "en": "Overwrite file",
+    "es": "Sobrescribir archivo",
+    "zh": "覆盖文件",
+    "ja": "ファイルを上書き",
+    "ru": "Перезаписать файл"
+  },
+  "Dateien wurden erfolgreich entpackt nach:": {
+    "de": "Dateien wurden erfolgreich entpackt nach:",
+    "en": "Files extracted successfully to:",
+    "es": "Archivos extraídos correctamente en:",
+    "zh": "文件已成功解压至：",
+    "ja": "ファイルが正常に解凍されました：",
+    "ru": "Файлы успешно распакованы в:"
+  },
+  "Die Zieldatei existiert bereits. Möchten Sie sie überschreiben?": {
+    "de": "Die Zieldatei existiert bereits. Möchten Sie sie überschreiben?",
+    "en": "The destination file already exists. Do you want to overwrite it?",
+    "es": "El archivo de destino ya existe. ¿Desea sobrescribirlo?",
+    "zh": "目标文件已存在。是否要覆盖？",
+    "ja": "出力先ファイルが既に存在します。上書きしますか？",
+    "ru": "Целевой файл уже существует. Хотите перезаписать его?"
+  },
+  "Die ausgewählten Dateien wurden erfolgreich entpackt nach:": {
+    "de": "Die ausgewählten Dateien wurden erfolgreich entpackt nach:",
+    "en": "Selected files extracted successfully to:",
+    "es": "Archivos seleccionados extraídos correctamente en:",
+    "zh": "选定文件已成功解压至：",
+    "ja": "選択したファイルが正常に解凍されました：",
+    "ru": "Выбранные файлы успешно распакованы в:"
+  },
+  "Entpackt:": {
+    "de": "Entpackt:",
+    "en": "Extracted:",
+    "es": "Extraído:",
+    "zh": "已解压：",
+    "ja": "解凍完了：",
+    "ru": "Распаковано:"
+  },
+  "Fehler:": {
+    "de": "Fehler:",
+    "en": "Error:",
+    "es": "Error:",
+    "zh": "错误：",
+    "ja": "エラー：",
+    "ru": "Ошибка:"
+  },
+  "In Unterordner entpacken:": {
+    "de": "In Unterordner entpacken:",
+    "en": "Extract to subfolder:",
+    "es": "Extraer en subcarpeta:",
+    "zh": "解压至子文件夹：",
+    "ja": "サブフォルダーに解凍：",
+    "ru": "Распаковать в подпапку:"
+  },
+  "Integritätsfehler:": {
+    "de": "Integritätsfehler:",
+    "en": "Integrity error:",
+    "es": "Error de integridad:",
+    "zh": "完整性错误：",
+    "ja": "整合性エラー：",
+    "ru": "Ошибка целостности:"
+  },
+  "Komprimiert:": {
+    "de": "Komprimiert:",
+    "en": "Compressed:",
+    "es": "Comprimido:",
+    "zh": "已压缩：",
+    "ja": "圧縮完了：",
+    "ru": "Сжато:"
+  },
+  "Vorgang abgebrochen.": {
+    "de": "Vorgang abgebrochen.",
+    "en": "Operation cancelled.",
+    "es": "Operación cancelada.",
+    "zh": "操作已取消。",
+    "ja": "処理がキャンセルされました。",
+    "ru": "Операция отменена."
+  },
+  "Wird abgebrochen...": {
+    "de": "Wird abgebrochen...",
+    "en": "Cancelling...",
+    "es": "Cancelando...",
+    "zh": "正在取消...",
+    "ja": "キャンセル中...",
+    "ru": "Отмена..."
+  },
+  "Zielverzeichnis": {
+    "de": "Zielverzeichnis",
+    "en": "Destination folder",
+    "es": "Carpeta de destino",
+    "zh": "目标目录",
+    "ja": "出力先フォルダー",
+    "ru": "Папка назначения"
   }
 }

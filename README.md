@@ -5,7 +5,7 @@
 **[English](README.md)** | [Deutsch](README_de.md) | [Machine-readable context (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
-[![Tests: 372+ passed](https://img.shields.io/badge/tests-372%2B%20passed%20%7C%20100%25-brightgreen.svg)](tests/)
+[![Tests: 420+ passed](https://img.shields.io/badge/tests-420%2B%20passed%20%7C%20100%25-brightgreen.svg)](tests/)
 [![Level 1 SBOM: Plain Text](https://img.shields.io/badge/Level%201%20SBOM-Plain%20Text-blue.svg)](THIRD_PARTY_LICENSES.txt)
 [![Python 3.10--3.12](https://img.shields.io/badge/python-3.10--3.12-blue.svg)](https://www.python.org/)
 [![Platform: Windows | Linux | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-informational.svg)](https://github.com/file-bricks/ExplorerPro)
@@ -23,10 +23,10 @@
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
 [![Version: 1.0.8](https://img.shields.io/badge/version-1.0.8-orange.svg)](CHANGELOG.md)
-[![Last Checked](https://img.shields.io/badge/Last--Checked-2026--09--30-blue?style=flat-square)](CHANGELOG.md)
+[![Last Checked](https://img.shields.io/badge/Last--Checked-2026--10--08-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]
-> **Disambiguation & LLM Context:** `file-bricks/ExplorerPro` is a local-first desktop file manager and power-user explorer suite built with Python (PySide6 / Qt 6). It is completely independent of cloud-based web drives, mobile file managers, or closed-source commercial utilities. Machine-readable architecture context, search keywords, runtime invariants, and verification entry points are maintained in [llms.txt](llms.txt). Last checked: **2026-09-29**.
+> **Disambiguation & LLM Context:** `file-bricks/ExplorerPro` is a local-first desktop file manager and power-user explorer suite built with Python (PySide6 / Qt 6). It is completely independent of cloud-based web drives, mobile file managers, or closed-source commercial utilities. Machine-readable architecture context, search keywords, runtime invariants, and verification entry points are maintained in [llms.txt](llms.txt). Last checked: **2026-10-08**.
 
 > **ExplorerPro** is a modern, privacy-first desktop file manager and power-user explorer suite for Windows, Linux, and macOS. It unites multi-tab directory navigation, instant multi-format file previews (PDF, images, syntax-highlighted source code, markdown, spreadsheet), high-performance SQLite FTS5 full-text indexing, byte-exact hash-based duplicate detection, privacy monitoring, folder synchronization, and an integrated code editor in a single native PySide6 (Qt 6) application.
 
@@ -75,6 +75,7 @@ Standard operating system file managers are built for casual browsing and lack t
 - **Data Privacy & Blacklist Watchdog:** Continuous scan indicator alerting users to accidental exposure of credentials, private keys, or blacklisted file patterns.
 - **Integrated Code Editor & Sync Tools:** Quick inline editing with indentation guides, line numbers, and one-way/mirror directory synchronization with regex exclusion filters.
 - **Batch Renamer & Diff Viewer:** Multi-criteria rule-based batch renaming with live preview, collision detection, atomic rollback, and side-by-side file comparison.
+- **Native ZIP & Archive Suite:** Create, inspect, test, and safely extract ZIP archives with Zip-Slip path-traversal protection, quick inline preview panel, and background multithreading.
 - **6-Language Native Localization:** Full dynamic UI translation across English, German, Spanish, Chinese, Japanese, and Russian.
 - **Universal Multi-Resolution Icon Suite:** 7-layer Windows ICOs, high-resolution master PNGs, PWA mobile icon suite, and Microsoft Store asset sets.
 

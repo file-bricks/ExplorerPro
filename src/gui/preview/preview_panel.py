@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QLabel, QScrollArea, QGroupBox, QFormLayout, QLineEdit,
     QPlainTextEdit, QFrame,
     QComboBox, QPushButton, QTableWidget, QTableWidgetItem,
+    QHeaderView,
 )
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import (
@@ -680,10 +681,123 @@ class ExcelPreview(QWidget):
             self.status_label.setVisible(True)
 
 
+class ArchivePreview(QWidget):
+    """Vorschau-Widget für ZIP-Archive (.zip)."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._path: str | None = None
+        self._setup_ui()
+
+    def _setup_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(6)
+
+        # Header-Box
+        header_group = QGroupBox("📦 ZIP-Archiv")
+        header_layout = QFormLayout(header_group)
+
+        self.name_label = QLabel("-")
+        self.name_label.setWordWrap(True)
+        header_layout.addRow("Name:", self.name_label)
+
+        self.count_label = QLabel("-")
+        header_layout.addRow("Inhalt:", self.count_label)
+
+        self.size_label = QLabel("-")
+        header_layout.addRow("Größe:", self.size_label)
+
+        self.ratio_label = QLabel("-")
+        header_layout.addRow("Kompression:", self.ratio_label)
+
+        layout.addWidget(header_group)
+
+        # Tabelle der enthaltenen Dateien
+        self.table = QTableWidget()
+        self.table.setColumnCount(3)
+        self.table.setHorizontalHeaderLabels(["Name / Pfad", "Größe", "Komprimiert"])
+        self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.table.setAccessibleName("Archiv-Vorschautabelle")
+        layout.addWidget(self.table, 1)
+
+        # Aktions-Buttons
+        btn_layout = QHBoxLayout()
+        self.explore_btn = QPushButton("🔍 Durchsuchen...")
+        self.explore_btn.setAccessibleName("Archiv detailliert durchsuchen")
+        self.explore_btn.setToolTip("Öffnet den vollen Archiv-Inspektor mit Filterung und Tests")
+        self.explore_btn.clicked.connect(self._open_viewer)
+        btn_layout.addWidget(self.explore_btn)
+
+        self.extract_btn = QPushButton("📦 Entpacken...")
+        self.extract_btn.setAccessibleName("Archiv entpacken")
+        self.extract_btn.setToolTip("Öffnet den Dialog zum Entpacken des Archivs")
+        self.extract_btn.clicked.connect(self._open_extract)
+        btn_layout.addWidget(self.extract_btn)
+
+        layout.addLayout(btn_layout)
+
+        # Status-/Fehler-Label
+        self.status_label = QLabel("")
+        self.status_label.setStyleSheet("color: #d32f2f;")
+        self.status_label.setVisible(False)
+        layout.addWidget(self.status_label)
+
+    def load_archive(self, path: str):
+        self._path = path
+        self.status_label.setVisible(False)
+        self.name_label.setText(os.path.basename(path))
+
+        try:
+            from core.archive_service import inspect_zip
+            summary, entries = inspect_zip(path)
+
+            self.count_label.setText(f"{summary.total_files} Dateien, {summary.total_folders} Ordner")
+            self.size_label.setText(
+                f"{summary.formatted_uncompressed_size} (gepackt: {summary.formatted_compressed_size})"
+            )
+            self.ratio_label.setText(f"{summary.overall_ratio:.1f}% Ersparnis")
+
+            show_entries = entries[:100]
+            self.table.setRowCount(len(show_entries))
+            for row, entry in enumerate(show_entries):
+                prefix = "📁 " if entry.is_dir else "📄 "
+                self.table.setItem(row, 0, QTableWidgetItem(f"{prefix}{entry.filename}"))
+                self.table.setItem(row, 1, QTableWidgetItem(entry.formatted_size if not entry.is_dir else "-"))
+                self.table.setItem(row, 2, QTableWidgetItem(entry.formatted_compressed_size if not entry.is_dir else "-"))
+
+            self.explore_btn.setEnabled(True)
+            self.extract_btn.setEnabled(True)
+
+        except Exception as exc:
+            self.table.setRowCount(0)
+            self.count_label.setText("-")
+            self.size_label.setText("-")
+            self.ratio_label.setText("-")
+            self.status_label.setText(f"Archiv konnte nicht gelesen werden: {exc}")
+            self.status_label.setVisible(True)
+            self.explore_btn.setEnabled(False)
+            self.extract_btn.setEnabled(False)
+
+    def _open_viewer(self):
+        if self._path and os.path.exists(self._path):
+            from gui.archive_dialog import ArchiveViewerDialog
+            dlg = ArchiveViewerDialog(self._path, self.window())
+            dlg.exec()
+
+    def _open_extract(self):
+        if self._path and os.path.exists(self._path):
+            from gui.archive_dialog import ArchiveExtractDialog
+            dlg = ArchiveExtractDialog(self._path, parent=self.window())
+            dlg.exec()
+
+
 class PreviewPanel(QWidget):
     """
     Haupt-Vorschau-Panel mit:
-    - Datei-Vorschau (Bild, Text, PDF)
+    - Datei-Vorschau (Bild, Text, PDF, Archiv)
     - Metadaten
     - Tags & Notizen
     """
@@ -732,6 +846,10 @@ class PreviewPanel(QWidget):
         # Excel-Vorschau (.xlsx / .xls) — Index 6
         self.excel_preview = ExcelPreview()
         self.preview_stack.addWidget(self.excel_preview)
+
+        # ZIP-Archiv-Vorschau (.zip) — Index 7
+        self.archive_preview = ArchivePreview()
+        self.preview_stack.addWidget(self.archive_preview)
 
         layout.addWidget(self.preview_stack, 2)
 
@@ -874,6 +992,11 @@ class PreviewPanel(QWidget):
         elif _preview_setting("preview_code", True) and _looks_like_text(path):
             self.text_preview.load_file(path)
             self.preview_stack.setCurrentIndex(2)
+
+        # ZIP-Archiv-Vorschau
+        elif ext == '.zip':
+            self.archive_preview.load_archive(path)
+            self.preview_stack.setCurrentIndex(7)
 
         # Nicht unterstützt
         else:

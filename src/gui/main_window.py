@@ -321,6 +321,20 @@ class MainWindow(QMainWindow):
 
         tools_menu.addSeparator()
 
+        compress_action = QAction("📦 Zu ZIP-Archiv komprimieren...", self)
+        compress_action.triggered.connect(self._compress_archive)
+        tools_menu.addAction(compress_action)
+
+        extract_action = QAction("📦 ZIP-Archiv entpacken...", self)
+        extract_action.triggered.connect(self._extract_archive)
+        tools_menu.addAction(extract_action)
+
+        inspect_action = QAction("📦 ZIP-Archiv durchsuchen...", self)
+        inspect_action.triggered.connect(self._inspect_archive)
+        tools_menu.addAction(inspect_action)
+
+        tools_menu.addSeparator()
+
 
         editor_action = QAction("✏️ Editor öffnen", self)
         editor_action.setShortcut(QKeySequence("F4"))
@@ -679,6 +693,31 @@ class MainWindow(QMainWindow):
         f1 = selected[0] if len(selected) > 0 and os.path.isfile(selected[0]) else ""
         f2 = selected[1] if len(selected) > 1 and os.path.isfile(selected[1]) else ""
         self.file_browser._show_diff(f1, f2)
+
+    def _compress_archive(self):
+        """Öffnet den Dialog zum Komprimieren ausgewählter Dateien/Ordner."""
+        if hasattr(self, "file_browser"):
+            self.file_browser._compress_selection()
+
+    def _extract_archive(self):
+        """Öffnet den Dialog zur Auswahl und Entpackung eines ZIP-Archivs."""
+        if hasattr(self, "file_browser"):
+            self.file_browser._extract_zip_dialog()
+
+    def _inspect_archive(self):
+        """Wählt ein Archiv aus und öffnet den Inspektor."""
+        from PySide6.QtWidgets import QFileDialog
+        curr_dir = self.file_browser.current_path if hasattr(self, "file_browser") else ""
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "ZIP-Archiv zum Durchsuchen wählen",
+            curr_dir,
+            "ZIP-Archive (*.zip);;Alle Dateien (*.*)"
+        )
+        if path:
+            from gui.archive_dialog import ArchiveViewerDialog
+            dlg = ArchiveViewerDialog(path, parent=self)
+            dlg.exec()
 
     def _show_settings(self):
         """Öffnet das Einstellungsfenster."""

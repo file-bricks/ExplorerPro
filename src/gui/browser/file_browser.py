@@ -423,6 +423,23 @@ class FileBrowser(QWidget):
                 checksum_action.triggered.connect(lambda: self._show_checksums(file_path))
                 menu.addAction(checksum_action)
 
+            if is_file and ext == ".zip":
+                archive_view_action = QAction("📦 Archiv durchsuchen...", self)
+                archive_view_action.triggered.connect(lambda: self._view_archive(file_path))
+                menu.addAction(archive_view_action)
+
+                archive_extract_here_action = QAction("📦 Hier entpacken (in Unterordner)", self)
+                archive_extract_here_action.triggered.connect(lambda: self._extract_archive_here(file_path))
+                menu.addAction(archive_extract_here_action)
+
+                archive_extract_action = QAction("📦 Entpacken nach...", self)
+                archive_extract_action.triggered.connect(lambda: self._extract_archive(file_path))
+                menu.addAction(archive_extract_action)
+
+                archive_test_action = QAction("🧪 Integrität prüfen", self)
+                archive_test_action.triggered.connect(lambda: self._test_archive_integrity(file_path))
+                menu.addAction(archive_test_action)
+
             menu.addSeparator()
 
             # Index-Aktionen
@@ -474,6 +491,10 @@ class FileBrowser(QWidget):
                 diff_action.triggered.connect(lambda: self._show_diff(selected[0], selected[1]))
                 menu.addAction(diff_action)
 
+            compress_action = QAction("📦 Zu ZIP-Archiv komprimieren...", self)
+            compress_action.triggered.connect(lambda: self._compress_selection(selected if selected else [file_path]))
+            menu.addAction(compress_action)
+
             copy_action = QAction("Kopieren", self)
             copy_action.setShortcut("Ctrl+C")
             copy_action.triggered.connect(self.copy_selection)
@@ -519,6 +540,14 @@ class FileBrowser(QWidget):
             diff_action = QAction("⚖️ Dateien vergleichen...", self)
             diff_action.triggered.connect(lambda: self._show_diff())
             menu.addAction(diff_action)
+
+            compress_dir_action = QAction("📦 Ordnerinhalt als ZIP komprimieren...", self)
+            compress_dir_action.triggered.connect(self._compress_current_folder)
+            menu.addAction(compress_dir_action)
+
+            extract_zip_action = QAction("📦 ZIP-Archiv hier entpacken...", self)
+            extract_zip_action.triggered.connect(self._extract_zip_dialog)
+            menu.addAction(extract_zip_action)
 
             menu.addSeparator()
 
@@ -1106,3 +1135,98 @@ class FileBrowser(QWidget):
                 t("Einige Dateien konnten nicht übertragen werden:") + "\n\n"
                 + "\n".join(errors),
             )
+
+    def _compress_selection(self, paths: list = None):
+        """Öffnet den Dialog zum Komprimieren ausgewählter Dateien/Ordner."""
+        selected = paths or self.get_selected_files()
+        if not selected and self._current_path:
+            selected = [self._current_path]
+        if not selected:
+            return
+        from gui.archive_dialog import ArchiveCompressDialog
+        dlg = ArchiveCompressDialog(selected, current_dir=self._current_path, parent=self.window())
+        if dlg.exec():
+            self.refresh()
+
+    def _compress_current_folder(self):
+        """Komprimiert den aktuellen Ordner als ZIP-Archiv."""
+        if not self._current_path or not os.path.isdir(self._current_path):
+            return
+        from gui.archive_dialog import ArchiveCompressDialog
+        dlg = ArchiveCompressDialog(
+            [self._current_path],
+            current_dir=os.path.dirname(self._current_path),
+            parent=self.window()
+        )
+        if dlg.exec():
+            self.refresh()
+
+    def _extract_archive(self, zip_path: str):
+        """Öffnet den Dialog zum Entpacken des gewählten Archivs."""
+        if not os.path.isfile(zip_path):
+            return
+        from gui.archive_dialog import ArchiveExtractDialog
+        dlg = ArchiveExtractDialog(
+            zip_path,
+            default_target_dir=self._current_path,
+            parent=self.window()
+        )
+        if dlg.exec():
+            self.refresh()
+
+    def _extract_archive_here(self, zip_path: str):
+        """Entpackt das Archiv direkt in einen gleichnamigen Unterordner am aktuellen Ort."""
+        if not os.path.isfile(zip_path):
+            return
+        from core.archive_service import ArchiveExtractWorker
+        stem = Path(zip_path).stem
+        target_dir = os.path.join(self._current_path, stem)
+
+        worker = ArchiveExtractWorker(zip_path, target_dir, parent=self)
+        worker.start()
+        worker.wait()
+        self.refresh()
+        QMessageBox.information(
+            self,
+            "Archiv entpackt",
+            f"Archiv wurde erfolgreich entpackt nach:\n{target_dir}"
+        )
+
+    def _view_archive(self, zip_path: str):
+        """Öffnet den Archiv-Inspektor für die gewählte ZIP-Datei."""
+        if not os.path.isfile(zip_path):
+            return
+        from gui.archive_dialog import ArchiveViewerDialog
+        dlg = ArchiveViewerDialog(zip_path, parent=self.window())
+        dlg.exec()
+
+    def _test_archive_integrity(self, zip_path: str):
+        """Prüft die CRC-Integrität der gewählten ZIP-Datei."""
+        if not os.path.isfile(zip_path):
+            return
+        from core.archive_service import check_zip_integrity
+        is_valid, msg = check_zip_integrity(zip_path)
+        if is_valid:
+            QMessageBox.information(
+                self,
+                "Integritätsprüfung",
+                f"✅ Die Archiv-Integrität ist intakt:\n{os.path.basename(zip_path)}"
+            )
+        else:
+            QMessageBox.warning(
+                self,
+                "Integritätsprüfung",
+                f"❌ Archiv-Integritätsfehler:\n{msg}"
+            )
+
+    def _extract_zip_dialog(self):
+        """Öffnet einen Dateidialog zur Auswahl eines zu entpackenden Archivs."""
+        from PySide6.QtWidgets import QFileDialog
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "ZIP-Archiv zum Entpacken wählen",
+            self._current_path,
+            "ZIP-Archive (*.zip);;Alle Dateien (*.*)"
+        )
+        if path:
+            self._extract_archive(path)

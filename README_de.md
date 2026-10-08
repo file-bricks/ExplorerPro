@@ -7,7 +7,7 @@ Der aktuelle Quellcode zeigt in der Ordner-Seitenleiste die Speicherbelegung je 
 [English](README.md) | **[Deutsch](README_de.md)** | [Maschinenlesbarer Kontext (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
-[![Tests: 350+ bestanden](https://img.shields.io/badge/Tests-350%2B%20bestanden-brightgreen.svg)](tests/)
+[![Tests: 420+ bestanden](https://img.shields.io/badge/Tests-420%2B%20bestanden-brightgreen.svg)](tests/)
 [![Python 3.10--3.12](https://img.shields.io/badge/Python-3.10--3.12-blue.svg)](https://www.python.org/)
 [![Plattform: Windows | Linux | macOS](https://img.shields.io/badge/Plattform-Windows%20%7C%20Linux%20%7C%20macOS-informational.svg)](https://github.com/file-bricks/ExplorerPro)
 [![UI: PySide6 (Qt6)](https://img.shields.io/badge/UI-PySide6%20(Qt6)-informational.svg)](src/gui/)
@@ -24,10 +24,10 @@ Der aktuelle Quellcode zeigt in der Ordner-Seitenleiste die Speicherbelegung je 
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
 [![Version: 1.0.8](https://img.shields.io/badge/Version-1.0.8-orange.svg)](CHANGELOG.md)
-[![Stand](https://img.shields.io/badge/Stand-2026--09--30-blue?style=flat-square)](CHANGELOG.md)
+[![Stand](https://img.shields.io/badge/Stand-2026--10--08-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]
-> **Abgrenzung / Disambiguation & LLM-Kontext:** `file-bricks/ExplorerPro` ist eine lokale Open-Source Desktop-Dateimanager- und Power-User-Explorer-Suite auf Basis von Python (PySide6 / Qt 6). Das Projekt ist vollkommen unabhängig von Cloud-Speicher-Weboberflächen, mobilen Dateimanagern oder proprietären Dateiverwaltungsprogrammen. Maschinenlesbarer Architekturkontext, Suchbegriffe, Laufzeitinvarianten und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt. Zuletzt geprüft: **2026-09-29**.
+> **Abgrenzung / Disambiguation & LLM-Kontext:** `file-bricks/ExplorerPro` ist eine lokale Open-Source Desktop-Dateimanager- und Power-User-Explorer-Suite auf Basis von Python (PySide6 / Qt 6). Das Projekt ist vollkommen unabhängig von Cloud-Speicher-Weboberflächen, mobilen Dateimanagern oder proprietären Dateiverwaltungsprogrammen. Maschinenlesbarer Architekturkontext, Suchbegriffe, Laufzeitinvarianten und Verifikations-Befehle werden in [llms.txt](llms.txt) gepflegt. Zuletzt geprüft: **2026-10-08**.
 
 > **ExplorerPro** ist ein moderner, datenschutzorientierter Desktop-Dateimanager und Power-User-Explorer für Windows, Linux und macOS. Er vereint Mehrtab-Dateinavigation, sofortige Mehrformat-Dateivorschau (PDF, Bilder, Quellcode mit Syntax-Highlighting, Markdown, Tabellenkalkulation), blitzschnelle SQLite-FTS5-Volltextsuche, Hash-basierte Duplikaterkennung, Datenschutz-Überwachung, Ordnersynchronisation und einen integrierten Quelltext-Editor in einer nativen PySide6-Anwendung (Qt 6).
 
@@ -74,6 +74,7 @@ Standard-Dateimanager des Betriebssystems sind für oberflächliches Browsen ged
 - **Datenschutz- & Blacklist-Wächter:** Kontinuierliche Ampel-Anzeige, die vor versehentlicher Offenlegung von Zugangsdaten, privaten Schlüsseln oder Blacklist-Mustern warnt.
 - **Integrierter Editor & Sync-Tools:** Schnelle Quelltextbearbeitung mit Einrückungshilfen sowie unidirektionale oder spiegelnde Ordnersynchronisation mit Regex-Ausschlussregeln.
 - **Mehrfach-Umbenennung & Datei-Diff:** Regelbasierte Mehrfachumbenennung mit Live-Vorschau, Konflikterkennung und atomarem Rollback sowie zeilenweiser Text- und Codevergleich.
+- **Native ZIP- & Archiv-Suite:** Erstellen, Inspizieren, Testen und sicheres Entpacken von ZIP-Archiven mit Zip-Slip-Schutz gegen Directory Traversal, Schnellvorschau im Preview-Panel und asynchroner Hintergrundverarbeitung.
 - **Vollständige 6-Sprachen-Lokalisierung:** Dynamische Benutzeroberfläche auf Deutsch, Englisch, Spanisch, Chinesisch, Japanisch und Russisch.
 - **Universelle Icon-Suite:** 7-Layer Windows-ICOs, hochauflösende Master-PNGs, PWA-Mobile-Icons und Microsoft Store Kacheln.
 

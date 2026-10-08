@@ -5,6 +5,29 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Native ZIP- & Archiv-Suite (2026-10-08, TW-EP-12)
+- **Core-Archiv-Service (`src/core/archive_service.py`)**:
+  - `create_zip_archive`: Atomare Komprimierung über temporäre `.tmp`-Dateien, rekursiver Verzeichnis-Walk mit Erhalt leerer Ordnerstrukturen, wählbare Kompressionsmethoden (`ZIP_DEFLATED`, `ZIP_STORED`, `ZIP_BZIP2`, `ZIP_LZMA`), Abbruch- und Fortschritts-Callbacks.
+  - `extract_zip_archive`: Sichere Archiv-Extraktion mit robuster Zip-Slip-Path-Traversal-Abwehr (`sanitize_archive_member_path` und `ZipSlipSecurityError`), Wiederherstellung von Zeitstempeln (`mtime`), selektive Extraktion und Überschreibschutz.
+  - `inspect_zip`: Schnelle Metadaten-Extraktion, Zählung von Ordnern/Dateien, aggregierte Original- & Kompressionsgrößen, Kompressionsraten und Verschlüsselungserkennung (`ArchiveEntry`, `ArchiveSummary`).
+  - `check_zip_integrity` / `verify_zip_integrity`: Verlässliche CRC-32 Blockvalidierung via `zipfile.testzip()`.
+  - Asynchrone Worker-Threads: `ArchiveCompressWorker`, `ArchiveExtractWorker` und `ArchiveTestWorker` für responsive, blockierungsfreie Benutzeroberfläche.
+- **Archiv-Dialoge & Viewer (`src/gui/archive_dialog.py`)**:
+  - `ArchiveCompressDialog`: Zielarchiv-Pfadauswahl, Kompressionsstufen-Auswahl (Standard Deflate, Keine/Store, Bzip2, LZMA/XZ), Fortschrittsbalken und Statusanzeige.
+  - `ArchiveExtractDialog`: Zielordner-Picker mit Checkboxen für automatischen Ziel-Unterordner (`<stem>`) und Überschreiben existierender Dateien.
+  - `ArchiveViewerDialog`: Umfassender Archiv-Inspektor mit Metadaten-Banner (Dateien, Ordner, Original-/Kompressionsgröße, Sparquote), Live-Suchfilter, sortierbarer Tabelle (Pfad, Originalgröße, komprimierte Größe, Ersparnis, Datum, CRC32, Verschlüsselungsstatus) und Aktionsschaltflächen für CRC-Integritätsprüfung, vollständige oder selektive Extraktion ausgewählter Dateien.
+- **Preview-Panel Integration (`src/gui/preview/preview_panel.py`)**:
+  - Neues `ArchivePreview`-Widget (Stack-Index 7) für `.zip`-Dateien: Schnelle Voransicht im Vorschaufenster mit Kennzahlen, tabellarischer Übersicht der ersten 100 Archiv-Einträge und Schnellzugriff auf "Durchsuchen..." und "Entpacken...".
+- **Dateibrowser- & Menü-Integration (`src/gui/browser/file_browser.py`, `src/gui/main_window.py`)**:
+  - Dateibrowser-Kontextmenü für `.zip`-Dateien: "📦 Archiv durchsuchen...", "📦 Hier entpacken (in Unterordner)", "📦 Entpacken nach...", "🧪 Integrität prüfen".
+  - Kontextmenü bei Mehrfach- oder Einzelauswahl beliebiger Elemente: "📦 Zu ZIP-Archiv komprimieren...".
+  - Leerbereich-Kontextmenü: "📦 Ordnerinhalt als ZIP komprimieren...", "📦 ZIP-Archiv hier entpacken...".
+  - Hauptmenüleiste Tools: "📦 Zu ZIP-Archiv komprimieren...", "📦 ZIP-Archiv entpacken...", "📦 ZIP-Archiv durchsuchen...".
+- **Lokalisierung (Tier-2 P-006)**:
+  - 108 neue UI-Strings lückenlos über alle 6 Zielsprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` integriert (Katalog auf 469 Schlüssel erweitert; `manage_translations.py --check` meldet 0 fehlende Übersetzungen).
+- **Test-Abdeckung (`tests/test_archive_suite.py`)**:
+  - 15 neue automatisierte Unit- und Integrationstests für Kompression, Zip-Slip-Sicherheitsabwehr, Integritätsprüfungen, Dialoge, Preview-Panel und Menü-Verdrahtung (15/15 passed).
+
 ## [1.0.8] - 2026-10-07
 
 ExplorerPro 1.0.8
