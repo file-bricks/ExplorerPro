@@ -56,6 +56,7 @@ class TreePanel(QWidget):
         self._fs = AsyncFs(self)
         self._fs.finished.connect(self._on_fs_result)
         self._pending = {}         # token -> (kind, item)
+        self._inflight = {}        # token -> path, until the worker really returned
         self._token = 0
         self._resize_timer = QTimer(self)
         self._resize_timer.setSingleShot(True)
@@ -223,6 +224,8 @@ class TreePanel(QWidget):
         self._token += 1
         token = self._token
         self._pending[token] = (kind, target)
+        if kind == "list":
+            self._inflight[token] = args[0]
         self._fs.submit(token, fn, *args)
         if kind == "list":
             QTimer.singleShot(self.LIST_TIMEOUT_MS, lambda: self._on_list_timeout(token))
@@ -249,7 +252,7 @@ class TreePanel(QWidget):
         if any(kind == "list" and target is item for kind, target in self._pending.values()):
             return
 
-        item.takeChildren()
+        item.takeChildren()  # drops any earlier placeholder, so there is never a second one
         cached = self._dir_cache.get(path)
         if cached is not None:
             self._fill(item, cached)
@@ -257,6 +260,11 @@ class TreePanel(QWidget):
             placeholder = QTreeWidgetItem([t("wird geladen …")])
             placeholder.setFlags(Qt.ItemFlag.NoItemFlags)
             item.addChild(placeholder)
+        if path in self._inflight.values():
+            # An earlier request for this path still hangs: no further thread, just the hint.
+            if cached is None:
+                placeholder.setText(0, t("Keine Antwort – später erneut aufklappen"))
+            return
         self._submit("list", item, list_subfolders, path)
 
     def _fill(self, item, entries):
@@ -271,6 +279,7 @@ class TreePanel(QWidget):
 
     @Slot(object, object, object)
     def _on_fs_result(self, token, result, error):
+        self._inflight.pop(token, None)  # the worker is done, whatever we do with the answer
         entry = self._pending.pop(token, None)
         if entry is None:  # timed out: stale answer
             return

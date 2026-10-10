@@ -224,3 +224,73 @@ def test_directory_preview_drops_answer_for_other_folder(tmp_path):
     assert pump(lambda: "only_b.txt" in preview.toPlainText())
     pump(lambda: False, timeout=0.2)
     assert "only_a.txt" not in preview.toPlainText()
+
+
+@pytest.fixture
+def counted_slow_listdir(monkeypatch):
+    calls = []
+
+    def fake_listdir(path="."):
+        if os.fspath(path) == SLOW:
+            calls.append(path)
+            time.sleep(DELAY)
+            return ["alpha"]
+        return _real_listdir(path)
+
+    monkeypatch.setattr(os, "listdir", fake_listdir)
+    monkeypatch.setattr(os.path, "isdir", lambda p: os.fspath(p).startswith(SLOW) or _real_isdir(p))
+    return calls
+
+
+def test_reexpanding_after_timeout_keeps_exactly_one_placeholder_and_no_new_thread(panel, counted_slow_listdir):
+    panel.LIST_TIMEOUT_MS = 100
+    item = slow_node(panel)
+    item.setExpanded(True)
+    assert pump(lambda: "Keine Antwort" in item.child(0).text(0), timeout=2)
+    item.setExpanded(False)
+    item.setExpanded(True)  # the first worker still hangs
+    assert item.childCount() == 1 and "Keine Antwort" in item.child(0).text(0)
+    item.setExpanded(False)
+    item.setExpanded(True)
+    assert item.childCount() == 1
+    assert len(counted_slow_listdir) == 1, "a hanging path must not get a thread per expand"
+    # Once the worker has really returned, a new expand asks again and times out again.
+    assert pump(lambda: not panel._inflight, timeout=DELAY + 2)
+    item.setExpanded(False)
+    item.setExpanded(True)
+    assert item.childCount() == 1 and "wird geladen" in item.child(0).text(0)
+    assert len(counted_slow_listdir) == 2
+    assert pump(lambda: "Keine Antwort" in item.child(0).text(0), timeout=2)
+    assert item.childCount() == 1
+    pump(lambda: not panel._inflight, timeout=DELAY + 2)
+
+
+def test_parallel_capacity_results_are_applied_and_cached_in_gui_thread(monkeypatch):
+    import threading
+    from types import SimpleNamespace
+    from PySide6.QtCore import QDir
+    from core.drive_usage import load_usage_cache
+
+    drives = ["X:/", "Y:/", "Z:/"]
+    monkeypatch.setattr(QDir, "drives", lambda: [SimpleNamespace(absolutePath=(lambda d=d: d)) for d in drives])
+    gate = threading.Barrier(len(drives))
+    done_threads = []
+
+    def read(path):
+        gate.wait(5)  # all reads finish at the same moment
+        return DriveUsage(1000, 100 * (drives.index(path) + 1), 900 - 100 * drives.index(path))
+
+    monkeypatch.setattr("gui.sidebar.sidebar_main.read_drive_usage", read)
+    p = TreePanel()
+    original = p._usage_done
+
+    def spy(path, future):
+        done_threads.append(threading.current_thread() is not threading.main_thread())
+        # only the signal may leave the pool thread: shared state is still untouched here
+        assert path in p._usage_requests
+        original(path, future)
+
+    p._usage_done = spy
+    assert pump(lambda: not p._usage_requests)
+    assert set(load_usage_cache()) == set(drives)  # one valid file, all values in it
+    assert [load_usage_cache()[d].used for d in drives] == [100, 200, 300]
