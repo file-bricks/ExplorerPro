@@ -219,3 +219,31 @@ def test_known_network_path_is_rechecked_and_dropped_when_gone(filled, monkeypat
     assert filled.current_path == str(target) and not filled.table.isHidden()  # last state at once
     assert pump(lambda: filled.table.isHidden())  # re-check failed: empty page
     assert fb_mod._norm(str(target)) not in filled._known_dirs
+
+
+# ---- a late failure of an OLD target must not blank the page the user moved on to ------
+
+@pytest.mark.parametrize("mode", ["error", "timeout"])
+def test_stale_failure_of_old_target_keeps_known_local_page(filled, monkeypatch, tmp_path, mode):
+    other = tmp_path / "other"
+    other.mkdir()
+    (other / "o.txt").write_text("x")
+    filled.navigate_to(str(other))
+    assert pump(lambda: filled.current_path == str(other) and rows(filled) >= 1)
+    filled.navigate_to(str(tmp_path))  # both now known
+    assert pump(lambda: rows(filled) >= 3)
+
+    def classify(path):
+        time.sleep(0.4)
+        if mode == "error":
+            raise OSError("drive not ready")
+        return "dir"
+
+    monkeypatch.setattr(fb_mod, "_classify", classify)
+    filled.NAV_TIMEOUT_MS = 100 if mode == "timeout" else 15000
+    filled.navigate_to(UNREACHABLE)  # slow check pending ...
+    filled.navigate_to(str(other))   # ... user moves on to a known local folder at once
+    pump(lambda: False, timeout=1.0)  # the old check fails / times out meanwhile
+    assert filled.current_path == str(other)
+    assert not filled.table.isHidden()
+    assert "nicht erreichbar" not in filled._busy.text() and "Keine Antwort" not in filled._busy.text()
