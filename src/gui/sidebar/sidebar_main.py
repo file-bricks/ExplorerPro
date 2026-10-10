@@ -5,7 +5,7 @@ Sidebar - Seitenleiste mit Ordnerbaum, Favoriten, Suche, Apps, Prompts, Sync
 Phase 5: Vollständige Integration
 """
 
-from concurrent.futures import CancelledError
+import time
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget,
@@ -17,31 +17,49 @@ import os
 
 # Module importieren - absolute Imports
 from core.cloud_locations import find_cloud_locations
-from core.file_icon_helper import get_file_icon
+from core.async_fs import AsyncFs, list_subfolders
+from core.file_icon_helper import generic_icon
 from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
 from modules.prompts import PromptsPanel
 from modules.sync import SyncPanel
-from core.drive_usage import read_drive_usage_bounded as read_drive_usage
+from core.drive_usage import (
+    read_drive_usage_bounded as read_drive_usage, load_usage_cache, save_usage_cache,
+)
 from gui.sidebar.drive_capacity import DriveCapacityWidget, capacity_executor
 from translator import t
 
 
 class TreePanel(QWidget):
-    """Ordnerbaum-Panel"""
+    """Ordnerbaum-Panel
+
+    Nothing that can block on a slow drive runs in the GUI thread: folder
+    listings, cloud discovery and capacity reads run in workers and come back
+    as signals. The last known state is shown at once and replaced only when
+    the fresh one is complete.
+    """
 
     folder_selected = Signal(str)
+    _usage_ready = Signal(str, object)
+
+    LIST_TIMEOUT_MS = 15000        # give up on one folder listing
+    USAGE_MIN_INTERVAL_S = 60      # automatic capacity refresh per drive
+    _dir_cache = {}                # path -> [(name, path)], shared, last known listing
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._drive_rows = {}
         self._usage_requests = {}
+        self._usage_cache = load_usage_cache()
+        self._usage_checked = {}   # path -> monotonic time of last finished read
+        self._usage_ready.connect(self._on_drive_usage)
+        self._fs = AsyncFs(self)
+        self._fs.finished.connect(self._on_fs_result)
+        self._pending = {}         # token -> (kind, item)
+        self._token = 0
         self._resize_timer = QTimer(self)
         self._resize_timer.setSingleShot(True)
         self._resize_timer.timeout.connect(self._resize_drive_rows)
-        self._usage_timer = QTimer(self)
-        self._usage_timer.setInterval(50)
-        self._usage_timer.timeout.connect(self._collect_drive_usage)
         self._setup_ui()
         self._populate()
         self.refresh_drive_usage()
@@ -64,7 +82,7 @@ class TreePanel(QWidget):
 
         layout.addWidget(self.tree)
         self.refresh_drives_button = QPushButton(t("Laufwerksbelegung aktualisieren"))
-        self.refresh_drives_button.clicked.connect(self.refresh_drive_usage)
+        self.refresh_drives_button.clicked.connect(lambda: self.refresh_drive_usage(force=True))
         layout.addWidget(self.refresh_drives_button)
 
     def _populate(self):
@@ -97,21 +115,10 @@ class TreePanel(QWidget):
         self.tree.addTopLevelItem(quick_access)
         quick_access.setExpanded(True)
 
-        # Cloud-Speicher (OneDrive, Dropbox, Google Drive, iCloud, ...)
+        # Cloud-Speicher (OneDrive, Dropbox, Google Drive, iCloud, ...): probing
+        # these paths can hang on stream drives, so the node appears when ready.
         self.cloud_item = None
-        try:
-            cloud_locations = find_cloud_locations()
-        except Exception:
-            cloud_locations = []
-        if cloud_locations:
-            self.cloud_item = QTreeWidgetItem(["☁️ " + t("Cloud-Speicher")])
-            self.cloud_item.setFlags(self.cloud_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
-            for location in cloud_locations:
-                child = self._folder_item(location.label, location.path)
-                child.setToolTip(0, location.path)
-                self.cloud_item.addChild(child)
-            self.tree.addTopLevelItem(self.cloud_item)
-            self.cloud_item.setExpanded(True)
+        self._submit("cloud", None, find_cloud_locations)
 
         # Laufwerke
         drives_item = QTreeWidgetItem(["💾 " + t("Laufwerke")])
@@ -125,43 +132,53 @@ class TreePanel(QWidget):
             item = QTreeWidgetItem([""])
             item.setData(0, Qt.ItemDataRole.UserRole, path)
             item.setData(0, Qt.ItemDataRole.AccessibleTextRole, path)
-            item.setIcon(0, get_file_icon(path))
+            item.setIcon(0, generic_icon("drive"))
             item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
             drives_item.addChild(item)
             capacity = DriveCapacityWidget(path)
             self.tree.setItemWidget(item, 0, capacity)
             item.setSizeHint(0, capacity.sizeHint())
             self._drive_rows[path] = (item, capacity)
+            if path in self._usage_cache:
+                capacity.set_usage(self._usage_cache[path])
+                item.setToolTip(0, capacity.toolTip())
+                item.setSizeHint(0, capacity.sizeHint())
 
         drives_item.setExpanded(True)
 
-    def refresh_drive_usage(self):
-        """One request per drive; repeat clicks cannot queue duplicate queries."""
+    def refresh_drive_usage(self, force=False):
+        """One request per drive; automatic calls are throttled, the button forces."""
+        now = time.monotonic()
         for path, (item, capacity) in self._drive_rows.items():
             if path in self._usage_requests:
                 continue
-            capacity.set_loading()
-            item.setSizeHint(0, capacity.sizeHint())
-            self._usage_requests[path] = capacity_executor().submit(read_drive_usage, path)
-        if self._usage_requests:
-            self._usage_timer.start()
-
-    @Slot()
-    def _collect_drive_usage(self):
-        for path, future in list(self._usage_requests.items()):
-            if not future.done():
+            if not force and now - self._usage_checked.get(path, -1e9) < self.USAGE_MIN_INTERVAL_S:
                 continue
-            try:
-                usage = future.result()
-            except (CancelledError, OSError, ValueError):
-                usage = None
-            self._on_drive_usage(path, usage)
-        if not self._usage_requests:
-            self._usage_timer.stop()
+            if not capacity.has_usage:  # nothing stale to show yet
+                capacity.set_loading()
+                item.setSizeHint(0, capacity.sizeHint())
+            future = capacity_executor().submit(read_drive_usage, path)
+            self._usage_requests[path] = future
+            future.add_done_callback(lambda f, p=path: self._usage_done(p, f))
+
+    def _usage_done(self, path, future):
+        """Runs in the pool thread: only forward the data as a queued signal."""
+        try:
+            usage = future.result()
+        except BaseException:  # cancelled, OSError, helper failure: all mean "unavailable"
+            usage = None
+        try:
+            self._usage_ready.emit(path, usage)
+        except RuntimeError:  # panel destroyed
+            pass
 
     @Slot(str, object)
     def _on_drive_usage(self, path, usage):
-        self._usage_requests.pop(path, None)
+        self._usage_requests.pop(path, None)  # always released, also after errors
+        self._usage_checked[path] = time.monotonic()
+        if usage is not None:
+            self._usage_cache[path] = usage
+            save_usage_cache(self._usage_cache)
         row = self._drive_rows.get(path)
         if row is not None:
             item, capacity = row
@@ -197,44 +214,102 @@ class TreePanel(QWidget):
         """Erzeugt einen aufklappbaren Ordner-Eintrag (Unterordner werden lazy geladen)."""
         item = QTreeWidgetItem([name])
         item.setData(0, Qt.ItemDataRole.UserRole, path)
-        item.setIcon(0, get_file_icon(path))
+        item.setIcon(0, generic_icon("folder"))
         item.setToolTip(0, path)
         item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
         return item
 
+    def _submit(self, kind, target, fn, *args):
+        self._token += 1
+        token = self._token
+        self._pending[token] = (kind, target)
+        self._fs.submit(token, fn, *args)
+        if kind == "list":
+            QTimer.singleShot(self.LIST_TIMEOUT_MS, lambda: self._on_list_timeout(token))
+
+    @staticmethod
+    def _alive(item):
+        try:
+            return item.treeWidget() is not None
+        except RuntimeError:
+            return False
+
+    @staticmethod
+    def _is_real(child):
+        return bool(child.data(0, Qt.ItemDataRole.UserRole))
+
     def _on_item_expanded(self, item: QTreeWidgetItem):
-        """Lazy Loading für Unterordner"""
+        """Lazy loading: the listing runs in a worker; the last known one shows at once."""
         path = item.data(0, Qt.ItemDataRole.UserRole)
         if not path:
             return
 
-        if item.childCount() > 0 and item.child(0).data(0, Qt.ItemDataRole.UserRole):
+        if item.childCount() > 0 and self._is_real(item.child(0)):
+            return
+        if any(kind == "list" and target is item for kind, target in self._pending.values()):
             return
 
         item.takeChildren()
+        cached = self._dir_cache.get(path)
+        if cached is not None:
+            self._fill(item, cached)
+        else:
+            placeholder = QTreeWidgetItem([t("wird geladen …")])
+            placeholder.setFlags(Qt.ItemFlag.NoItemFlags)
+            item.addChild(placeholder)
+        self._submit("list", item, list_subfolders, path)
 
-        try:
-            names = sorted(os.listdir(path), key=str.lower)
-        except OSError:
-            names = []
+    def _fill(self, item, entries):
+        """Swap the children in one go, so the user never sees a half-built list."""
+        children = [self._folder_item(name, full) for name, full in entries]
+        item.takeChildren()
+        item.addChildren(children)
+        item.setChildIndicatorPolicy(
+            QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator if children
+            else QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
+        )
 
-        for name in names:
-            if name.startswith('.'):
-                continue
-            full_path = os.path.join(path, name)
-            try:
-                # Cloud-Platzhalter (OneDrive "Nur online") sind Reparse-Points;
-                # isdir() liest nur Metadaten und lädt nichts herunter.
-                if not os.path.isdir(full_path):
-                    continue
-            except OSError:
-                continue
-            item.addChild(self._folder_item(name, full_path))
+    @Slot(object, object, object)
+    def _on_fs_result(self, token, result, error):
+        entry = self._pending.pop(token, None)
+        if entry is None:  # timed out: stale answer
+            return
+        kind, item = entry
+        if kind == "cloud":
+            self._show_cloud([] if error else result)
+            return
+        if not self._alive(item) or not item.isExpanded():
+            return  # node vanished or was closed meanwhile; re-expanding asks again
+        path = item.data(0, Qt.ItemDataRole.UserRole)
+        if error is not None:
+            if path not in self._dir_cache:  # nothing stale worth keeping
+                self._fill(item, [])
+            return
+        previous = self._dir_cache.get(path)
+        self._dir_cache[path] = result
+        showing = item.childCount() > 0 and self._is_real(item.child(0))
+        if previous != result or not showing:
+            self._fill(item, result)
 
-        if item.childCount() == 0:
-            item.setChildIndicatorPolicy(
-                QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
-            )
+    def _on_list_timeout(self, token):
+        entry = self._pending.pop(token, None)  # a late answer is dropped
+        if entry is None:
+            return
+        item = entry[1]
+        if self._alive(item) and item.childCount() == 1 and not self._is_real(item.child(0)):
+            item.child(0).setText(0, t("Keine Antwort – später erneut aufklappen"))
+
+    def _show_cloud(self, cloud_locations):
+        if not cloud_locations:
+            return
+        self.cloud_item = QTreeWidgetItem(["☁️ " + t("Cloud-Speicher")])
+        self.cloud_item.setFlags(self.cloud_item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
+        for location in cloud_locations:
+            child = self._folder_item(location.label, location.path)
+            child.setToolTip(0, location.path)
+            self.cloud_item.addChild(child)
+        self.tree.insertTopLevelItem(1, self.cloud_item)  # between quick access and drives
+        self.cloud_item.setExpanded(True)
 
 
 class FavoritesPanel(QWidget):

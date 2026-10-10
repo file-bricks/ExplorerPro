@@ -93,9 +93,8 @@ def test_cancelled_drive_query_is_reported_as_unavailable(monkeypatch):
         cancelled.cancel()
         panel._usage_requests['X:/'] = cancelled
 
-        panel._collect_drive_usage()
-
-        assert not panel._usage_requests
+        panel._usage_done('X:/', cancelled)  # worker-side callback of a cancelled future
+        wait_until(lambda: not panel._usage_requests)
         assert panel._drive_rows['X:/'][1].details.text() == 'Speicherbelegung nicht verfügbar'
     finally:
         panel.close()
@@ -145,7 +144,7 @@ def test_failed_query_and_recovery(monkeypatch):
     assert item.data(0, Qt.ItemDataRole.AccessibleTextRole) == 'X:/'
     assert 'nicht verfügbar' in widget.details.text()
     monkeypatch.setattr('gui.sidebar.sidebar_main.read_drive_usage', lambda path: DriveUsage(100, 100, 0))
-    panel.refresh_drive_usage()
+    panel.refresh_drive_usage(force=True)  # automatic refreshes are throttled to once a minute
     wait_until(lambda: not panel._usage_requests)
     assert widget.bar.value() == 1000
     assert item.data(0, Qt.ItemDataRole.UserRole) == 'X:/'

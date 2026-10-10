@@ -45,3 +45,10 @@ def get_file_icon(path: str) -> QIcon:
     if os.path.isdir(path):
         return _provider.icon(QFileIconProvider.IconType.Folder)
     return _provider.icon(QFileIconProvider.IconType.File)
+
+
+def generic_icon(kind: str) -> QIcon:
+    """Icon for "folder"/"drive" without touching the path (no disk access)."""
+    icon_type = (QFileIconProvider.IconType.Drive if kind == "drive"
+                 else QFileIconProvider.IconType.Folder)
+    return _provider.icon(icon_type)

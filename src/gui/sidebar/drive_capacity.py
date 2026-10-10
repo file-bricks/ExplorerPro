@@ -36,6 +36,7 @@ class DriveCapacityWidget(QWidget):
     def __init__(self, path, parent=None):
         super().__init__(parent)
         self.path = path
+        self.has_usage = False  # a shown value (even stale) stays until a new one arrives
         # Tree selection and double-click navigation still receive mouse events.
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         layout = QVBoxLayout(self)
@@ -60,6 +61,7 @@ class DriveCapacityWidget(QWidget):
         self.setAccessibleDescription(self.details.text())
 
     def set_usage(self, usage):
+        self.has_usage = usage is not None
         if usage is None:
             self.details.setText(t("Speicherbelegung nicht verfügbar"))
             self.bar.hide()
