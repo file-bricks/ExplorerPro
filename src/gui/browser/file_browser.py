@@ -323,22 +323,26 @@ class FileBrowser(QWidget):
         self._switch(normalize_user_path(path), True)
 
     def _switch(self, path: str, record: bool):
+        # Every navigation (also back/forward/up, which all end here) invalidates older
+        # checks with exactly ONE new token; the recheck/nav branches below reuse it.
+        # Without this a late failure of an earlier target (e.g. a dead E:) stayed
+        # "current" and blanked the view the user had moved on to.
+        self._nav_token += 1
+        token = self._nav_token
         if _norm(path) in self._known_dirs:
             self._go(path, record)  # last known state at once ...
             if self.ASYNC_VALIDATE and drive_kind(path) >= 1:
                 # ... but removable/network drives are re-checked in the background.
-                self._nav_token += 1
-                self._submit(self._nav_token, "recheck", path, _classify, self.NAV_TIMEOUT_MS)
+                self._submit(token, "recheck", path, _classify, self.NAV_TIMEOUT_MS)
         elif not self.ASYNC_VALIDATE:
             if record:
                 self._navigate_sync(path)
             else:
                 self._go(path, False)
         else:
-            self._nav_token += 1
             self._nav_record = record
             self._enter_pending(path, record)
-            self._submit(self._nav_token, "nav", path, _classify, self.NAV_TIMEOUT_MS)
+            self._submit(token, "nav", path, _classify, self.NAV_TIMEOUT_MS)
 
     def _set_busy(self, text):
         if text:
@@ -387,6 +391,8 @@ class FileBrowser(QWidget):
     def _show_unreachable(self, path: str, text=None):
         """The empty page stays; history/back keep working and another click checks again."""
         self._forget(path)
+        if _norm(path) not in (_norm(self._current_path or ""), _norm(self._pending_path or "")):
+            return  # the user is elsewhere now: a stale failure must not touch the view
         self._set_busy(text or t("Laufwerk nicht erreichbar"))
         if not self.table.isHidden():
             self._enter_pending(path, False)
