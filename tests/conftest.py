@@ -53,6 +53,13 @@ def isolated_drive_usage_cache(tmp_path, monkeypatch):
     monkeypatch.setattr('core.drive_usage.cache_path', lambda: tmp_path / 'drive_usage_cache.json')
 
 
+@pytest.fixture(autouse=True)
+def synchronous_navigation(monkeypatch):
+    """Legacy tests expect navigate_to() to take effect at once; tests/test_drive_switch.py covers the async path."""
+    from gui.browser.file_browser import FileBrowser
+    monkeypatch.setattr(FileBrowser, 'ASYNC_VALIDATE', False, raising=False)
+
+
 @pytest.fixture(scope='session', autouse=True)
 def gui_runtime():
     yield

@@ -7,11 +7,11 @@ FileBrowser - Dateilisten-Ansicht mit QuickEditor-Integration
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTableView, QHeaderView,
     QMenu, QAbstractItemView, QMessageBox, QFileSystemModel,
-    QApplication, QInputDialog, QDialog
+    QApplication, QInputDialog, QDialog, QLabel
 )
 from PySide6.QtCore import (
     Qt, Signal, QDir, QModelIndex, QSortFilterProxyModel,
-    QStandardPaths, QUrl, QMimeData, QSize
+    QStandardPaths, QUrl, QMimeData, QSize, QTimer
 )
 from PySide6.QtGui import QAction, QCursor, QDrag, QKeySequence
 import os
@@ -20,7 +20,8 @@ import shutil
 import sys
 from pathlib import Path
 
-from core.platform_utils import open_path_with_system, normalize_user_path
+from core.async_fs import AsyncFs
+from core.platform_utils import open_path_with_system, normalize_user_path, drive_kind
 from translator import t
 
 # Editor-Extensions
@@ -46,6 +47,23 @@ def base_entry_filters() -> QDir.Filter:
     if sys.platform.startswith("win"):
         filters |= QDir.Filter.System
     return filters
+
+
+def _norm(path: str) -> str:
+    return os.path.normcase(os.path.normpath(path))
+
+
+def _classify(path: str):
+    """Blocking stat calls (worker): 'file', 'dir' or None."""
+    if os.path.isfile(path):
+        return "file"
+    return "dir" if os.path.isdir(path) else None
+
+
+def _probe(path: str) -> bool:
+    """A listing proves the drive answers right now (worker)."""
+    os.listdir(path)
+    return True
 
 
 class _DnDTableView(QTableView):
@@ -126,16 +144,33 @@ class FileBrowser(QWidget):
     file_double_clicked = Signal(str)
     edit_requested = Signal(str)        # Datei im Editor öffnen
 
+    # Switching to a path nobody has proven reachable is validated in a worker, so a
+    # dead/slow drive never blocks the GUI. Paths in _known_dirs go straight in.
+    ASYNC_VALIDATE = True
+    NAV_TIMEOUT_MS = 15000
+    PRELOAD_TIMEOUT_MS = 15000
+    PRELOAD_GAP_MS = 300  # throttle between two drive preloads
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self._current_path = ""
         self._history = []
         self._history_index = -1
         self._file_count = 0
+        self._known_dirs = set()
+        self._tokens = {}           # token -> (kind, path)
+        self._nav_token = 0
+        self._preload_queue = []
+        self._preload_busy = False
+        self._preload_seq = 0
+        self._fs = AsyncFs(self)
+        self._fs.finished.connect(self._on_fs_result)
         self._setup_ui()
+        self._busy = QLabel(t("wird geladen …"), self.table.viewport())
+        self._busy.hide()
 
         # Startverzeichnis (Einstellung "Startordner", sonst Benutzerordner)
-        self.navigate_to(self.default_start_path())
+        self._navigate_sync(self.default_start_path())
 
     @staticmethod
     def default_start_path() -> str:
@@ -254,6 +289,7 @@ class FileBrowser(QWidget):
     def _on_directory_loaded(self, path: str):
         """Handler wenn Verzeichnis geladen wurde"""
         if os.path.normcase(os.path.normpath(path)) == os.path.normcase(os.path.normpath(self._current_path or "")):
+            self._busy.hide()
             self._update_file_count()
             self.selection_changed.emit(len(self.get_selected_files()))
 
@@ -276,20 +312,104 @@ class FileBrowser(QWidget):
         self.selection_changed.emit(selected)
 
     def navigate_to(self, path: str):
-        """Navigiert zu einem Pfad"""
+        """Navigiert zu einem Pfad; unbekannte Pfade werden im Hintergrund geprüft."""
         if not path:
             return
         path = normalize_user_path(path)
+        if _norm(path) in self._known_dirs:
+            self._go(path)
+        elif not self.ASYNC_VALIDATE:
+            self._navigate_sync(path)
+        else:
+            self._nav_token += 1
+            self._set_busy(t("wird geladen …"))
+            self._submit(self._nav_token, "nav", path, _classify, self.NAV_TIMEOUT_MS)
+
+    def _set_busy(self, text):
+        if text:
+            self._busy.setText(text)
+            self._busy.adjustSize()
+            self._busy.move(12, 40)
+            self._busy.show()
+            self._busy.raise_()
+        else:
+            self._busy.hide()
+
+    def _submit(self, token, kind, path, fn, timeout_ms):
+        self._tokens[token] = (kind, path)
+        self._fs.submit(token, fn, path)
+        QTimer.singleShot(timeout_ms, lambda: self._on_timeout(token))
+
+    def _on_fs_result(self, token, result, error):
+        entry = self._tokens.pop(token, None)
+        if entry is None:  # timed out: a late answer is dropped
+            return
+        kind, path = entry
+        if kind == "preload":
+            self._preload_busy = False
+            if error is None and result:
+                self._known_dirs.add(_norm(path))
+                index = self.model.index(path)  # just proved reachable: cheap now
+                if index.isValid():
+                    self.model.fetchMore(index)  # warm the model for an instant first view
+            QTimer.singleShot(self.PRELOAD_GAP_MS, self._preload_next)
+            return
+        if error is not None or result is None:
+            if token == self._nav_token:
+                self._set_busy(None)
+            return
+        folder = path if result == "dir" else os.path.dirname(path)
+        self._known_dirs.add(_norm(folder))
+        if token != self._nav_token:  # the user went elsewhere meanwhile
+            return
+        self._set_busy(None)
+        self._go(folder)
+        if result == "file":
+            self.file_selected.emit(path)
+
+    def _on_timeout(self, token):
+        entry = self._tokens.pop(token, None)
+        if entry is None:
+            return
+        if entry[0] == "preload":
+            self._preload_busy = False
+            QTimer.singleShot(self.PRELOAD_GAP_MS, self._preload_next)
+        elif token == self._nav_token:
+            self._set_busy(t("Keine Antwort – Laufwerk reagiert nicht"))
+
+    def preload_roots(self, paths):
+        """Warm the start page of each drive in the background: local disks first, one at a time."""
+        queued = [p for p in self._preload_queue]
+        for path in sorted(paths, key=drive_kind):
+            if path not in queued and _norm(path) not in self._known_dirs:
+                self._preload_queue.append(path)
+        self._preload_next()
+
+    def _preload_next(self):
+        if self._preload_busy or not self._preload_queue:
+            return
+        path = self._preload_queue.pop(0)
+        self._preload_busy = True
+        self._preload_seq -= 1  # negative tokens: never confused with user navigations
+        self._submit(self._preload_seq, "preload", path, _probe, self.PRELOAD_TIMEOUT_MS)
+
+    def _navigate_sync(self, path: str):
         if os.path.isfile(path):
             # Datei-Pfad (z. B. aus Suche oder Adresszeile): Ordner öffnen
             # und die Datei anschließend markieren.
             folder = os.path.dirname(path)
             if folder and os.path.isdir(folder):
-                self.navigate_to(folder)
+                self._navigate_sync(folder)
                 self.file_selected.emit(path)
             return
         if not os.path.isdir(path):
             return
+        self._go(path)
+
+    def _go(self, path: str):
+        """Switch the view; callers have established that *path* is a reachable folder."""
+        for folder in (Path(path), *Path(path).parents):  # ancestors exist too: "up" is instant
+            self._known_dirs.add(_norm(str(folder)))
 
         # History aktualisieren
         if self._current_path and self._current_path != path:
@@ -310,6 +430,8 @@ class FileBrowser(QWidget):
         self.table.setRootIndex(proxy_index)
 
         self._update_file_count()
+        # Nothing cached yet: say so until the (asynchronous) listing arrives.
+        self._set_busy(t("wird geladen …") if self.model.rowCount(source_index) == 0 else None)
 
         # Signale senden
         self.folder_changed.emit(path)

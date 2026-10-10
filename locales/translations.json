@@ -9430,5 +9430,13 @@
     "zh": "无响应 – 请稍后再次展开",
     "ja": "応答がありません – 後でもう一度展開してください",
     "ru": "Нет ответа – разверните позже ещё раз"
+  },
+  "Keine Antwort – Laufwerk reagiert nicht": {
+    "de": "Keine Antwort – Laufwerk reagiert nicht",
+    "en": "No response – drive is not answering",
+    "es": "Sin respuesta: la unidad no responde",
+    "zh": "无响应 – 驱动器未应答",
+    "ja": "応答がありません – ドライブが応答しません",
+    "ru": "Нет ответа – диск не отвечает"
   }
 }

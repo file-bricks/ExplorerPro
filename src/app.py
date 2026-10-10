@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 
 from PySide6.QtWidgets import QMessageBox
-from PySide6.QtCore import QSettings
+from PySide6.QtCore import QSettings, QTimer
 
 from gui.main_window import MainWindow
 from modules.privacy.privacy_monitor import PrivacyMonitor
@@ -45,6 +45,9 @@ class ExplorerProApp(MainWindow):
         self._load_settings()
         self._setup_connections()
         self._apply_settings(startup=True)
+
+        # Keep every drive's start page ready, shortly after the window is up.
+        QTimer.singleShot(800, lambda: self.file_browser.preload_roots(self.sidebar.drive_paths()))
 
         logging.info("ExplorerPro gestartet")
 
