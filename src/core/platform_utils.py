@@ -62,6 +62,21 @@ def open_terminal_in_directory(path: str) -> subprocess.Popen:
     return subprocess.Popen(cmd, cwd=target_dir, creationflags=flags)
 
 
+def drive_kind(path: str) -> int:
+    """Preload order: 0 = local fixed disk, 1 = removable/optical/unknown, 2 = network.
+
+    GetDriveTypeW reads no medium, so it cannot hang. Off Windows everything is 0.
+    """
+    if not sys.platform.startswith("win"):
+        return 0
+    try:
+        import ctypes
+        kind = ctypes.windll.kernel32.GetDriveTypeW(os.path.splitdrive(path)[0] + "\\")
+    except Exception:
+        return 1
+    return {3: 0, 4: 2}.get(kind, 1)
+
+
 def normalize_user_path(path: str) -> str:
     """Bereinigt einen vom Nutzer eingegebenen oder eingefügten Pfad.
 

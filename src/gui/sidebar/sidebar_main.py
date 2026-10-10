@@ -147,6 +147,9 @@ class TreePanel(QWidget):
 
         drives_item.setExpanded(True)
 
+    def drive_paths(self):
+        return list(self._drive_rows)
+
     def refresh_drive_usage(self, force=False):
         """One request per drive; automatic calls are throttled, the button forces."""
         now = time.monotonic()
@@ -489,6 +492,9 @@ class Sidebar(QWidget):
     def set_file_index(self, file_index):
         """Setzt den Datei-Index für die Suche"""
         self.search_panel.set_index(file_index)
+
+    def drive_paths(self):
+        return self.tree_panel.drive_paths()
 
     def switch_to_tab(self, index: int):
         """Wechselt zum angegebenen Tab"""
