@@ -1,10 +1,18 @@
 # ExplorerPro – Store-Fehler und Versionsstand
 
-Stand: 08.10.2026. Der Status wurde nach dem Upload im Partner Center unabhängig zurückgelesen.
+Stand: 10.10.2026. Der Status wurde nach dem Upload im Partner Center unabhängig zurückgelesen.
 
 ## Veröffentlichte Store-Version: 1.0.7.0
 
 Die veröffentlichte Submission ist `1152921505701989667`. Das neu eingereichte Update ersetzt diese Version erst nach erfolgreicher Zertifizierung und Veröffentlichung durch Microsoft. Eine Installation des neuen Store-Updates ist noch nicht bestätigt.
+
+## Store-Entwurf: 1.0.9.0 (nicht eingereicht)
+
+- Entwurfs-Submission: `1152921505702093919`, Status **PendingCommit** (nicht eingereicht, kein Commit). Die Vorgängerversion 1.0.8 (`1152921505702068603`) ist inzwischen **Published**.
+- Paket: `releases/windowsstore/v1.0.9/ExplorerPro.msix`, SHA-256 `2e4a22956a777e0a880a3287b90424724ddafcb0f39ce2a935672f84aac1ba05`.
+- Quellcommit: `24c2282481e86d0253abd1b7d487a9c7dd7a8d1f` (Merge von PR #21, Behebung der GUI-Blockade bei langsamen Laufwerken).
+- Offen vor dem Einreichen: Sicht-OK des Nutzers mit echten langsamen Laufwerken, Freigabe zum Commit, „Neuigkeiten in dieser Version“ (der Entwurf enthält noch den Text von 1.0.8; Texte aus `releases/windowsstore/v1.0.9/release-notes.json`).
+- Testlauf (`pytest -n 2`, eigene venv mit pytest-qt, Offscreen): 560 bestanden, 9 übersprungen, **1 fehlgeschlagen**: `test_drive_query_process.py::test_four_stalled_reads_release_slot_for_healthy_fifth`. Der Test erlaubt dem gesunden Hilfsprozess nur 1 s (Produktion: 10 s); der Python-Start dauert auf diesem Rechner rund 1 s. Test unverändert, Fehler hostbedingt.
 
 ## Eingereichtes Update: 1.0.8.0
 
