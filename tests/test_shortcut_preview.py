@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -128,6 +129,10 @@ def test_preview_panel_lists_resolved_shortcut_folder(monkeypatch, tmp_path) -> 
     panel.show_preview(str(link))
 
     assert panel.preview_stack.currentWidget() is panel.directory_preview
+    deadline = time.monotonic() + 4  # the folder is listed in the background
+    while "README.md" not in panel.directory_preview.toPlainText() and time.monotonic() < deadline:
+        QApplication.processEvents()
+        time.sleep(0.005)
     text = panel.directory_preview.toPlainText()
     assert "Verknüpfung: Projekt.lnk" in text
     assert "README.md" in text

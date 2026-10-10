@@ -23,7 +23,7 @@ Der aktuelle Quellcode zeigt in der Ordner-Seitenleiste die Speicherbelegung je 
 [![Dachverband: open--bricks](https://img.shields.io/badge/Dachverband-open--bricks-blue.svg)](https://github.com/open-bricks)
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
-[![Version: 1.0.8](https://img.shields.io/badge/Version-1.0.8-orange.svg)](CHANGELOG.md)
+[![Version: 1.0.9](https://img.shields.io/badge/Version-1.0.9-orange.svg)](CHANGELOG.md)
 [![Stand](https://img.shields.io/badge/Stand-2026--10--08-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]

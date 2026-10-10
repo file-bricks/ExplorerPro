@@ -47,6 +47,12 @@ def collect_gui_cycles():
     _collector.collect()
 
 
+@pytest.fixture(autouse=True)
+def isolated_drive_usage_cache(tmp_path, monkeypatch):
+    """Tests never read or write the user's real ~/.explorerpro capacity cache."""
+    monkeypatch.setattr('core.drive_usage.cache_path', lambda: tmp_path / 'drive_usage_cache.json')
+
+
 @pytest.fixture(scope='session', autouse=True)
 def gui_runtime():
     yield

@@ -102,6 +102,15 @@ def test_browser_shows_windows_system_entries(monkeypatch):
     assert not file_browser.base_entry_filters() & QDir.Filter.System
 
 
+def _pump(predicate, timeout=4.0):
+    import time
+    from PySide6.QtWidgets import QApplication
+    end = time.monotonic() + timeout
+    while not predicate() and time.monotonic() < end:
+        QApplication.processEvents()
+        time.sleep(0.005)
+
+
 def test_sidebar_lists_cloud_storage(app, monkeypatch, tmp_path):
     from gui.sidebar import sidebar_main
 
@@ -114,10 +123,12 @@ def test_sidebar_lists_cloud_storage(app, monkeypatch, tmp_path):
     )
     panel = sidebar_main.TreePanel()
     try:
+        _pump(lambda: panel.cloud_item is not None)  # discovered in the background
         assert panel.cloud_item is not None
         child = panel.cloud_item.child(0)
         assert child.text(0) == "OneDrive"
-        panel._on_item_expanded(child)
+        child.setExpanded(True)  # real expansion: stale answers for closed nodes are dropped
+        _pump(lambda: [child.child(i).text(0) for i in range(child.childCount())] == ["Projekte"])
         assert [child.child(i).text(0) for i in range(child.childCount())] == ["Projekte"]
     finally:
         shiboken6.delete(panel)

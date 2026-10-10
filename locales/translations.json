@@ -9414,5 +9414,21 @@
     "zh": "目标目录",
     "ja": "出力先フォルダー",
     "ru": "Папка назначения"
+  },
+  "wird geladen …": {
+    "de": "wird geladen …",
+    "en": "loading …",
+    "es": "cargando …",
+    "zh": "正在加载 …",
+    "ja": "読み込み中 …",
+    "ru": "загрузка …"
+  },
+  "Keine Antwort – später erneut aufklappen": {
+    "de": "Keine Antwort – später erneut aufklappen",
+    "en": "No response – expand again later",
+    "es": "Sin respuesta: vuelve a expandir más tarde",
+    "zh": "无响应 – 请稍后再次展开",
+    "ja": "応答がありません – 後でもう一度展開してください",
+    "ru": "Нет ответа – разверните позже ещё раз"
   }
 }

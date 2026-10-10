@@ -20,6 +20,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+from core.async_fs import AsyncFs
 from core.file_attributes import is_cloud_placeholder
 from core.shortcut_utils import build_shortcut_preview_target, is_windows_shortcut
 from core.ui_translator import NO_TRANSLATE
@@ -261,32 +262,44 @@ class DirectoryPreview(QPlainTextEdit):
         self.setReadOnly(True)
         self.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
         self.setFont(QFont("Consolas", 10))
+        self._fs = AsyncFs(self)
+        self._fs.finished.connect(self._on_listed)
+        self._request = (0, "", "")
+        self._wanted = 0       # token of the newest request; older answers are dropped
+        self._text_cache = {}  # path -> last rendered text, shown while refreshing
+
+    @staticmethod
+    def _read_lines(path: str):
+        """Blocking part (runs in a worker): marker/name lines of the first 200 entries."""
+        folder = Path(path)
+        entries = sorted(folder.iterdir(), key=lambda item: (not item.is_dir(), item.name.lower()))
+        lines = [("[DIR]" if e.is_dir() else "     ") + " " + e.name for e in entries[:200]]
+        return lines, len(entries)
 
     def load_directory(self, path: str, heading: str | None = None):
-        folder = Path(path)
-        lines = [heading or t("Ordner: {path}").format(path=folder), ""]
+        head = heading or t("Ordner: {path}").format(path=Path(path))
+        self._wanted += 1
+        self._request = (self._wanted, path, head)
+        # Last known listing (or a placeholder) at once; the fresh one replaces it when complete.
+        self.setPlainText(self._text_cache.get(path) or f"{head}\n\n{t('wird geladen …')}")
+        self._fs.submit(self._wanted, self._read_lines, path)
 
-        try:
-            entries = sorted(
-                folder.iterdir(),
-                key=lambda item: (not item.is_dir(), item.name.lower()),
-            )
-        except OSError as exc:
-            self.setPlainText(
-                t("Ordner konnte nicht gelesen werden:") + f"\n{folder}\n\n{exc}"
-            )
+    def _on_listed(self, token, result, error):
+        if token != self._wanted:
+            return  # another folder was selected meanwhile
+        _, path, head = self._request
+        if error is not None:
+            if path not in self._text_cache:
+                self.setPlainText(
+                    t("Ordner konnte nicht gelesen werden:") + f"\n{Path(path)}\n\n{error}"
+                )
             return
-
-        if not entries:
-            lines.append(t("(leer)"))
-        else:
-            for entry in entries[:200]:
-                marker = "[DIR]" if entry.is_dir() else "     "
-                lines.append(f"{marker} {entry.name}")
-            if len(entries) > 200:
-                lines.append(t("... {count} weitere Einträge").format(count=len(entries) - 200))
-
-        self.setPlainText("\n".join(lines))
+        lines, total = result
+        out = [head, ""] + (lines or [t("(leer)")])
+        if total > 200:
+            out.append(t("... {count} weitere Einträge").format(count=total - 200))
+        self._text_cache[path] = "\n".join(out)
+        self.setPlainText(self._text_cache[path])
 
 
 class PdfPreview(QScrollArea):

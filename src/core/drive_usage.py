@@ -125,6 +125,32 @@ def read_drive_usage(path: str) -> DriveUsage:
     return DriveUsage(usage.total, usage.used, usage.free)
 
 
+def cache_path() -> Path:
+    return Path.home() / ".explorerpro" / "drive_usage_cache.json"
+
+
+def load_usage_cache() -> dict:
+    """Last known capacity per drive, shown at once while the fresh read runs."""
+    try:
+        raw = json.loads(cache_path().read_text(encoding="utf-8"))
+        return {p: DriveUsage(int(v["total"]), int(v["used"]), int(v["free"]))
+                for p, v in raw.items()}
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return {}
+
+
+def save_usage_cache(cache: dict) -> None:
+    target = cache_path()
+    tmp = target.with_suffix(".tmp")
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        tmp.write_text(json.dumps({p: {"total": u.total, "used": u.used, "free": u.free}
+                                   for p, u in cache.items()}), encoding="utf-8")
+        os.replace(tmp, target)
+    except OSError:
+        pass  # the cache is a convenience only
+
+
 def format_capacity(size: int) -> str:
     """Use explicit binary units, retaining useful precision for small drives."""
     value = float(size)

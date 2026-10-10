@@ -5,6 +5,22 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.9] - 2026-10-10
+
+### Fix: Oberfläche friert bei langsamen Laufwerken nicht mehr ein (de)
+- **Ordnerbaum**: Aufklappen eines Ordners listet Unterordner im Hintergrund. Beim ersten Mal erscheint „wird geladen …“, danach sofort der zuletzt bekannte Stand; die neue Liste ersetzt ihn erst, wenn sie vollständig vorliegt. Antworten für inzwischen zugeklappte Knoten werden verworfen; reagiert ein Ordner 15 s nicht, erscheint ein Hinweis statt eines Hängers.
+- **Laufwerke & Cloud-Speicher**: Keine Shell-Icon-Abfrage mehr im GUI-Thread (generische Laufwerks-/Ordner-Symbole); Cloud-Speicher werden im Hintergrund gesucht und erscheinen, sobald sie gefunden sind.
+- **Speicherbelegung**: Ergebnis kommt per Signal statt per 50-ms-Polling; automatische Aktualisierung höchstens alle 60 s je Laufwerk (Button erzwingt sie). Der letzte Stand bleibt sichtbar, bis der neue vorliegt, und wird in `~/.explorerpro/drive_usage_cache.json` gespeichert, damit auch der Start sofort Werte zeigt. Fehler (auch unerwartete) lassen eine Zeile nicht mehr dauerhaft auf „wird ermittelt“ hängen.
+- **Ordner-Vorschau**: Verzeichnis wird im Hintergrund gelesen (Platzhalter bzw. letzter Stand sofort sichtbar).
+- 10 neue Tests (`tests/test_gui_freeze.py`) messen die Blockadezeit der Ereignisschleife bei künstlich verzögerten Laufwerken.
+
+### Fix: GUI no longer freezes on slow drives (en)
+- **Folder tree**: expanding a folder lists subfolders in the background. First time shows "loading …", afterwards the last known state at once; the fresh list replaces it only when complete. Answers for collapsed nodes are discarded; a folder silent for 15 s shows a hint instead of hanging.
+- **Drives & cloud storage**: no shell icon lookups on the GUI thread (generic drive/folder icons); cloud locations are discovered in the background.
+- **Drive capacity**: results arrive by signal instead of 50 ms polling; automatic refresh at most every 60 s per drive (the button forces it). The last value stays visible until the new one arrives and is persisted in `~/.explorerpro/drive_usage_cache.json` so startup shows values immediately. Any error now releases the row instead of leaving it stuck on "checking".
+- **Folder preview**: directory is read in the background (placeholder or last state shown at once).
+- 10 new tests (`tests/test_gui_freeze.py`) measure event-loop blocking with artificially delayed drives.
+
 ### Native ZIP- & Archiv-Suite (2026-10-08, TW-EP-12)
 - **Core-Archiv-Service (`src/core/archive_service.py`)**:
   - `create_zip_archive`: Atomare Komprimierung über temporäre `.tmp`-Dateien, rekursiver Verzeichnis-Walk mit Erhalt leerer Ordnerstrukturen, wählbare Kompressionsmethoden (`ZIP_DEFLATED`, `ZIP_STORED`, `ZIP_BZIP2`, `ZIP_LZMA`), Abbruch- und Fortschritts-Callbacks.
