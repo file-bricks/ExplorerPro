@@ -163,11 +163,16 @@ class FileBrowser(QWidget):
         self._preload_queue = []
         self._preload_busy = False
         self._preload_seq = 0
+        self._pending_path = None
+        self._nav_record = True
         self._fs = AsyncFs(self)
         self._fs.finished.connect(self._on_fs_result)
         self._setup_ui()
-        self._busy = QLabel(t("wird geladen …"), self.table.viewport())
+        # Status text for an EMPTY page only; it is hidden as soon as rows exist.
+        self._busy = QLabel(t("wird geladen …"), self)
+        self._busy.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._busy.hide()
+        self.proxy.rowsInserted.connect(self._on_rows_inserted)
 
         # Startverzeichnis (Einstellung "Startordner", sonst Benutzerordner)
         self._navigate_sync(self.default_start_path())
@@ -315,25 +320,82 @@ class FileBrowser(QWidget):
         """Navigiert zu einem Pfad; unbekannte Pfade werden im Hintergrund geprüft."""
         if not path:
             return
-        path = normalize_user_path(path)
+        self._switch(normalize_user_path(path), True)
+
+    def _switch(self, path: str, record: bool):
         if _norm(path) in self._known_dirs:
-            self._go(path)
+            self._go(path, record)  # last known state at once ...
+            if self.ASYNC_VALIDATE and drive_kind(path) >= 1:
+                # ... but removable/network drives are re-checked in the background.
+                self._nav_token += 1
+                self._submit(self._nav_token, "recheck", path, _classify, self.NAV_TIMEOUT_MS)
         elif not self.ASYNC_VALIDATE:
-            self._navigate_sync(path)
+            if record:
+                self._navigate_sync(path)
+            else:
+                self._go(path, False)
         else:
             self._nav_token += 1
-            self._set_busy(t("wird geladen …"))
+            self._nav_record = record
+            self._enter_pending(path, record)
             self._submit(self._nav_token, "nav", path, _classify, self.NAV_TIMEOUT_MS)
 
     def _set_busy(self, text):
         if text:
             self._busy.setText(text)
             self._busy.adjustSize()
-            self._busy.move(12, 40)
+            self._center_busy()
             self._busy.show()
             self._busy.raise_()
         else:
             self._busy.hide()
+
+    def _center_busy(self):
+        area = self.table.geometry()
+        self._busy.move(area.x() + max(0, (area.width() - self._busy.width()) // 2),
+                        area.y() + max(0, (area.height() - self._busy.height()) // 3))
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._center_busy()
+
+    def _on_rows_inserted(self, parent, *_):
+        if not self.table.isHidden() and parent == self.table.rootIndex():
+            self._busy.hide()  # never a status text over entries
+
+    def _push_history(self, path: str):
+        if self._current_path and self._current_path != path:
+            self._history = self._history[:self._history_index + 1]
+            self._history.append(path)
+            self._history_index = len(self._history) - 1
+        elif not self._history:
+            self._history.append(path)
+            self._history_index = 0
+
+    def _enter_pending(self, path: str, record: bool):
+        """Show the target at once as an EMPTY page (no old entries) until it is confirmed."""
+        if record:
+            self._push_history(path)
+        self._current_path = path
+        self._pending_path = path
+        self._file_count = 0
+        self.table.hide()  # empty page: no entries at all, only the status text
+        self._set_busy(t("wird geladen …"))
+        self.folder_changed.emit(path)
+        self.path_changed.emit(path)
+
+    def _show_unreachable(self, path: str, text=None):
+        """The empty page stays; history/back keep working and another click checks again."""
+        self._forget(path)
+        self._set_busy(text or t("Laufwerk nicht erreichbar"))
+        if not self.table.isHidden():
+            self._enter_pending(path, False)
+            self._set_busy(text or t("Laufwerk nicht erreichbar"))
+
+    def _forget(self, path: str):
+        """The path (and everything below it) is no longer trusted; other drives stay known."""
+        key = _norm(path)
+        self._known_dirs = {k for k in self._known_dirs if k != key and not k.startswith(key.rstrip(r"\/") + os.sep)}
 
     def _submit(self, token, kind, path, fn, timeout_ms):
         self._tokens[token] = (kind, path)
@@ -354,16 +416,20 @@ class FileBrowser(QWidget):
                     self.model.fetchMore(index)  # warm the model for an instant first view
             QTimer.singleShot(self.PRELOAD_GAP_MS, self._preload_next)
             return
+        if kind == "recheck":
+            if (error is not None or result is None) and token == self._nav_token \
+                    and _norm(self._current_path) == _norm(path):
+                self._show_unreachable(path)  # the shown last state was stale
+            return
         if error is not None or result is None:
             if token == self._nav_token:
-                self._set_busy(None)
+                self._show_unreachable(path)
             return
         folder = path if result == "dir" else os.path.dirname(path)
         self._known_dirs.add(_norm(folder))
         if token != self._nav_token:  # the user went elsewhere meanwhile
             return
-        self._set_busy(None)
-        self._go(folder)
+        self._go(folder, self._nav_record)
         if result == "file":
             self.file_selected.emit(path)
 
@@ -375,7 +441,7 @@ class FileBrowser(QWidget):
             self._preload_busy = False
             QTimer.singleShot(self.PRELOAD_GAP_MS, self._preload_next)
         elif token == self._nav_token:
-            self._set_busy(t("Keine Antwort – Laufwerk reagiert nicht"))
+            self._show_unreachable(entry[1], t("Keine Antwort – Laufwerk reagiert nicht"))
 
     def preload_roots(self, paths):
         """Warm the start page of each drive in the background: local disks first, one at a time."""
@@ -406,22 +472,22 @@ class FileBrowser(QWidget):
             return
         self._go(path)
 
-    def _go(self, path: str):
+    def _go(self, path: str, record: bool = True):
         """Switch the view; callers have established that *path* is a reachable folder."""
         for folder in (Path(path), *Path(path).parents):  # ancestors exist too: "up" is instant
             self._known_dirs.add(_norm(str(folder)))
 
-        # History aktualisieren
-        if self._current_path and self._current_path != path:
-            # Vorwärts-History löschen
-            self._history = self._history[:self._history_index + 1]
-            self._history.append(path)
-            self._history_index = len(self._history) - 1
-        elif not self._history:
-            self._history.append(path)
-            self._history_index = 0
+        if record:
+            pending = self._pending_path
+            if pending and self._history and self._history[self._history_index] == pending and path != pending:
+                self._history[self._history_index] = path  # e.g. a file path resolved to its folder
+                self._current_path = path
+            else:
+                self._push_history(path)
 
         self._current_path = path
+        self._pending_path = None
+        self.table.show()
 
         # QFileSystemModel loads directories asynchronously. index(path) alone
         # can point at a valid directory while its rows remain empty forever.
@@ -430,7 +496,7 @@ class FileBrowser(QWidget):
         self.table.setRootIndex(proxy_index)
 
         self._update_file_count()
-        # Nothing cached yet: say so until the (asynchronous) listing arrives.
+        # Nothing cached yet: say so (on the empty page) until the listing arrives.
         self._set_busy(t("wird geladen …") if self.model.rowCount(source_index) == 0 else None)
 
         # Signale senden
@@ -441,27 +507,13 @@ class FileBrowser(QWidget):
         """Geht einen Schritt zurück"""
         if self._history_index > 0:
             self._history_index -= 1
-            path = self._history[self._history_index]
-            self._current_path = path
-            source_index = self.model.setRootPath(path)
-            proxy_index = self.proxy.mapFromSource(source_index)
-            self.table.setRootIndex(proxy_index)
-            self._update_file_count()
-            self.folder_changed.emit(path)
-            self.path_changed.emit(path)
+            self._switch(self._history[self._history_index], False)
 
     def go_forward(self):
         """Geht einen Schritt vorwärts"""
         if self._history_index < len(self._history) - 1:
             self._history_index += 1
-            path = self._history[self._history_index]
-            self._current_path = path
-            source_index = self.model.setRootPath(path)
-            proxy_index = self.proxy.mapFromSource(source_index)
-            self.table.setRootIndex(proxy_index)
-            self._update_file_count()
-            self.folder_changed.emit(path)
-            self.path_changed.emit(path)
+            self._switch(self._history[self._history_index], False)
 
     def go_up(self):
         """Geht zum übergeordneten Ordner"""

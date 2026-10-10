@@ -9438,5 +9438,13 @@
     "zh": "无响应 – 驱动器未应答",
     "ja": "応答がありません – ドライブが応答しません",
     "ru": "Нет ответа – диск не отвечает"
+  },
+  "Laufwerk nicht erreichbar": {
+    "de": "Laufwerk nicht erreichbar",
+    "en": "Drive not reachable",
+    "es": "Unidad no accesible",
+    "zh": "驱动器无法访问",
+    "ja": "ドライブにアクセスできません",
+    "ru": "Диск недоступен"
   }
 }

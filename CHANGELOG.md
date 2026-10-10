@@ -14,6 +14,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - **Ordner-Vorschau**: Verzeichnis wird im Hintergrund gelesen (Platzhalter bzw. letzter Stand sofort sichtbar).
 - 10 neue Tests (`tests/test_gui_freeze.py`) messen die Blockadezeit der Ereignisschleife bei künstlich verzögerten Laufwerken.
 - **Laufwerkswechsel ohne Hänger (de)**: Seitenleiste, Adressleiste, Tastatur und Favoriten wechseln über denselben Weg. Unbekannte Pfade werden im Hintergrund auf Erreichbarkeit geprüft (Hinweis „wird geladen …“, alte Ansicht bleibt bedienbar, nach 15 s „Keine Antwort – Laufwerk reagiert nicht“, neuere Navigation hat Vorrang). Die Startseite jedes Laufwerks wird nach dem Start im Hintergrund vorgeladen und vorgehalten (gedrosselt, lokale Platten zuerst, dann Wechsel- und Netzlaufwerke, mit Timeout); ein Klick darauf zeigt sie sofort.
+- **Nicht erreichbares Laufwerk (de)**: Der Wechsel zeigt sofort eine leere Seite mit dem Ziel in der Adressleiste und dem Hinweis „wird geladen …“ bzw. „Laufwerk nicht erreichbar“ / „Keine Antwort – Laufwerk reagiert nicht“; der vorige Ordner bleibt nicht stehen und der Hinweis liegt nie über Einträgen. „Zurück“ funktioniert weiter, ein erneuter Klick prüft erneut. Bereits bekannte Wechsel-/Netzlaufwerke zeigen den vorgehaltenen Stand sofort und werden im Hintergrund nachgeprüft; schlägt das fehl, erscheint die leere Seite.
 
 ### Fix: GUI no longer freezes on slow drives (en)
 - **Folder tree**: expanding a folder lists subfolders in the background. First time shows "loading …", afterwards the last known state at once; the fresh list replaces it only when complete. Answers for collapsed nodes are discarded; a folder silent for 15 s shows a hint instead of hanging.
@@ -22,6 +23,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - **Folder preview**: directory is read in the background (placeholder or last state shown at once).
 - 10 new tests (`tests/test_gui_freeze.py`) measure event-loop blocking with artificially delayed drives.
 - **Drive switching without hangs (en)**: sidebar, address bar, keyboard and favorites share one path. Unknown paths are checked for reachability in the background ("loading …" hint, previous view stays usable, after 15 s "No response – drive is not answering", newer navigation wins). Each drive's start page is preloaded and kept ready in the background after startup (throttled, local disks first, then removable and network drives, with timeout); a click shows it at once.
+- **Unreachable drive (en)**: switching shows an empty page at once with the target in the address bar and the hint "loading …" / "Drive not reachable" / "No response – drive is not answering"; the previous folder no longer stays and the hint never covers entries. Back keeps working, another click checks again. Known removable/network drives show the kept state at once and are re-checked in the background; if that fails the empty page appears.
 
 ### Native ZIP- & Archiv-Suite (2026-10-08, TW-EP-12)
 - **Core-Archiv-Service (`src/core/archive_service.py`)**:
