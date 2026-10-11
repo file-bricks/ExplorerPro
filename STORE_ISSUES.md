@@ -6,13 +6,15 @@ Stand: 10.10.2026. Der Status wurde nach dem Upload im Partner Center unabhängi
 
 Die veröffentlichte Submission ist `1152921505701989667`. Das neu eingereichte Update ersetzt diese Version erst nach erfolgreicher Zertifizierung und Veröffentlichung durch Microsoft. Eine Installation des neuen Store-Updates ist noch nicht bestätigt.
 
-## Store-Entwurf: 1.0.9.0 (nicht eingereicht)
+## Eingereichtes Update: 1.0.9.0
 
-- Entwurfs-Submission: `1152921505702093919`, Status **PendingCommit** (nicht eingereicht, kein Commit). Die Vorgängerversion 1.0.8 (`1152921505702068603`) ist inzwischen **Published**.
-- Paket: `releases/windowsstore/v1.0.9/ExplorerPro.msix`, SHA-256 `2e4a22956a777e0a880a3287b90424724ddafcb0f39ce2a935672f84aac1ba05`.
-- Quellcommit: `24c2282481e86d0253abd1b7d487a9c7dd7a8d1f` (Merge von PR #21, Behebung der GUI-Blockade bei langsamen Laufwerken).
-- Offen vor dem Einreichen: Sicht-OK des Nutzers mit echten langsamen Laufwerken, Freigabe zum Commit, „Neuigkeiten in dieser Version“ (der Entwurf enthält noch den Text von 1.0.8; Texte aus `releases/windowsstore/v1.0.9/release-notes.json`).
-- Testlauf (`pytest -n 2`, eigene venv mit pytest-qt, Offscreen): 560 bestanden, 9 übersprungen, **1 fehlgeschlagen**: `test_drive_query_process.py::test_four_stalled_reads_release_slot_for_healthy_fifth`. Der Test erlaubt dem gesunden Hilfsprozess nur 1 s (Produktion: 10 s); der Python-Start dauert auf diesem Rechner rund 1 s. Test unverändert, Fehler hostbedingt.
+- Submission: `1152921505702093919`, Status **Certification** (eingereicht am 11.10.2026, per API zurückgelesen: CommitStarted, PreProcessing, Certification; Paket 1.0.9.0 `Uploaded`). Die Vorgängerversion 1.0.8 (`1152921505702068603`) ist **Published**.
+- Paket: `releases/windowsstore/v1.0.9/ExplorerPro.msix` (neu gebaut aus `origin/master`), SHA-256 `6dc9592750093ab4694426e0e930b07f10c6beb8bc764089cf8f893012f77c1b`, 103.453.888 Bytes.
+- Quellcommit: `2f56f3e` (enthält #21 GUI-Blockade, #23 Laufwerks-Vorladen, #24 unerreichbares Laufwerk, #25 veraltete Navigation). Git-Tag `v1.0.9` auf diesem Commit.
+- Der erste Entwurfsstand (Quellcommit `24c2282`, SHA `2e4a2295...`) wurde im selben Entwurf durch dieses Paket ersetzt; es wurde kein zweiter Entwurf angelegt.
+- „Neuigkeiten in dieser Version“ (en-us) aus `release-notes.json` gesetzt und zurückgelesen. Ein de-de-Listing existiert im Store nicht; der deutsche Text liegt nur in `release-notes.json`.
+- Testlauf (`pytest -n 2`, Offscreen): 575 bestanden, 7 übersprungen, 0 fehlgeschlagen, 1 Teardown-Error in `test_drive_switch.py::test_unreachable_target_shows_empty_page_with_status_not_old_entries[error]` unter xdist; die Datei einzeln: 13 bestanden.
+- Alle sechs Pre-Submit-Gates im Receipt bestanden; Sicht-OK des Nutzers am 11.10.2026 („Passt, einreichen“). Die EXE aus dem entpackten MSIX lief 7 s und wurde sauber beendet. WACK wurde ohne Adminrechte übersprungen.
 
 ## Eingereichtes Update: 1.0.8.0
 
