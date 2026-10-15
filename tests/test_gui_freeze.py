@@ -7,6 +7,8 @@ QTimer tick fires while the GUI handles the request.
 import os
 import time
 from pathlib import Path
+from contextlib import nullcontext
+from types import SimpleNamespace
 
 import pytest
 from PySide6.QtCore import Qt, QTimer
@@ -20,6 +22,19 @@ SLOW = os.path.join(os.path.abspath(os.sep), "ep_slow_drive_marker")
 DELAY = 2.0
 _real_listdir = os.listdir
 _real_isdir = os.path.isdir
+
+
+def mock_marker_scandir(monkeypatch, listdir):
+    real = os.scandir
+
+    def scan(path):
+        if isinstance(path, (str, os.PathLike)) and os.fspath(path) == SLOW:
+            entries = [SimpleNamespace(name=name, path=os.path.join(path, name),
+                                       is_dir=lambda: True) for name in listdir(path)]
+            return nullcontext(iter(entries))
+        return real(path)
+
+    monkeypatch.setattr(os, "scandir", scan)
 
 
 @pytest.fixture(autouse=True)
@@ -72,6 +87,7 @@ def slow_listdir(monkeypatch):
 
     monkeypatch.setattr(os, "listdir", fake_listdir)
     monkeypatch.setattr(os.path, "isdir", fake_isdir)
+    mock_marker_scandir(monkeypatch, fake_listdir)
 
 
 @pytest.fixture
@@ -95,6 +111,98 @@ def slow_node(panel):
 
 def names(item):
     return [item.child(i).text(0) for i in range(item.childCount())]
+
+
+@pytest.mark.parametrize("timeout", [False, True])
+def test_first_folder_preview_arrives_before_enumeration_finishes(panel, monkeypatch, timeout):
+    import threading
+
+    entered, release = threading.Event(), threading.Event()
+    entries = [(f"folder-{n:03}", os.path.join(SLOW, str(n))) for n in range(128)]
+
+    def stream(path):
+        yield from entries
+        entered.set()
+        assert release.wait(5)
+        yield ("aaa-late", os.path.join(path, "late"))
+
+    monkeypatch.setattr("gui.sidebar.sidebar_main.iter_subfolders", stream, raising=False)
+    previews = []
+    panel._fs.preview.connect(lambda token, entries: previews.append(entries))
+    if timeout:
+        panel.LIST_TIMEOUT_MS = 1000
+    item = slow_node(panel)
+    item.setExpanded(True)
+    try:
+        assert pump(lambda: entered.is_set() and names(item)[:128] == [n for n, _ in entries], timeout=2)
+        assert panel._inflight, "the enumeration should still be blocked after its preview"
+        assert "wird geladen" in item.child(item.childCount() - 1).text(0)
+        if timeout:
+            assert pump(lambda: "Keine Antwort" in item.child(item.childCount() - 1).text(0), timeout=2)
+            assert names(item)[:128] == [n for n, _ in entries]
+        item.setExpanded(False)
+    finally:
+        release.set()
+    assert pump(lambda: not panel._inflight)
+    item.setExpanded(True)
+    assert pump(lambda: item.childCount() == 129)
+    assert names(item)[0] == "aaa-late"  # final snapshot is globally sorted
+    assert len(previews) == 1  # bounded notification count even for a long scan
+
+
+def test_streamed_folder_scan_keeps_visible_directory_filter(tmp_path):
+    from core.async_fs import iter_subfolders
+
+    for name in ("alpha", "beta", ".hidden"):
+        (tmp_path / name).mkdir()
+    (tmp_path / "file.txt").write_text("x", encoding="utf-8")
+    assert sorted(iter_subfolders(str(tmp_path))) == [
+        (name, str(tmp_path / name)) for name in ("alpha", "beta")
+    ]
+
+
+def test_large_tree_fill_yields_between_bounded_batches(panel):
+    item = QTreeWidgetItem(["large"])
+    item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
+    panel.tree.addTopLevelItem(item)
+    item.setExpanded(True)
+    entries = [(f"folder-{n:05}", os.path.join(SLOW, str(n))) for n in range(1000)]
+    observed = []
+    QTimer.singleShot(0, lambda: observed.append(item.childCount()))
+    panel._fill(item, entries)
+    assert 0 < item.childCount() <= 128
+    assert pump(lambda: item.childCount() == len(entries))
+    assert observed and 0 < observed[0] < len(entries), "GUI never ran between insertion batches"
+    assert names(item) == [name for name, _ in entries]
+
+
+def test_new_tree_fill_invalidates_older_queued_batches(panel):
+    item = QTreeWidgetItem(["replace"])
+    item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
+    panel.tree.addTopLevelItem(item)
+    item.setExpanded(True)
+    entries = [(str(n), os.path.join(SLOW, str(n))) for n in range(1000)]
+    panel._fill(item, entries)
+    panel._fill(item, [("new", os.path.join(SLOW, "new"))])
+    pump(lambda: False, timeout=0.1)
+    assert names(item) == ["new"]
+
+
+def test_collapsed_partial_tree_fill_resumes_from_cache_on_return(panel):
+    item = QTreeWidgetItem(["pause"])
+    item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
+    panel.tree.addTopLevelItem(item)
+    item.setExpanded(True)
+    item.setData(0, Qt.ItemDataRole.UserRole, SLOW)
+    entries = [(str(n), os.path.join(SLOW, str(n))) for n in range(1000)]
+    TreePanel._dir_cache[SLOW] = entries
+    panel._fill(item, entries)
+    item.setExpanded(False)
+    pump(lambda: False, timeout=0.1)
+    assert item.childCount() == panel.TREE_BATCH_SIZE
+    item.setExpanded(True)
+    assert pump(lambda: item.childCount() == len(entries))
+    assert names(item) == [name for name, _ in entries]
 
 
 def test_expanding_slow_folder_does_not_block_event_loop(panel, slow_listdir):
@@ -123,12 +231,20 @@ def test_last_known_children_shown_until_fresh_state_arrives(panel, slow_listdir
     assert pump(lambda: names(item) == ["alpha", "beta"])
 
 
-def test_answer_for_collapsed_node_is_dropped(panel, slow_listdir):
+@pytest.mark.parametrize("cached", [False, True])
+def test_answer_for_collapsed_node_is_cached_without_changing_hidden_children(panel, slow_listdir, cached):
+    if cached:
+        TreePanel._dir_cache[SLOW] = [("old", os.path.join(SLOW, "old"))]
     item = slow_node(panel)
     item.setExpanded(True)
     item.setExpanded(False)
     pump(lambda: not panel._pending)
     assert names(item) != ["alpha", "beta"]
+    assert TreePanel._dir_cache[SLOW] == [("alpha", os.path.join(SLOW, "alpha")),
+                                         ("beta", os.path.join(SLOW, "beta"))]
+    item.setExpanded(True)
+    assert names(item) == ["alpha", "beta"]  # cached before the refresh completes
+    assert pump(lambda: not panel._inflight)
 
 
 def test_hanging_listing_times_out_and_late_answer_is_ignored(panel, slow_listdir):
@@ -139,6 +255,11 @@ def test_hanging_listing_times_out_and_late_answer_is_ignored(panel, slow_listdi
     time.sleep(DELAY)
     pump(lambda: False, timeout=0.2)
     assert "Keine Antwort" in item.child(0).text(0)  # late result did not overwrite
+    assert SLOW in TreePanel._dir_cache
+    item.setExpanded(False)
+    item.setExpanded(True)
+    assert names(item) == ["alpha", "beta"]
+    assert pump(lambda: not panel._inflight)
 
 
 def test_failed_capacity_read_releases_request_and_shows_unavailable(monkeypatch):
@@ -239,6 +360,7 @@ def counted_slow_listdir(monkeypatch):
 
     monkeypatch.setattr(os, "listdir", fake_listdir)
     monkeypatch.setattr(os.path, "isdir", lambda p: os.fspath(p).startswith(SLOW) or _real_isdir(p))
+    mock_marker_scandir(monkeypatch, fake_listdir)
     return calls
 
 
@@ -258,9 +380,10 @@ def test_reexpanding_after_timeout_keeps_exactly_one_placeholder_and_no_new_thre
     assert pump(lambda: not panel._inflight, timeout=DELAY + 2)
     item.setExpanded(False)
     item.setExpanded(True)
-    assert item.childCount() == 1 and "wird geladen" in item.child(0).text(0)
+    assert names(item) == ["alpha"]  # completed late snapshot appears immediately
     assert len(counted_slow_listdir) == 2
-    assert pump(lambda: "Keine Antwort" in item.child(0).text(0), timeout=2)
+    assert pump(lambda: not panel._pending, timeout=2)
+    assert names(item) == ["alpha"]  # refresh timeout does not replace cached entries
     assert item.childCount() == 1
     pump(lambda: not panel._inflight, timeout=DELAY + 2)
 
