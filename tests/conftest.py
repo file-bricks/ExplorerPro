@@ -54,6 +54,17 @@ def isolated_drive_usage_cache(tmp_path, monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def isolated_capacity_workers(monkeypatch, collect_gui_cycles):
+    """No queued capacity read or helper survives into the next test.
+
+    Keep each test's mocks installed while draining its workers; the GUI
+    collector must also remain active until those workers have finished.
+    """
+    yield
+    shutdown_capacity_executor()
+
+
+@pytest.fixture(autouse=True)
 def synchronous_navigation(monkeypatch):
     """Legacy tests expect navigate_to() to take effect at once; tests/test_drive_switch.py covers the async path."""
     from gui.browser.file_browser import FileBrowser
