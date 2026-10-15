@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 from unittest.mock import Mock
 
+import pytest
+
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 SRC_DIR = Path(__file__).resolve().parents[1] / "src"
@@ -21,6 +23,79 @@ def _ensure_app() -> QApplication:
     if app is None:
         app = QApplication([])
     return app
+
+
+@pytest.mark.parametrize("double_click", [False, True])
+def test_provider_item_click_does_not_block_gui(tmp_path, monkeypatch, qtbot, double_click):
+    import threading
+    import time
+
+    _ensure_app()
+    browser = FileBrowser()
+    qtbot.addWidget(browser)
+    target = tmp_path / "provider-folder"
+    target.mkdir()
+    browser.navigate_to(str(tmp_path))
+    qtbot.waitUntil(lambda: browser.model.index(str(target)).isValid())
+    qtbot.waitUntil(lambda: browser.proxy.mapFromSource(browser.model.index(str(target))).isValid())
+    index = browser.proxy.mapFromSource(browser.model.index(str(target)))
+    entered, release = threading.Event(), threading.Event()
+    caller_threads = []
+    real_isdir, real_isfile = os.path.isdir, os.path.isfile
+
+    def provider_metadata(real, answer):
+        def call(path):
+            if os.path.normcase(os.path.normpath(os.fspath(path))) == os.path.normcase(str(target)):
+                caller_threads.append(threading.get_ident())
+                entered.set()
+                release.wait(0.4)
+                return answer
+            return real(path)
+        return call
+
+    monkeypatch.setattr(os.path, "isdir", provider_metadata(real_isdir, True))
+    monkeypatch.setattr(os.path, "isfile", provider_metadata(real_isfile, False))
+    try:
+        start = time.monotonic()
+        handler = browser._on_item_double_clicked if double_click else browser._on_item_clicked
+        handler(index)
+        assert time.monotonic() - start < 0.2, "provider metadata blocked the GUI handler"
+        qtbot.waitUntil(entered.is_set)
+        assert all(thread != threading.get_ident() for thread in caller_threads)
+        # Moving away must remain possible while the provider is still waiting.
+        browser.go_back()
+        previous = browser.current_path
+    finally:
+        release.set()
+    qtbot.waitUntil(lambda: not browser._tokens)
+    assert browser.current_path == previous, "late click result replaced the newer page"
+
+
+@pytest.mark.parametrize("name,action", [("code.py", "edit"), ("document.pdf", "open"), ("folder", "navigate")])
+def test_async_item_activation_keeps_file_and_folder_actions(tmp_path, monkeypatch, qtbot, name, action):
+    _ensure_app()
+    browser = FileBrowser()
+    qtbot.addWidget(browser)
+    target = tmp_path / name
+    if action == "navigate":
+        target.mkdir()
+    else:
+        target.write_text("content", encoding="utf-8")
+    browser.navigate_to(str(tmp_path))
+    qtbot.waitUntil(lambda: browser.model.index(str(target)).isValid())
+    index = browser.proxy.mapFromSource(browser.model.index(str(target)))
+    edit, opened, navigate = Mock(), Mock(), Mock()
+    monkeypatch.setattr(browser, "_edit_file", edit)
+    monkeypatch.setattr(browser, "_open_file", opened)
+    monkeypatch.setattr(browser, "navigate_to", navigate)
+    browser._on_item_double_clicked(index)
+    expected = {"edit": edit, "open": opened, "navigate": navigate}[action]
+    qtbot.waitUntil(lambda: expected.called)
+    assert expected.call_count == 1
+    assert Path(expected.call_args.args[0]) == target
+    for other in (edit, opened, navigate):
+        if other is not expected:
+            other.assert_not_called()
 
 
 def test_dnd_flags_enabled():

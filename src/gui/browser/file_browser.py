@@ -160,6 +160,7 @@ class FileBrowser(QWidget):
         self._known_dirs = set()
         self._tokens = {}           # token -> (kind, path)
         self._nav_token = 0
+        self._item_seq = 0
         self._preload_queue = []
         self._preload_busy = False
         self._preload_seq = 0
@@ -323,6 +324,7 @@ class FileBrowser(QWidget):
         self._switch(normalize_user_path(path), True)
 
     def _switch(self, path: str, record: bool):
+        self._item_seq += 1  # navigation invalidates pending preview/activation
         # Every navigation (also back/forward/up, which all end here) invalidates older
         # checks with exactly ONE new token; the recheck/nav branches below reuse it.
         # Without this a late failure of an earlier target (e.g. a dead E:) stayed
@@ -413,6 +415,20 @@ class FileBrowser(QWidget):
         if entry is None:  # timed out: a late answer is dropped
             return
         kind, path = entry
+        if kind in ("item-select", "item-activate"):
+            if token != ("item", self._item_seq) or error is not None:
+                return
+            if kind == "item-select":
+                if result == "file":
+                    self.file_selected.emit(path)
+            elif result == "dir":
+                self.navigate_to(path)
+            elif result == "file":
+                if Path(path).suffix.lower() in EDITOR_EXTENSIONS:
+                    self._edit_file(path)
+                else:
+                    self._open_file(path)
+            return
         if kind == "preload":
             self._preload_busy = False
             if error is None and result:
@@ -552,25 +568,24 @@ class FileBrowser(QWidget):
         self.refresh()
 
     def _on_item_clicked(self, index: QModelIndex):
-        source_index = self.proxy.mapToSource(index)
-        file_path = self.model.filePath(source_index)
-
-        if os.path.isfile(file_path):
-            self.file_selected.emit(file_path)
+        self._submit_item_action(index, "item-select")
 
     def _on_item_double_clicked(self, index: QModelIndex):
-        source_index = self.proxy.mapToSource(index)
-        file_path = self.model.filePath(source_index)
+        self._submit_item_action(index, "item-activate")
 
-        if os.path.isdir(file_path):
-            self.navigate_to(file_path)
-        else:
-            # Prüfe ob Editor-Datei
-            ext = Path(file_path).suffix.lower()
-            if ext in EDITOR_EXTENSIONS:
-                self._edit_file(file_path)
-            else:
-                self._open_file(file_path)
+    def _submit_item_action(self, index: QModelIndex, kind: str):
+        # Even stat() can wait for a cloud/phone provider. Do not classify an
+        # entry in the GUI slot, before asynchronous navigation has a chance.
+        self._item_seq += 1
+        if not index.isValid():
+            return
+        source_index = self.proxy.mapToSource(index)
+        if not source_index.isValid():
+            return
+        file_path = self.model.filePath(source_index)
+        if file_path:
+            self._submit(("item", self._item_seq), kind, file_path,
+                         _classify, self.NAV_TIMEOUT_MS)
 
     def _show_context_menu(self, pos):
         """Zeigt das Kontextmenü"""
