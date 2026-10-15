@@ -7,6 +7,8 @@ QTimer tick fires while the GUI handles the request.
 import os
 import time
 from pathlib import Path
+from contextlib import nullcontext
+from types import SimpleNamespace
 
 import pytest
 from PySide6.QtCore import Qt, QTimer
@@ -20,6 +22,19 @@ SLOW = os.path.join(os.path.abspath(os.sep), "ep_slow_drive_marker")
 DELAY = 2.0
 _real_listdir = os.listdir
 _real_isdir = os.path.isdir
+
+
+def mock_marker_scandir(monkeypatch, listdir):
+    real = os.scandir
+
+    def scan(path):
+        if isinstance(path, (str, os.PathLike)) and os.fspath(path) == SLOW:
+            entries = [SimpleNamespace(name=name, path=os.path.join(path, name),
+                                       is_dir=lambda: True) for name in listdir(path)]
+            return nullcontext(iter(entries))
+        return real(path)
+
+    monkeypatch.setattr(os, "scandir", scan)
 
 
 @pytest.fixture(autouse=True)
@@ -72,6 +87,7 @@ def slow_listdir(monkeypatch):
 
     monkeypatch.setattr(os, "listdir", fake_listdir)
     monkeypatch.setattr(os.path, "isdir", fake_isdir)
+    mock_marker_scandir(monkeypatch, fake_listdir)
 
 
 @pytest.fixture
@@ -95,6 +111,54 @@ def slow_node(panel):
 
 def names(item):
     return [item.child(i).text(0) for i in range(item.childCount())]
+
+
+@pytest.mark.parametrize("timeout", [False, True])
+def test_first_folder_preview_arrives_before_enumeration_finishes(panel, monkeypatch, timeout):
+    import threading
+
+    entered, release = threading.Event(), threading.Event()
+    entries = [(f"folder-{n:03}", os.path.join(SLOW, str(n))) for n in range(128)]
+
+    def stream(path):
+        yield from entries
+        entered.set()
+        assert release.wait(5)
+        yield ("aaa-late", os.path.join(path, "late"))
+
+    monkeypatch.setattr("gui.sidebar.sidebar_main.iter_subfolders", stream, raising=False)
+    previews = []
+    panel._fs.preview.connect(lambda token, entries: previews.append(entries))
+    if timeout:
+        panel.LIST_TIMEOUT_MS = 1000
+    item = slow_node(panel)
+    item.setExpanded(True)
+    try:
+        assert pump(lambda: entered.is_set() and names(item)[:128] == [n for n, _ in entries], timeout=2)
+        assert panel._inflight, "the enumeration should still be blocked after its preview"
+        assert "wird geladen" in item.child(item.childCount() - 1).text(0)
+        if timeout:
+            assert pump(lambda: "Keine Antwort" in item.child(item.childCount() - 1).text(0), timeout=2)
+            assert names(item)[:128] == [n for n, _ in entries]
+        item.setExpanded(False)
+    finally:
+        release.set()
+    assert pump(lambda: not panel._inflight)
+    item.setExpanded(True)
+    assert pump(lambda: item.childCount() == 129)
+    assert names(item)[0] == "aaa-late"  # final snapshot is globally sorted
+    assert len(previews) == 1  # bounded notification count even for a long scan
+
+
+def test_streamed_folder_scan_keeps_visible_directory_filter(tmp_path):
+    from core.async_fs import iter_subfolders
+
+    for name in ("alpha", "beta", ".hidden"):
+        (tmp_path / name).mkdir()
+    (tmp_path / "file.txt").write_text("x", encoding="utf-8")
+    assert sorted(iter_subfolders(str(tmp_path))) == [
+        (name, str(tmp_path / name)) for name in ("alpha", "beta")
+    ]
 
 
 def test_large_tree_fill_yields_between_bounded_batches(panel):
@@ -296,6 +360,7 @@ def counted_slow_listdir(monkeypatch):
 
     monkeypatch.setattr(os, "listdir", fake_listdir)
     monkeypatch.setattr(os.path, "isdir", lambda p: os.fspath(p).startswith(SLOW) or _real_isdir(p))
+    mock_marker_scandir(monkeypatch, fake_listdir)
     return calls
 
 

@@ -18,7 +18,7 @@ import os
 
 # Module importieren - absolute Imports
 from core.cloud_locations import find_cloud_locations
-from core.async_fs import AsyncFs, list_subfolders
+from core.async_fs import AsyncFs, iter_subfolders
 from core.file_icon_helper import generic_icon
 from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
@@ -57,6 +57,7 @@ class TreePanel(QWidget):
         self._usage_ready.connect(self._on_drive_usage)
         self._fs = AsyncFs(self)
         self._fs.finished.connect(self._on_fs_result)
+        self._fs.preview.connect(self._on_fs_preview)
         self._pending = {}         # token -> (kind, item)
         self._inflight = {}        # token -> path, until the worker really returned
         self._token = 0
@@ -231,7 +232,10 @@ class TreePanel(QWidget):
         self._pending[token] = (kind, target)
         if kind == "list":
             self._inflight[token] = args[0]
-        self._fs.submit(token, fn, *args)
+        if kind == "list":
+            self._fs.submit_preview(token, fn, *args)
+        else:
+            self._fs.submit(token, fn, *args)
         if kind == "list":
             QTimer.singleShot(self.LIST_TIMEOUT_MS, lambda: self._on_list_timeout(token))
 
@@ -272,7 +276,7 @@ class TreePanel(QWidget):
             if cached is None:
                 placeholder.setText(0, t("Keine Antwort – später erneut aufklappen"))
             return
-        self._submit("list", item, list_subfolders, path)
+        self._submit("list", item, iter_subfolders, path)
 
     def _fill(self, item, entries):
         """Show the first bounded batch now and yield before creating more nodes."""
@@ -300,6 +304,20 @@ class TreePanel(QWidget):
                 item._shown_entries = entries
 
         add_batch(first=True)
+
+    @Slot(object, object)
+    def _on_fs_preview(self, token, entries):
+        request = self._pending.get(token)
+        path = self._inflight.get(token)
+        if request is None or path in self._dir_cache:
+            return  # a completed cached snapshot is preferable to a partial one
+        item = request[1]
+        if not self._alive(item) or not item.isExpanded():
+            return
+        self._fill(item, entries)
+        loading = QTreeWidgetItem([t("wird geladen …")])
+        loading.setFlags(Qt.ItemFlag.NoItemFlags)
+        item.addChild(loading)
 
     @Slot(object, object, object)
     def _on_fs_result(self, token, result, error):
@@ -333,8 +351,10 @@ class TreePanel(QWidget):
         if entry is None:
             return
         item = entry[1]
-        if self._alive(item) and item.childCount() == 1 and not self._is_real(item.child(0)):
-            item.child(0).setText(0, t("Keine Antwort – später erneut aufklappen"))
+        if self._alive(item) and item.childCount():
+            last = item.child(item.childCount() - 1)
+            if not self._is_real(last):
+                last.setText(0, t("Keine Antwort – später erneut aufklappen"))
 
     def _show_cloud(self, cloud_locations):
         if not cloud_locations:
