@@ -97,6 +97,50 @@ def names(item):
     return [item.child(i).text(0) for i in range(item.childCount())]
 
 
+def test_large_tree_fill_yields_between_bounded_batches(panel):
+    item = QTreeWidgetItem(["large"])
+    item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
+    panel.tree.addTopLevelItem(item)
+    item.setExpanded(True)
+    entries = [(f"folder-{n:05}", os.path.join(SLOW, str(n))) for n in range(1000)]
+    observed = []
+    QTimer.singleShot(0, lambda: observed.append(item.childCount()))
+    panel._fill(item, entries)
+    assert 0 < item.childCount() <= 128
+    assert pump(lambda: item.childCount() == len(entries))
+    assert observed and 0 < observed[0] < len(entries), "GUI never ran between insertion batches"
+    assert names(item) == [name for name, _ in entries]
+
+
+def test_new_tree_fill_invalidates_older_queued_batches(panel):
+    item = QTreeWidgetItem(["replace"])
+    item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
+    panel.tree.addTopLevelItem(item)
+    item.setExpanded(True)
+    entries = [(str(n), os.path.join(SLOW, str(n))) for n in range(1000)]
+    panel._fill(item, entries)
+    panel._fill(item, [("new", os.path.join(SLOW, "new"))])
+    pump(lambda: False, timeout=0.1)
+    assert names(item) == ["new"]
+
+
+def test_collapsed_partial_tree_fill_resumes_from_cache_on_return(panel):
+    item = QTreeWidgetItem(["pause"])
+    item.setChildIndicatorPolicy(QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator)
+    panel.tree.addTopLevelItem(item)
+    item.setExpanded(True)
+    item.setData(0, Qt.ItemDataRole.UserRole, SLOW)
+    entries = [(str(n), os.path.join(SLOW, str(n))) for n in range(1000)]
+    TreePanel._dir_cache[SLOW] = entries
+    panel._fill(item, entries)
+    item.setExpanded(False)
+    pump(lambda: False, timeout=0.1)
+    assert item.childCount() == panel.TREE_BATCH_SIZE
+    item.setExpanded(True)
+    assert pump(lambda: item.childCount() == len(entries))
+    assert names(item) == [name for name, _ in entries]
+
+
 def test_expanding_slow_folder_does_not_block_event_loop(panel, slow_listdir):
     item = slow_node(panel)
     meter = TickMeter()

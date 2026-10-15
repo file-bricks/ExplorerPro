@@ -6,6 +6,7 @@ Phase 5: Vollständige Integration
 """
 
 import time
+from itertools import islice
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget,
@@ -43,6 +44,7 @@ class TreePanel(QWidget):
     _usage_ready = Signal(str, object)
 
     LIST_TIMEOUT_MS = 15000        # give up on one folder listing
+    TREE_BATCH_SIZE = 128          # bound widget creation per GUI event
     USAGE_MIN_INTERVAL_S = 60      # automatic capacity refresh per drive
     _dir_cache = {}                # path -> [(name, path)], shared, last known listing
 
@@ -273,15 +275,31 @@ class TreePanel(QWidget):
         self._submit("list", item, list_subfolders, path)
 
     def _fill(self, item, entries):
-        """Swap the children in one go, so the user never sees a half-built list."""
-        children = [self._folder_item(name, full) for name, full in entries]
+        """Show the first bounded batch now and yield before creating more nodes."""
+        generation = object()
+        item._fill_generation = generation
+        item._shown_entries = None  # a collapsed partial fill must resume on return
+        remaining = iter(entries)
         item.takeChildren()
-        item.addChildren(children)
-        item._shown_entries = entries
-        item.setChildIndicatorPolicy(
-            QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator if children
-            else QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
-        )
+
+        def add_batch(first=False):
+            if not self._alive(item) or item._fill_generation is not generation:
+                return
+            if not first and not item.isExpanded():
+                return
+            batch = list(islice(remaining, self.TREE_BATCH_SIZE))
+            item.addChildren([self._folder_item(name, full) for name, full in batch])
+            item.setChildIndicatorPolicy(
+                QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator if item.childCount()
+                else QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
+            )
+            if len(batch) == self.TREE_BATCH_SIZE:
+                if item.isExpanded():
+                    QTimer.singleShot(0, add_batch)
+            else:
+                item._shown_entries = entries
+
+        add_batch(first=True)
 
     @Slot(object, object, object)
     def _on_fs_result(self, token, result, error):
