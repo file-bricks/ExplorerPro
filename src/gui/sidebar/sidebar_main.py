@@ -250,13 +250,15 @@ class TreePanel(QWidget):
         if not path:
             return
 
+        cached = self._dir_cache.get(path)
         if item.childCount() > 0 and self._is_real(item.child(0)):
+            if cached is not None and getattr(item, "_shown_entries", None) is not cached:
+                self._fill(item, cached)
             return
         if any(kind == "list" and target is item for kind, target in self._pending.values()):
             return
 
         item.takeChildren()  # drops any earlier placeholder, so there is never a second one
-        cached = self._dir_cache.get(path)
         if cached is not None:
             self._fill(item, cached)
         else:
@@ -275,6 +277,7 @@ class TreePanel(QWidget):
         children = [self._folder_item(name, full) for name, full in entries]
         item.takeChildren()
         item.addChildren(children)
+        item._shown_entries = entries
         item.setChildIndicatorPolicy(
             QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator if children
             else QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
@@ -282,9 +285,15 @@ class TreePanel(QWidget):
 
     @Slot(object, object, object)
     def _on_fs_result(self, token, result, error):
-        self._inflight.pop(token, None)  # the worker is done, whatever we do with the answer
+        listed_path = self._inflight.pop(token, None)
+        previous = self._dir_cache.get(listed_path)
+        # Completion is useful even if the user collapsed the node or its
+        # display deadline elapsed. Keep the snapshot for the next visit,
+        # without applying a late result to the current tree view.
+        if listed_path is not None and error is None and previous != result:
+            self._dir_cache[listed_path] = result
         entry = self._pending.pop(token, None)
-        if entry is None:  # timed out: stale answer
+        if entry is None:  # timed out: cache only, never change the current view
             return
         kind, item = entry
         if kind == "cloud":
@@ -297,14 +306,12 @@ class TreePanel(QWidget):
             if path not in self._dir_cache:  # nothing stale worth keeping
                 self._fill(item, [])
             return
-        previous = self._dir_cache.get(path)
-        self._dir_cache[path] = result
         showing = item.childCount() > 0 and self._is_real(item.child(0))
         if previous != result or not showing:
             self._fill(item, result)
 
     def _on_list_timeout(self, token):
-        entry = self._pending.pop(token, None)  # a late answer is dropped
+        entry = self._pending.pop(token, None)  # late answers may cache, never update this view
         if entry is None:
             return
         item = entry[1]

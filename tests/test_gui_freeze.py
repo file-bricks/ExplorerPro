@@ -123,12 +123,20 @@ def test_last_known_children_shown_until_fresh_state_arrives(panel, slow_listdir
     assert pump(lambda: names(item) == ["alpha", "beta"])
 
 
-def test_answer_for_collapsed_node_is_dropped(panel, slow_listdir):
+@pytest.mark.parametrize("cached", [False, True])
+def test_answer_for_collapsed_node_is_cached_without_changing_hidden_children(panel, slow_listdir, cached):
+    if cached:
+        TreePanel._dir_cache[SLOW] = [("old", os.path.join(SLOW, "old"))]
     item = slow_node(panel)
     item.setExpanded(True)
     item.setExpanded(False)
     pump(lambda: not panel._pending)
     assert names(item) != ["alpha", "beta"]
+    assert TreePanel._dir_cache[SLOW] == [("alpha", os.path.join(SLOW, "alpha")),
+                                         ("beta", os.path.join(SLOW, "beta"))]
+    item.setExpanded(True)
+    assert names(item) == ["alpha", "beta"]  # cached before the refresh completes
+    assert pump(lambda: not panel._inflight)
 
 
 def test_hanging_listing_times_out_and_late_answer_is_ignored(panel, slow_listdir):
@@ -139,6 +147,11 @@ def test_hanging_listing_times_out_and_late_answer_is_ignored(panel, slow_listdi
     time.sleep(DELAY)
     pump(lambda: False, timeout=0.2)
     assert "Keine Antwort" in item.child(0).text(0)  # late result did not overwrite
+    assert SLOW in TreePanel._dir_cache
+    item.setExpanded(False)
+    item.setExpanded(True)
+    assert names(item) == ["alpha", "beta"]
+    assert pump(lambda: not panel._inflight)
 
 
 def test_failed_capacity_read_releases_request_and_shows_unavailable(monkeypatch):
@@ -258,9 +271,10 @@ def test_reexpanding_after_timeout_keeps_exactly_one_placeholder_and_no_new_thre
     assert pump(lambda: not panel._inflight, timeout=DELAY + 2)
     item.setExpanded(False)
     item.setExpanded(True)
-    assert item.childCount() == 1 and "wird geladen" in item.child(0).text(0)
+    assert names(item) == ["alpha"]  # completed late snapshot appears immediately
     assert len(counted_slow_listdir) == 2
-    assert pump(lambda: "Keine Antwort" in item.child(0).text(0), timeout=2)
+    assert pump(lambda: not panel._pending, timeout=2)
+    assert names(item) == ["alpha"]  # refresh timeout does not replace cached entries
     assert item.childCount() == 1
     pump(lambda: not panel._inflight, timeout=DELAY + 2)
 
