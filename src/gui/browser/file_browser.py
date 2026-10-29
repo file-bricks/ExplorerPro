@@ -603,22 +603,24 @@ class FileBrowser(QWidget):
                 checksum_action.triggered.connect(lambda: self._show_checksums(file_path))
                 menu.addAction(checksum_action)
 
-            if is_file and ext == ".zip":
-                archive_view_action = QAction("📦 Archiv durchsuchen...", self)
-                archive_view_action.triggered.connect(lambda: self._view_archive(file_path))
-                menu.addAction(archive_view_action)
+            if is_file and (ext in (".zip", ".tar", ".gz", ".tgz", ".bz2", ".tbz2", ".xz", ".txz")):
+                from core.archive_service import is_archive
+                if is_archive(file_path):
+                    archive_view_action = QAction("📦 Archiv durchsuchen...", self)
+                    archive_view_action.triggered.connect(lambda: self._view_archive(file_path))
+                    menu.addAction(archive_view_action)
 
-                archive_extract_here_action = QAction("📦 Hier entpacken (in Unterordner)", self)
-                archive_extract_here_action.triggered.connect(lambda: self._extract_archive_here(file_path))
-                menu.addAction(archive_extract_here_action)
+                    archive_extract_here_action = QAction("📦 Hier entpacken (in Unterordner)", self)
+                    archive_extract_here_action.triggered.connect(lambda: self._extract_archive_here(file_path))
+                    menu.addAction(archive_extract_here_action)
 
-                archive_extract_action = QAction("📦 Entpacken nach...", self)
-                archive_extract_action.triggered.connect(lambda: self._extract_archive(file_path))
-                menu.addAction(archive_extract_action)
+                    archive_extract_action = QAction("📦 Entpacken nach...", self)
+                    archive_extract_action.triggered.connect(lambda: self._extract_archive(file_path))
+                    menu.addAction(archive_extract_action)
 
-                archive_test_action = QAction("🧪 Integrität prüfen", self)
-                archive_test_action.triggered.connect(lambda: self._test_archive_integrity(file_path))
-                menu.addAction(archive_test_action)
+                    archive_test_action = QAction("🧪 Integrität prüfen", self)
+                    archive_test_action.triggered.connect(lambda: self._test_archive_integrity(file_path))
+                    menu.addAction(archive_test_action)
 
             menu.addSeparator()
 
@@ -1359,7 +1361,8 @@ class FileBrowser(QWidget):
         if not os.path.isfile(zip_path):
             return
         from core.archive_service import ArchiveExtractWorker
-        stem = Path(zip_path).stem
+        from gui.archive_dialog import _get_archive_stem
+        stem = _get_archive_stem(zip_path)
         target_dir = os.path.join(self._current_path, stem)
 
         worker = ArchiveExtractWorker(zip_path, target_dir, parent=self)
@@ -1381,11 +1384,11 @@ class FileBrowser(QWidget):
         dlg.exec()
 
     def _test_archive_integrity(self, zip_path: str):
-        """Prüft die CRC-Integrität der gewählten ZIP-Datei."""
+        """Prüft die Integrität der gewählten Archivdatei."""
         if not os.path.isfile(zip_path):
             return
-        from core.archive_service import check_zip_integrity
-        is_valid, msg = check_zip_integrity(zip_path)
+        from core.archive_service import check_archive_integrity
+        is_valid, msg = check_archive_integrity(zip_path)
         if is_valid:
             QMessageBox.information(
                 self,
@@ -1404,9 +1407,9 @@ class FileBrowser(QWidget):
         from PySide6.QtWidgets import QFileDialog
         path, _ = QFileDialog.getOpenFileName(
             self,
-            "ZIP-Archiv zum Entpacken wählen",
+            "Archiv zum Entpacken wählen",
             self._current_path,
-            "ZIP-Archive (*.zip);;Alle Dateien (*.*)"
+            "Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Alle Dateien (*.*)"
         )
         if path:
             self._extract_archive(path)

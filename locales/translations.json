@@ -9446,5 +9446,37 @@
     "zh": "驱动器无法访问",
     "ja": "ドライブにアクセスできません",
     "ru": "Диск недоступен"
+  },
+  "Ziel-Archivdatei auswählen": {
+    "de": "Ziel-Archivdatei auswählen",
+    "en": "Select target archive file",
+    "es": "Seleccionar archivo de destino",
+    "zh": "选择目标归档文件",
+    "ja": "ターゲットアーカイブファイルを選択",
+    "ru": "Выберите целевой архивный файл"
+  },
+  "Ermöglicht das sichere Entpacken eines Archivs in ein Zielverzeichnis.": {
+    "de": "Ermöglicht das sichere Entpacken eines Archivs in ein Zielverzeichnis.",
+    "en": "Enables safe extraction of an archive into a target directory.",
+    "es": "Permite la extracción segura de un archivo en un directorio de destino.",
+    "zh": "安全地将归档解压到目标目录。",
+    "ja": "アーカイブをターゲットディレクトリに安全に解凍します。",
+    "ru": "Позволяет безопасно распаковать архив в целевой каталог."
+  },
+  "Zeigt den Inhalt des Archivs mit Dateigrößen, Kompressionsraten und Prüfoptionen.": {
+    "de": "Zeigt den Inhalt des Archivs mit Dateigrößen, Kompressionsraten und Prüfoptionen.",
+    "en": "Shows the contents of the archive with file sizes, compression ratios, and test options.",
+    "es": "Muestra el contenido del archivo con tamaños de archivo, relaciones de compresión y opciones de prueba.",
+    "zh": "显示归档内容，包括文件大小、压缩率和测试选项。",
+    "ja": "ファイルサイズ、圧縮率、テストオプションを含むアーカイブの内容を表示します。",
+    "ru": "Отображает содержимое архива с размерами файлов, коэффициентами сжатия и параметрами проверки."
+  },
+  "Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Alle Dateien (*.*)": {
+    "de": "Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Alle Dateien (*.*)",
+    "en": "All supported archives (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP archives (*.zip);;TAR archives (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;All files (*.*)",
+    "es": "Todos los archivos compatibles (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Archivos ZIP (*.zip);;Archivos TAR (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Todos los archivos (*.*)",
+    "zh": "所有受支持的归档 (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP 归档 (*.zip);;TAR 归档 (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;所有文件 (*.*)",
+    "ja": "サポートされているすべてのアーカイブ (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP アーカイブ (*.zip);;TAR アーカイブ (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;すべてのファイル (*.*)",
+    "ru": "Все поддерживаемые архивы (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Архивы ZIP (*.zip);;Архивы TAR (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Все файлы (*.*)"
   }
 }

@@ -24,10 +24,19 @@ from PySide6.QtWidgets import (
 
 from core.archive_service import (
     ArchiveCompressWorker, ArchiveExtractWorker, ArchiveTestWorker,
-    format_bytes, inspect_zip
+    format_bytes, inspect_archive, inspect_zip, is_archive
 )
 from translator import t
 
+
+
+def _get_archive_stem(path: str) -> str:
+    """Ermittelt den Stammnamen ohne Archiv-Endung (unterstützt auch .tar.gz etc.)."""
+    name = os.path.basename(path)
+    for sfx in (".tar.gz", ".tar.bz2", ".tar.xz", ".tgz", ".tbz2", ".txz", ".zip", ".tar"):
+        if name.lower().endswith(sfx):
+            return name[:-len(sfx)]
+    return Path(path).stem
 
 class ArchiveCompressDialog(QDialog):
     """Dialog zur Erstellung eines neuen ZIP-Archivs aus einer Auswahl."""
@@ -146,12 +155,13 @@ class ArchiveCompressDialog(QDialog):
         init_dir = os.path.dirname(curr_text) if curr_text else self.current_dir
         path, _ = QFileDialog.getSaveFileName(
             self,
-            t("Ziel-ZIP-Datei auswählen"),
+            t("Ziel-Archivdatei auswählen"),
             curr_text or os.path.join(init_dir, "Archiv.zip"),
-            t("ZIP-Archive (*.zip);;Alle Dateien (*.*)")
+            t("Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Alle Dateien (*.*)")
         )
         if path:
-            if not path.lower().endswith(".zip"):
+            lower = path.lower()
+            if not any(lower.endswith(ext) for ext in (".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")):
                 path += ".zip"
             self.dest_edit.setText(path)
 
@@ -161,7 +171,8 @@ class ArchiveCompressDialog(QDialog):
             QMessageBox.warning(self, t("Fehler"), t("Bitte geben Sie einen Zielpfad an."))
             return
 
-        if not dest_path.lower().endswith(".zip"):
+        lower = dest_path.lower()
+        if not any(lower.endswith(ext) for ext in (".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")):
             dest_path += ".zip"
             self.dest_edit.setText(dest_path)
 
@@ -252,11 +263,11 @@ class ArchiveExtractDialog(QDialog):
         self.worker: Optional[ArchiveExtractWorker] = None
         self.extracted_target: Optional[str] = None
 
-        self.setWindowTitle(t("ZIP-Archiv entpacken"))
+        self.setWindowTitle(t("Archiv entpacken"))
         self.setMinimumWidth(560)
-        self.setAccessibleName(t("ZIP-Archiv entpacken"))
+        self.setAccessibleName(t("Archiv entpacken"))
         self.setAccessibleDescription(
-            t("Ermöglicht das sichere Entpacken eines ZIP-Archivs in ein Zielverzeichnis.")
+            t("Ermöglicht das sichere Entpacken eines Archivs in ein Zielverzeichnis.")
         )
 
         self._setup_ui()
@@ -272,7 +283,7 @@ class ArchiveExtractDialog(QDialog):
         info_layout.addRow(t("Archiv:"), name_label)
 
         try:
-            summary, _ = inspect_zip(self.zip_path)
+            summary, _ = inspect_archive(self.zip_path)
             details = f"{summary.total_files} " + t("Dateien") + f", {summary.total_folders} " + t("Ordner")
             details += f" ({summary.formatted_uncompressed_size})"
             info_layout.addRow(t("Inhalt:"), QLabel(details))
@@ -301,7 +312,7 @@ class ArchiveExtractDialog(QDialog):
         options_group = QGroupBox(t("Optionen"))
         options_layout = QVBoxLayout(options_group)
 
-        stem = Path(self.zip_path).stem
+        stem = _get_archive_stem(self.zip_path)
         self.subfolder_cb = QCheckBox(t("In Unterordner entpacken: ") + f"'{stem}'")
         self.subfolder_cb.setChecked(True)
         self.subfolder_cb.setAccessibleName(t("In separaten Unterordner entpacken"))
@@ -362,7 +373,7 @@ class ArchiveExtractDialog(QDialog):
 
         final_target = base_dir
         if self.subfolder_cb.isChecked():
-            stem = Path(self.zip_path).stem
+            stem = _get_archive_stem(self.zip_path)
             final_target = os.path.join(base_dir, stem)
 
         self.extracted_target = final_target
@@ -447,7 +458,7 @@ class ArchiveViewerDialog(QDialog):
         self.resize(780, 520)
         self.setAccessibleName(t("Archiv-Inspektor-Dialog"))
         self.setAccessibleDescription(
-            t("Zeigt den Inhalt des ZIP-Archivs mit Dateigrößen, Kompressionsraten und Prüfoptionen.")
+            t("Zeigt den Inhalt des Archivs mit Dateigrößen, Kompressionsraten und Prüfoptionen.")
         )
 
         self._setup_ui()
@@ -531,7 +542,7 @@ class ArchiveViewerDialog(QDialog):
 
     def _load_archive(self):
         try:
-            self.summary, self.entries = inspect_zip(self.zip_path)
+            self.summary, self.entries = inspect_archive(self.zip_path)
             stats_text = (
                 f"{self.summary.total_files} " + t("Dateien") + f", "
                 f"{self.summary.total_folders} " + t("Ordner") + " | "
@@ -544,7 +555,7 @@ class ArchiveViewerDialog(QDialog):
             self.stats_label.setText(stats_text)
             self._populate_table()
         except Exception as exc:
-            self.stats_label.setText(t("Fehler: ") + str(exc))
+            self.stats_label.setText(f"{t('Fehler:')} {exc}")
             QMessageBox.critical(self, t("Archivfehler"), t("Archiv konnte nicht gelesen werden:\n") + str(exc))
 
     def _populate_table(self):

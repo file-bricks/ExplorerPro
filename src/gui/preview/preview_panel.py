@@ -695,7 +695,7 @@ class ExcelPreview(QWidget):
 
 
 class ArchivePreview(QWidget):
-    """Vorschau-Widget für ZIP-Archive (.zip)."""
+    """Vorschau-Widget für Archive (.zip, .tar, .tar.gz, etc.)."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -708,7 +708,7 @@ class ArchivePreview(QWidget):
         layout.setSpacing(6)
 
         # Header-Box
-        header_group = QGroupBox("📦 ZIP-Archiv")
+        header_group = QGroupBox("📦 Archiv")
         header_layout = QFormLayout(header_group)
 
         self.name_label = QLabel("-")
@@ -764,8 +764,8 @@ class ArchivePreview(QWidget):
         self.name_label.setText(os.path.basename(path))
 
         try:
-            from core.archive_service import inspect_zip
-            summary, entries = inspect_zip(path)
+            from core.archive_service import inspect_archive
+            summary, entries = inspect_archive(path)
 
             self.count_label.setText(f"{summary.total_files} Dateien, {summary.total_folders} Ordner")
             self.size_label.setText(
@@ -860,7 +860,7 @@ class PreviewPanel(QWidget):
         self.excel_preview = ExcelPreview()
         self.preview_stack.addWidget(self.excel_preview)
 
-        # ZIP-Archiv-Vorschau (.zip) — Index 7
+        # Archiv-Vorschau (ZIP, TAR, TAR.GZ, TGZ, TBZ2, TXZ) (.zip) — Index 7
         self.archive_preview = ArchivePreview()
         self.preview_stack.addWidget(self.archive_preview)
 
@@ -1006,10 +1006,17 @@ class PreviewPanel(QWidget):
             self.text_preview.load_file(path)
             self.preview_stack.setCurrentIndex(2)
 
-        # ZIP-Archiv-Vorschau
-        elif ext == '.zip':
-            self.archive_preview.load_archive(path)
-            self.preview_stack.setCurrentIndex(7)
+        # Archiv-Vorschau (ZIP, TAR, TAR.GZ, TGZ, TBZ2, TXZ)
+        elif ext in ('.zip', '.tar', '.tgz', '.tbz2', '.txz', '.gz', '.bz2', '.xz'):
+            from core.archive_service import is_archive
+            if is_archive(path):
+                self.archive_preview.load_archive(path)
+                self.preview_stack.setCurrentIndex(7)
+            elif _preview_setting("preview_code", True) and _looks_like_text(path):
+                self.text_preview.load_file(path)
+                self.preview_stack.setCurrentIndex(2)
+            else:
+                self.preview_stack.setCurrentIndex(5)
 
         # Nicht unterstützt
         else:

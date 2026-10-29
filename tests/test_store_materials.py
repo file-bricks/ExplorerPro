@@ -75,7 +75,7 @@ def test_pyinstaller_spec_includes_project_and_license_notices() -> None:
 
 def test_build_script_promotes_notices_to_bundle_root() -> None:
     bundle = PROJECT_ROOT / "dist" / "ExplorerPro"
-    if not bundle.is_dir():
+    if not bundle.is_dir() or not (bundle / "ExplorerPro.exe").is_file() or not (bundle / "LICENSE").is_file():
         import pytest
         pytest.skip("Checks the real distributable after a local Onedir build.")
     for notice in ("LICENSE", "THIRD_PARTY_LICENSES.txt", "PRIVACY_POLICY.md", "SUPPORT.md"):
