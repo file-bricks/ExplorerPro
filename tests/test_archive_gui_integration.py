@@ -170,6 +170,7 @@ def test_file_browser_archive_extraction_helper(sample_archives, qtbot, monkeypa
 
     browser._extract_archive_here(str(tar_path))
     expected_dir = extract_base / "package"
+    qtbot.waitUntil(lambda: expected_dir.is_dir() and not browser._archive_task_dialogs, timeout=3000)
     assert expected_dir.is_dir()
     assert (expected_dir / "info.json").is_file()
 

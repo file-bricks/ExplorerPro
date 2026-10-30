@@ -14,9 +14,9 @@ from pathlib import Path
 from typing import List, Optional
 import zipfile
 
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal, Slot
 from PySide6.QtWidgets import (
-    QCheckBox, QComboBox, QDialog, QFileDialog,
+    QApplication, QCheckBox, QComboBox, QDialog, QFileDialog,
     QFormLayout, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
     QLineEdit, QMessageBox, QProgressBar, QPushButton,
     QTableWidget, QTableWidgetItem, QVBoxLayout
@@ -38,7 +38,166 @@ def _get_archive_stem(path: str) -> str:
             return name[:-len(sfx)]
     return Path(path).stem
 
-class ArchiveCompressDialog(QDialog):
+
+class _ArchiveWorkerShutdownGuard(QObject):
+    """Hält das Qt-Ereignisloop offen, bis Archiv-Threads sicher beendet sind."""
+
+    def __init__(self, app):
+        super().__init__(app)
+        self._app = app
+        self._workers = {}
+        self._quit_pending = False
+        self._allow_next_quit = False
+        self._poll_timer = QTimer(self)
+        self._poll_timer.setInterval(20)
+        self._poll_timer.timeout.connect(self._poll_workers)
+        app.installEventFilter(self)
+
+    def belongs_to(self, app) -> bool:
+        return self._app is app
+
+    def track(self, worker):
+        self._workers[id(worker)] = worker
+        if not self._poll_timer.isActive():
+            self._poll_timer.start()
+
+    def _running_workers(self):
+        running = []
+        stopped = []
+        for worker_id, worker in tuple(self._workers.items()):
+            try:
+                if worker.isRunning():
+                    running.append(worker)
+                else:
+                    stopped.append(worker_id)
+            except RuntimeError:
+                stopped.append(worker_id)
+        for worker_id in stopped:
+            self._workers.pop(worker_id, None)
+        return running
+
+    def eventFilter(self, watched, event):
+        if watched is self._app and event.type() == QEvent.Type.Quit:
+            if self._allow_next_quit:
+                self._allow_next_quit = False
+                return False
+            running = self._running_workers()
+            if running:
+                event.ignore()
+                self._quit_pending = True
+                for worker in running:
+                    owner = worker.parent()
+                    if isinstance(owner, _ThreadAwareDialog):
+                        owner.done(QDialog.DialogCode.Rejected)
+                    cancel = getattr(worker, "cancel", None)
+                    if callable(cancel):
+                        cancel()
+                if not self._poll_timer.isActive():
+                    self._poll_timer.start()
+                return True
+        return super().eventFilter(watched, event)
+
+    @Slot()
+    def _poll_workers(self):
+        if self._running_workers():
+            return
+        self._poll_timer.stop()
+        if self._quit_pending:
+            self._quit_pending = False
+            self._allow_next_quit = True
+            QTimer.singleShot(0, self._app.quit)
+
+
+_archive_worker_shutdown_guard = None
+
+
+def _track_archive_worker(worker):
+    """Behält gestartete Archiv-Threads auch über ein QApplication.quit hinweg."""
+    global _archive_worker_shutdown_guard
+    app = QApplication.instance()
+    if app is None:
+        return
+    if (
+        _archive_worker_shutdown_guard is None
+        or not _archive_worker_shutdown_guard.belongs_to(app)
+    ):
+        _archive_worker_shutdown_guard = _ArchiveWorkerShutdownGuard(app)
+    _archive_worker_shutdown_guard.track(worker)
+
+
+class _ThreadAwareDialog(QDialog):
+    """Schließt einen Dialog erst, wenn seine QThread-Kinder beendet sind."""
+
+    _worker_attributes = ("worker", "test_worker", "extract_worker")
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._pending_close_result = None
+        self._close_poll_timer = QTimer(self)
+        self._close_poll_timer.setInterval(20)
+        self._close_poll_timer.timeout.connect(self._finish_pending_close)
+
+    def _running_workers(self):
+        workers = []
+        seen = set()
+        for attr_name in self._worker_attributes:
+            worker = getattr(self, attr_name, None)
+            if worker is None or id(worker) in seen:
+                continue
+            seen.add(id(worker))
+            try:
+                if worker.isRunning():
+                    workers.append(worker)
+            except RuntimeError:
+                continue
+        return workers
+
+    def done(self, result: int):
+        running = self._running_workers()
+        if running:
+            if self._pending_close_result is None:
+                self._pending_close_result = result
+            for worker in running:
+                cancel = getattr(worker, "cancel", None)
+                if callable(cancel):
+                    cancel()
+            self._close_poll_timer.start()
+            return
+
+        self._close_poll_timer.stop()
+        if self._pending_close_result is not None:
+            result = self._pending_close_result
+            self._pending_close_result = None
+        super().done(result)
+
+    @Slot()
+    def _finish_pending_close(self):
+        if self._running_workers():
+            return
+        self._close_poll_timer.stop()
+        result = self._pending_close_result
+        self._pending_close_result = None
+        if result is not None:
+            super().done(result)
+
+    def closeEvent(self, event):
+        if self._running_workers():
+            event.ignore()
+            self.done(QDialog.DialogCode.Rejected)
+            return
+        super().closeEvent(event)
+
+    def _when_worker_stops(self, worker, callback):
+        if worker is not None and worker.isRunning():
+            QTimer.singleShot(
+                20,
+                lambda: self._when_worker_stops(worker, callback),
+            )
+            return
+        callback()
+
+
+class ArchiveCompressDialog(_ThreadAwareDialog):
     """Dialog zur Erstellung eines neuen ZIP-Archivs aus einer Auswahl."""
 
     def __init__(self, sources: List[str], current_dir: str = "", parent=None):
@@ -204,6 +363,7 @@ class ArchiveCompressDialog(QDialog):
             compresslevel=comp_level,
             parent=self
         )
+        _track_archive_worker(self.worker)
         self.worker.progress.connect(self._on_progress)
         self.worker.finished.connect(self._on_finished)
         self.worker.error.connect(self._on_error)
@@ -219,6 +379,14 @@ class ArchiveCompressDialog(QDialog):
 
     @Slot(bool, str, int, int)
     def _on_finished(self, success: bool, dest_path: str, count: int, total_bytes: int):
+        self._when_worker_stops(
+            self.worker,
+            lambda: self._finish_compression(success, dest_path, count, total_bytes),
+        )
+
+    def _finish_compression(self, success: bool, dest_path: str, count: int, total_bytes: int):
+        if self._pending_close_result is not None:
+            return
         self.progress_bar.setVisible(False)
         self.create_btn.setEnabled(True)
         self.dest_edit.setEnabled(True)
@@ -243,17 +411,18 @@ class ArchiveCompressDialog(QDialog):
 
     @Slot(str)
     def _on_error(self, err_msg: str):
+        if self._pending_close_result is not None:
+            return
         QMessageBox.critical(self, t("Fehler beim Komprimieren"), f"{err_msg}")
 
     def _on_cancel(self):
         if self.worker and self.worker.isRunning():
             self.worker.cancel()
             self.status_label.setText(t("Wird abgebrochen..."))
-            self.worker.wait(1500)
         self.reject()
 
 
-class ArchiveExtractDialog(QDialog):
+class ArchiveExtractDialog(_ThreadAwareDialog):
     """Dialog zum sicheren Entpacken eines ZIP-Archivs."""
 
     def __init__(self, zip_path: str, default_target_dir: str = "", parent=None):
@@ -394,6 +563,7 @@ class ArchiveExtractDialog(QDialog):
             overwrite=overwrite,
             parent=self
         )
+        _track_archive_worker(self.worker)
         self.worker.progress.connect(self._on_progress)
         self.worker.finished.connect(self._on_finished)
         self.worker.error.connect(self._on_error)
@@ -409,6 +579,14 @@ class ArchiveExtractDialog(QDialog):
 
     @Slot(bool, str, int, int)
     def _on_finished(self, success: bool, target_dir: str, count: int, total_bytes: int):
+        self._when_worker_stops(
+            self.worker,
+            lambda: self._finish_extraction(success, target_dir, count, total_bytes),
+        )
+
+    def _finish_extraction(self, success: bool, target_dir: str, count: int, total_bytes: int):
+        if self._pending_close_result is not None:
+            return
         self.progress_bar.setVisible(False)
         self.extract_btn.setEnabled(True)
         self.target_edit.setEnabled(True)
@@ -433,17 +611,18 @@ class ArchiveExtractDialog(QDialog):
 
     @Slot(str)
     def _on_error(self, err_msg: str):
+        if self._pending_close_result is not None:
+            return
         QMessageBox.critical(self, t("Fehler beim Entpacken"), f"{err_msg}")
 
     def _on_cancel(self):
         if self.worker and self.worker.isRunning():
             self.worker.cancel()
             self.status_label.setText(t("Wird abgebrochen..."))
-            self.worker.wait(1500)
         self.reject()
 
 
-class ArchiveViewerDialog(QDialog):
+class ArchiveViewerDialog(_ThreadAwareDialog):
     """Vollständiger Archiv-Inspektor mit Metadaten, Suche und CRC-Integritätstest."""
 
     def __init__(self, zip_path: str, parent=None):
@@ -452,6 +631,8 @@ class ArchiveViewerDialog(QDialog):
         self.summary = None
         self.entries = []
         self.test_worker: Optional[ArchiveTestWorker] = None
+        self.extract_worker: Optional[ArchiveExtractWorker] = None
+        self._extract_error: Optional[str] = None
 
         filename = os.path.basename(zip_path)
         self.setWindowTitle(t("Archiv durchsuchen — ") + filename)
@@ -597,15 +778,26 @@ class ArchiveViewerDialog(QDialog):
         self._populate_table()
 
     def _test_integrity(self):
+        if self.test_worker is not None and self.test_worker.isRunning():
+            return
         self.integrity_label.setText(t("Integrität wird geprüft..."))
         self.test_btn.setEnabled(False)
 
         self.test_worker = ArchiveTestWorker(self.zip_path, parent=self)
+        _track_archive_worker(self.test_worker)
         self.test_worker.finished.connect(self._on_test_finished)
         self.test_worker.start()
 
     @Slot(bool, str)
     def _on_test_finished(self, is_valid: bool, msg: str):
+        self._when_worker_stops(
+            self.test_worker,
+            lambda: self._finish_integrity_test(is_valid, msg),
+        )
+
+    def _finish_integrity_test(self, is_valid: bool, msg: str):
+        if self._pending_close_result is not None:
+            return
         self.test_btn.setEnabled(True)
         if is_valid:
             self.integrity_label.setText("✅ " + t("Archiv ist fehlerfrei (CRC-Prüfung bestanden)"))
@@ -647,17 +839,198 @@ class ArchiveViewerDialog(QDialog):
         if not folder:
             return
 
-        worker = ArchiveExtractWorker(
+        if self.extract_worker is not None and self.extract_worker.isRunning():
+            return
+
+        self._extract_error = None
+        self.extract_selected_btn.setEnabled(False)
+        self.extract_all_btn.setEnabled(False)
+        self.test_btn.setEnabled(False)
+        self.integrity_label.setText(t("Entpacken wird gestartet..."))
+        self.extract_worker = ArchiveExtractWorker(
             self.zip_path,
             folder,
             members=selected_members,
             overwrite=True,
             parent=self
         )
-        worker.start()
-        worker.wait()
-        QMessageBox.information(
-            self,
-            t("Auswahl entpackt"),
-            t("Die ausgewählten Dateien wurden erfolgreich entpackt nach:\n") + folder
+        _track_archive_worker(self.extract_worker)
+        self.extract_worker.error.connect(self._on_selected_extract_error)
+        self.extract_worker.finished.connect(
+            lambda success, target, count, total: self._on_selected_extract_finished(
+                success, target, count, total
+            )
         )
+        self.extract_worker.start()
+
+    @Slot(str)
+    def _on_selected_extract_error(self, err_msg: str):
+        self._extract_error = err_msg
+
+    @Slot(bool, str, int, int)
+    def _on_selected_extract_finished(
+        self, success: bool, target_dir: str, count: int, total_bytes: int
+    ):
+        self._when_worker_stops(
+            self.extract_worker,
+            lambda: self._finish_selected_extraction(
+                success, target_dir, count, total_bytes
+            ),
+        )
+
+    def _finish_selected_extraction(
+        self, success: bool, target_dir: str, count: int, total_bytes: int
+    ):
+        if self._pending_close_result is not None:
+            return
+        self.extract_selected_btn.setEnabled(True)
+        self.extract_all_btn.setEnabled(True)
+        self.test_btn.setEnabled(True)
+        if success:
+            self.integrity_label.setText(t("Erfolgreich entpackt"))
+            QMessageBox.information(
+                self,
+                t("Auswahl entpackt"),
+                t("Die ausgewählten Dateien wurden erfolgreich entpackt nach:\n")
+                + target_dir,
+            )
+        else:
+            message = self._extract_error or t("Vorgang abgebrochen.")
+            self.integrity_label.setText(t("Entpacken fehlgeschlagen.") + " " + message)
+            QMessageBox.critical(self, t("Fehler beim Entpacken"), message)
+
+
+class ArchiveExtractProgressDialog(_ThreadAwareDialog):
+    """Nicht blockierender Fortschrittsdialog für direktes Entpacken."""
+
+    completed = Signal(bool)
+
+    def __init__(self, zip_path: str, target_dir: str, parent=None):
+        super().__init__(parent)
+        self._extract_error: Optional[str] = None
+        self._cancel_requested = False
+        self.setWindowTitle(t("Archiv entpacken"))
+        self.setWindowModality(Qt.WindowModality.WindowModal)
+        self.setMinimumWidth(420)
+
+        layout = QVBoxLayout(self)
+        self.status_label = QLabel(t("Entpacken wird gestartet..."))
+        layout.addWidget(self.status_label)
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 0)
+        layout.addWidget(self.progress_bar)
+        self.cancel_btn = QPushButton(t("Abbrechen"))
+        self.cancel_btn.clicked.connect(self._cancel)
+        layout.addWidget(self.cancel_btn)
+
+        self.worker = ArchiveExtractWorker(zip_path, target_dir, parent=self)
+        _track_archive_worker(self.worker)
+        self.worker.progress.connect(self._on_progress)
+        self.worker.error.connect(self._on_error)
+        self.worker.finished.connect(self._on_finished)
+        self.worker.start()
+
+    @Slot(int, int, str)
+    def _on_progress(self, current: int, total: int, filename: str):
+        self.progress_bar.setRange(0, max(total, 1))
+        self.progress_bar.setValue(current)
+        self.status_label.setText(filename or t("Entpacken wird gestartet..."))
+
+    @Slot(str)
+    def _on_error(self, err_msg: str):
+        self._extract_error = err_msg
+
+    @Slot(bool, str, int, int)
+    def _on_finished(self, success: bool, target_dir: str, count: int, total_bytes: int):
+        self._when_worker_stops(
+            self.worker,
+            lambda: self._finish(success, target_dir, count, total_bytes),
+        )
+
+    def _finish(self, success: bool, target_dir: str, count: int, total_bytes: int):
+        if self._pending_close_result is not None:
+            self.completed.emit(False)
+            return
+        if success:
+            self.completed.emit(True)
+            QMessageBox.information(
+                self,
+                t("Archiv entpackt"),
+                t("Erfolgreich entpackt") + ":\n" + target_dir,
+            )
+            self.accept()
+            return
+
+        if self._cancel_requested and not self._extract_error:
+            self.status_label.setText(t("Vorgang abgebrochen."))
+            self.completed.emit(False)
+            self.reject()
+            return
+
+        message = self._extract_error or t("Vorgang abgebrochen.")
+        self.status_label.setText(t("Entpacken fehlgeschlagen.") + " " + message)
+        self.completed.emit(False)
+        QMessageBox.critical(self, t("Fehler beim Entpacken"), message)
+        self.reject()
+
+    def _cancel(self):
+        if self.worker.isRunning():
+            self._cancel_requested = True
+            self.worker.cancel()
+            self.status_label.setText(t("Wird abgebrochen..."))
+            self.cancel_btn.setEnabled(False)
+
+
+class ArchiveIntegrityProgressDialog(_ThreadAwareDialog):
+    """Nicht blockierender CRC-Prüfdialog für ZIP-Archive."""
+
+    def __init__(self, zip_path: str, parent=None):
+        super().__init__(parent)
+        self.zip_path = zip_path
+        self.setWindowTitle(t("Integritätsprüfung"))
+        self.setWindowModality(Qt.WindowModality.WindowModal)
+        self.setMinimumWidth(420)
+
+        layout = QVBoxLayout(self)
+        self.status_label = QLabel(t("Integrität wird geprüft..."))
+        layout.addWidget(self.status_label)
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 0)
+        layout.addWidget(self.progress_bar)
+        self.close_btn = QPushButton(t("Schließen"))
+        self.close_btn.clicked.connect(self.reject)
+        layout.addWidget(self.close_btn)
+
+        self.test_worker = ArchiveTestWorker(zip_path, parent=self)
+        _track_archive_worker(self.test_worker)
+        self.test_worker.finished.connect(self._on_finished)
+        self.test_worker.start()
+
+    @Slot(bool, str)
+    def _on_finished(self, is_valid: bool, message: str):
+        self._when_worker_stops(
+            self.test_worker,
+            lambda: self._finish(is_valid, message),
+        )
+
+    def _finish(self, is_valid: bool, message: str):
+        if self._pending_close_result is not None:
+            return
+        self.progress_bar.setVisible(False)
+        self.close_btn.setText(t("Fertig"))
+        if is_valid:
+            self.status_label.setText(t("Archiv ist fehlerfrei (CRC-Prüfung bestanden)"))
+            QMessageBox.information(
+                self,
+                t("Integritätsprüfung"),
+                t("Archiv ist fehlerfrei (CRC-Prüfung bestanden)")
+                + "\n"
+                + os.path.basename(self.zip_path),
+            )
+        else:
+            self.status_label.setText(t("Integritätsfehler: ") + message)
+            QMessageBox.warning(
+                self,
+                t("Integritätsprüfung"),
+                t("Integritätsfehler: ") + message,
+            )

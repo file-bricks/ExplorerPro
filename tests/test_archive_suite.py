@@ -11,9 +11,15 @@ Testet:
 """
 
 from pathlib import Path
+import os
+import subprocess
+import sys
+import threading
 import zipfile
 import pytest
+from PySide6.QtWidgets import QFileDialog, QMessageBox
 
+from core import archive_service
 from core.archive_service import (
     ArchiveSummary,
     ZipSlipSecurityError,
@@ -27,9 +33,20 @@ from core.archive_service import (
 from gui.archive_dialog import (
     ArchiveCompressDialog,
     ArchiveExtractDialog,
+    ArchiveExtractProgressDialog,
+    ArchiveIntegrityProgressDialog,
     ArchiveViewerDialog,
 )
 from gui.preview.preview_panel import ArchivePreview, PreviewPanel
+
+
+@pytest.fixture
+def archive_app(qapp):
+    """Prevent this module's transient task windows from quitting pytest's app."""
+    quit_on_last_window_closed = qapp.quitOnLastWindowClosed()
+    qapp.setQuitOnLastWindowClosed(False)
+    yield qapp
+    qapp.setQuitOnLastWindowClosed(quit_on_last_window_closed)
 
 
 # ============================================================================
@@ -78,6 +95,33 @@ def test_create_and_inspect_zip(tmp_path: Path):
     sample_entry = entries[0]
     assert isinstance(sample_entry.formatted_size, str)
     assert isinstance(sample_entry.formatted_date, str)
+
+
+def test_create_zip_replace_failure_preserves_destination_and_cleans_temp(
+    tmp_path: Path, monkeypatch
+):
+    source = tmp_path / "replacement_source.txt"
+    source.write_bytes(b"new archive content")
+    destination = tmp_path / "existing.zip"
+    original_bytes = b"pre-existing archive must survive"
+    destination.write_bytes(original_bytes)
+    replace_attempts = []
+
+    def fail_replace(source_path, destination_path):
+        replace_attempts.append((Path(source_path), Path(destination_path)))
+        raise OSError("simulated atomic replacement failure")
+
+    monkeypatch.setattr(archive_service.os, "replace", fail_replace)
+
+    with pytest.raises(OSError, match="simulated atomic replacement failure"):
+        create_zip_archive([source], destination)
+
+    assert destination.read_bytes() == original_bytes
+    assert len(replace_attempts) == 1
+    temporary_path, replaced_destination = replace_attempts[0]
+    assert replaced_destination == destination.resolve()
+    assert temporary_path.parent == destination.parent
+    assert not temporary_path.exists()
 
 
 def test_test_zip_integrity_valid_and_corrupt(tmp_path: Path):
@@ -245,6 +289,326 @@ def test_archive_viewer_dialog_filtering_and_table(qapp, tmp_path: Path):
     dlg.filter_edit.clear()
     assert dlg.table.rowCount() == 2
     dlg.close()
+
+
+def _assert_archive_progress_dialog_defers_close_until_worker_stops(
+    qtbot, monkeypatch, tmp_path: Path, action, expected_result
+):
+    from core.archive_service import ArchiveExtractWorker
+
+    entered = threading.Event()
+    release = threading.Event()
+
+    def blocked_run(worker):
+        entered.set()
+        release.wait(5)
+
+    monkeypatch.setattr(ArchiveExtractWorker, "run", blocked_run)
+    archive_path = tmp_path / "blocked.zip"
+    archive_path.write_bytes(b"worker is patched in this lifecycle test")
+    dialog = ArchiveExtractProgressDialog(str(archive_path), str(tmp_path / "out"))
+    qtbot.addWidget(dialog)
+    completed = []
+    dialog.finished.connect(completed.append)
+    dialog.show()
+
+    try:
+        assert entered.wait(2)
+        getattr(dialog, action)()
+        qtbot.wait(40)
+        assert dialog.isVisible()
+        assert dialog.worker.isRunning()
+        assert dialog.worker._is_cancelled is True
+        assert completed == []
+
+        release.set()
+        assert dialog.worker.wait(2000)
+        qtbot.waitUntil(lambda: completed == [int(expected_result)], timeout=3000)
+        assert not dialog.isVisible()
+        assert not dialog.worker.isRunning()
+    finally:
+        release.set()
+        dialog.worker.wait(2000)
+        dialog.close()
+
+
+@pytest.mark.parametrize(
+    "action,expected_result",
+    [
+        ("accept", 1),
+        ("reject", 0),
+        ("close", 0),
+    ],
+)
+def test_archive_progress_dialog_close_actions(
+    action, expected_result, archive_app, qtbot, monkeypatch, tmp_path
+):
+    _assert_archive_progress_dialog_defers_close_until_worker_stops(
+        qtbot,
+        monkeypatch,
+        tmp_path,
+        action,
+        expected_result,
+    )
+
+
+def test_direct_archive_extraction_is_async_and_reports_failure(
+    archive_app, qtbot, monkeypatch, tmp_path: Path
+):
+    from gui.browser.file_browser import FileBrowser
+
+    entered = threading.Event()
+    release = threading.Event()
+    errors = []
+    successes = []
+
+    def blocked_failure(*args, **kwargs):
+        entered.set()
+        release.wait(5)
+        raise OSError("simulated extraction failure")
+
+    monkeypatch.setattr(archive_service, "extract_zip_archive", blocked_failure)
+    monkeypatch.setattr(QMessageBox, "critical", lambda *args: errors.append(args[-1]))
+    monkeypatch.setattr(QMessageBox, "information", lambda *args: successes.append(args[-1]))
+    browser = FileBrowser()
+    qtbot.addWidget(browser)
+    browser._current_path = str(tmp_path)
+    browser.refresh = lambda: None
+    archive_path = tmp_path / "broken.zip"
+    archive_path.write_bytes(b"the worker uses the patched service")
+
+    try:
+        browser._extract_archive_here(str(archive_path))
+        assert entered.wait(2)
+        dialog = browser._archive_task_dialogs[0]
+        assert dialog.worker.isRunning()
+        assert errors == []
+        assert successes == []
+
+        release.set()
+        qtbot.waitUntil(
+            lambda: bool(errors) and not dialog.worker.isRunning(), timeout=3000
+        )
+        assert "simulated extraction failure" in errors[0]
+        assert successes == []
+    finally:
+        release.set()
+        for dialog in list(browser._archive_task_dialogs):
+            if hasattr(dialog, "worker") and dialog.worker.isRunning():
+                dialog.worker.wait(2000)
+            dialog.close()
+        browser.close()
+
+
+def test_direct_archive_extraction_reports_success_after_worker_stops(
+    archive_app, qtbot, monkeypatch, tmp_path: Path
+):
+    from gui.browser.file_browser import FileBrowser
+
+    entered = threading.Event()
+    release = threading.Event()
+    errors = []
+    successes = []
+
+    def blocked_success(*args, **kwargs):
+        entered.set()
+        release.wait(5)
+        return 1, 128
+
+    monkeypatch.setattr(archive_service, "extract_zip_archive", blocked_success)
+    monkeypatch.setattr(QMessageBox, "critical", lambda *args: errors.append(args[-1]))
+    monkeypatch.setattr(QMessageBox, "information", lambda *args: successes.append(args[-1]))
+    browser = FileBrowser()
+    qtbot.addWidget(browser)
+    browser._current_path = str(tmp_path)
+    browser.refresh = lambda: None
+    archive_path = tmp_path / "good.zip"
+    archive_path.write_bytes(b"the worker uses the patched service")
+
+    try:
+        browser._extract_archive_here(str(archive_path))
+        assert entered.wait(2)
+        dialog = browser._archive_task_dialogs[0]
+        assert dialog.worker.isRunning()
+        assert errors == []
+        assert successes == []
+
+        release.set()
+        qtbot.waitUntil(
+            lambda: bool(successes) and not dialog.worker.isRunning(), timeout=3000
+        )
+        assert "good" in successes[0]
+        assert errors == []
+    finally:
+        release.set()
+        for dialog in list(browser._archive_task_dialogs):
+            if hasattr(dialog, "worker") and dialog.worker.isRunning():
+                dialog.worker.wait(2000)
+            dialog.close()
+        browser.close()
+
+
+def test_viewer_selected_extraction_is_async_and_reports_failure(
+    archive_app, qtbot, monkeypatch, tmp_path: Path
+):
+    entered = threading.Event()
+    release = threading.Event()
+    errors = []
+    successes = []
+
+    def blocked_failure(*args, **kwargs):
+        entered.set()
+        release.wait(5)
+        raise OSError("selected extraction failed")
+
+    monkeypatch.setattr(archive_service, "extract_zip_archive", blocked_failure)
+    monkeypatch.setattr(
+        QFileDialog,
+        "getExistingDirectory",
+        lambda *args, **kwargs: str(tmp_path / "selected"),
+    )
+    monkeypatch.setattr(QMessageBox, "critical", lambda *args: errors.append(args[-1]))
+    monkeypatch.setattr(QMessageBox, "information", lambda *args: successes.append(args[-1]))
+
+    source = tmp_path / "member.txt"
+    source.write_text("archive member", encoding="utf-8")
+    archive_path = tmp_path / "selected.zip"
+    create_zip_archive([source], archive_path)
+    dialog = ArchiveViewerDialog(str(archive_path))
+    qtbot.addWidget(dialog)
+    dialog.table.selectRow(0)
+
+    try:
+        dialog._extract_selected()
+        assert entered.wait(2)
+        assert dialog.extract_worker.isRunning()
+        assert errors == []
+        assert successes == []
+
+        release.set()
+        qtbot.waitUntil(
+            lambda: bool(errors) and not dialog.extract_worker.isRunning(), timeout=3000
+        )
+        assert "selected extraction failed" in errors[0]
+        assert successes == []
+    finally:
+        release.set()
+        if dialog.extract_worker is not None:
+            dialog.extract_worker.wait(2000)
+        dialog.close()
+
+
+def test_file_browser_crc_check_is_async_and_reports_corruption(
+    archive_app, qtbot, monkeypatch, tmp_path: Path
+):
+    from gui.browser.file_browser import FileBrowser
+
+    entered = threading.Event()
+    release = threading.Event()
+    warnings = []
+    successes = []
+
+    def blocked_corruption(_zip_path):
+        entered.set()
+        release.wait(5)
+        return False, "simulated CRC mismatch"
+
+    monkeypatch.setattr(archive_service, "check_zip_integrity", blocked_corruption)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[-1]))
+    monkeypatch.setattr(QMessageBox, "information", lambda *args: successes.append(args[-1]))
+    browser = FileBrowser()
+    qtbot.addWidget(browser)
+    archive_path = tmp_path / "crc.zip"
+    archive_path.write_bytes(b"worker uses patched CRC service")
+
+    try:
+        browser._test_archive_integrity(str(archive_path))
+        assert entered.wait(2)
+        dialog = browser._archive_task_dialogs[0]
+        assert isinstance(dialog, ArchiveIntegrityProgressDialog)
+        assert dialog.test_worker.isRunning()
+        assert warnings == []
+        assert successes == []
+
+        release.set()
+        qtbot.waitUntil(
+            lambda: bool(warnings) and not dialog.test_worker.isRunning(), timeout=3000
+        )
+        assert "simulated CRC mismatch" in warnings[0]
+        assert successes == []
+    finally:
+        release.set()
+        for dialog in list(browser._archive_task_dialogs):
+            if hasattr(dialog, "test_worker") and dialog.test_worker.isRunning():
+                dialog.test_worker.wait(2000)
+            dialog.close()
+        browser.close()
+
+
+def test_file_browser_crc_check_reports_success(archive_app, qtbot, monkeypatch, tmp_path: Path):
+    from gui.browser.file_browser import FileBrowser
+
+    successes = []
+    warnings = []
+    monkeypatch.setattr(archive_service, "check_zip_integrity", lambda _path: (True, ""))
+    monkeypatch.setattr(QMessageBox, "information", lambda *args: successes.append(args[-1]))
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args: warnings.append(args[-1]))
+    browser = FileBrowser()
+    qtbot.addWidget(browser)
+    archive_path = tmp_path / "valid.zip"
+    archive_path.write_bytes(b"worker uses patched CRC service")
+
+    browser._test_archive_integrity(str(archive_path))
+    dialog = browser._archive_task_dialogs[0]
+    qtbot.waitUntil(lambda: bool(successes) and not dialog.test_worker.isRunning(), timeout=3000)
+    assert "valid.zip" in successes[0]
+    assert warnings == []
+    dialog.close()
+    browser.close()
+
+
+def test_archive_worker_application_quit_waits_for_thread_exit(tmp_path: Path):
+    script = r'''
+import sys, threading
+sys.path.insert(0, "src")
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication
+from core import archive_service
+from gui.archive_dialog import ArchiveExtractProgressDialog
+
+app = QApplication([])
+app.setQuitOnLastWindowClosed(False)
+entered, release = threading.Event(), threading.Event()
+def blocked_extract(*args, **kwargs):
+    entered.set()
+    release.wait(5)
+    return 0, 0
+archive_service.extract_zip_archive = blocked_extract
+archive_service.extract_archive = blocked_extract
+dialog = ArchiveExtractProgressDialog("unused.zip", "unused-target")
+dialog.show()
+assert entered.wait(2)
+QTimer.singleShot(0, app.quit)
+QTimer.singleShot(100, release.set)
+QTimer.singleShot(7000, app.exit)
+app.exec()
+assert not dialog.worker.isRunning()
+assert release.is_set()
+print("archive-quit-wait-ok")
+dialog.close()
+'''
+    environment = dict(os.environ, QT_QPA_PLATFORM="offscreen")
+    result = subprocess.run(
+        [sys.executable, "-X", "faulthandler", "-c", script],
+        cwd=Path(__file__).resolve().parents[1],
+        capture_output=True,
+        text=True,
+        timeout=12,
+        env=environment,
+    )
+    assert result.returncode == 0, (result.returncode, result.stdout, result.stderr)
+    assert "archive-quit-wait-ok" in result.stdout
+    assert "QThread: Destroyed while thread is still running" not in result.stderr
 
 
 # ============================================================================
