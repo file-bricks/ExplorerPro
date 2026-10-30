@@ -299,9 +299,7 @@ def create_zip_archive(
 
         # Atomare Veröffentlichung
         if temp_zip.exists():
-            if dest_path.exists():
-                dest_path.unlink()
-            temp_zip.rename(dest_path)
+            os.replace(temp_zip, dest_path)
 
         return added_files, total_bytes
 
