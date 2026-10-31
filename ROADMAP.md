@@ -27,6 +27,7 @@ maßgeblichen Scope-Beschreibungen.
 
 | Früherer Roadmap-Punkt | Verifizierter Stand |
 |---|---|
+| Native ZIP- & Archiv-Suite (ZIP, TAR, GZ, BZ2, XZ) mit Tar-/Zip-Slip-Schutz | DONE 2026-11-01; TW-EP-12..14, `src/core/archive_service.py`, 48 Tests in `tests/test_*archive*.py` |
 | Release-EXE startet ohne reproduzierbaren DLL-/Loader-Abbruch | DONE 2026-07-01; Start-Smoke in `tests/test_release_smoke.py` |
 | Drag-and-drop zwischen ExplorerPro und externen Anwendungen | DONE 2026-06-27; Implementierung und Tests sind in AUFGABEN/Changelog dokumentiert |
 | Read-only Excel-Vorschau für `.xlsx`/`.xls` mit Fallback | DONE 2026-06-28; `src/core/xlsx_reader.py`, Preview-Widget und Tests vorhanden |

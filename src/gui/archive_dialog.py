@@ -29,9 +29,8 @@ from core.archive_service import (
 from translator import t
 
 
-
 _ARCHIVE_COMPOUND_SUFFIXES = (
-    ".tar.gz", ".tar.bz2", ".tar.xz", ".tgz", ".tbz2", ".txz", ".zip", ".tar"
+    ".tar.gz", ".tar.bz2", ".tar.xz", ".tgz", ".tbz2", ".txz", ".zip", ".tar", ".gz", ".bz2", ".xz"
 )
 _WINDOWS_RESERVED_STEMS = frozenset({
     "CON", "PRN", "AUX", "NUL",
@@ -362,11 +361,11 @@ class ArchiveCompressDialog(_ThreadAwareDialog):
             self,
             t("Ziel-Archivdatei auswählen"),
             curr_text or os.path.join(init_dir, "Archiv.zip"),
-            t("Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Alle Dateien (*.*)")
+            t("Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Komprimierte Einzeldateien (*.gz *.bz2 *.xz);;Alle Dateien (*.*)")
         )
         if path:
             lower = path.lower()
-            if not any(lower.endswith(ext) for ext in (".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")):
+            if not any(lower.endswith(ext) for ext in (".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz", ".gz", ".bz2", ".xz")):
                 path += ".zip"
             self.dest_edit.setText(path)
 
@@ -377,7 +376,7 @@ class ArchiveCompressDialog(_ThreadAwareDialog):
             return
 
         lower = dest_path.lower()
-        if not any(lower.endswith(ext) for ext in (".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")):
+        if not any(lower.endswith(ext) for ext in (".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz", ".gz", ".bz2", ".xz")):
             dest_path += ".zip"
             self.dest_edit.setText(dest_path)
 

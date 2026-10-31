@@ -12,6 +12,26 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - **Selektive Ordner-Extraktion & Einzelstream-Abgrenzung (`src/core/archive_service.py`)**: `extract_zip_archive` und `extract_tar_archive` entpacken ausgewählte Ordnerzeilen im `ArchiveViewerDialog` rekursiv samt Inhalt; `is_archive` meldet reine Einzelstream-Dateien (`.gz`, `.bz2`, `.xz` ohne TAR-Header) und nicht unterstütztes `.tar.zst` nicht mehr fälschlich als unterstützte Archive.
 - **Plattformgerechte Member-Namensregeln & Vorabprüfung (`src/core/archive_service.py`)**: Die reinen Windows-Namensregeln (`<>:"|?*`, abschließender Punkt/Leerzeichen, reservierte Gerätenamen, NTFS-ADS über `:`) greifen in `sanitize_archive_member_path` nur noch unter Windows; unter Linux/macOS gültige Namen wie `log 12:30.txt`, `What?.md` oder `aux.c` werden dort wieder vollständig entpackt. Traversal-, Steuerzeichen-, Root- und Symlink-Prüfungen gelten weiterhin überall. `extract_zip_archive` und `extract_tar_archive` prüfen alle Eintragsnamen vor dem ersten Schreibzugriff, sodass ein abgewiesener Eintrag kein halb entpacktes Ziel mehr hinterlässt.
 
+### Standalone GZ/BZ2/XZ Stream Engine, Universal-Archiv-Härtung & Tier-2 I18N (2026-11-01, TW-EP-14)
+- **Standalone Einzeldatei-Stream-Engine (`src/core/archive_service.py`)**:
+  - `is_single_file_compressed`: Robuste Erkennung komprimierter Einzeldateien (`.gz`, `.bz2`, `.xz`) unter strenger Trennung von zusammengesetzten TAR-Archiven via Magic-Byte-Inspektion (`\x1f\x8b`, `BZh`, `\xfd7zXZ\x00`).
+  - `inspect_single_file_compressed`: Auslesen des inneren Dateinamens, unkomprimierter Größe (aus GZIP ISIZE bzw. gestreamter Dekompression), komprimierter Größe und Ersparnisquote.
+  - `create_single_file_compressed`: Atomare Erstellung von `.gz`, `.bz2` und `.xz` Einzeldateien mit mtime-Erhalt, FNAME-Sauberkeit und Windows-konformer Dateihandle-Freigabe bei Abbruch.
+  - `extract_single_file_compressed`: Sichere, atomare Dekomprimierung via temporäre Dateien und `_atomic_replace` mit Erhalt des Zeitstempels und Tar-/Zip-Slip-Path-Traversal-Schutz.
+  - `check_single_file_integrity`: Stream-Integritätsprüfung für GZIP, BZIP2 und XZ mit präziser Fehlerdiagnose bei korrupten oder abgeschnittenen Streams.
+  - Fassaden-Erweiterung (`inspect_archive`, `create_archive`, `extract_archive`, `check_archive_integrity`): Transparente Integration von Einzeldateien über die Archiv-Fassaden unter Wahrung der `is_archive()`-Abgrenzung für reine Einzelstreams.
+  - Windows-Dateisperren-Resilienz: `_safe_is_tarfile` und `_safe_is_zipfile` fangen unerwartete `EOFError` und Corruptions sicher ab; defensives Schließen von File-Handles vor `unlink` schützt vor Windows WinError 32 PermissionError.
+- **GUI- & Dialog-Anbindung (`src/gui/archive_dialog.py`, `src/gui/preview/preview_panel.py`)**:
+  - `_get_archive_stem`: Um `.gz`, `.bz2`, `.xz` erweitert für saubere Ordnernamen beim Entpacken.
+  - `ArchiveCompressDialog`: Filter und Validierung für `.gz`, `.bz2`, `.xz` Einzeldateien integriert; unbenutzte Imports bereinigt.
+  - `ArchiveViewerDialog` & `ArchiveExtractDialog`: Nahtlose Darstellung und Entpackung komprimierter Einzeldateien.
+  - `ArchivePreview`: Sofortige tabellarische Voransicht im Preview-Panel für `.gz`, `.bz2`, `.xz`.
+- **Lokalisierung (Tier-2 P-006)**:
+  - Alle Filter- und Dialogbeschriftungen über alle 6 Zielsprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` integriert (1186 Strings, 100% Parität via `manage_translations.py --check`).
+- **Test-Abdeckung & Linter**:
+  - `tests/test_single_file_compression_suite.py`: 14 automatisierte Tests (Erkennung, Inspektion, Roundtrip, Integrität, Unified Dispatch, Worker, Stem, Leere Dateien, Abbruch, GUI-Widgets).
+  - Bereinigung von Lint-Warnungen in `archive_dialog.py`, `test_archive_gui_integration.py` und `test_tar_archive_suite.py`.
+
 ### Universal-Archiv-Engine & Multi-Format-Härtung (2026-10-29, TW-EP-13)
 - **Universal-Archiv-Core (`src/core/archive_service.py`)**:
   - Vereinheitlichte Fassade (`is_archive`, `inspect_archive`, `create_archive`, `extract_archive`, `check_archive_integrity`) für alle gängigen Archivformate: ZIP (`.zip`), TAR (`.tar`), TAR.GZ (`.tar.gz`, `.tgz`), TAR.BZ2 (`.tar.bz2`, `.tbz2`) und TAR.XZ (`.tar.xz`, `.txz`).

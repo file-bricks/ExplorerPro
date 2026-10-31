@@ -9478,5 +9478,13 @@
     "zh": "所有受支持的归档 (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP 归档 (*.zip);;TAR 归档 (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;所有文件 (*.*)",
     "ja": "サポートされているすべてのアーカイブ (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP アーカイブ (*.zip);;TAR アーカイブ (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;すべてのファイル (*.*)",
     "ru": "Все поддерживаемые архивы (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Архивы ZIP (*.zip);;Архивы TAR (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Все файлы (*.*)"
+  },
+  "Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Komprimierte Einzeldateien (*.gz *.bz2 *.xz);;Alle Dateien (*.*)": {
+    "de": "Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Komprimierte Einzeldateien (*.gz *.bz2 *.xz);;Alle Dateien (*.*)",
+    "en": "All Supported Archives (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;ZIP Archives (*.zip);;TAR Archives (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Single-file Compressed (*.gz *.bz2 *.xz);;All Files (*.*)",
+    "es": "Todos los archivos compatibles (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;Archivos ZIP (*.zip);;Archivos TAR (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Archivos comprimidos individuales (*.gz *.bz2 *.xz);;Todos los archivos (*.*)",
+    "zh": "所有受支持的归档 (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;ZIP 归档 (*.zip);;TAR 归档 (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;单文件压缩 (*.gz *.bz2 *.xz);;所有文件 (*.*)",
+    "ja": "すべての対応アーカイブ (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;ZIP アーカイブ (*.zip);;TAR アーカイブ (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;単一圧縮ファイル (*.gz *.bz2 *.xz);;すべてのファイル (*.*)",
+    "ru": "Все поддерживаемые архивы (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz *.gz *.bz2 *.xz);;ZIP-архивы (*.zip);;TAR-архивы (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Сжатые отдельные файлы (*.gz *.bz2 *.xz);;Все файлы (*.*)"
   }
 }
