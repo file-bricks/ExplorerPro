@@ -59,6 +59,7 @@ ExplorerPro is a local-first desktop file explorer suite for power users. It com
 - `NOTICE`: Formal attribution, copyright declaration, and organizational provenance.
 - `README.md`: English GitHub entry point with badges, 18-point quick navigation, showcase gallery, dual Mermaid diagrams, 10 invariants, and ecosystem matrix.
 - `README_de.md`: German entry point with full bilingual parity.
+- `README_es.md`: Spanish documentation; documentation languages are separate from the six UI locales.
 - `THIRD_PARTY_LICENSES.md`: Complete third-party license inventory and zero-egress / RunAsInvoker guarantees.
 - `THIRD_PARTY_LICENSES.txt`: Plain-text Level 1 SBOM companion, runtime dependencies, and invariant cross-reference matrix.
 - `MARKETING-LOG.txt`: Discovery strategies, 4 target personas, high-intent keywords, and competitive matrix.

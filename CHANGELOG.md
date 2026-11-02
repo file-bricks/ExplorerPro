@@ -5,6 +5,9 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Dokumentation
+- Spanische README ergänzt und in der englischen und deutschen Sprachwahl sowie in `llms.txt` verlinkt. Dokumentationssprachen bleiben von den Laufzeitsprachen getrennt.
+
 ## [1.0.9] - 2026-10-10
 
 ### Fix: Oberfläche friert bei langsamen Laufwerken nicht mehr ein (de)
