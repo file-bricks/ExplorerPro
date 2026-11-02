@@ -159,6 +159,7 @@ class FileBrowser(QWidget):
         self._file_count = 0
         self._known_dirs = set()
         self._tokens = {}           # token -> (kind, path)
+        self._archive_task_dialogs = []
         self._nav_token = 0
         self._preload_queue = []
         self._preload_busy = False
@@ -603,22 +604,24 @@ class FileBrowser(QWidget):
                 checksum_action.triggered.connect(lambda: self._show_checksums(file_path))
                 menu.addAction(checksum_action)
 
-            if is_file and ext == ".zip":
-                archive_view_action = QAction("📦 Archiv durchsuchen...", self)
-                archive_view_action.triggered.connect(lambda: self._view_archive(file_path))
-                menu.addAction(archive_view_action)
+            if is_file and (ext in (".zip", ".tar", ".gz", ".tgz", ".bz2", ".tbz2", ".xz", ".txz")):
+                from core.archive_service import is_archive
+                if is_archive(file_path):
+                    archive_view_action = QAction("📦 Archiv durchsuchen...", self)
+                    archive_view_action.triggered.connect(lambda: self._view_archive(file_path))
+                    menu.addAction(archive_view_action)
 
-                archive_extract_here_action = QAction("📦 Hier entpacken (in Unterordner)", self)
-                archive_extract_here_action.triggered.connect(lambda: self._extract_archive_here(file_path))
-                menu.addAction(archive_extract_here_action)
+                    archive_extract_here_action = QAction("📦 Hier entpacken (in Unterordner)", self)
+                    archive_extract_here_action.triggered.connect(lambda: self._extract_archive_here(file_path))
+                    menu.addAction(archive_extract_here_action)
 
-                archive_extract_action = QAction("📦 Entpacken nach...", self)
-                archive_extract_action.triggered.connect(lambda: self._extract_archive(file_path))
-                menu.addAction(archive_extract_action)
+                    archive_extract_action = QAction("📦 Entpacken nach...", self)
+                    archive_extract_action.triggered.connect(lambda: self._extract_archive(file_path))
+                    menu.addAction(archive_extract_action)
 
-                archive_test_action = QAction("🧪 Integrität prüfen", self)
-                archive_test_action.triggered.connect(lambda: self._test_archive_integrity(file_path))
-                menu.addAction(archive_test_action)
+                    archive_test_action = QAction("🧪 Integrität prüfen", self)
+                    archive_test_action.triggered.connect(lambda: self._test_archive_integrity(file_path))
+                    menu.addAction(archive_test_action)
 
             menu.addSeparator()
 
@@ -1358,19 +1361,13 @@ class FileBrowser(QWidget):
         """Entpackt das Archiv direkt in einen gleichnamigen Unterordner am aktuellen Ort."""
         if not os.path.isfile(zip_path):
             return
-        from core.archive_service import ArchiveExtractWorker
-        stem = Path(zip_path).stem
-        target_dir = os.path.join(self._current_path, stem)
+        from gui.archive_dialog import ArchiveExtractProgressDialog, _get_archive_stem
 
-        worker = ArchiveExtractWorker(zip_path, target_dir, parent=self)
-        worker.start()
-        worker.wait()
-        self.refresh()
-        QMessageBox.information(
-            self,
-            "Archiv entpackt",
-            f"Archiv wurde erfolgreich entpackt nach:\n{target_dir}"
-        )
+        stem = _get_archive_stem(zip_path)
+        target_dir = os.path.join(self._current_path, stem)
+        dialog = ArchiveExtractProgressDialog(zip_path, target_dir, parent=self.window())
+        dialog.completed.connect(lambda _success: self.refresh())
+        self._show_archive_task_dialog(dialog)
 
     def _view_archive(self, zip_path: str):
         """Öffnet den Archiv-Inspektor für die gewählte ZIP-Datei."""
@@ -1381,32 +1378,38 @@ class FileBrowser(QWidget):
         dlg.exec()
 
     def _test_archive_integrity(self, zip_path: str):
-        """Prüft die CRC-Integrität der gewählten ZIP-Datei."""
+        """Prüft die Integrität der gewählten Archivdatei."""
         if not os.path.isfile(zip_path):
             return
-        from core.archive_service import check_zip_integrity
-        is_valid, msg = check_zip_integrity(zip_path)
-        if is_valid:
-            QMessageBox.information(
-                self,
-                "Integritätsprüfung",
-                f"✅ Die Archiv-Integrität ist intakt:\n{os.path.basename(zip_path)}"
+        from gui.archive_dialog import ArchiveIntegrityProgressDialog
+
+        dialog = ArchiveIntegrityProgressDialog(zip_path, parent=self.window())
+        self._show_archive_task_dialog(dialog)
+
+    def _show_archive_task_dialog(self, dialog: QDialog):
+        """Hält nichtmodale Archiv-Taskdialoge bis zum sicheren Ende am Leben."""
+        self._archive_task_dialogs.append(dialog)
+        dialog.finished.connect(
+            lambda _result, task_dialog=dialog: self._forget_archive_task_dialog(
+                task_dialog
             )
-        else:
-            QMessageBox.warning(
-                self,
-                "Integritätsprüfung",
-                f"❌ Archiv-Integritätsfehler:\n{msg}"
-            )
+        )
+        dialog.show()
+
+    def _forget_archive_task_dialog(self, dialog: QDialog):
+        try:
+            self._archive_task_dialogs.remove(dialog)
+        except ValueError:
+            pass
 
     def _extract_zip_dialog(self):
         """Öffnet einen Dateidialog zur Auswahl eines zu entpackenden Archivs."""
         from PySide6.QtWidgets import QFileDialog
         path, _ = QFileDialog.getOpenFileName(
             self,
-            "ZIP-Archiv zum Entpacken wählen",
+            "Archiv zum Entpacken wählen",
             self._current_path,
-            "ZIP-Archive (*.zip);;Alle Dateien (*.*)"
+            "Alle unterstützten Archive (*.zip *.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;ZIP-Archive (*.zip);;TAR-Archive (*.tar *.tar.gz *.tgz *.tar.bz2 *.tbz2 *.tar.xz *.txz);;Alle Dateien (*.*)"
         )
         if path:
             self._extract_archive(path)

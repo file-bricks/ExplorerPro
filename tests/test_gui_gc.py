@@ -88,6 +88,11 @@ def _isolated_qt_env(tmp_path):
     env = os.environ.copy()
     env.update({key: str(value) for key, value in directories.items()})
     env['QT_QPA_PLATFORM'] = 'offscreen'
+    pp_entries = [p for p in sys.path if p]
+    current_pp = env.get('PYTHONPATH', '')
+    if current_pp:
+        pp_entries.append(current_pp)
+    env['PYTHONPATH'] = os.pathsep.join(pp_entries)
     return env
 
 

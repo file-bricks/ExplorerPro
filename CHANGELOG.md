@@ -5,6 +5,25 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Universal-Archiv-Engine & Multi-Format-Härtung (2026-10-29, TW-EP-13)
+- **Universal-Archiv-Core (`src/core/archive_service.py`)**:
+  - Vereinheitlichte Fassade (`is_archive`, `inspect_archive`, `create_archive`, `extract_archive`, `check_archive_integrity`) für alle gängigen Archivformate: ZIP (`.zip`), TAR (`.tar`), TAR.GZ (`.tar.gz`, `.tgz`), TAR.BZ2 (`.tar.bz2`, `.tbz2`) und TAR.XZ (`.tar.xz`, `.txz`).
+  - `create_tar_archive`: Erstellung von TAR-Archiven mit wählbaren Kompressionsmodi (none, gzip, bzip2, lzma/xz) und sauberem Erhalt von Ordnerstrukturen.
+  - `extract_tar_archive`: Sichere Extraktion mit vollständiger Tar-Slip-Abwehr (`sanitize_archive_member_path`) und atomarer Zwischenablage (`.tmp_extract_*`) gegen korrupte Schreibzustände bei Abbrüchen.
+  - `inspect_tar` & `check_tar_integrity`: Gründliche Metadaten- und Integritätsanalyse für TAR-Archive.
+  - Atomarer Write: `create_zip_archive` nutzt nun atomares `os.replace` (beseitigt ungeschütztes unlink + rename).
+- **GUI-Integration (`src/gui/archive_dialog.py`, `src/gui/preview/preview_panel.py`, `src/gui/browser/file_browser.py`)**:
+  - `ArchivePreview`: Vorschau für alle Archivformate (Stack-Index 7) mit Kennzahlen, Inhaltsliste und Ein-Klick-Aktionen.
+  - Multi-Suffix-Stammerkennung (`_get_archive_stem`) für zusammengesetzte Endungen (`.tar.gz`, `.tar.bz2`, `.tar.xz`, `.tgz`, `.tbz2`, `.txz`).
+  - Dialoge `ArchiveViewerDialog`, `ArchiveExtractDialog` und `ArchiveCompressDialog` unterstützen nun universelle Formate.
+  - Kontextmenü im Dateibrowser erweitert auf alle Archivtypen beim Durchsuchen, Entpacken und Prüfen.
+- **Test- & Umgebungs-Härtung**:
+  - Subprozess-Isolation (`tests/test_gui_gc.py`) reicht nun `PYTHONPATH` weiter, um Abhängigkeiten aus benutzerspezifischen Site-Packages im isolierten Profil zuverlässig zu laden.
+  - `pytest.ini`: `-p no:flask` verhindert Inkompatibilitäten mit globalen Flask-Fixtures auf PySide6-QApplication-Instanzen.
+  - 19 neue automatisierte Tests (`tests/test_tar_archive_suite.py`, `tests/test_archive_gui_integration.py`): 100% bestanden.
+- **Lokalisierung (Tier-2 P-006)**:
+  - Vollständige Parität über alle 6 Sprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` (1185 Einträge, 0 Lücken).
+
 ### Dokumentation
 - Spanische README ergänzt und in der englischen und deutschen Sprachwahl sowie in `llms.txt` verlinkt. Dokumentationssprachen bleiben von den Laufzeitsprachen getrennt.
 
