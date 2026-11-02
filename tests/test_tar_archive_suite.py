@@ -23,10 +23,7 @@ from core.archive_service import (
     ArchiveCompressWorker,
     ArchiveExtractWorker,
     ArchiveTestWorker,
-    ArchiveSummary,
-    ArchiveEntry,
     ZipSlipSecurityError,
-    TarSlipSecurityError,
     check_archive_integrity,
     check_tar_integrity,
     create_archive,
@@ -38,7 +35,6 @@ from core.archive_service import (
     inspect_tar,
     inspect_zip,
     is_archive,
-    sanitize_archive_member_path,
 )
 
 
@@ -195,7 +191,7 @@ def test_is_archive_detector(tmp_path: Path):
     assert is_archive(zip_file) is True
 
     tar_file = tmp_path / "test.tar.gz"
-    with tarfile.open(tar_file, "w:gz") as tf:
+    with tarfile.open(tar_file, "w:gz"):
         pass
     assert is_archive(tar_file) is True
 
