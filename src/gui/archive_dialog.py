@@ -24,7 +24,7 @@ from PySide6.QtWidgets import (
 
 from core.archive_service import (
     ArchiveCompressWorker, ArchiveExtractWorker, ArchiveTestWorker,
-    format_bytes, inspect_archive, inspect_zip, is_archive
+    format_bytes, inspect_archive
 )
 from translator import t
 
