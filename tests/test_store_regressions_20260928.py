@@ -114,6 +114,9 @@ def test_navigation_loads_files_and_selection_reaches_preview(tmp_path):
     item = browser.proxy.mapFromSource(browser.model.index(str(target)))
     assert item.isValid()
     browser._on_item_clicked(item)
+    deadline = time.monotonic() + 5
+    while "Äpfel" not in preview.text_preview.toPlainText() and time.monotonic() < deadline:
+        QTest.qWait(10)
     assert "Äpfel" in preview.text_preview.toPlainText()
     browser.close()
     preview.close()
