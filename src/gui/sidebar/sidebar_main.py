@@ -6,6 +6,7 @@ Phase 5: Vollständige Integration
 """
 
 import time
+from itertools import islice
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget,
@@ -17,7 +18,7 @@ import os
 
 # Module importieren - absolute Imports
 from core.cloud_locations import find_cloud_locations
-from core.async_fs import AsyncFs, list_subfolders
+from core.async_fs import AsyncFs, iter_subfolders
 from core.file_icon_helper import generic_icon
 from gui.sidebar.search_panel import SearchPanel as AdvancedSearchPanel
 from modules.launcher import AppsPanel
@@ -43,6 +44,7 @@ class TreePanel(QWidget):
     _usage_ready = Signal(str, object)
 
     LIST_TIMEOUT_MS = 15000        # give up on one folder listing
+    TREE_BATCH_SIZE = 128          # bound widget creation per GUI event
     USAGE_MIN_INTERVAL_S = 60      # automatic capacity refresh per drive
     _dir_cache = {}                # path -> [(name, path)], shared, last known listing
 
@@ -55,6 +57,7 @@ class TreePanel(QWidget):
         self._usage_ready.connect(self._on_drive_usage)
         self._fs = AsyncFs(self)
         self._fs.finished.connect(self._on_fs_result)
+        self._fs.preview.connect(self._on_fs_preview)
         self._pending = {}         # token -> (kind, item)
         self._inflight = {}        # token -> path, until the worker really returned
         self._token = 0
@@ -229,7 +232,10 @@ class TreePanel(QWidget):
         self._pending[token] = (kind, target)
         if kind == "list":
             self._inflight[token] = args[0]
-        self._fs.submit(token, fn, *args)
+        if kind == "list":
+            self._fs.submit_preview(token, fn, *args)
+        else:
+            self._fs.submit(token, fn, *args)
         if kind == "list":
             QTimer.singleShot(self.LIST_TIMEOUT_MS, lambda: self._on_list_timeout(token))
 
@@ -250,13 +256,15 @@ class TreePanel(QWidget):
         if not path:
             return
 
+        cached = self._dir_cache.get(path)
         if item.childCount() > 0 and self._is_real(item.child(0)):
+            if cached is not None and getattr(item, "_shown_entries", None) is not cached:
+                self._fill(item, cached)
             return
         if any(kind == "list" and target is item for kind, target in self._pending.values()):
             return
 
         item.takeChildren()  # drops any earlier placeholder, so there is never a second one
-        cached = self._dir_cache.get(path)
         if cached is not None:
             self._fill(item, cached)
         else:
@@ -268,23 +276,60 @@ class TreePanel(QWidget):
             if cached is None:
                 placeholder.setText(0, t("Keine Antwort – später erneut aufklappen"))
             return
-        self._submit("list", item, list_subfolders, path)
+        self._submit("list", item, iter_subfolders, path)
 
     def _fill(self, item, entries):
-        """Swap the children in one go, so the user never sees a half-built list."""
-        children = [self._folder_item(name, full) for name, full in entries]
+        """Show the first bounded batch now and yield before creating more nodes."""
+        generation = object()
+        item._fill_generation = generation
+        item._shown_entries = None  # a collapsed partial fill must resume on return
+        remaining = iter(entries)
         item.takeChildren()
-        item.addChildren(children)
-        item.setChildIndicatorPolicy(
-            QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator if children
-            else QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
-        )
+
+        def add_batch(first=False):
+            if not self._alive(item) or item._fill_generation is not generation:
+                return
+            if not first and not item.isExpanded():
+                return
+            batch = list(islice(remaining, self.TREE_BATCH_SIZE))
+            item.addChildren([self._folder_item(name, full) for name, full in batch])
+            item.setChildIndicatorPolicy(
+                QTreeWidgetItem.ChildIndicatorPolicy.ShowIndicator if item.childCount()
+                else QTreeWidgetItem.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
+            )
+            if len(batch) == self.TREE_BATCH_SIZE:
+                if item.isExpanded():
+                    QTimer.singleShot(0, add_batch)
+            else:
+                item._shown_entries = entries
+
+        add_batch(first=True)
+
+    @Slot(object, object)
+    def _on_fs_preview(self, token, entries):
+        request = self._pending.get(token)
+        path = self._inflight.get(token)
+        if request is None or path in self._dir_cache:
+            return  # a completed cached snapshot is preferable to a partial one
+        item = request[1]
+        if not self._alive(item) or not item.isExpanded():
+            return
+        self._fill(item, entries)
+        loading = QTreeWidgetItem([t("wird geladen …")])
+        loading.setFlags(Qt.ItemFlag.NoItemFlags)
+        item.addChild(loading)
 
     @Slot(object, object, object)
     def _on_fs_result(self, token, result, error):
-        self._inflight.pop(token, None)  # the worker is done, whatever we do with the answer
+        listed_path = self._inflight.pop(token, None)
+        previous = self._dir_cache.get(listed_path)
+        # Completion is useful even if the user collapsed the node or its
+        # display deadline elapsed. Keep the snapshot for the next visit,
+        # without applying a late result to the current tree view.
+        if listed_path is not None and error is None and previous != result:
+            self._dir_cache[listed_path] = result
         entry = self._pending.pop(token, None)
-        if entry is None:  # timed out: stale answer
+        if entry is None:  # timed out: cache only, never change the current view
             return
         kind, item = entry
         if kind == "cloud":
@@ -297,19 +342,19 @@ class TreePanel(QWidget):
             if path not in self._dir_cache:  # nothing stale worth keeping
                 self._fill(item, [])
             return
-        previous = self._dir_cache.get(path)
-        self._dir_cache[path] = result
         showing = item.childCount() > 0 and self._is_real(item.child(0))
         if previous != result or not showing:
             self._fill(item, result)
 
     def _on_list_timeout(self, token):
-        entry = self._pending.pop(token, None)  # a late answer is dropped
+        entry = self._pending.pop(token, None)  # late answers may cache, never update this view
         if entry is None:
             return
         item = entry[1]
-        if self._alive(item) and item.childCount() == 1 and not self._is_real(item.child(0)):
-            item.child(0).setText(0, t("Keine Antwort – später erneut aufklappen"))
+        if self._alive(item) and item.childCount():
+            last = item.child(item.childCount() - 1)
+            if not self._is_real(last):
+                last.setText(0, t("Keine Antwort – später erneut aufklappen"))
 
     def _show_cloud(self, cloud_locations):
         if not cloud_locations:

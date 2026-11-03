@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 from unittest.mock import patch
 
@@ -22,6 +23,7 @@ _app = QApplication.instance() or QApplication([])
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QTreeWidgetItem
+from PySide6.QtTest import QTest
 
 from gui.sidebar.sidebar_main import TreePanel
 
@@ -40,8 +42,13 @@ class TestTreePanelOsErrorFix:
         item.setData(0, Qt.ItemDataRole.UserRole, "/fake/path")
         panel.tree.addTopLevelItem(item)
 
-        with patch("os.listdir", side_effect=PermissionError("Zugriff verweigert")):
+        with patch("os.scandir", side_effect=PermissionError("Zugriff verweigert")) as scan:
             panel._on_item_expanded(item)  # darf nicht crashen
+            deadline = time.monotonic() + 5
+            while panel._pending and time.monotonic() < deadline:
+                QTest.qWait(5)
+            assert not panel._pending
+            scan.assert_any_call("/fake/path")
 
     def test_generic_oserror_handled(self):
         """Generische OSError (z.B. Gerät nicht bereit) darf keinen Crash verursachen."""
@@ -51,5 +58,10 @@ class TestTreePanelOsErrorFix:
         item.setData(0, Qt.ItemDataRole.UserRole, "/fake/drive")
         panel.tree.addTopLevelItem(item)
 
-        with patch("os.listdir", side_effect=OSError(21, "Das Gerät ist nicht bereit")):
+        with patch("os.scandir", side_effect=OSError(21, "Das Gerät ist nicht bereit")) as scan:
             panel._on_item_expanded(item)  # darf nicht crashen
+            deadline = time.monotonic() + 5
+            while panel._pending and time.monotonic() < deadline:
+                QTest.qWait(5)
+            assert not panel._pending
+            scan.assert_any_call("/fake/drive")
