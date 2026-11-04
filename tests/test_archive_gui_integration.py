@@ -10,15 +10,13 @@ Prüft:
 - Archive-Filterung und Integritätsprüfung im ArchiveViewerDialog
 """
 
-import os
 import tarfile
 import tempfile
 import zipfile
 from pathlib import Path
 import pytest
-from PySide6.QtWidgets import QApplication
 
-from core.archive_service import is_archive, inspect_archive
+from core.archive_service import is_archive
 from gui.archive_dialog import ArchiveCompressDialog, ArchiveExtractDialog, ArchiveViewerDialog, _get_archive_stem
 from gui.preview.preview_panel import ArchivePreview
 
