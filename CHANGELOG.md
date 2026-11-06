@@ -12,6 +12,27 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - **Selektive Ordner-Extraktion & Einzelstream-Abgrenzung (`src/core/archive_service.py`)**: `extract_zip_archive` und `extract_tar_archive` entpacken ausgewählte Ordnerzeilen im `ArchiveViewerDialog` rekursiv samt Inhalt; `is_archive` meldet reine Einzelstream-Dateien (`.gz`, `.bz2`, `.xz` ohne TAR-Header) und nicht unterstütztes `.tar.zst` nicht mehr fälschlich als unterstützte Archive.
 - **Plattformgerechte Member-Namensregeln & Vorabprüfung (`src/core/archive_service.py`)**: Die reinen Windows-Namensregeln (`<>:"|?*`, abschließender Punkt/Leerzeichen, reservierte Gerätenamen, NTFS-ADS über `:`) greifen in `sanitize_archive_member_path` nur noch unter Windows; unter Linux/macOS gültige Namen wie `log 12:30.txt`, `What?.md` oder `aux.c` werden dort wieder vollständig entpackt. Traversal-, Steuerzeichen-, Root- und Symlink-Prüfungen gelten weiterhin überall. `extract_zip_archive` und `extract_tar_archive` prüfen alle Eintragsnamen vor dem ersten Schreibzugriff, sodass ein abgewiesener Eintrag kein halb entpacktes Ziel mehr hinterlässt.
 
+### Atomare Persistenz-Engine (atomic_io), Crash-Durability & Diff-Performance-Härtung (2026-11-07, TW-EP-15)
+- **Zentrale atomare I/O- und Persistenz-Engine (`src/core/atomic_io.py`)**:
+  - `atomic_write_bytes`: Schreibt Rohdaten atomar via temporärem Staging im selben Verzeichnis (`.{target}.tmp.{pid}_{uuid}`), explizitem `flush()`, `os.fsync()`, `stat.S_IMODE`-Berechtigungserhalt und atomarem `os.replace()`.
+  - `atomic_write_text`: Textpersistenz mit konfigurierbarem Encoding (Standard: UTF-8), sauberem Zeilenumbruch-Handling und defensiver Staging-Bereinigung in `finally:`-Blöcken.
+  - `atomic_write_json`: Struktursichere JSON-Serialisierung mit Formatierungsoptionen und Crash-Resilienz vor Datei-Ersetzung.
+- **Anbindung aller ungeschützten Persistenz-Pfade**:
+  - `SettingsManager.save`: Speichert `settings.json` atomar via `atomic_write_json`.
+  - `WorkspaceExporter.save_export`: Speichert Arbeitsbereichs-Exporte atomar via `atomic_write_json`.
+  - `QuickEditorDialog._save_file`: Schreibt bearbeitete Quelltexte atomar via `atomic_write_text`.
+  - `SyncManager._save_config`: Sichert Synchronisationsprofile atomar via `atomic_write_json`.
+  - `AppsPanel._save_apps`: Sichert konfigurierte Anwendungen atomar via `atomic_write_json`.
+  - `PromptsPanel._save_prompts`: Sichert Prompt-Bibliotheken atomar via `atomic_write_json`.
+  - `PrivacyMonitor.save_config`: Sichert Datenschutzeinstellungen atomar via `atomic_write_json`.
+  - `BlacklistManager._save`: Sichert Blacklist- und Whitelist-Definitionen atomar via `atomic_write_json`.
+- **High-End Performanceoptimierung im Datei-Vergleich (`src/core/diff_service.py`)**:
+  - SHA-256 I/O-Puffer auf 256 KB erweitert (`compute_sha256(filepath, chunk_size=262144)`).
+  - Size-Mismatch Early-Exit: Verhindert unnötiges Vollhashing bei abweichenden Dateigrößen.
+  - Schneller 8KB-Prefix-Vorfilter (`_quick_prefix_differs`): Schnelle Divergenzerkennung bei gleichgroßen Dateien.
+- **Verifikation & Testsuite**:
+  - 16 neue Tests in `tests/test_atomic_io_suite.py` und `tests/test_diff_service_perf.py`.
+
 ### Standalone GZ/BZ2/XZ Stream Engine, Universal-Archiv-Härtung & Tier-2 I18N (2026-11-01, TW-EP-14)
 - **Standalone Einzeldatei-Stream-Engine (`src/core/archive_service.py`)**:
   - `is_single_file_compressed`: Robuste Erkennung komprimierter Einzeldateien (`.gz`, `.bz2`, `.xz`) unter strenger Trennung von zusammengesetzten TAR-Archiven via Magic-Byte-Inspektion (`\x1f\x8b`, `BZh`, `\xfd7zXZ\x00`).

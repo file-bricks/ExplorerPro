@@ -23,6 +23,7 @@ from PySide6.QtGui import (
     QPainter, QColor, QTextFormat, QShortcut
 )
 
+from core.atomic_io import atomic_write_text
 from translator import t
 
 from .syntax_highlighter import get_lexer_for_extension
@@ -457,8 +458,7 @@ class QuickEditorDialog(QDialog):
             self.filepath = filepath
 
         try:
-            with open(self.filepath, 'w', encoding='utf-8') as f:
-                f.write(self.editor.toPlainText())
+            atomic_write_text(self.filepath, self.editor.toPlainText(), encoding='utf-8')
 
             self.editor.document().setModified(False)
             self._modified = False

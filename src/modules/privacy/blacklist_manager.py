@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import List, Set, Optional
 import pandas as pd
 
+from core.atomic_io import atomic_write_json, atomic_write_text
+
 from PySide6.QtCore import QObject, Signal
 
 
@@ -73,12 +75,8 @@ class BlacklistManager(QObject):
     def _save(self):
         """Speichert beide Listen"""
         try:
-            with open(self.blacklist_path, 'w', encoding='utf-8') as f:
-                json.dump(list(self._blacklist), f, ensure_ascii=False, indent=2)
-
-            with open(self.whitelist_path, 'w', encoding='utf-8') as f:
-                json.dump(list(self._whitelist), f, ensure_ascii=False, indent=2)
-
+            atomic_write_json(self.blacklist_path, list(self._blacklist), ensure_ascii=False, indent=2)
+            atomic_write_json(self.whitelist_path, list(self._whitelist), ensure_ascii=False, indent=2)
             self.list_updated.emit()
         except Exception as e:
             print(f"Fehler beim Speichern: {e}")
@@ -199,8 +197,7 @@ class BlacklistManager(QObject):
                 df.to_csv(path, index=False)
 
             else:  # .txt
-                with open(path, 'w', encoding='utf-8') as f:
-                    f.write('\n'.join(sorted(source_list)))
+                atomic_write_text(path, '\n'.join(sorted(source_list)), encoding='utf-8')
 
             return True
 

@@ -82,23 +82,35 @@ def is_binary_file(filepath: str, sample_size: int = 8192) -> bool:
         return True
 
 
-def compute_sha256(filepath: str) -> str:
-    """Berechnet die SHA-256-Prüfsumme einer Datei."""
+def compute_sha256(filepath: str, chunk_size: int = 262144) -> str:
+    """Berechnet die SHA-256-Prüfsumme einer Datei (optimierter 256KB-I/O-Puffer)."""
     if not os.path.isfile(filepath):
         return ""
     hasher = hashlib.sha256()
     with open(filepath, "rb") as f:
         while True:
-            chunk = f.read(65536)
+            chunk = f.read(chunk_size)
             if not chunk:
                 break
             hasher.update(chunk)
     return hasher.hexdigest()
 
 
+def _quick_prefix_differs(file1: str, file2: str, sample_size: int = 8192) -> bool:
+    """Prüft schnell, ob sich die ersten Bytes zweier gleichgroßer Dateien unterscheiden."""
+    try:
+        with open(file1, "rb") as f1, open(file2, "rb") as f2:
+            chunk1 = f1.read(sample_size)
+            chunk2 = f2.read(sample_size)
+            return chunk1 != chunk2
+    except OSError:
+        return False
+
+
 def compare_files(file1: str, file2: str, max_lines: int = 15000) -> DiffResult:
     """
     Vergleicht zwei Dateien und liefert ein detailliertes DiffResult zurück.
+    Mit High-End Optimierung: Size-Mismatch Early-Exit und 8KB-Prefix Vorfilterung.
     """
     if not os.path.exists(file1):
         raise FileNotFoundError(f"Datei nicht gefunden: {file1}")
@@ -111,13 +123,29 @@ def compare_files(file1: str, file2: str, max_lines: int = 15000) -> DiffResult:
 
     size1 = os.path.getsize(file1)
     size2 = os.path.getsize(file2)
-    hash1 = compute_sha256(file1)
-    hash2 = compute_sha256(file2)
-
-    is_identical = (hash1 == hash2) if (hash1 and hash2) else False
     bin1 = is_binary_file(file1)
     bin2 = is_binary_file(file2)
     is_binary = bin1 or bin2
+
+    # High-End Performance-Optimierung:
+    # 1. Weichen Dateigrößen voneinander ab, können Dateien niemals identisch sein.
+    # 2. Bei gleicher Größe wird zuerst ein schneller 8KB-Prefix-Vergleich durchgeführt.
+    if size1 != size2:
+        is_identical = False
+        hash1 = compute_sha256(file1)
+        hash2 = compute_sha256(file2)
+    elif size1 == 0:
+        is_identical = True
+        hash1 = compute_sha256(file1)
+        hash2 = hash1
+    elif _quick_prefix_differs(file1, file2):
+        is_identical = False
+        hash1 = compute_sha256(file1)
+        hash2 = compute_sha256(file2)
+    else:
+        hash1 = compute_sha256(file1)
+        hash2 = compute_sha256(file2)
+        is_identical = (hash1 == hash2) if (hash1 and hash2) else False
 
     result = DiffResult(
         file1_path=file1,
