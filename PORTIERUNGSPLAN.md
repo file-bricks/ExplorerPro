@@ -1,5 +1,14 @@
 # Portierungsplan ExplorerPro Suite
 
+## Evidenzabgleich 2026-11-01
+
+Die Juli-Planung und die späteren Oktober-Aufzeichnungen sind zeitlich getrennte Stände. `STORE_ISSUES.md` enthält die historischen Paket-/Submission-Angaben. Aktueller Partner-Center-Status, öffentliche Verfügbarkeit und tatsächlich installierte Version wurden hier nicht abgefragt; ihr Readback steht noch aus.
+
+In diesem Checkout existieren `releases/windowsstore/v1.0.8/release-notes.json` und `releases/windowsstore/v1.0.9/release-notes.json`, jedoch keines der beiden dort genannten `ExplorerPro.msix`-Pakete und keine zugehörigen Abnahme-Receipts in diesen Verzeichnissen. Die protokollierten Paket-Hashes sind daher historische Angaben, keine heute neu berechneten Prüfsummen. `store_package.json` deklariert 1.0.9.0 und `Geiger.ExplorerPro`; das beweist weder Paketinhalt noch Veröffentlichung oder Installation.
+
+WACK ist in den Oktober-Aufzeichnungen als übersprungen dokumentiert, nicht als bestanden. Dieser Abgleich bestätigt keine aktuelle Ausnahme-Policy und beauftragt keinen Administratorlauf. Vor einer künftigen Ausführung sind geltende autorisierte Regeln und paketgebundene Gates zu prüfen. Keine Tests, Builds, Installationen, Uploads oder Store-Mutationen in dieser Dokumentationsänderung.
+
+
 Stand: 2026-07-22
 
 ## Ergebnis der Bedingungsprüfung
@@ -92,7 +101,7 @@ Für eine separate Web/PWA-Anwendung gilt **No-Go**. Ein eigenständiger mobiler
 | P0 | Drittanbieter-Lizenzen und bestehende Security-Notizen abschließen | DONE 2026-07-22: Runtime, optionale Extras und Build-Abhängigkeit sind in `pyproject.toml`, `requirements.txt`, `THIRD_PARTY_LICENSES.txt` und `_sources/CROSSCHECK.md` konsistent; der tatsächliche Bundle-Readback bleibt Teil jedes Release-Builds. |
 | P0 | Windows-Store-Basis vorbereiten | DONE 2026-06-04: `store_package.json`, Privacy-/Support-URL, `STORE_LISTING.md`, Screenshot-Inventar und `WINDOWS_STORE_PREP.md` angelegt. |
 | P0 | Dediziertes Store-Screenshot-Set erzeugen | DONE 2026-06-12: `generate_store_screenshots.py` erzeugt reproduzierbar `README/screenshots/store/main-window.png`, `search.png`, `duplicates.png` und `sync.png` aus redigierten Demo-Daten. |
-| P0 | Eigenes ExplorerPro-MSIX bauen und WACK-Protokoll ablegen | Offen: lokale Build-/MSIX-Prüfung, WACK-Readback und danach externe Store-Freigabe. |
+| P0 | Eigenes ExplorerPro-MSIX bauen und WACK-Protokoll ablegen | Historische Juli-Planung; spätere MSIX-/Submission-Aufzeichnungen siehe STORE_ISSUES.md. Aktueller Paket-/WACK-/Live-Readback bleibt getrennt offen; kein Adminlauf beauftragt. |
 | P1 | macOS-/Linux-Smokes definieren | DONE 2026-06-05: `tests/source_platform_smoke.py` prüft Offscreen-Start, Suche, Vorschau, Duplikat-Scan und Konfigurationspfade; CI läuft auf `ubuntu-latest` und `macos-latest`. |
 | P1 | Exportformat implementierbar machen | DONE 2026-06-07: `src/core/export_service.py` mit `WorkspaceExporter`; Datei-Menü-Aktion Ctrl+E; 11 Unit-Tests grün. |
 | P2 | Redigierten Web/PWA-Companion bewerten | DONE 2026-07-22, No-Go: kein eigenständiger belegter Usecase; der sichere JSON-Vertrag bleibt für lokalen manuellen Austausch erhalten. |
