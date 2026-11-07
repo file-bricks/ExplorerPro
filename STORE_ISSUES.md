@@ -1,12 +1,21 @@
 # ExplorerPro – Store-Fehler und Versionsstand
 
+## Evidenzabgleich 2026-11-01 — TASKPLAN #518
+
+Die Juli-Planung und die späteren Oktober-Aufzeichnungen sind zeitlich getrennte Stände. `STORE_ISSUES.md` enthält die historischen Paket-/Submission-Angaben. Aktueller Partner-Center-Status, öffentliche Verfügbarkeit und tatsächlich installierte Version wurden hier nicht abgefragt; ihr Readback bleibt TASKPLAN #519.
+
+In diesem Checkout existieren `releases/windowsstore/v1.0.8/release-notes.json` und `releases/windowsstore/v1.0.9/release-notes.json`, jedoch keines der beiden dort genannten `ExplorerPro.msix`-Pakete und keine zugehörigen Abnahme-Receipts in diesen Verzeichnissen. Die protokollierten Paket-Hashes sind daher historische Angaben, keine heute neu berechneten Prüfsummen. `store_package.json` deklariert 1.0.9.0 und `Geiger.ExplorerPro`; das beweist weder Paketinhalt noch Veröffentlichung oder Installation.
+
+WACK ist in den Oktober-Aufzeichnungen als übersprungen dokumentiert, nicht als bestanden. Dieser Abgleich bestätigt keine aktuelle Ausnahme-Policy und beauftragt keinen Administratorlauf. Vor einer künftigen Ausführung sind geltende autorisierte Regeln und paketgebundene Gates zu prüfen. Keine Tests, Builds, Installationen, Uploads oder Store-Mutationen in diesem Dokumentationsslice; CCC-Pause unverändert.
+
+
 Stand: 10.10.2026. Der Status wurde nach dem Upload im Partner Center unabhängig zurückgelesen.
 
-## Veröffentlichte Store-Version: 1.0.7.0
+## Historischer veröffentlichter Store-Stand: 1.0.7.0
 
 Die veröffentlichte Submission ist `1152921505701989667`. Das neu eingereichte Update ersetzt diese Version erst nach erfolgreicher Zertifizierung und Veröffentlichung durch Microsoft. Eine Installation des neuen Store-Updates ist noch nicht bestätigt.
 
-## Eingereichtes Update: 1.0.9.0
+## Historischer Submission-Readback vom 11.10.2026: 1.0.9.0
 
 - Submission: `1152921505702093919`, Status **Certification** (eingereicht am 11.10.2026, per API zurückgelesen: CommitStarted, PreProcessing, Certification; Paket 1.0.9.0 `Uploaded`). Die Vorgängerversion 1.0.8 (`1152921505702068603`) ist **Published**.
 - Paket: `releases/windowsstore/v1.0.9/ExplorerPro.msix` (neu gebaut aus `origin/master`), SHA-256 `6dc9592750093ab4694426e0e930b07f10c6beb8bc764089cf8f893012f77c1b`, 103.453.888 Bytes.
@@ -16,16 +25,16 @@ Die veröffentlichte Submission ist `1152921505701989667`. Das neu eingereichte 
 - Testlauf (`pytest -n 2`, Offscreen): 575 bestanden, 7 übersprungen, 0 fehlgeschlagen, 1 Teardown-Error in `test_drive_switch.py::test_unreachable_target_shows_empty_page_with_status_not_old_entries[error]` unter xdist; die Datei einzeln: 13 bestanden.
 - Alle sechs Pre-Submit-Gates im Receipt bestanden; Sicht-OK des Nutzers am 11.10.2026 („Passt, einreichen“). Die EXE aus dem entpackten MSIX lief 7 s und wurde sauber beendet. WACK wurde ohne Adminrechte übersprungen.
 
-## Eingereichtes Update: 1.0.8.0
+## Frühere Submission-Aufzeichnung: 1.0.8.0
 
 - Submission: `1152921505702068603`.
-- Status: **Certification**, keine Fehler beim Zurücklesen.
+- Früherer Readback: **Certification**, keine Fehler beim Zurücklesen. Der spätere Eintrag zur 1.0.9-Einreichung bezeichnet 1.0.8 als **Published**; beide Aussagen sind historische Snapshots, kein aktueller Status.
 - Paket: `releases/windowsstore/v1.0.8/ExplorerPro.msix`, Architektur x64.
 - SHA-256: `6f0d862f17776a433527e3c6b957b32178ed8fe6d498af1b6bd301ffda73339e`.
 - GitHub-Release: [v1.0.8](https://github.com/file-bricks/ExplorerPro/releases/tag/v1.0.8), Quellcommit `affe7387a0f81622a9db321979d95140720c7c4d`.
 - Die deutschen und englischen Änderungshinweise wurden im Store-Feld „Neuigkeiten in dieser Version“ gespeichert und nach dem Upload zurückgelesen.
 
-## Enthaltene Fehlerbehebungen
+## Historisch dokumentierter Paketinhalt und damaliger Zertifizierungsstand
 
 Die folgenden Fehlerbehebungen sind im eingereichten Paket enthalten. „GEFIXT (GitHub)“ bleibt bis zur Veröffentlichung des neuen Store-Pakets der Status dieses Release-Protokolls.
 
@@ -51,7 +60,7 @@ Zusätzlich behebt 1.0.8 das automatische Lesen von Dateiinhalten und Cloud-Date
 
 ### 1.0.8.0 – eingereicht am 07.10.2026 (UTC)
 
-Bugfix-Release mit den oben dokumentierten Prüfungen und zweisprachigen Änderungshinweisen. GitHub v1.0.8 ist veröffentlicht; die Store-Veröffentlichung steht aus.
+Bugfix-Release mit den oben dokumentierten Prüfungen und zweisprachigen Änderungshinweisen. Damals: GitHub v1.0.8 veröffentlicht, Store-Veröffentlichung ausstehend. Der spätere 1.0.9-Eintrag dokumentiert 1.0.8 als Published; aktuell nicht erneut rückgelesen.
 
 ### 1.0.7.0 – veröffentlichter Store-Stand beim Release-Abschluss
 
