@@ -1,4 +1,4 @@
-"""User-visible regressions from ticket T-20260928-288887892."""
+"""User-visible regressions from store release 1.0.8 (2026-09-28)."""
 import os
 import sys
 import time

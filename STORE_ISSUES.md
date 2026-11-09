@@ -38,13 +38,13 @@ Die veröffentlichte Submission ist `1152921505701989667`. Das neu eingereichte 
 
 Die folgenden Fehlerbehebungen sind im eingereichten Paket enthalten. „GEFIXT (GitHub)“ bleibt bis zur Veröffentlichung des neuen Store-Pakets der Status dieses Release-Protokolls.
 
-| Ticket | Schwere | Beschreibung | Fundort | Status |
+| ID | Schwere | Beschreibung | Fundort | Status |
 |---|---|---|---|---|
-| T-20260928-288887892 | P1 | Sidebar und Vorschau können nach einem Neustart trotz aktivierter Ansicht auf Breite null bleiben. | `src/app.py`, `src/gui/main_window.py` | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
-| T-20260928-288887892 | P1 | Ein Ordnerwechsel aktualisiert den Pfad, lädt aber keine Dateizeilen; dadurch bleiben Vorschau, Umbenennen und Dateiaktionen unerreichbar. | `src/gui/browser/file_browser.py` | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
-| T-20260928-288887892 | P1 | Umbenennen und Kontextmenü-Aktionen benötigen einen Test an der gepackten Anwendung. | `src/gui/browser/file_browser.py`, Paketversion | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
-| T-20260928-288887892 | P1 | „Python-Skript ausführen“ startet im gefrorenen Build erneut ExplorerPro statt eines Python-Interpreters. | `src/modules/editor/quick_editor.py` | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
-| T-20260928-288887892 | P1 | Desktop- und EXE-Icon weichen vom neuen Store-Motiv ab; im Paket fehlt `resources.pri`. | `scripts/gen_store_icons.py`, `scripts/build_store_msix.ps1`, `store_assets/` | GEFIXT (GitHub); Paket-Gate bestanden, Zertifizierung läuft |
+| REG-20260928-01 | P1 | Sidebar und Vorschau können nach einem Neustart trotz aktivierter Ansicht auf Breite null bleiben. | `src/app.py`, `src/gui/main_window.py` | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
+| REG-20260928-02 | P1 | Ein Ordnerwechsel aktualisiert den Pfad, lädt aber keine Dateizeilen; dadurch bleiben Vorschau, Umbenennen und Dateiaktionen unerreichbar. | `src/gui/browser/file_browser.py` | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
+| REG-20260928-03 | P1 | Umbenennen und Kontextmenü-Aktionen benötigen einen Test an der gepackten Anwendung. | `src/gui/browser/file_browser.py`, Paketversion | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
+| REG-20260928-04 | P1 | „Python-Skript ausführen“ startet im gefrorenen Build erneut ExplorerPro statt eines Python-Interpreters. | `src/modules/editor/quick_editor.py` | GEFIXT (GitHub); in 1.0.8.0 enthalten, Zertifizierung läuft |
+| REG-20260928-05 | P1 | Desktop- und EXE-Icon weichen vom neuen Store-Motiv ab; im Paket fehlt `resources.pri`. | `scripts/gen_store_icons.py`, `scripts/build_store_msix.ps1`, `store_assets/` | GEFIXT (GitHub); Paket-Gate bestanden, Zertifizierung läuft |
 
 Zusätzlich behebt 1.0.8 das automatische Lesen von Dateiinhalten und Cloud-Dateien beim Öffnen der Eigenschaften. Prüfsummen starten ausdrücklich auf Anforderung und lassen sich sicher schließen. Text- und Ordnerstatistiken laufen mit Zeitbegrenzung. Selbst eingegebene Kategorien bleiben beim Sprachwechsel erhalten. Der Excel-Export behandelt Werte mit führendem Gleichheitszeichen als Text.
 

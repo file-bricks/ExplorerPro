@@ -189,7 +189,7 @@ ExplorerPro 1.0.8
 - **Kontext- & Badge-Synchronisation**: `llms.txt` Last-checked Datum 2026-09-29, 372+ Tests und Level 1 SBOM Text-Begleitdatei referenziert; Badges in `README.md` und `README_de.md` synchronisiert (Tests: 372+ passed | 100% green, Last-Checked: 2026-09-29, Level 1 SBOM: Plain Text).
 - **Automatisierte Vertragstest-Suite (`tests/test_metadata_contract.py`)**: 6 neue Vertragstests für `sec-01`..`sec-18` duale HTML-Anker, ASCII Four-View Topologie, PEP 621 SBOM URLs, Level 1 SBOM Begleitdatei Invarianten, gesetzlichen Haftungsausschluss und Marketing-Log Aktualität hinzugefügt.
 
-### Store-Paket 1.0.7.0 (T-20260928-288887892, 2026-09-28)
+### Store-Paket 1.0.7.0 (2026-09-28)
 - Laufzeit, Über-Dialog und Workspace-Export lesen die Version jetzt aus `pyproject.toml`; der Paketbau prüft die Übereinstimmung mit `store_package.json`.
 - Desktop-, Fenster-, EXE-, Mobile- und Legacy-Icons nutzen jetzt das vom Nutzer ausgewählte neue Store-Kachelmotiv. `scripts/gen_store_icons.py` erzeugt daraus alle benötigten Größen einschließlich der MSIX-`targetsize`- und `altform`-Varianten.
 - `scripts/build_store_msix.ps1` erzeugt die Icons vor dem PyInstaller-Build, prüft den Quellbaum und ruft den Store-Builder mit Paket-Gate auf. Dadurch wird `resources.pri` in das MSIX aufgenommen.

@@ -23,7 +23,7 @@ def test_store_package_matches_project_metadata() -> None:
     assert package["executable"] == "ExplorerPro.exe"
     assert package["capabilities"] == "runFullTrust"
     assert package["category"] == "Productivity"
-    assert package["license"] == "AGPL-3.0-only"
+    assert package["license"] == "AGPL-3.0-or-later"
     assert package["version"] == f"{_read_version_from_pyproject()}.0"
     assert package["privacy_url"] == (
         "https://github.com/file-bricks/ExplorerPro/blob/master/PRIVACY_POLICY.md"

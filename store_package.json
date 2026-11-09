@@ -11,5 +11,5 @@
   "age_rating": "3+",
   "privacy_url": "https://github.com/file-bricks/ExplorerPro/blob/master/PRIVACY_POLICY.md",
   "support_url": "https://github.com/file-bricks/ExplorerPro/blob/master/SUPPORT.md",
-  "license": "AGPL-3.0-only"
+  "license": "AGPL-3.0-or-later"
 }
