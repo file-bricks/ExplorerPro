@@ -8,7 +8,7 @@ Version: 1.0.7
 Organization: file-bricks
 Umbrella Ecosystem: open-bricks
 Microsoft Store ID: 9P0X52WSHZ3Q (Package Identity: Geiger.ExplorerPro)
-Primary License: AGPL-3.0-or-later
+Primary License: AGPL-3.0-only
 ================================================================================
 
 1. EXECUTIVE VALUE PROPOSITION
