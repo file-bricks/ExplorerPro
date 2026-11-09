@@ -2,11 +2,7 @@
 
 ## Evidenzabgleich 2026-11-01
 
-Die Juli-Planung und die späteren Oktober-Aufzeichnungen sind zeitlich getrennte Stände. `STORE_ISSUES.md` enthält die historischen Paket-/Submission-Angaben. Aktueller Partner-Center-Status, öffentliche Verfügbarkeit und tatsächlich installierte Version wurden hier nicht abgefragt; ihr Readback steht noch aus.
-
-In diesem Checkout existieren `releases/windowsstore/v1.0.8/release-notes.json` und `releases/windowsstore/v1.0.9/release-notes.json`, jedoch keines der beiden dort genannten `ExplorerPro.msix`-Pakete und keine zugehörigen Abnahme-Receipts in diesen Verzeichnissen. Die protokollierten Paket-Hashes sind daher historische Angaben, keine heute neu berechneten Prüfsummen. `store_package.json` deklariert 1.0.9.0 und `Geiger.ExplorerPro`; das beweist weder Paketinhalt noch Veröffentlichung oder Installation.
-
-WACK ist in den Oktober-Aufzeichnungen als übersprungen dokumentiert, nicht als bestanden. Dieser Abgleich bestätigt keine aktuelle Ausnahme-Policy und beauftragt keinen Administratorlauf. Vor einer künftigen Ausführung sind geltende autorisierte Regeln und paketgebundene Gates zu prüfen. Keine Tests, Builds, Installationen, Uploads oder Store-Mutationen in dieser Dokumentationsänderung.
+Die zeitliche Trennung zwischen früherer Planung und späteren Release-Aufzeichnungen sowie der Status der Store- und WACK-Evidenz sind zusammenfassend in [STORE_ISSUES.md](STORE_ISSUES.md#evidenzabgleich-2026-11-01) dokumentiert.
 
 
 Stand: 2026-07-22
@@ -22,11 +18,8 @@ maßgeblichen Scope-Beschreibungen.
 ## Eigentümer- und Tracking-Status
 
 - Repository: `file-bricks/ExplorerPro`; Maintainer laut README: Lukas Geiger.
-- `ROADMAP.md` lag bis zum TASKPLAN-Abgleich TW-EP-06 am 2026-07-19 als
-  untracked Arbeitsnotiz vor.
-- Entscheidung TW-EP-06: Die bereinigte Datei wird als projektweite,
-  versionierte Roadmap in Git aufgenommen. Sie ist keine persönliche
-  Agenten- oder Backup-Notiz.
+- `ROADMAP.md` wurde am 2026-07-19 als projektweite, versionierte Roadmap in
+  Git aufgenommen. Sie dient als kanonische Planungsübersicht.
 - Neue Detailaufgaben und Definitionen of Done werden nicht in dieser Übersicht
   dupliziert, sondern in den vorhandenen Steuerdateien gepflegt.
 
