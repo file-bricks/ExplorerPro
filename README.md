@@ -2,7 +2,7 @@
 
 # ExplorerPro Suite
 
-**[English](README.md)** | [Deutsch](README_de.md) | [Machine-readable context (llms.txt)](llms.txt)
+**[English](README.md)** | [Deutsch](README_de.md) | [Español](README_es.md) | [Machine-readable context (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
 [![Tests: 420+ passed](https://img.shields.io/badge/tests-420%2B%20passed%20%7C%20100%25-brightgreen.svg)](tests/)
