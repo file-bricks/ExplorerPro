@@ -5,6 +5,12 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Security & Resilience: Archiv-Engine & Archiv-Dialog-Suite (2026-11-18)
+- **Unterordner-Traversal- & Gerätenamen-Schutz (`src/gui/archive_dialog.py`)**: `_get_archive_stem` und `ArchiveExtractDialog` bereinigen Punkt-Traversal-Namen (`..tar.gz`, `...zip`, `.zip`), nachgestellte Punkte/Leerzeichen sowie reservierte Windows-Gerätenamen (`CON`, `NUL`, `COM1..9`, `LPT1..9`) und erzwingen ein echtes Kindverzeichnis unterhalb des gewählten Zielordners.
+- **Erweiterte Zip-Slip-/Tar-Slip- & Symlink-Abwehr (`src/core/archive_service.py`)**: `sanitize_archive_member_path`, `extract_zip_archive` und `extract_tar_archive` blockieren leere/Root-Member, NTFS Alternate Data Streams (`:`), Steuerzeichen, reservierte Windows-Gerätepfade, Symlink-/Junction-Zwischenpfade im Zielbaum sowie Unix-Symlink-/Spezialdatei-Einträge in ZIP-Archiven (`S_IFLNK`).
+- **Selbst-Einschluss-Schutz, Prä-1980-Zeitstempel & Read-Only-Overwrite (`src/core/archive_service.py`, `src/gui/archive_dialog.py`)**: `create_zip_archive` und `create_tar_archive` schließen Zielarchiv und `.tmp_*`-Staging-Dateien (`PID + UUID`) vom Re-Packing aus, klemmen Datei-Zeitstempel außerhalb des DOS-ZIP-Fensters (`< 1980` / `> 2107`) per Chunk-Streaming verlustfrei auf gültige Grenzen und ersetzen schreibgeschützte Zieldateien bei aktivem Überschreiben atomar; `ArchiveCompressDialog` legt Einzelordner-Archive standardmäßig im Elternverzeichnis an.
+- **Selektive Ordner-Extraktion & Einzelstream-Abgrenzung (`src/core/archive_service.py`)**: `extract_zip_archive` und `extract_tar_archive` entpacken ausgewählte Ordnerzeilen im `ArchiveViewerDialog` rekursiv samt Inhalt; `is_archive` meldet reine Einzelstream-Dateien (`.gz`, `.bz2`, `.xz` ohne TAR-Header) und nicht unterstütztes `.tar.zst` nicht mehr fälschlich als unterstützte Archive.
+
 ### Universal-Archiv-Engine & Multi-Format-Härtung (2026-10-29, TW-EP-13)
 - **Universal-Archiv-Core (`src/core/archive_service.py`)**:
   - Vereinheitlichte Fassade (`is_archive`, `inspect_archive`, `create_archive`, `extract_archive`, `check_archive_integrity`) für alle gängigen Archivformate: ZIP (`.zip`), TAR (`.tar`), TAR.GZ (`.tar.gz`, `.tgz`), TAR.BZ2 (`.tar.bz2`, `.tbz2`) und TAR.XZ (`.tar.xz`, `.txz`).

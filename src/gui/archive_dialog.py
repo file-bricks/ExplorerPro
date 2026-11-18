@@ -30,13 +30,47 @@ from translator import t
 
 
 
+_ARCHIVE_COMPOUND_SUFFIXES = (
+    ".tar.gz", ".tar.bz2", ".tar.xz", ".tgz", ".tbz2", ".txz", ".zip", ".tar"
+)
+_WINDOWS_RESERVED_STEMS = frozenset({
+    "CON", "PRN", "AUX", "NUL",
+    *(f"COM{i}" for i in range(1, 10)),
+    *(f"LPT{i}" for i in range(1, 10)),
+    "COM¹", "COM²", "COM³",
+    "LPT¹", "LPT²", "LPT³",
+})
+_UNSAFE_STEM_CHARS = frozenset('<>:"/\\|?*')
+
+
 def _get_archive_stem(path: str) -> str:
-    """Ermittelt den Stammnamen ohne Archiv-Endung (unterstützt auch .tar.gz etc.)."""
-    name = os.path.basename(path)
-    for sfx in (".tar.gz", ".tar.bz2", ".tar.xz", ".tgz", ".tbz2", ".txz", ".zip", ".tar"):
-        if name.lower().endswith(sfx):
-            return name[:-len(sfx)]
-    return Path(path).stem
+    """Ermittelt einen sicheren Unterordner-Stammnamen ohne Archiv-Endung (inkl. .tar.gz)."""
+    normalized_input = str(path).replace("\\", "/").rstrip("/")
+    name = os.path.basename(normalized_input)
+    lower_name = name.lower()
+
+    raw_stem = ""
+    for sfx in _ARCHIVE_COMPOUND_SUFFIXES:
+        if lower_name.endswith(sfx):
+            raw_stem = name[: -len(sfx)]
+            break
+    else:
+        raw_stem = Path(name).stem
+
+    cleaned_chars = [
+        "_" if (ch in _UNSAFE_STEM_CHARS or ord(ch) < 32) else ch
+        for ch in raw_stem
+    ]
+    stem = "".join(cleaned_chars).strip().rstrip(". ")
+
+    if not stem or stem in (".", ".."):
+        return "extracted_archive"
+
+    device_key = stem.split(".", 1)[0].strip().upper()
+    if device_key in _WINDOWS_RESERVED_STEMS:
+        return f"_{stem}"
+
+    return stem
 
 
 class _ArchiveWorkerShutdownGuard(QObject):
@@ -237,16 +271,28 @@ class ArchiveCompressDialog(_ThreadAwareDialog):
         dest_group = QGroupBox(t("Zielarchiv"))
         dest_layout = QHBoxLayout(dest_group)
 
+        target_base_dir = self.current_dir
         default_name = "Archiv.zip"
         if count == 1:
-            stem = Path(self.sources[0]).stem
+            src_resolved = Path(self.sources[0]).resolve()
+            stem = src_resolved.name if src_resolved.is_dir() else Path(self.sources[0]).stem
+            if not stem:
+                stem = "Archiv"
             default_name = f"{stem}.zip"
+            if src_resolved.is_dir() and self.current_dir:
+                try:
+                    if Path(self.current_dir).resolve() == src_resolved:
+                        parent_dir = str(src_resolved.parent)
+                        if parent_dir and Path(parent_dir).resolve() != src_resolved:
+                            target_base_dir = parent_dir
+                except OSError:
+                    pass
         elif count > 1 and self.current_dir:
             parent_name = Path(self.current_dir).name
             if parent_name:
                 default_name = f"{parent_name}.zip"
 
-        default_target = os.path.join(self.current_dir, default_name)
+        default_target = os.path.join(target_base_dir, default_name)
 
         self.dest_edit = QLineEdit(default_target)
         self.dest_edit.setAccessibleName(t("Zielpfad für das ZIP-Archiv"))
@@ -543,7 +589,11 @@ class ArchiveExtractDialog(_ThreadAwareDialog):
         final_target = base_dir
         if self.subfolder_cb.isChecked():
             stem = _get_archive_stem(self.zip_path)
-            final_target = os.path.join(base_dir, stem)
+            base_resolved = Path(base_dir).resolve()
+            candidate = (base_resolved / stem).resolve()
+            if candidate == base_resolved or not candidate.is_relative_to(base_resolved):
+                candidate = base_resolved / "extracted_archive"
+            final_target = str(candidate)
 
         self.extracted_target = final_target
         overwrite = self.overwrite_cb.isChecked()
