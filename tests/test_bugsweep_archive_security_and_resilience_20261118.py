@@ -160,13 +160,16 @@ def test_sanitize_archive_member_path_rejects_empty_root_ads_and_devices(tmp_pat
     target = tmp_path / "jail"
     target.mkdir()
 
-    invalid_members = [
+    invalid_everywhere = [
         "",
         ".",
         "./",
         "/",
         "C:/",
         "   ",
+        "bad\x00name.txt",
+    ]
+    windows_only_invalid = [
         "a:stream",
         "doc.txt:evil_stream",
         "sub/file.txt:$DATA",
@@ -174,16 +177,78 @@ def test_sanitize_archive_member_path_rejects_empty_root_ads_and_devices(tmp_pat
         "sub/NUL",
         "COM1.log",
         "LPT2",
-        "bad\x00name.txt",
         "trailing./file.txt",
         "folder/bad ",
     ]
-    for bad in invalid_members:
+    for bad in invalid_everywhere:
+        for windows_rules in (True, False):
+            with pytest.raises(ZipSlipSecurityError, match="."):
+                sanitize_archive_member_path(bad, target, windows_rules=windows_rules)
+    for bad in windows_only_invalid:
         with pytest.raises(ZipSlipSecurityError, match="."):
-            sanitize_archive_member_path(bad, target)
+            sanitize_archive_member_path(bad, target, windows_rules=True)
+        # Unter Linux/macOS sind diese Namen gültig und bleiben im Zielordner.
+        accepted = sanitize_archive_member_path(bad, target, windows_rules=False)
+        accepted.relative_to(target.resolve())
 
     good = sanitize_archive_member_path("./folder/sub/doc.txt", target)
     assert good == (target / "folder" / "sub" / "doc.txt").resolve()
+
+
+def test_sanitize_windows_rules_default_follows_platform(tmp_path: Path, monkeypatch):
+    target = tmp_path / "jail"
+    target.mkdir()
+    import core.archive_service as archive_service
+
+    monkeypatch.setattr(archive_service, "_windows_name_rules_default", lambda: True)
+    with pytest.raises(ZipSlipSecurityError):
+        sanitize_archive_member_path("log 12:30.txt", target)
+    monkeypatch.setattr(archive_service, "_windows_name_rules_default", lambda: False)
+    assert sanitize_archive_member_path("log 12:30.txt", target).name == "log 12:30.txt"
+
+
+def _write_tar(path: Path, names: list[str]) -> None:
+    with tarfile.open(path, "w") as tf:
+        for name in names:
+            data = name.encode("utf-8")
+            info = tarfile.TarInfo(name)
+            info.size = len(data)
+            tf.addfile(info, io.BytesIO(data))
+
+
+def test_extract_tar_with_posix_legal_names_is_complete_or_untouched(tmp_path: Path):
+    archive = tmp_path / "logs.tar"
+    _write_tar(archive, ["a.txt", "log 12:30.txt", "z.txt"])
+    target = tmp_path / "out"
+
+    if os.name == "nt":
+        with pytest.raises(ZipSlipSecurityError):
+            extract_tar_archive(archive, target)
+        assert list(target.iterdir()) == []
+    else:
+        count, _ = extract_tar_archive(archive, target)
+        assert count == 3
+        assert sorted(p.name for p in target.iterdir()) == ["a.txt", "log 12:30.txt", "z.txt"]
+
+
+def test_extract_rejects_traversal_before_writing_anything(tmp_path: Path):
+    tar_archive = tmp_path / "evil.tar"
+    _write_tar(tar_archive, ["a.txt", "../escape.txt", "z.txt"])
+    tar_target = tmp_path / "tar_out"
+    with pytest.raises(ZipSlipSecurityError):
+        extract_tar_archive(tar_archive, tar_target)
+    assert list(tar_target.iterdir()) == []
+    assert not (tmp_path / "escape.txt").exists()
+
+    zip_archive = tmp_path / "evil.zip"
+    with zipfile.ZipFile(zip_archive, "w") as zf:
+        zf.writestr("a.txt", "a")
+        zf.writestr("../escape.txt", "evil")
+        zf.writestr("z.txt", "z")
+    zip_target = tmp_path / "zip_out"
+    with pytest.raises(ZipSlipSecurityError):
+        extract_zip_archive(zip_archive, zip_target)
+    assert list(zip_target.iterdir()) == []
 
 
 def test_extract_blocks_symlink_escape_and_skips_zip_symlink_entries(

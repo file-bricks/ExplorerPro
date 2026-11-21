@@ -108,6 +108,10 @@ _ZIP_MIN_DATETIME = (1980, 1, 1, 0, 0, 0)
 _ZIP_MAX_DATETIME = (2107, 12, 31, 23, 59, 58)
 
 
+def _windows_name_rules_default() -> bool:
+    return os.name == "nt"
+
+
 def _is_windows_reserved_segment(segment: str) -> bool:
     stem = segment.split(".", 1)[0].strip().upper()
     return stem in _WINDOWS_RESERVED_DEVICE_NAMES
@@ -221,11 +225,24 @@ def _select_matching_members(
     return selected
 
 
-def sanitize_archive_member_path(member_name: str, target_dir: str | Path) -> Path:
+def sanitize_archive_member_path(
+    member_name: str,
+    target_dir: str | Path,
+    *,
+    windows_rules: Optional[bool] = None,
+) -> Path:
     """
     Sicherheitsprüfung gegen Zip-Slip- und Tar-Slip-Schwachstellen (Directory Traversal),
     Symlink-Brücken, NTFS-ADS, leere Root-Pfade und reservierte Windows-Gerätenamen.
+
+    Traversal-, Steuerzeichen-, Root- und Symlink-Prüfungen gelten auf allen Plattformen.
+    Die reinen Windows-Namensregeln (``<>:"|?*``, abschließender Punkt/Leerzeichen,
+    reservierte Gerätenamen) greifen standardmäßig nur unter Windows, weil solche Namen
+    unter Linux/macOS gültig sind (z. B. ``log 12:30.txt``). ``windows_rules`` erzwingt
+    oder unterdrückt sie explizit.
     """
+    if windows_rules is None:
+        windows_rules = _windows_name_rules_default()
     if not isinstance(member_name, str) or any(ord(ch) < 32 for ch in member_name):
         raise ZipSlipSecurityError(
             f"Sicherheitswarnung: Archiv-Eintrag '{member_name!r}' enthält Steuerzeichen!"
@@ -256,6 +273,13 @@ def sanitize_archive_member_path(member_name: str, target_dir: str | Path) -> Pa
                     f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' verlässt das Zielverzeichnis!"
                 )
             clean_parts.pop()
+            continue
+        if not part.strip():
+            raise ZipSlipSecurityError(
+                f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' enthält ein leeres Pfadsegment!"
+            )
+        if not windows_rules:
+            clean_parts.append(part)
             continue
         if part.endswith((".", " ")):
             raise ZipSlipSecurityError(
@@ -813,6 +837,13 @@ def extract_zip_archive(
             )
             infolist = [info for info, keep in zip(infolist, mask) if keep]
 
+        # Alle Namen vor dem ersten Schreibzugriff prüfen: ein unzulässiger Eintrag
+        # bricht ab, ohne ein halb entpacktes Ziel zu hinterlassen.
+        for info in infolist:
+            if info.is_dir() and _is_harmless_root_dir_member(info.filename):
+                continue
+            sanitize_archive_member_path(info.filename, target_path)
+
         total_members = len(infolist)
         extracted_files = 0
         extracted_bytes = 0
@@ -902,6 +933,12 @@ def extract_tar_archive(
                 members,
             )
             all_members = [m for m, keep in zip(all_members, mask) if keep]
+
+        # Alle Namen vor dem ersten Schreibzugriff prüfen (kein Teilzustand bei Abbruch).
+        for member in all_members:
+            if member.isdir() and _is_harmless_root_dir_member(member.name):
+                continue
+            sanitize_archive_member_path(member.name, target_path)
 
         total_members = len(all_members)
         extracted_files = 0
