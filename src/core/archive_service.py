@@ -19,6 +19,7 @@ import stat
 import tarfile
 import time
 from typing import Callable, List, Optional, Tuple
+import uuid
 import zipfile
 
 from PySide6.QtCore import QThread, Signal
@@ -95,26 +96,195 @@ def format_bytes(num_bytes: int) -> str:
         return f"{num_bytes / (1024 * 1024 * 1024):.2f} GB"
 
 
+_WINDOWS_RESERVED_DEVICE_NAMES = frozenset({
+    "CON", "PRN", "AUX", "NUL",
+    *(f"COM{i}" for i in range(1, 10)),
+    *(f"LPT{i}" for i in range(1, 10)),
+    "COM¹", "COM²", "COM³",
+    "LPT¹", "LPT²", "LPT³",
+})
+_INVALID_MEMBER_SEGMENT_CHARS = frozenset('<>:"|?*')
+_ZIP_MIN_DATETIME = (1980, 1, 1, 0, 0, 0)
+_ZIP_MAX_DATETIME = (2107, 12, 31, 23, 59, 58)
+
+
+def _is_windows_reserved_segment(segment: str) -> bool:
+    stem = segment.split(".", 1)[0].strip().upper()
+    return stem in _WINDOWS_RESERVED_DEVICE_NAMES
+
+
+def _is_harmless_root_dir_member(member_name: str) -> bool:
+    cleaned = member_name.replace("\\", "/").strip()
+    return cleaned in (".", "./")
+
+
+def _is_zip_special_or_symlink(info: zipfile.ZipInfo) -> bool:
+    unix_mode = (info.external_attr >> 16) & 0xFFFF
+    if unix_mode == 0:
+        return False
+    return (
+        stat.S_ISLNK(unix_mode)
+        or stat.S_ISFIFO(unix_mode)
+        or stat.S_ISCHR(unix_mode)
+        or stat.S_ISBLK(unix_mode)
+        or stat.S_ISSOCK(unix_mode)
+    )
+
+
+def _make_staging_path(dest_path: Path) -> Path:
+    return dest_path.with_name(
+        f"{dest_path.name}.tmp_{os.getpid()}_{uuid.uuid4().hex[:8]}"
+    )
+
+
+def _atomic_replace(temp_path: Path, dest_path: Path) -> None:
+    try:
+        os.replace(temp_path, dest_path)
+    except PermissionError:
+        try:
+            st = dest_path.stat()
+            is_readonly_file = not stat.S_ISDIR(st.st_mode) and not (st.st_mode & stat.S_IWRITE)
+        except OSError:
+            is_readonly_file = False
+        if not is_readonly_file:
+            raise
+        os.chmod(dest_path, st.st_mode | stat.S_IWRITE)
+        os.replace(temp_path, dest_path)
+
+
+def _is_excluded_output_artifact(candidate: Path, dest_path: Path, temp_path: Path) -> bool:
+    try:
+        resolved = candidate.resolve()
+    except OSError:
+        resolved = candidate
+    if resolved == dest_path or resolved == temp_path:
+        return True
+    try:
+        same_parent = candidate.parent.resolve() == dest_path.parent
+    except OSError:
+        same_parent = False
+    return same_parent and candidate.name.startswith(f"{dest_path.name}.tmp_")
+
+
+def _normalize_member_key(name: str) -> str:
+    key = name.replace("\\", "/").strip()
+    while key.startswith("./"):
+        key = key[2:]
+    return key.lstrip("/")
+
+
+def _select_matching_members(
+    entries_meta: List[Tuple[str, bool]],
+    requested: List[str],
+) -> List[bool]:
+    if not requested:
+        return [False] * len(entries_meta)
+
+    norm_entries: List[Tuple[str, str, bool]] = []
+    known_dirs = set()
+    known_files = set()
+    for raw_name, is_dir in entries_meta:
+        norm = _normalize_member_key(raw_name)
+        stripped = norm.rstrip("/")
+        norm_entries.append((norm, stripped, is_dir))
+        if is_dir and stripped:
+            known_dirs.add(stripped)
+        elif stripped:
+            known_files.add(stripped)
+
+    exact_keys = set()
+    dir_prefixes = set()
+    for req in requested:
+        req_slash = req.replace("\\", "/").strip()
+        explicit_dir = req_slash.endswith("/")
+        norm_req = _normalize_member_key(req_slash).rstrip("/")
+        if not norm_req:
+            continue
+        exact_keys.add(norm_req)
+        if explicit_dir or norm_req in known_dirs:
+            dir_prefixes.add(norm_req)
+        elif norm_req not in known_files:
+            prefix_probe = norm_req + "/"
+            if any(stripped.startswith(prefix_probe) for _, stripped, _ in norm_entries):
+                dir_prefixes.add(norm_req)
+
+    selected: List[bool] = []
+    for _, stripped, _ in norm_entries:
+        if not stripped:
+            selected.append(False)
+            continue
+        match = stripped in exact_keys or any(
+            stripped == pref or stripped.startswith(pref + "/")
+            for pref in dir_prefixes
+        )
+        selected.append(match)
+    return selected
+
+
 def sanitize_archive_member_path(member_name: str, target_dir: str | Path) -> Path:
     """
-    Sicherheitsprüfung gegen Zip-Slip- und Tar-Slip-Schwachstellen (Directory Traversal).
-    Bereinigt den Pfad und stellt sicher, dass das Ziel innerhalb von target_dir liegt.
+    Sicherheitsprüfung gegen Zip-Slip- und Tar-Slip-Schwachstellen (Directory Traversal),
+    Symlink-Brücken, NTFS-ADS, leere Root-Pfade und reservierte Windows-Gerätenamen.
     """
-    target_path = Path(target_dir).resolve()
+    if not isinstance(member_name, str) or any(ord(ch) < 32 for ch in member_name):
+        raise ZipSlipSecurityError(
+            f"Sicherheitswarnung: Archiv-Eintrag '{member_name!r}' enthält Steuerzeichen!"
+        )
 
-    # Vorverarbeitung: Windows-Laufwerksbuchstaben und absolute Pfade neutralisieren
-    normalized = member_name.replace("\\", "/").strip()
-    # Entferne führende Slashes oder Laufwerksbezeichner wie "C:"
+    target_path = Path(target_dir).resolve()
+    normalized = member_name.replace("\\", "/")
+
     while normalized.startswith("/"):
         normalized = normalized[1:]
-    if len(normalized) > 1 and normalized[1] == ":":
+    if (
+        len(normalized) >= 2
+        and normalized[0].isalpha()
+        and normalized[1] == ":"
+        and (len(normalized) == 2 or normalized[2] == "/")
+    ):
         normalized = normalized[2:]
         while normalized.startswith("/"):
             normalized = normalized[1:]
 
-    # Pfadteile auf relative Segmente auflösen
-    dest_path = (target_path / normalized).resolve()
+    clean_parts: List[str] = []
+    for part in normalized.split("/"):
+        if part in ("", "."):
+            continue
+        if part == "..":
+            if not clean_parts:
+                raise ZipSlipSecurityError(
+                    f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' verlässt das Zielverzeichnis!"
+                )
+            clean_parts.pop()
+            continue
+        if part.endswith((".", " ")):
+            raise ZipSlipSecurityError(
+                f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' enthält unsicheres Pfadsegment '{part}'!"
+            )
+        if any(ch in _INVALID_MEMBER_SEGMENT_CHARS for ch in part):
+            raise ZipSlipSecurityError(
+                f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' enthält unzulässige Zeichen!"
+            )
+        if _is_windows_reserved_segment(part):
+            raise ZipSlipSecurityError(
+                f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' verwendet reservierten Gerätenamen '{part}'!"
+            )
+        clean_parts.append(part)
 
+    if not clean_parts:
+        raise ZipSlipSecurityError(
+            f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' verweist auf das Wurzelverzeichnis!"
+        )
+
+    probe = target_path
+    for part in clean_parts:
+        probe = probe / part
+        if probe.is_symlink() or (hasattr(probe, "is_junction") and probe.is_junction()):
+            raise ZipSlipSecurityError(
+                f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' traversiert einen Symlink!"
+            )
+
+    dest_path = target_path.joinpath(*clean_parts).resolve()
     try:
         dest_path.relative_to(target_path)
     except ValueError:
@@ -122,25 +292,43 @@ def sanitize_archive_member_path(member_name: str, target_dir: str | Path) -> Pa
             f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' verlässt das Zielverzeichnis!"
         )
 
+    if dest_path == target_path:
+        raise ZipSlipSecurityError(
+            f"Sicherheitswarnung: Archiv-Eintrag '{member_name}' kollidiert mit dem Zielverzeichnis!"
+        )
+
     return dest_path
 
 
 SUPPORTED_ARCHIVE_EXTENSIONS = (
-    ".zip", ".tar", ".gz", ".tgz", ".bz2", ".tbz2", ".xz", ".txz"
+    ".zip",
+    ".tar",
+    ".tar.gz",
+    ".tgz",
+    ".tar.bz2",
+    ".tbz2",
+    ".tar.xz",
+    ".txz",
 )
 
 
 def is_archive(path: str | Path) -> bool:
     """Prüft, ob der Pfad ein unterstütztes Archiv (ZIP oder TAR/komprimiert) ist."""
-    path_obj = Path(path)
-    if not path_obj.is_file():
+    try:
+        path_obj = Path(path)
+        if not path_obj.is_file():
+            return False
+    except OSError:
         return False
+
     name_lower = path_obj.name.lower()
-    if name_lower.endswith((".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".tgz", ".tbz2", ".txz")):
+    if name_lower.endswith(SUPPORTED_ARCHIVE_EXTENSIONS):
         return True
-    if path_obj.suffix.lower() in SUPPORTED_ARCHIVE_EXTENSIONS:
-        return True
-    return zipfile.is_zipfile(path_obj) or tarfile.is_tarfile(path_obj)
+
+    try:
+        return zipfile.is_zipfile(path_obj) or tarfile.is_tarfile(path_obj)
+    except OSError:
+        return False
 
 
 def inspect_zip(zip_path: str | Path) -> Tuple[ArchiveSummary, List[ArchiveEntry]]:
@@ -382,6 +570,7 @@ def create_zip_archive(
 
     dest_path = Path(dest_zip).resolve()
     dest_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_zip = _make_staging_path(dest_path)
 
     items_to_add: List[Tuple[Path, str]] = []
 
@@ -391,15 +580,21 @@ def create_zip_archive(
             continue
 
         if src_path.is_file():
-            items_to_add.append((src_path, src_path.name))
+            if not _is_excluded_output_artifact(src_path, dest_path, temp_zip):
+                items_to_add.append((src_path, src_path.name))
         elif src_path.is_dir():
             root_parent = src_path.parent
             for dirpath, dirnames, filenames in os.walk(src_path):
                 curr_dir = Path(dirpath)
-                if not dirnames and not filenames:
+                effective_files = [
+                    fname
+                    for fname in filenames
+                    if not _is_excluded_output_artifact(curr_dir / fname, dest_path, temp_zip)
+                ]
+                if not dirnames and not effective_files:
                     rel_dir = curr_dir.relative_to(root_parent).as_posix() + "/"
                     items_to_add.append((curr_dir, rel_dir))
-                for fname in filenames:
+                for fname in effective_files:
                     fpath = curr_dir / fname
                     rel_f = fpath.relative_to(root_parent).as_posix()
                     items_to_add.append((fpath, rel_f))
@@ -408,7 +603,6 @@ def create_zip_archive(
     if total_items == 0:
         raise ValueError("Keine gültigen Dateien in den ausgewählten Pfaden gefunden.")
 
-    temp_zip = dest_path.with_name(f"{dest_path.name}.tmp_{int(time.time()*1000)}")
     added_files = 0
     total_bytes = 0
 
@@ -429,12 +623,49 @@ def create_zip_archive(
                     progress_callback(idx, total_items, arcname)
 
                 if fpath.is_file():
-                    zf.write(fpath, arcname)
-                    added_files += 1
+                    st = fpath.stat()
+                    clamped_dt: Optional[Tuple[int, int, int, int, int, int]] = None
                     try:
-                        total_bytes += fpath.stat().st_size
-                    except OSError:
-                        pass
+                        dt = time.localtime(st.st_mtime)[:6]
+                        if dt < _ZIP_MIN_DATETIME:
+                            clamped_dt = _ZIP_MIN_DATETIME
+                        elif dt > _ZIP_MAX_DATETIME:
+                            clamped_dt = _ZIP_MAX_DATETIME
+                    except (OSError, OverflowError, ValueError):
+                        clamped_dt = (
+                            _ZIP_MIN_DATETIME
+                            if st.st_mtime < 315532800
+                            else _ZIP_MAX_DATETIME
+                        )
+
+                    if clamped_dt is None:
+                        zf.write(fpath, arcname)
+                        added_files += 1
+                        total_bytes += st.st_size
+                    else:
+                        clean_arc = arcname.replace("\\", "/").lstrip("/")
+                        zinfo = zipfile.ZipInfo(filename=clean_arc, date_time=clamped_dt)
+                        zinfo.compress_type = compression
+                        zinfo.file_size = st.st_size
+                        zinfo.external_attr = (st.st_mode & 0xFFFF) << 16
+                        if compression in (zipfile.ZIP_DEFLATED, zipfile.ZIP_BZIP2):
+                            zinfo._compresslevel = compresslevel
+                        written = 0
+                        with open(fpath, "rb") as src_f, zf.open(zinfo, "w") as dst_f:
+                            while True:
+                                if is_cancelled and is_cancelled():
+                                    dst_f.close()
+                                    zf.close()
+                                    if temp_zip.exists():
+                                        temp_zip.unlink(missing_ok=True)
+                                    return 0, 0
+                                chunk = src_f.read(64 * 1024)
+                                if not chunk:
+                                    break
+                                dst_f.write(chunk)
+                                written += len(chunk)
+                        added_files += 1
+                        total_bytes += written
                 elif fpath.is_dir():
                     zinfo = zipfile.ZipInfo(arcname if arcname.endswith("/") else arcname + "/")
                     zinfo.external_attr = 0o777 << 16 | stat.S_IFDIR
@@ -442,7 +673,7 @@ def create_zip_archive(
 
         # Atomare Veröffentlichung via os.replace
         if temp_zip.exists():
-            os.replace(temp_zip, dest_path)
+            _atomic_replace(temp_zip, dest_path)
 
         return added_files, total_bytes
 
@@ -469,6 +700,7 @@ def create_tar_archive(
 
     dest_path = Path(dest_tar).resolve()
     dest_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_tar = _make_staging_path(dest_path)
 
     items_to_add: List[Tuple[Path, str]] = []
     for src in sources:
@@ -477,7 +709,8 @@ def create_tar_archive(
             continue
 
         if src_path.is_file():
-            items_to_add.append((src_path, src_path.name))
+            if not _is_excluded_output_artifact(src_path, dest_path, temp_tar):
+                items_to_add.append((src_path, src_path.name))
         elif src_path.is_dir():
             root_parent = src_path.parent
             for dirpath, dirnames, filenames in os.walk(src_path):
@@ -487,6 +720,8 @@ def create_tar_archive(
                     items_to_add.append((curr_dir, rel_dir))
                 for fname in filenames:
                     fpath = curr_dir / fname
+                    if _is_excluded_output_artifact(fpath, dest_path, temp_tar):
+                        continue
                     rel_f = fpath.relative_to(root_parent).as_posix()
                     items_to_add.append((fpath, rel_f))
 
@@ -494,7 +729,6 @@ def create_tar_archive(
     if total_items == 0:
         raise ValueError("Keine gültigen Dateien in den ausgewählten Pfaden gefunden.")
 
-    temp_tar = dest_path.with_name(f"{dest_path.name}.tmp_{int(time.time()*1000)}")
     added_files = 0
     total_bytes = 0
 
@@ -519,7 +753,7 @@ def create_tar_archive(
                         pass
 
         if temp_tar.exists():
-            os.replace(temp_tar, dest_path)
+            _atomic_replace(temp_tar, dest_path)
 
         return added_files, total_bytes
     except Exception:
@@ -573,8 +807,11 @@ def extract_zip_archive(
     with zipfile.ZipFile(path_obj, "r") as zf:
         infolist = zf.infolist()
         if members is not None:
-            member_set = set(members)
-            infolist = [info for info in infolist if info.filename in member_set]
+            mask = _select_matching_members(
+                [(info.filename, info.is_dir()) for info in infolist],
+                members,
+            )
+            infolist = [info for info, keep in zip(infolist, mask) if keep]
 
         total_members = len(infolist)
         extracted_files = 0
@@ -587,10 +824,16 @@ def extract_zip_archive(
             if progress_callback:
                 progress_callback(idx, total_members, info.filename)
 
+            if info.is_dir() and _is_harmless_root_dir_member(info.filename):
+                continue
+
             dest_path = sanitize_archive_member_path(info.filename, target_path)
 
             if info.is_dir():
                 dest_path.mkdir(parents=True, exist_ok=True)
+                continue
+
+            if _is_zip_special_or_symlink(info):
                 continue
 
             dest_path.parent.mkdir(parents=True, exist_ok=True)
@@ -599,11 +842,12 @@ def extract_zip_archive(
                 continue
 
             # Atomar via temporäre Datei schreiben
-            temp_dest = dest_path.with_name(f"{dest_path.name}.tmp_{int(time.time()*1000)}")
+            temp_dest = _make_staging_path(dest_path)
             try:
                 with zf.open(info, "r") as src_f, open(temp_dest, "wb") as dst_f:
                     while True:
                         if is_cancelled and is_cancelled():
+                            dst_f.close()
                             if temp_dest.exists():
                                 temp_dest.unlink(missing_ok=True)
                             return extracted_files, extracted_bytes
@@ -611,7 +855,7 @@ def extract_zip_archive(
                         if not chunk:
                             break
                         dst_f.write(chunk)
-                os.replace(temp_dest, dest_path)
+                _atomic_replace(temp_dest, dest_path)
             except Exception:
                 if temp_dest.exists():
                     temp_dest.unlink(missing_ok=True)
@@ -653,8 +897,11 @@ def extract_tar_archive(
     with tarfile.open(path_obj, "r:*") as tf:
         all_members = tf.getmembers()
         if members is not None:
-            member_set = set(members)
-            all_members = [m for m in all_members if m.name in member_set]
+            mask = _select_matching_members(
+                [(m.name, m.isdir()) for m in all_members],
+                members,
+            )
+            all_members = [m for m, keep in zip(all_members, mask) if keep]
 
         total_members = len(all_members)
         extracted_files = 0
@@ -666,6 +913,9 @@ def extract_tar_archive(
 
             if progress_callback:
                 progress_callback(idx, total_members, member.name)
+
+            if member.isdir() and _is_harmless_root_dir_member(member.name):
+                continue
 
             dest_path = sanitize_archive_member_path(member.name, target_path)
 
@@ -681,7 +931,7 @@ def extract_tar_archive(
             if dest_path.exists() and not overwrite:
                 continue
 
-            temp_dest = dest_path.with_name(f"{dest_path.name}.tmp_{int(time.time()*1000)}")
+            temp_dest = _make_staging_path(dest_path)
             f_in = tf.extractfile(member)
             if f_in is None:
                 continue
@@ -690,6 +940,7 @@ def extract_tar_archive(
                 with f_in, open(temp_dest, "wb") as dst_f:
                     while True:
                         if is_cancelled and is_cancelled():
+                            dst_f.close()
                             if temp_dest.exists():
                                 temp_dest.unlink(missing_ok=True)
                             return extracted_files, extracted_bytes
@@ -697,7 +948,7 @@ def extract_tar_archive(
                         if not chunk:
                             break
                         dst_f.write(chunk)
-                os.replace(temp_dest, dest_path)
+                _atomic_replace(temp_dest, dest_path)
             except Exception:
                 if temp_dest.exists():
                     temp_dest.unlink(missing_ok=True)
