@@ -187,9 +187,15 @@ def test_sanitize_archive_member_path_rejects_empty_root_ads_and_devices(tmp_pat
     for bad in windows_only_invalid:
         with pytest.raises(ZipSlipSecurityError, match="."):
             sanitize_archive_member_path(bad, target, windows_rules=True)
-        # Unter Linux/macOS sind diese Namen gültig und bleiben im Zielordner.
-        accepted = sanitize_archive_member_path(bad, target, windows_rules=False)
-        accepted.relative_to(target.resolve())
+        # Ohne Windows-Regeln darf ein Name nie aus dem Ziel entkommen. Unter Linux/macOS
+        # sind diese Namen gültig; unter Windows bleibt z. B. "a:stream" laufwerksrelativ
+        # und wird spätestens von der relative_to-Prüfung abgewiesen.
+        try:
+            accepted = sanitize_archive_member_path(bad, target, windows_rules=False)
+        except ZipSlipSecurityError:
+            assert os.name == "nt", f"{bad!r} must be accepted without Windows rules on POSIX"
+        else:
+            accepted.relative_to(target.resolve())
 
     good = sanitize_archive_member_path("./folder/sub/doc.txt", target)
     assert good == (target / "folder" / "sub" / "doc.txt").resolve()
