@@ -2,10 +2,10 @@
 
 # ExplorerPro Suite
 
-[English](README.md) | [Deutsch](README_de.md) | **[Español](README_es.md)** | [Contexto legible por máquina (llms.txt)](llms.txt)
+[English](README.md) | [Deutsch](README_de.md) | **[Español](README_es.md)** | [Skill del producto (SKILL.md)](SKILL.md) | [Contexto legible por máquina (llms.txt)](llms.txt)
 
 [![CI](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml/badge.svg)](https://github.com/file-bricks/ExplorerPro/actions/workflows/ci.yml)
-[![Tests: 420+ passed](https://img.shields.io/badge/tests-420%2B%20passed%20%7C%20100%25-brightgreen.svg)](tests/)
+[![Tests: 657 passed](https://img.shields.io/badge/tests-657%20passed%20%7C%209%20skipped-brightgreen.svg)](tests/)
 [![Level 1 SBOM: Plain Text](https://img.shields.io/badge/Level%201%20SBOM-Plain%20Text-blue.svg)](THIRD_PARTY_LICENSES.txt)
 [![Python 3.10--3.12](https://img.shields.io/badge/python-3.10--3.12-blue.svg)](https://www.python.org/)
 [![Platform: Windows | Linux | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-informational.svg)](https://github.com/file-bricks/ExplorerPro)
@@ -14,7 +14,7 @@
 [![Security: RunAsInvoker Non--Elevation](https://img.shields.io/badge/security-RunAsInvoker%20Non--Elevation-blue.svg)](SECURITY.md)
 [![Security SLA: 48h SLA / 5d triage](https://img.shields.io/badge/security-48h%20SLA%20%2F%205d%20triage-success.svg)](SECURITY.md)
 [![Third-Party: Audited](https://img.shields.io/badge/third--party-audited-success.svg)](THIRD_PARTY_LICENSES.md)
-[![Marketing: Audited](https://img.shields.io/badge/marketing-audited-blueviolet.svg)](MARKETING-LOG.txt)
+[![Product Skill: SKILL.md](https://img.shields.io/badge/Product%20Skill-SKILL.md-teal.svg)](SKILL.md)
 [![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL%20v3-blue.svg)](LICENSE)
 [![Attribution: NOTICE](https://img.shields.io/badge/attribution-NOTICE-blue.svg)](NOTICE)
@@ -23,10 +23,10 @@
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Live-0078D7.svg?logo=windows)](https://apps.microsoft.com/detail/9P0X52WSHZ3Q)
 [![LLM-Ready: llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-success.svg)](llms.txt)
 [![Version: 1.0.9](https://img.shields.io/badge/version-1.0.9-orange.svg)](CHANGELOG.md)
-[![Last Checked](https://img.shields.io/badge/Last--Checked-2026--10--08-blue?style=flat-square)](CHANGELOG.md)
+[![Last Checked](https://img.shields.io/badge/Last--Checked-2026--11--27-blue?style=flat-square)](CHANGELOG.md)
 
 > [!NOTE]
-> **Desambiguación y contexto para LLM:** `file-bricks/ExplorerPro` es una suite local de gestión de archivos de escritorio y exploración avanzada, desarrollada con Python (PySide6 / Qt 6). Es totalmente independiente de las unidades web basadas en la nube, los gestores de archivos móviles y las utilidades comerciales de código cerrado. La arquitectura legible por máquina, las palabras clave de búsqueda, las invariantes de ejecución y las referencias de verificación se mantienen en [llms.txt](llms.txt). Última comprobación: **2026-10-08**.
+> **Desambiguación y contexto para LLM:** `file-bricks/ExplorerPro` es una suite local de gestión de archivos de escritorio y exploración avanzada, desarrollada con Python (PySide6 / Qt 6). Es totalmente independiente de las unidades web basadas en la nube, los gestores de archivos móviles y las utilidades comerciales de código cerrado. La arquitectura legible por máquina, las palabras clave de búsqueda, las invariantes de ejecución y las referencias de verificación se mantienen en [llms.txt](llms.txt) y [SKILL.md](SKILL.md). Última comprobación: **2026-11-27**.
 
 > **ExplorerPro** es una suite moderna de gestión de archivos de escritorio, centrada en la privacidad, para usuarios avanzados de Windows, Linux y macOS. Reúne navegación de directorios con varias pestañas, vistas previas instantáneas de archivos en distintos formatos (PDF, imágenes, código fuente con resaltado de sintaxis, Markdown y hojas de cálculo), indexación de texto completo de alto rendimiento con SQLite FTS5, detección de duplicados exacta a nivel de bytes mediante hashes, supervisión de privacidad, sincronización de carpetas y un editor de código integrado, todo en una única aplicación nativa con PySide6 (Qt 6).
 
@@ -505,6 +505,12 @@ python src/main.py
 START_ExplorerPro.bat
 ```
 
+### Prompt rápido de instalación para agentes IA / LLM
+
+```text
+Clone https://github.com/file-bricks/ExplorerPro.git, create and activate a .venv, install requirements.txt, read llms.txt and SKILL.md, and verify with QT_QPA_PLATFORM=offscreen python -m pytest -ra -v and python tests/source_platform_smoke.py.
+```
+
 ---
 
 <a id="sec-11"></a>
@@ -639,7 +645,7 @@ Documentación de Store:
 <a id="qualitaets-gates"></a>
 ## 16. Pruebas y controles de calidad
 
-Última verificación el **2026-09-26**: más de 350 pruebas automatizadas de Python superadas (100 % en verde).
+Última verificación el **2026-11-27**: 657 pruebas automatizadas de Python superadas, 9 omitidas por plataforma o compilación (100 % en verde).
 
 ```bash
 # Run full automated test suite:
@@ -687,7 +693,7 @@ ExplorerPro se basa estrictamente en bibliotecas de código abierto probadas y c
 - **PyInstaller:** GPL-2.0-or-later con excepción de empaquetado (empaquetado independiente durante la compilación)
 - **pytest / ruff / setuptools:** MIT / Apache-2.0 (herramientas de pruebas e higiene del código)
 
-Los planes de marketing estratégico, las consultas de búsqueda y los perfiles de audiencia se registran en [MARKETING-LOG.txt](MARKETING-LOG.txt).
+Las capacidades del producto legibles por máquina y los contratos de uso para agentes se documentan en [SKILL.md](SKILL.md) y [llms.txt](llms.txt) (puntero de compatibilidad: [llm.txt](llm.txt)).
 
 ---
 

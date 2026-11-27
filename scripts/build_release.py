@@ -17,7 +17,7 @@ result = subprocess.run([sys.executable, str(scanner), "--project", str(root), "
     check=True, capture_output=True, text=True, encoding="utf-8")
 print(result.stderr, file=sys.stderr)
 report = json.loads(result.stdout)
-build_root = Path(os.environ.get("BUILD_ROOT", str(Path("C:/_Local_DEV/codex_build") / app_name.lower())))
+build_root = Path(os.environ.get("BUILD_ROOT", str(Path.home() / ".cache" / "explorerpro_build" / app_name.lower())))
 build_root.mkdir(parents=True, exist_ok=True)
 (build_root / "exclude-report.json").write_text(result.stdout, encoding="utf-8")
 env = os.environ.copy()

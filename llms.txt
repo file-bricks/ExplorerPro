@@ -4,10 +4,10 @@ Canonical repository: https://github.com/file-bricks/ExplorerPro
 Owner: file-bricks
 Primary language: Python (3.10--3.12)
 Primary UI stack: PySide6 (Qt 6)
-License: AGPL-3.0
+License: AGPL-3.0-or-later
 Microsoft Store Identity: Geiger.ExplorerPro (Store-ID: 9P0X52WSHZ3Q)
 
-Last-checked: 2026-09-30 (Previous: 2026-09-29)
+Last-checked: 2026-11-27 (Previous: 2026-09-30)
 Version: 1.0.9
 
 ## Search Phrases
@@ -27,7 +27,7 @@ Version: 1.0.9
 
 ## Audience
 
-Power users, developers, and researchers who require a local-first, privacy-aware desktop file explorer suite with multi-tab browsing, instant multi-format previews, SQLite FTS5 search, hash-based duplicate detection, and built-in editor and sync tools.
+Power users, developers, and researchers who require a local-first, privacy-aware desktop file explorer suite with multi-tab browsing, instant multi-format previews, SQLite FTS5 search, hash-based duplicate detection, archive inspection/extraction, and built-in editor and sync tools.
 
 ## Disambiguation
 
@@ -39,49 +39,55 @@ ExplorerPro is a local desktop application (PySide6/Python). It is NOT:
 
 ## Summary
 
-ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, multi-format file preview (PDF, images, syntax-highlighted source code, markdown, spreadsheet), privacy checks, SQLite FTS5 full-text indexing, duplicate detection, folder sync, app launching, prompt management, and a lightweight code editor in a single native desktop interface.
+ExplorerPro is a local-first desktop file explorer suite for power users. It combines multi-tab file browsing, multi-format file preview (PDF, images, syntax-highlighted source code, markdown, spreadsheet, archives), privacy checks, SQLite FTS5 full-text indexing, duplicate detection, atomic persistence (`atomic_io`), folder sync, app launching, prompt management, and a lightweight code editor in a single native desktop interface.
 
 ## Current Scope & Architecture
 
 - **Primary platform:** Windows 10/11 desktop (Microsoft Store live).
 - **Source/build smoke targets:** Ubuntu Linux and macOS.
 - **5-Layer Architecture:**
-  1. *PySide6 Desktop UI Layer:* MainWindow, FileBrowser, PreviewPanel, Sidebar, QuickEditor, DuplicateFinder, SyncPanel, PrivacyIndicator.
-  2. *Core Application Services:* EventBus, SettingsManager, ThemeEngine, Translator (6 languages: DE, EN, ES, ZH, JA, RU).
-  3. *Background Engines:* SQLite FTS5 WAL Full-Text Search, 2-phase MD5/SHA-256 HashEngine, PrivacyMonitor Regex Engine, SearchWorker QThread.
-  4. *Safety Guard Layer:* Safe File Operations (Recycle Bin), Collision-Free Paste Engine, Sanitized Workspace Exporter (`explorerpro-workspace-v1`).
+  1. *PySide6 Desktop UI Layer:* MainWindow, FileBrowser, PreviewPanel, Sidebar, QuickEditor, DuplicateFinder, SyncPanel, PrivacyIndicator, ArchiveDialogs.
+  2. *Core Application Services:* EventBus, SettingsManager, ThemeEngine, Translator (6 languages: DE, EN, ES, ZH, JA, RU), AtomicIO.
+  3. *Background Engines:* SQLite FTS5 WAL Full-Text Search, 2-phase MD5/SHA-256 HashEngine, ArchiveService (ZIP/TAR/GZ/BZ2/XZ), PrivacyMonitor Regex Engine, SearchWorker QThread.
+  4. *Safety Guard Layer:* Safe File Operations (Recycle Bin), Collision-Free Paste Engine, Zip-Slip/Tar-Slip Sanitizer, Sanitized Workspace Exporter (`explorerpro-workspace-v1`).
   5. *Platform & Privacy Invariants:* 100% Offline Zero-Egress, Non-Elevation User Mode, Multi-OS Parity.
 - **Visual Assets & Store Showcase:** Redacted high-resolution showcase in `README/screenshots/store/` (main-window, search, duplicates, sync).
 - **Governance Invariants:** 10 canonized architectural pillars (`INV-LOCAL-01` through `INV-SLA-10`).
 
 ## Important Files
 
+- `SKILL.md`: Product usage skill with safe CLI/API entry points, boundaries, and verification contracts.
+- `llm.txt`: Compatibility pointer to `llms.txt` and `SKILL.md`.
 - `NOTICE`: Formal attribution, copyright declaration, and organizational provenance.
 - `README.md`: English GitHub entry point with badges, 18-point quick navigation, showcase gallery, dual Mermaid diagrams, 10 invariants, and ecosystem matrix.
 - `README_de.md`: German entry point with full bilingual parity.
-- `README_es.md`: Spanish documentation; documentation languages are separate from the six UI locales.
+- `README_es.md`: Spanish entry point linked from `README.md` and `README_de.md`.
 - `THIRD_PARTY_LICENSES.md`: Complete third-party license inventory and zero-egress / RunAsInvoker guarantees.
 - `THIRD_PARTY_LICENSES.txt`: Plain-text Level 1 SBOM companion, runtime dependencies, and invariant cross-reference matrix.
-- `MARKETING-LOG.txt`: Discovery strategies, 4 target personas, high-intent keywords, and competitive matrix.
 - `SECURITY.md`: Bilingual security policy with local-first, zero-egress, non-elevation, and 48-hour response SLA.
 - `PORTIERUNGSPLAN.md`: Platform, store-readiness, and companion plan.
 - `EXPORTFORMAT.md`: Implemented `explorerpro-workspace-v1` redacted workspace exchange contract.
 - `PRIVACY_POLICY.md`: Repository privacy posture.
 - `src/main.py`: Application entry point.
+- `src/core/atomic_io.py`: Crash-safe atomic file persistence engine.
+- `src/core/archive_service.py`: ZIP, TAR, and standalone GZ/BZ2/XZ archive service with traversal protection.
 - `src/gui/`: Main UI components and PySide6 widgets.
 - `src/modules/indexer/duplicate_finder.py`: Duplicate-finder UI and actions.
-- `tests/`: Automated test suite (372+ unit, integration, accessibility, and metadata contract tests).
+- `tests/`: Automated test suite (657+ unit, integration, accessibility, security, and metadata contract tests).
 
-## Verification
-
-Use these local checks before publishing changes:
+## Quick Install & Verification
 
 ```bash
+git clone https://github.com/file-bricks/ExplorerPro.git
+cd ExplorerPro
+python -m venv .venv
+# Windows: .venv\Scripts\activate | Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
 python -m pytest -ra -v
 python -m compileall -q .
 python -m ruff check .
 python tests/source_platform_smoke.py
-python manage_translations.py .
+python manage_translations.py --check
 python scripts/check_store_readiness.py
 ```
 

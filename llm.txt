@@ -1,0 +1,7 @@
+# ExplorerPro Suite
+
+This file is a compatibility pointer to `llms.txt` and `SKILL.md`.
+
+- Canonical LLM overview: llms.txt
+- Product usage skill: SKILL.md
+- Documentation: README.md, README_de.md, README_es.md

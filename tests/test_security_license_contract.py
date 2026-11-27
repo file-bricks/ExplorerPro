@@ -101,7 +101,7 @@ def test_gitignore_security_and_multi_host_hardening() -> None:
         assert pat in content, f"Secret pattern {pat} missing in .gitignore"
 
     # Multi-host sync hardening
-    for host_pat in ["*-WORKSTATION-LG*", "*-ASUS-GEI*", "*.sync-conflict-*", "*.conflict"]:
+    for host_pat in ["*-WORKSTATION*", "*-ASUS*", "*.sync-conflict-*", "*.conflict"]:
         assert host_pat in content, f"Sync conflict pattern {host_pat} missing in .gitignore"
 
     # Multi-agent lock system fail-closed patterns
@@ -255,17 +255,13 @@ def test_pep621_urls_and_pytest_options() -> None:
     assert 'addopts = "-ra -v"' in content, "pyproject.toml pytest section must specify addopts = '-ra -v'"
 
 
-def test_marketing_log_hygiene_recency() -> None:
-    """Verify MARKETING-LOG.txt documents the latest Pfad A repository hygiene audit."""
-    mkt_file = ROOT / "MARKETING-LOG.txt"
-    assert mkt_file.is_file(), "MARKETING-LOG.txt must exist"
-    content = mkt_file.read_text(encoding="utf-8")
-
-    assert "9. REPOSITORY HYGIENE, CI-MATRIX HARDENING & METADATA CONTRACT AUDIT" in content, (
-        "MARKETING-LOG.txt must include Section 9 for repository hygiene"
-    )
-    assert "2026-09-26" in content, "MARKETING-LOG.txt must record the 2026-09-26 audit date"
-    assert "PASS" in content, "MARKETING-LOG.txt must record PASS status"
+def test_marketing_log_untracked_and_ignored() -> None:
+    """Verify internal MARKETING-LOG.txt is excluded via .gitignore and not linked in pyproject.toml."""
+    gi_text = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    assert "MARKETING-LOG.txt" in gi_text
+    pyproject_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert "MARKETING-LOG.txt" not in pyproject_text
+    assert '"Product Skill"' in pyproject_text
 
 
 def test_notice_attribution_contract() -> None:

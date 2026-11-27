@@ -8,9 +8,11 @@ from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-SRC_DIR = Path(__file__).resolve().parents[1] / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(SRC_DIR))
+ROOT_DIR = Path(__file__).resolve().parents[1]
+SRC_DIR = ROOT_DIR / "src"
+for _p in (ROOT_DIR, SRC_DIR):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 from PySide6.QtWidgets import QApplication
 

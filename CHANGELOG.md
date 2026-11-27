@@ -5,6 +5,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### GitHub-Sync, Privacy-Gate, PEP-639-Packaging & Policy P-022 (2026-11-27)
+- **Privacy Gate & Tracking-Hygiene (`repo_privacy_gate.py` Exit `0`)**: `MARKETING-LOG.txt` via `git rm --cached` aus dem Tracking entfernt und in `.gitignore` (zusammen mit `*MARKETING-LOG.txt`, Pre-Push Data-Gate und `!releases/windowsstore/**`-Ausnahmen) verankert; hostspezifische Pfade und Gerätenamen in `CLAUDE.md`, `scripts/build_release.py`, `CHANGELOG.md` und `tests/test_security_license_contract.py` neutralisiert.
+- **PEP-639-Packaging (`pyproject.toml`)**: `license = "AGPL-3.0-or-later"` ohne überholten OSI-Lizenz-Classifier, `[build-system]` (`setuptools>=77.0.3`), `[tool.setuptools]` (`py-modules` + `src*`) und `"Product Skill"`-URL ergänzt (`pip install --no-deps --no-build-isolation --dry-run .` sauber).
+- **Policy P-022 & Doku-Parität**: `SKILL.md` und `llm.txt` angelegt; `llms.txt`, `README.md`, `README_de.md` und `README_es.md` auf `2026-11-27`, `657 passed | 9 skipped`, `SKILL.md`-Links und LLM-Installationshinweise aktualisiert (Version `1.0.9` unverändert).
+
 ### Security & Resilience: Archiv-Engine & Archiv-Dialog-Suite (2026-11-18)
 - **Unterordner-Traversal- & Gerätenamen-Schutz (`src/gui/archive_dialog.py`)**: `_get_archive_stem` und `ArchiveExtractDialog` bereinigen Punkt-Traversal-Namen (`..tar.gz`, `...zip`, `.zip`), nachgestellte Punkte/Leerzeichen sowie reservierte Windows-Gerätenamen (`CON`, `NUL`, `COM1..9`, `LPT1..9`) und erzwingen ein echtes Kindverzeichnis unterhalb des gewählten Zielordners.
 - **Erweiterte Zip-Slip-/Tar-Slip- & Symlink-Abwehr (`src/core/archive_service.py`)**: `sanitize_archive_member_path`, `extract_zip_archive` und `extract_tar_archive` blockieren leere/Root-Member, NTFS Alternate Data Streams (`:`), Steuerzeichen, reservierte Windows-Gerätepfade, Symlink-/Junction-Zwischenpfade im Zielbaum sowie Unix-Symlink-/Spezialdatei-Einträge in ZIP-Archiven (`S_IFLNK`).
@@ -221,7 +226,7 @@ ExplorerPro 1.0.8
   - `THIRD_PARTY_LICENSES.md`: Re-Audit Stand 2026-09-30 mit formaler Verlinkung auf den Plain-Text-Begleiter.
   - `NOTICE`: Bestätigung der Verlinkung zu `THIRD_PARTY_LICENSES.txt` und `THIRD_PARTY_LICENSES.md`.
 - **Multi-Host Sync-, Lock- und Cache-Defense in `.gitignore`**:
-  - Erweiterung um Multi-Host Sync-Muster (`*-IDEAPAD-GEI*`) und Multi-Agent-Locks (`LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`).
+  - Erweiterung um Multi-Host Sync-Muster (`*-IDEAPAD*`) und Multi-Agent-Locks (`LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`).
 - **PEP 621 Standardisierung in `pyproject.toml`**:
   - `project.urls`: `Contributing` registriert.
   - Strikte Version-Freeze-Disziplin per `T-20260920-167562623`: `version = "1.0.7"` unverändert beibehalten.
@@ -323,7 +328,7 @@ ExplorerPro 1.0.8
   - Härtung der Abhängigkeits-Untergrenzen in `pyproject.toml` (`pytest>=9.1.1` gegen CVE-2025-7117 / GHSA-6w46-j5rx-g56g, `ruff>=0.9.0`, `PyInstaller>=6.10.0`, `altgraph>=0.17.4`).
   - Standardisierung des Dritte-Partei-Lizenzinventars `THIRD_PARTY_LICENSES.txt` mit SPDX-Identifikatoren, Lizenztypen, Paket-URLs und detaillierten Verwendungsnachweisen für alle 21 direkten und transitiven Laufzeit-, Test- und Build-Pakete.
   - Zweisprachige Härtung der `SECURITY.md` (DE/EN) um verbindliche Reaktions-SLAs (48 Stunden Erstbestätigung, 5 Werktage Triage) sowie formelle Local-First / Zero-Egress und Non-Elevation-Garantien.
-  - Multi-Host- und Geheimnis-Härtung der `.gitignore` (`secrets.*`, `*.pfx`, `*.p12`, `*.cer`, `*.crt`, `*-WORKSTATION-LG*`, `*-ASUS-GEI*`, `*.sync-conflict-*`, `*.conflict`, `LOCK.*`, `*.lock`, `node_modules/`).
+  - Multi-Host- und Geheimnis-Härtung der `.gitignore` (`secrets.*`, `*.pfx`, `*.p12`, `*.cer`, `*.crt`, `*-WORKSTATION*`, `*-ASUS*`, `*.sync-conflict-*`, `*.conflict`, `LOCK.*`, `*.lock`, `node_modules/`).
   - Neue automatisierte Vertragstestsuite `tests/test_security_license_contract.py` mit 6 Prüfungen zur dauerhaften Einhaltung von Schwachstellenuntergrenzen, Lizenzschema, Dateisystem-Ausschlüssen, Hardcoded-Path-Freiheit, SLA-Vorgaben und Zero-Egress-Invarianten.
   - Gesamter Testbestand auf 317 Tests ausgebaut (100% grün, 0 Fehler).
 

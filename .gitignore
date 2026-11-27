@@ -54,7 +54,11 @@ secrets.*
 keyring/
 
 # ---- Build-Artefakte & Releases ----
-releases/
+releases/*
+!releases/windowsstore/
+!releases/windowsstore/*/
+!releases/windowsstore/*/*
+releases/windowsstore/**/*.msix
 *.exe
 *.msi
 *.msix
@@ -162,5 +166,20 @@ node_modules/
 
 dist_clean/
 
-# Agenten-interne Loop-Statusschnappschuesse (GITHUB-POLICY.md SS3, T-20260926-510472849)
+# Agenten-interne Loop-Statusschnappschuesse & Pre-Push Data-Gate (GITHUB-POLICY.md SS3)
 TASKPLAN_STATUS_*.md
+*MARKETING-LOG.txt
+MARKETING-LOG.txt
+*STATUS-LOG.txt
+*_DAILY_CARE.md
+.agent/
+.codex/
+.gemini/
+*.db
+*.sqlite*
+*.bachdb*
+*export*.csv
+*dump*
+inbox_config*
+TO-DECIDE-USER*
+data/temp/

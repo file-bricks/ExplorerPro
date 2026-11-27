@@ -1,10 +1,14 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "explorerpro"
 version = "1.0.9"
 description = "Datei-Explorer-Suite mit Editor, PDF-Viewer und Datenanalyse"
 authors = [{ name = "Lukas Geiger", email = "support@lukasgeiger.com" }]
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "AGPL-3.0-or-later"
 license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md", "THIRD_PARTY_LICENSES.txt"]
 readme = "README.md"
 
@@ -42,7 +46,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS",
@@ -71,7 +74,7 @@ Security = "https://github.com/file-bricks/ExplorerPro/blob/master/SECURITY.md"
 "Third-Party Licenses (Text)" = "https://github.com/file-bricks/ExplorerPro/blob/master/THIRD_PARTY_LICENSES.txt"
 "Level 1 SBOM" = "https://github.com/file-bricks/ExplorerPro/blob/master/THIRD_PARTY_LICENSES.txt"
 "Plain-Text License" = "https://github.com/file-bricks/ExplorerPro/blob/master/LICENSE"
-"Marketing Log" = "https://github.com/file-bricks/ExplorerPro/blob/master/MARKETING-LOG.txt"
+"Product Skill" = "https://github.com/file-bricks/ExplorerPro/blob/master/SKILL.md"
 "Parent Organization" = "https://github.com/file-bricks"
 Umbrella = "https://github.com/open-bricks"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
@@ -126,3 +129,9 @@ line-length = 120
 [tool.ruff.lint]
 select = ["E", "F", "W"]
 ignore = ["E402", "E501", "W291", "W293"]
+
+[tool.setuptools]
+py-modules = ["translator", "manage_translations"]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
