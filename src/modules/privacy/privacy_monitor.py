@@ -18,6 +18,7 @@ from enum import Enum
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QApplication
 
+from core.atomic_io import atomic_write_json
 from translator import t
 
 logging.basicConfig(level=logging.INFO)
@@ -251,8 +252,7 @@ class PrivacyMonitor(QObject):
         }
 
         try:
-            with open(self.config_path, 'w', encoding='utf-8') as f:
-                json.dump(cfg, f, indent=2, ensure_ascii=False)
+            atomic_write_json(self.config_path, cfg, indent=2, ensure_ascii=False)
             logging.info("Konfiguration gespeichert")
         except Exception as e:
             logging.error(f"Fehler beim Speichern: {e}")

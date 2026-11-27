@@ -18,6 +18,7 @@ from typing import List
 from dataclasses import dataclass, field
 from datetime import datetime
 import json
+from core.atomic_io import atomic_write_json
 from translator import t
 
 
@@ -380,8 +381,7 @@ class PromptsPanel(QWidget):
             })
 
         try:
-            with open(self.config_path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+            atomic_write_json(self.config_path, data, indent=2, ensure_ascii=False)
         except OSError as e:
             print(f"Fehler beim Speichern der Prompts: {e}")
 

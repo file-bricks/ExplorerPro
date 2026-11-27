@@ -22,6 +22,7 @@ import shlex
 import subprocess
 
 from core.platform_utils import open_path_with_system
+from core.atomic_io import atomic_write_json
 from translator import t
 
 
@@ -354,8 +355,7 @@ class AppsPanel(QWidget):
             'favorite': a.favorite
         } for a in self.apps]
         try:
-            with open(self.config_path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+            atomic_write_json(self.config_path, data, indent=2, ensure_ascii=False)
         except OSError as e:
             print(f"Fehler beim Speichern der Apps: {e}")
 

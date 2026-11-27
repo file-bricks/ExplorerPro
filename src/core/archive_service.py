@@ -11,11 +11,15 @@ Bietet sichere, hermetische Archiv-Operationen:
 - Asynchrone QThread-Worker mit Fortschritts- und Abbruchsignalen
 """
 
+import bz2
 from dataclasses import dataclass
 from datetime import datetime
+import gzip
+import lzma
 import os
 from pathlib import Path
 import stat
+import struct
 import tarfile
 import time
 from typing import Callable, List, Optional, Tuple
@@ -336,6 +340,49 @@ SUPPORTED_ARCHIVE_EXTENSIONS = (
 )
 
 
+def _safe_is_zipfile(path: Path) -> bool:
+    try:
+        return zipfile.is_zipfile(path)
+    except Exception:
+        return False
+
+
+def _safe_is_tarfile(path: Path) -> bool:
+    try:
+        return tarfile.is_tarfile(path)
+    except Exception:
+        return False
+
+
+def is_single_file_compressed(path: str | Path) -> bool:
+    """Prüft, ob der Pfad eine komprimierte Einzeldatei (.gz, .bz2, .xz) und kein TAR-Archiv ist."""
+    p = Path(path)
+    if not p.is_file():
+        return False
+    name_lower = p.name.lower()
+    if name_lower.endswith((".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".tgz", ".tbz2", ".txz")):
+        return False
+    if _safe_is_tarfile(p):
+        return False
+
+    ext = p.suffix.lower()
+    if ext not in (".gz", ".bz2", ".xz"):
+        return False
+
+    try:
+        with open(p, "rb") as f:
+            header = f.read(6)
+            if ext == ".gz" and header.startswith(b"\x1f\x8b"):
+                return True
+            elif ext == ".bz2" and header.startswith(b"BZh"):
+                return True
+            elif ext == ".xz" and header.startswith(b"\xfd7zXZ\x00"):
+                return True
+    except OSError:
+        pass
+    return False
+
+
 def is_archive(path: str | Path) -> bool:
     """Prüft, ob der Pfad ein unterstütztes Archiv (ZIP oder TAR/komprimiert) ist."""
     try:
@@ -349,10 +396,7 @@ def is_archive(path: str | Path) -> bool:
     if name_lower.endswith(SUPPORTED_ARCHIVE_EXTENSIONS):
         return True
 
-    try:
-        return zipfile.is_zipfile(path_obj) or tarfile.is_tarfile(path_obj)
-    except OSError:
-        return False
+    return _safe_is_zipfile(path_obj) or _safe_is_tarfile(path_obj)
 
 
 def inspect_zip(zip_path: str | Path) -> Tuple[ArchiveSummary, List[ArchiveEntry]]:
@@ -490,9 +534,135 @@ def inspect_tar(tar_path: str | Path) -> Tuple[ArchiveSummary, List[ArchiveEntry
     return summary, entries
 
 
+def inspect_single_file_compressed(archive_path: str | Path) -> Tuple[ArchiveSummary, List[ArchiveEntry]]:
+    """
+    Liest eine komprimierte Einzeldatei (.gz, .bz2, .xz) und gibt die Zusammenfassung sowie den Eintrag zurück.
+    """
+    path_obj = Path(archive_path).resolve()
+    if not path_obj.is_file():
+        raise FileNotFoundError(f"Datei nicht gefunden: {archive_path}")
+
+    ext = path_obj.suffix.lower()
+    compressed_size = path_obj.stat().st_size
+    dt_tuple = time.localtime(path_obj.stat().st_mtime)[:6]
+    crc = 0
+    uncompressed_size = 0
+    inner_filename = ""
+    comment = ""
+
+    if ext == ".gz":
+        try:
+            with open(path_obj, "rb") as f:
+                header = f.read(10)
+                if len(header) < 10 or not header.startswith(b"\x1f\x8b"):
+                    raise gzip.BadGzipFile("Kein gültiges GZIP-Format")
+                flags = header[3]
+                mtime_int = struct.unpack("<I", header[4:8])[0]
+                if mtime_int > 0:
+                    try:
+                        dt_tuple = time.localtime(mtime_int)[:6]
+                    except Exception:
+                        pass
+
+                # FEXTRA
+                if flags & 0x04:
+                    xlen_bytes = f.read(2)
+                    if len(xlen_bytes) == 2:
+                        xlen = struct.unpack("<H", xlen_bytes)[0]
+                        f.read(xlen)
+                # FNAME
+                if flags & 0x08:
+                    fname_bytes = bytearray()
+                    while True:
+                        b = f.read(1)
+                        if not b or b == b"\x00":
+                            break
+                        fname_bytes.extend(b)
+                    inner_filename = fname_bytes.decode("latin-1", errors="replace")
+                # FCOMMENT
+                if flags & 0x10:
+                    comment_bytes = bytearray()
+                    while True:
+                        b = f.read(1)
+                        if not b or b == b"\x00":
+                            break
+                        comment_bytes.extend(b)
+                    comment = comment_bytes.decode("latin-1", errors="replace")
+                # FHCRC
+                if flags & 0x02:
+                    f.read(2)
+
+                # Footer: CRC32 (4 Bytes) + ISIZE (4 Bytes)
+                if compressed_size >= 18:
+                    f.seek(-8, os.SEEK_END)
+                    footer = f.read(8)
+                    if len(footer) == 8:
+                        crc = struct.unpack("<I", footer[:4])[0]
+                        uncompressed_size = struct.unpack("<I", footer[4:])[0]
+        except Exception as exc:
+            raise ValueError(f"GZIP-Inspektion fehlgeschlagen: {exc}")
+
+        if not inner_filename or ".tmp_" in inner_filename:
+            inner_filename = path_obj.stem
+
+        if uncompressed_size == 0 and compressed_size > 0:
+            try:
+                with gzip.open(path_obj, "rb") as gf:
+                    while True:
+                        chunk = gf.read(128 * 1024)
+                        if not chunk:
+                            break
+                        uncompressed_size += len(chunk)
+            except Exception:
+                uncompressed_size = compressed_size
+
+    elif ext in (".bz2", ".xz"):
+        inner_filename = path_obj.stem
+        try:
+            opener = bz2.open if ext == ".bz2" else lzma.open
+            with opener(path_obj, "rb") as stream:
+                while True:
+                    chunk = stream.read(128 * 1024)
+                    if not chunk:
+                        break
+                    uncompressed_size += len(chunk)
+        except Exception as exc:
+            raise ValueError(f"Dekompressionsprüfung fehlgeschlagen ({ext}): {exc}")
+    else:
+        raise ValueError(f"Nicht unterstütztes Einzelkompressionsformat: {ext}")
+
+    ratio = 0.0
+    if uncompressed_size > 0:
+        ratio = max(0.0, min(100.0, (1.0 - (compressed_size / uncompressed_size)) * 100.0))
+
+    entry = ArchiveEntry(
+        filename=inner_filename,
+        file_size=uncompressed_size,
+        compress_size=compressed_size,
+        is_dir=False,
+        date_time=dt_tuple,
+        crc=crc,
+        compression_ratio=ratio,
+        comment=comment,
+    )
+
+    summary = ArchiveSummary(
+        archive_path=str(path_obj.resolve()),
+        total_files=1,
+        total_folders=0,
+        uncompressed_size=uncompressed_size,
+        compressed_size=compressed_size,
+        overall_ratio=ratio,
+        is_encrypted=False,
+        comment=comment,
+    )
+
+    return summary, [entry]
+
+
 def inspect_archive(archive_path: str | Path) -> Tuple[ArchiveSummary, List[ArchiveEntry]]:
     """
-    Liest ein beliebiges unterstütztes Archiv (ZIP oder TAR/komprimiert)
+    Liest ein beliebiges unterstütztes Archiv (ZIP, TAR/komprimiert oder Einzel-GZ/BZ2/XZ)
     und gibt die Zusammenfassung sowie alle Einträge zurück.
     """
     path_obj = Path(archive_path)
@@ -503,12 +673,16 @@ def inspect_archive(archive_path: str | Path) -> Tuple[ArchiveSummary, List[Arch
         return inspect_zip(path_obj)
     elif tarfile.is_tarfile(path_obj):
         return inspect_tar(path_obj)
+    elif is_single_file_compressed(path_obj):
+        return inspect_single_file_compressed(path_obj)
     else:
         name_lower = path_obj.name.lower()
         if name_lower.endswith(".zip"):
             return inspect_zip(path_obj)
         elif name_lower.endswith((".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")):
             return inspect_tar(path_obj)
+        elif name_lower.endswith((".gz", ".bz2", ".xz")):
+            return inspect_single_file_compressed(path_obj)
         raise ValueError(f"Nicht unterstütztes oder beschädigtes Archivformat: {archive_path}")
 
 
@@ -558,18 +732,60 @@ def check_tar_integrity(tar_path: str | Path) -> Tuple[bool, Optional[str]]:
         return False, f"Fehler bei TAR-Integritätsprüfung: {exc}"
 
 
-def check_archive_integrity(archive_path: str | Path) -> Tuple[bool, Optional[str]]:
-    """Prüft die Integrität eines ZIP- oder TAR-Archivs."""
+def check_single_file_integrity(archive_path: str | Path) -> Tuple[bool, Optional[str]]:
+    """
+    Prüft die Integrität einer komprimierten Einzeldatei (.gz, .bz2, .xz) durch sequentielles Lesen.
+    Gibt (True, None) bei Erfolg zurück oder (False, Fehlermeldung).
+    """
     path_obj = Path(archive_path)
-    if zipfile.is_zipfile(path_obj):
-        return check_zip_integrity(path_obj)
-    elif tarfile.is_tarfile(path_obj):
-        return check_tar_integrity(path_obj)
+    if not path_obj.is_file():
+        return False, f"Datei nicht gefunden: {archive_path}"
+
+    ext = path_obj.suffix.lower()
+    if ext == ".gz":
+        opener = gzip.open
+    elif ext == ".bz2":
+        opener = bz2.open
+    elif ext == ".xz":
+        opener = lzma.open
     else:
-        name_lower = path_obj.name.lower()
-        if name_lower.endswith(".zip"):
+        return False, f"Nicht unterstütztes Einzelkompressionsformat: {ext}"
+
+    try:
+        with opener(path_obj, "rb") as f:
+            while True:
+                chunk = f.read(128 * 1024)
+                if not chunk:
+                    break
+        return True, None
+    except Exception as exc:
+        return False, f"Fehler bei {ext.upper()}-Integritätsprüfung: {exc}"
+
+
+def check_archive_integrity(archive_path: str | Path) -> Tuple[bool, Optional[str]]:
+    """Prüft die Integrität eines ZIP-, TAR- oder Einzel-GZ/BZ2/XZ-Archivs."""
+    path_obj = Path(archive_path)
+    if not path_obj.is_file():
+        return False, f"Datei nicht gefunden: {archive_path}"
+
+    try:
+        if _safe_is_zipfile(path_obj):
             return check_zip_integrity(path_obj)
-        return check_tar_integrity(path_obj)
+        elif is_single_file_compressed(path_obj):
+            return check_single_file_integrity(path_obj)
+        elif _safe_is_tarfile(path_obj):
+            return check_tar_integrity(path_obj)
+        else:
+            name_lower = path_obj.name.lower()
+            if name_lower.endswith(".zip"):
+                return check_zip_integrity(path_obj)
+            elif name_lower.endswith((".gz", ".bz2", ".xz")) and not name_lower.endswith((".tar.gz", ".tar.bz2", ".tar.xz", ".tgz", ".tbz2", ".txz")):
+                return check_single_file_integrity(path_obj)
+            elif name_lower.endswith((".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")):
+                return check_tar_integrity(path_obj)
+            return False, f"Nicht unterstütztes Archivformat: {path_obj.name}"
+    except Exception as exc:
+        return False, f"Fehler bei Integritätsprüfung: {exc}"
 
 
 # Alias zur Abwärtskompatibilität
@@ -786,6 +1002,84 @@ def create_tar_archive(
         raise
 
 
+def create_single_file_compressed(
+    source_file: str | Path,
+    dest_path: str | Path,
+    progress_callback: Optional[Callable[[int, int, str], None]] = None,
+    is_cancelled: Optional[Callable[[], bool]] = None,
+) -> Tuple[int, int]:
+    """
+    Komprimiert eine einzelne Datei atomar in .gz, .bz2 oder .xz.
+    Gibt (1, original_bytes) zurück.
+    """
+    src = Path(source_file).resolve()
+    if not src.is_file():
+        raise FileNotFoundError(f"Quelldatei nicht gefunden: {source_file}")
+
+    dest = Path(dest_path).resolve()
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    ext = dest.suffix.lower()
+    if ext not in (".gz", ".bz2", ".xz"):
+        raise ValueError(f"Nicht unterstütztes Einzelkompressionsformat: {ext}")
+
+    temp_dest = _make_staging_path(dest)
+    total_bytes = src.stat().st_size
+
+    if progress_callback:
+        progress_callback(1, 1, src.name)
+
+    cancelled = False
+    try:
+        if ext == ".gz":
+            with open(src, "rb") as f_in, open(temp_dest, "wb") as f_out:
+                with gzip.GzipFile(filename=dest.stem, mode="wb", fileobj=f_out, mtime=src.stat().st_mtime) as gz_out:
+                    while True:
+                        if is_cancelled and is_cancelled():
+                            cancelled = True
+                            break
+                        chunk = f_in.read(64 * 1024)
+                        if not chunk:
+                            break
+                        gz_out.write(chunk)
+        elif ext == ".bz2":
+            with open(src, "rb") as f_in, bz2.open(temp_dest, "wb") as f_out:
+                while True:
+                    if is_cancelled and is_cancelled():
+                        cancelled = True
+                        break
+                    chunk = f_in.read(64 * 1024)
+                    if not chunk:
+                        break
+                    f_out.write(chunk)
+        elif ext == ".xz":
+            with open(src, "rb") as f_in, lzma.open(temp_dest, "wb") as f_out:
+                while True:
+                    if is_cancelled and is_cancelled():
+                        cancelled = True
+                        break
+                    chunk = f_in.read(64 * 1024)
+                    if not chunk:
+                        break
+                    f_out.write(chunk)
+        else:
+            raise ValueError(f"Nicht unterstütztes Einzelkompressionsformat: {ext}")
+
+        if cancelled:
+            if temp_dest.exists():
+                temp_dest.unlink(missing_ok=True)
+            return 0, 0
+
+        if temp_dest.exists():
+            _atomic_replace(temp_dest, dest)
+
+        return 1, total_bytes
+    except Exception:
+        if temp_dest.exists():
+            temp_dest.unlink(missing_ok=True)
+        raise
+
+
 def create_archive(
     sources: List[str | Path],
     dest_path: str | Path,
@@ -794,7 +1088,7 @@ def create_archive(
     progress_callback: Optional[Callable[[int, int, str], None]] = None,
     is_cancelled: Optional[Callable[[], bool]] = None,
 ) -> Tuple[int, int]:
-    """Erstellt atomar ein Archiv (ZIP oder TAR je nach Zieldateiendung)."""
+    """Erstellt atomar ein Archiv (ZIP, TAR oder komprimierte Einzeldatei)."""
     dest = Path(dest_path)
     name_lower = dest.name.lower()
     if name_lower.endswith((".tar.gz", ".tgz")):
@@ -805,6 +1099,12 @@ def create_archive(
         return create_tar_archive(sources, dest, mode="w:xz", progress_callback=progress_callback, is_cancelled=is_cancelled)
     elif name_lower.endswith(".tar"):
         return create_tar_archive(sources, dest, mode="w", progress_callback=progress_callback, is_cancelled=is_cancelled)
+    elif name_lower.endswith((".gz", ".bz2", ".xz")):
+        if len(sources) == 1 and Path(sources[0]).is_file():
+            return create_single_file_compressed(sources[0], dest, progress_callback=progress_callback, is_cancelled=is_cancelled)
+        else:
+            mode = "w:gz" if name_lower.endswith(".gz") else ("w:bz2" if name_lower.endswith(".bz2") else "w:xz")
+            return create_tar_archive(sources, dest, mode=mode, progress_callback=progress_callback, is_cancelled=is_cancelled)
     else:
         return create_zip_archive(sources, dest, compression=compression, compresslevel=compresslevel, progress_callback=progress_callback, is_cancelled=is_cancelled)
 
@@ -1002,6 +1302,84 @@ def extract_tar_archive(
     return extracted_files, extracted_bytes
 
 
+def extract_single_file_compressed(
+    archive_path: str | Path,
+    target_dir: str | Path,
+    overwrite: bool = True,
+    progress_callback: Optional[Callable[[int, int, str], None]] = None,
+    is_cancelled: Optional[Callable[[], bool]] = None,
+) -> Tuple[int, int]:
+    """
+    Extrahiert eine komprimierte Einzeldatei (.gz, .bz2, .xz) atomar und sicher in das Zielverzeichnis.
+    Gibt (anzahl_entpackt, bytes_entpackt) zurück.
+    """
+    path_obj = Path(archive_path).resolve()
+    target_path = Path(target_dir).resolve()
+    target_path.mkdir(parents=True, exist_ok=True)
+
+    if not path_obj.is_file():
+        raise FileNotFoundError(f"Komprimierte Datei nicht gefunden: {archive_path}")
+
+    summary, entries = inspect_single_file_compressed(path_obj)
+    inner_name = entries[0].filename if entries else path_obj.stem
+    if not inner_name:
+        inner_name = "uncompressed_" + path_obj.stem
+
+    dest_path = sanitize_archive_member_path(inner_name, target_path)
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if dest_path.exists() and not overwrite:
+        return 0, 0
+
+    if progress_callback:
+        progress_callback(1, 1, inner_name)
+
+    ext = path_obj.suffix.lower()
+    if ext == ".gz":
+        opener = gzip.open
+    elif ext == ".bz2":
+        opener = bz2.open
+    elif ext == ".xz":
+        opener = lzma.open
+    else:
+        raise ValueError(f"Nicht unterstütztes Einzelkompressionsformat: {ext}")
+
+    temp_dest = _make_staging_path(dest_path)
+    extracted_bytes = 0
+    cancelled = False
+
+    try:
+        with opener(path_obj, "rb") as src_f, open(temp_dest, "wb") as dst_f:
+            while True:
+                if is_cancelled and is_cancelled():
+                    cancelled = True
+                    break
+                chunk = src_f.read(64 * 1024)
+                if not chunk:
+                    break
+                dst_f.write(chunk)
+                extracted_bytes += len(chunk)
+
+        if cancelled:
+            if temp_dest.exists():
+                temp_dest.unlink(missing_ok=True)
+            return 0, 0
+
+        _atomic_replace(temp_dest, dest_path)
+
+        try:
+            mtime = datetime(*entries[0].date_time).timestamp()
+            os.utime(dest_path, (mtime, mtime))
+        except Exception:
+            pass
+
+        return 1, extracted_bytes
+    except Exception:
+        if temp_dest.exists():
+            temp_dest.unlink(missing_ok=True)
+        raise
+
+
 def extract_archive(
     archive_path: str | Path,
     target_dir: str | Path,
@@ -1010,16 +1388,22 @@ def extract_archive(
     progress_callback: Optional[Callable[[int, int, str], None]] = None,
     is_cancelled: Optional[Callable[[], bool]] = None,
 ) -> Tuple[int, int]:
-    """Extrahiert ein beliebiges unterstütztes Archiv (ZIP oder TAR)."""
+    """Extrahiert ein beliebiges unterstütztes Archiv (ZIP, TAR oder komprimierte Einzeldatei)."""
     p = Path(archive_path)
     if zipfile.is_zipfile(p):
         return extract_zip_archive(p, target_dir, members, overwrite, progress_callback, is_cancelled)
     elif tarfile.is_tarfile(p):
         return extract_tar_archive(p, target_dir, members, overwrite, progress_callback, is_cancelled)
+    elif is_single_file_compressed(p):
+        return extract_single_file_compressed(p, target_dir, overwrite, progress_callback, is_cancelled)
     else:
         name_lower = p.name.lower()
         if name_lower.endswith(".zip"):
             return extract_zip_archive(p, target_dir, members, overwrite, progress_callback, is_cancelled)
+        elif name_lower.endswith((".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz")):
+            return extract_tar_archive(p, target_dir, members, overwrite, progress_callback, is_cancelled)
+        elif name_lower.endswith((".gz", ".bz2", ".xz")):
+            return extract_single_file_compressed(p, target_dir, overwrite, progress_callback, is_cancelled)
         return extract_tar_archive(p, target_dir, members, overwrite, progress_callback, is_cancelled)
 
 

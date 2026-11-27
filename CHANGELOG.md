@@ -5,12 +5,58 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### GitHub-Sync, Privacy-Gate, PEP-639-Packaging & Policy P-022 (2026-11-27)
+- **Privacy Gate & Tracking-Hygiene (`repo_privacy_gate.py` Exit `0`)**: `MARKETING-LOG.txt` via `git rm --cached` aus dem Tracking entfernt und in `.gitignore` (zusammen mit `*MARKETING-LOG.txt`, Pre-Push Data-Gate und `!releases/windowsstore/**`-Ausnahmen) verankert; hostspezifische Pfade und Gerätenamen in `CLAUDE.md`, `scripts/build_release.py`, `CHANGELOG.md` und `tests/test_security_license_contract.py` neutralisiert.
+- **PEP-639-Packaging (`pyproject.toml`)**: `license = "AGPL-3.0-or-later"` ohne überholten OSI-Lizenz-Classifier, `[build-system]` (`setuptools>=77.0.3`), `[tool.setuptools]` (`py-modules` + `src*`) und `"Product Skill"`-URL ergänzt (`pip install --no-deps --no-build-isolation --dry-run .` sauber).
+- **Policy P-022 & Doku-Parität**: `SKILL.md` und `llm.txt` angelegt; `llms.txt`, `README.md`, `README_de.md` und `README_es.md` auf `2026-11-27`, `657 passed | 9 skipped`, `SKILL.md`-Links und LLM-Installationshinweise aktualisiert (Version `1.0.9` unverändert).
+
 ### Security & Resilience: Archiv-Engine & Archiv-Dialog-Suite (2026-11-18)
 - **Unterordner-Traversal- & Gerätenamen-Schutz (`src/gui/archive_dialog.py`)**: `_get_archive_stem` und `ArchiveExtractDialog` bereinigen Punkt-Traversal-Namen (`..tar.gz`, `...zip`, `.zip`), nachgestellte Punkte/Leerzeichen sowie reservierte Windows-Gerätenamen (`CON`, `NUL`, `COM1..9`, `LPT1..9`) und erzwingen ein echtes Kindverzeichnis unterhalb des gewählten Zielordners.
 - **Erweiterte Zip-Slip-/Tar-Slip- & Symlink-Abwehr (`src/core/archive_service.py`)**: `sanitize_archive_member_path`, `extract_zip_archive` und `extract_tar_archive` blockieren leere/Root-Member, NTFS Alternate Data Streams (`:`), Steuerzeichen, reservierte Windows-Gerätepfade, Symlink-/Junction-Zwischenpfade im Zielbaum sowie Unix-Symlink-/Spezialdatei-Einträge in ZIP-Archiven (`S_IFLNK`).
 - **Selbst-Einschluss-Schutz, Prä-1980-Zeitstempel & Read-Only-Overwrite (`src/core/archive_service.py`, `src/gui/archive_dialog.py`)**: `create_zip_archive` und `create_tar_archive` schließen Zielarchiv und `.tmp_*`-Staging-Dateien (`PID + UUID`) vom Re-Packing aus, klemmen Datei-Zeitstempel außerhalb des DOS-ZIP-Fensters (`< 1980` / `> 2107`) per Chunk-Streaming verlustfrei auf gültige Grenzen und ersetzen schreibgeschützte Zieldateien bei aktivem Überschreiben atomar; `ArchiveCompressDialog` legt Einzelordner-Archive standardmäßig im Elternverzeichnis an.
 - **Selektive Ordner-Extraktion & Einzelstream-Abgrenzung (`src/core/archive_service.py`)**: `extract_zip_archive` und `extract_tar_archive` entpacken ausgewählte Ordnerzeilen im `ArchiveViewerDialog` rekursiv samt Inhalt; `is_archive` meldet reine Einzelstream-Dateien (`.gz`, `.bz2`, `.xz` ohne TAR-Header) und nicht unterstütztes `.tar.zst` nicht mehr fälschlich als unterstützte Archive.
 - **Plattformgerechte Member-Namensregeln & Vorabprüfung (`src/core/archive_service.py`)**: Die reinen Windows-Namensregeln (`<>:"|?*`, abschließender Punkt/Leerzeichen, reservierte Gerätenamen, NTFS-ADS über `:`) greifen in `sanitize_archive_member_path` nur noch unter Windows; unter Linux/macOS gültige Namen wie `log 12:30.txt`, `What?.md` oder `aux.c` werden dort wieder vollständig entpackt. Traversal-, Steuerzeichen-, Root- und Symlink-Prüfungen gelten weiterhin überall. `extract_zip_archive` und `extract_tar_archive` prüfen alle Eintragsnamen vor dem ersten Schreibzugriff, sodass ein abgewiesener Eintrag kein halb entpacktes Ziel mehr hinterlässt.
+
+### Atomare Persistenz-Engine (atomic_io), Crash-Durability & Diff-Performance-Härtung (2026-11-07, TW-EP-15)
+- **Zentrale atomare I/O- und Persistenz-Engine (`src/core/atomic_io.py`)**:
+  - `atomic_write_bytes`: Schreibt Rohdaten atomar via temporärem Staging im selben Verzeichnis (`.{target}.tmp.{pid}_{uuid}`), explizitem `flush()`, `os.fsync()`, `stat.S_IMODE`-Berechtigungserhalt und atomarem `os.replace()`.
+  - `atomic_write_text`: Textpersistenz mit konfigurierbarem Encoding (Standard: UTF-8), sauberem Zeilenumbruch-Handling und defensiver Staging-Bereinigung in `finally:`-Blöcken.
+  - `atomic_write_json`: Struktursichere JSON-Serialisierung mit Formatierungsoptionen und Crash-Resilienz vor Datei-Ersetzung.
+- **Anbindung aller ungeschützten Persistenz-Pfade**:
+  - `SettingsManager.save`: Speichert `settings.json` atomar via `atomic_write_json`.
+  - `WorkspaceExporter.save_export`: Speichert Arbeitsbereichs-Exporte atomar via `atomic_write_json`.
+  - `QuickEditorDialog._save_file`: Schreibt bearbeitete Quelltexte atomar via `atomic_write_text`.
+  - `SyncManager._save_config`: Sichert Synchronisationsprofile atomar via `atomic_write_json`.
+  - `AppsPanel._save_apps`: Sichert konfigurierte Anwendungen atomar via `atomic_write_json`.
+  - `PromptsPanel._save_prompts`: Sichert Prompt-Bibliotheken atomar via `atomic_write_json`.
+  - `PrivacyMonitor.save_config`: Sichert Datenschutzeinstellungen atomar via `atomic_write_json`.
+  - `BlacklistManager._save`: Sichert Blacklist- und Whitelist-Definitionen atomar via `atomic_write_json`.
+- **High-End Performanceoptimierung im Datei-Vergleich (`src/core/diff_service.py`)**:
+  - SHA-256 I/O-Puffer auf 256 KB erweitert (`compute_sha256(filepath, chunk_size=262144)`).
+  - Size-Mismatch Early-Exit: Verhindert unnötiges Vollhashing bei abweichenden Dateigrößen.
+  - Schneller 8KB-Prefix-Vorfilter (`_quick_prefix_differs`): Schnelle Divergenzerkennung bei gleichgroßen Dateien.
+- **Verifikation & Testsuite**:
+  - 16 neue Tests in `tests/test_atomic_io_suite.py` und `tests/test_diff_service_perf.py`.
+
+### Standalone GZ/BZ2/XZ Stream Engine, Universal-Archiv-Härtung & Tier-2 I18N (2026-11-01, TW-EP-14)
+- **Standalone Einzeldatei-Stream-Engine (`src/core/archive_service.py`)**:
+  - `is_single_file_compressed`: Robuste Erkennung komprimierter Einzeldateien (`.gz`, `.bz2`, `.xz`) unter strenger Trennung von zusammengesetzten TAR-Archiven via Magic-Byte-Inspektion (`\x1f\x8b`, `BZh`, `\xfd7zXZ\x00`).
+  - `inspect_single_file_compressed`: Auslesen des inneren Dateinamens, unkomprimierter Größe (aus GZIP ISIZE bzw. gestreamter Dekompression), komprimierter Größe und Ersparnisquote.
+  - `create_single_file_compressed`: Atomare Erstellung von `.gz`, `.bz2` und `.xz` Einzeldateien mit mtime-Erhalt, FNAME-Sauberkeit und Windows-konformer Dateihandle-Freigabe bei Abbruch.
+  - `extract_single_file_compressed`: Sichere, atomare Dekomprimierung via temporäre Dateien und `_atomic_replace` mit Erhalt des Zeitstempels und Tar-/Zip-Slip-Path-Traversal-Schutz.
+  - `check_single_file_integrity`: Stream-Integritätsprüfung für GZIP, BZIP2 und XZ mit präziser Fehlerdiagnose bei korrupten oder abgeschnittenen Streams.
+  - Fassaden-Erweiterung (`inspect_archive`, `create_archive`, `extract_archive`, `check_archive_integrity`): Transparente Integration von Einzeldateien über die Archiv-Fassaden unter Wahrung der `is_archive()`-Abgrenzung für reine Einzelstreams.
+  - Windows-Dateisperren-Resilienz: `_safe_is_tarfile` und `_safe_is_zipfile` fangen unerwartete `EOFError` und Corruptions sicher ab; defensives Schließen von File-Handles vor `unlink` schützt vor Windows WinError 32 PermissionError.
+- **GUI- & Dialog-Anbindung (`src/gui/archive_dialog.py`, `src/gui/preview/preview_panel.py`)**:
+  - `_get_archive_stem`: Um `.gz`, `.bz2`, `.xz` erweitert für saubere Ordnernamen beim Entpacken.
+  - `ArchiveCompressDialog`: Filter und Validierung für `.gz`, `.bz2`, `.xz` Einzeldateien integriert; unbenutzte Imports bereinigt.
+  - `ArchiveViewerDialog` & `ArchiveExtractDialog`: Nahtlose Darstellung und Entpackung komprimierter Einzeldateien.
+  - `ArchivePreview`: Sofortige tabellarische Voransicht im Preview-Panel für `.gz`, `.bz2`, `.xz`.
+- **Lokalisierung (Tier-2 P-006)**:
+  - Alle Filter- und Dialogbeschriftungen über alle 6 Zielsprachen (DE, EN, ES, ZH, JA, RU) in `locales/translations.json` integriert (1186 Strings, 100% Parität via `manage_translations.py --check`).
+- **Test-Abdeckung & Linter**:
+  - `tests/test_single_file_compression_suite.py`: 14 automatisierte Tests (Erkennung, Inspektion, Roundtrip, Integrität, Unified Dispatch, Worker, Stem, Leere Dateien, Abbruch, GUI-Widgets).
+  - Bereinigung von Lint-Warnungen in `archive_dialog.py`, `test_archive_gui_integration.py` und `test_tar_archive_suite.py`.
 
 ### Universal-Archiv-Engine & Multi-Format-Härtung (2026-10-29, TW-EP-13)
 - **Universal-Archiv-Core (`src/core/archive_service.py`)**:
@@ -180,7 +226,7 @@ ExplorerPro 1.0.8
   - `THIRD_PARTY_LICENSES.md`: Re-Audit Stand 2026-09-30 mit formaler Verlinkung auf den Plain-Text-Begleiter.
   - `NOTICE`: Bestätigung der Verlinkung zu `THIRD_PARTY_LICENSES.txt` und `THIRD_PARTY_LICENSES.md`.
 - **Multi-Host Sync-, Lock- und Cache-Defense in `.gitignore`**:
-  - Erweiterung um Multi-Host Sync-Muster (`*-IDEAPAD-GEI*`) und Multi-Agent-Locks (`LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`).
+  - Erweiterung um Multi-Host Sync-Muster (`*-IDEAPAD*`) und Multi-Agent-Locks (`LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`).
 - **PEP 621 Standardisierung in `pyproject.toml`**:
   - `project.urls`: `Contributing` registriert.
   - Strikte Version-Freeze-Disziplin per `T-20260920-167562623`: `version = "1.0.7"` unverändert beibehalten.
@@ -282,7 +328,7 @@ ExplorerPro 1.0.8
   - Härtung der Abhängigkeits-Untergrenzen in `pyproject.toml` (`pytest>=9.1.1` gegen CVE-2025-7117 / GHSA-6w46-j5rx-g56g, `ruff>=0.9.0`, `PyInstaller>=6.10.0`, `altgraph>=0.17.4`).
   - Standardisierung des Dritte-Partei-Lizenzinventars `THIRD_PARTY_LICENSES.txt` mit SPDX-Identifikatoren, Lizenztypen, Paket-URLs und detaillierten Verwendungsnachweisen für alle 21 direkten und transitiven Laufzeit-, Test- und Build-Pakete.
   - Zweisprachige Härtung der `SECURITY.md` (DE/EN) um verbindliche Reaktions-SLAs (48 Stunden Erstbestätigung, 5 Werktage Triage) sowie formelle Local-First / Zero-Egress und Non-Elevation-Garantien.
-  - Multi-Host- und Geheimnis-Härtung der `.gitignore` (`secrets.*`, `*.pfx`, `*.p12`, `*.cer`, `*.crt`, `*-WORKSTATION-LG*`, `*-ASUS-GEI*`, `*.sync-conflict-*`, `*.conflict`, `LOCK.*`, `*.lock`, `node_modules/`).
+  - Multi-Host- und Geheimnis-Härtung der `.gitignore` (`secrets.*`, `*.pfx`, `*.p12`, `*.cer`, `*.crt`, `*-WORKSTATION*`, `*-ASUS*`, `*.sync-conflict-*`, `*.conflict`, `LOCK.*`, `*.lock`, `node_modules/`).
   - Neue automatisierte Vertragstestsuite `tests/test_security_license_contract.py` mit 6 Prüfungen zur dauerhaften Einhaltung von Schwachstellenuntergrenzen, Lizenzschema, Dateisystem-Ausschlüssen, Hardcoded-Path-Freiheit, SLA-Vorgaben und Zero-Egress-Invarianten.
   - Gesamter Testbestand auf 317 Tests ausgebaut (100% grün, 0 Fehler).
 

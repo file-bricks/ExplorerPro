@@ -188,9 +188,10 @@ def test_pyproject_pep621_classifiers_and_urls():
     pyproject_path = REPO_ROOT / "pyproject.toml"
     assert pyproject_path.exists(), "pyproject.toml must exist."
     content = pyproject_path.read_text(encoding="utf-8")
+    assert 'license = "AGPL-3.0-or-later"' in content
+    assert "License :: OSI Approved" not in content
     for classifier in [
         "Development Status :: 5 - Production/Stable",
-        "License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
         "Operating System :: MacOS",
@@ -213,7 +214,7 @@ def test_pyproject_pep621_classifiers_and_urls():
         "Third-Party Licenses (Text)",
         "Level 1 SBOM",
         "Plain-Text License",
-        "Marketing Log",
+        "Product Skill",
         "Parent Organization",
         "Umbrella Ecosystem",
         "LLM Ready",
@@ -228,11 +229,13 @@ def test_llms_txt_structure():
     content = llms_path.read_text(encoding="utf-8")
     assert "file-bricks/ExplorerPro" in content
     assert "PySide6" in content
-    assert any(d in content for d in ("Last-checked: 2026-09-30", "Last-checked: 2026-09-29"))
+    assert "Last-checked: 2026-11-27" in content
     pyproject_text = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
     current_version = re.search(r'^version\s*=\s*"([^"]+)"', pyproject_text, re.MULTILINE).group(1)
     assert f"Version: {current_version}" in content
     assert "ci.yml" in content
+    assert "SKILL.md" in content
+    assert "MARKETING-LOG.txt" not in content
 
 
 def test_translations_complete():
@@ -329,8 +332,9 @@ def test_governance_invariants_table_ten_points():
         "INV-EXP-09",
         "INV-SLA-10",
     ]
-    for filename in ["README.md", "README_de.md", "MARKETING-LOG.txt"]:
+    for filename in ["README.md", "README_de.md", "README_es.md"]:
         content = (REPO_ROOT / filename).read_text(encoding="utf-8")
+        assert "MARKETING-LOG.txt" not in content, f"Forbidden MARKETING-LOG.txt link in {filename}"
         for inv_id in expected_invariants:
             assert inv_id in content, f"Invariant {inv_id} missing in {filename}"
 
@@ -372,7 +376,7 @@ def test_notice_and_unreleased_changelog():
     assert "THIRD_PARTY_LICENSES.txt" in notice_text
 
     llms_text = (REPO_ROOT / "llms.txt").read_text(encoding="utf-8")
-    assert any(d in llms_text for d in ("Last-checked: 2026-09-30", "Last-checked: 2026-09-29"))
+    assert "Last-checked: 2026-11-27" in llms_text
     assert "NOTICE" in llms_text
 
     changelog_text = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
@@ -381,26 +385,36 @@ def test_notice_and_unreleased_changelog():
     assert "2026-09-29" in changelog_text
 
 
-def test_marketing_log_and_personas():
-    path = REPO_ROOT / "MARKETING-LOG.txt"
-    assert path.exists(), "MARKETING-LOG.txt must exist in repo root"
-    content = path.read_text(encoding="utf-8")
+def test_p022_product_skill_and_llm_entry():
+    skill_path = REPO_ROOT / "SKILL.md"
+    llm_path = REPO_ROOT / "llm.txt"
+    assert skill_path.exists(), "SKILL.md must exist per P-022"
+    assert llm_path.exists(), "llm.txt must exist per P-022"
 
-    assert any(s in content for s in ["Stand: 2026-09-30", "Stand: 2026-09-29"])
-    for section in [
-        "TARGET AUDIENCE & STAKEHOLDER PERSONAS",
-        "Desktop Power Users",
-        "Privacy & Compliance Officers",
-        "Software Developers",
-        "HIGH-INTENT SEARCH QUERIES",
-        "COMPETITIVE POSITIONING & MATRIX",
-        "Windows Explorer",
-        "Total Commander",
-        "GOVERNANCE & RUNTIME INVARIANTS",
-        "8. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & METADATA AUDIT",
-        "10. PFAD B DISCOVERABILITY, VISUAL ARCHITECTURE & LEVEL 1 SBOM AUDIT",
-    ]:
-        assert section in content, f"Section '{section}' missing in MARKETING-LOG.txt"
+    skill_text = skill_path.read_text(encoding="utf-8")
+    assert "name: explorerpro" in skill_text
+    assert 'version: "1.0.9"' in skill_text
+    assert "inspect_archive" in skill_text
+    assert "atomic_write_json" in skill_text
+    assert "C:\\Users\\" not in skill_text and "OneDrive" not in skill_text
+
+    llm_text = llm_path.read_text(encoding="utf-8")
+    assert "llms.txt" in llm_text
+    assert "SKILL.md" in llm_text
+
+    for readme_name in ("README.md", "README_de.md", "README_es.md"):
+        doc = (REPO_ROOT / readme_name).read_text(encoding="utf-8")
+        assert "SKILL.md" in doc, f"SKILL.md link missing in {readme_name}"
+        assert "llms.txt" in doc, f"llms.txt link missing in {readme_name}"
+
+
+def test_pep639_and_gitignore_windowsstore_exceptions():
+    pyproject_text = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'license = "AGPL-3.0-or-later"' in pyproject_text
+    assert "License :: OSI Approved" not in pyproject_text
+    gi_text = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8")
+    assert "!releases/windowsstore/" in gi_text
+    assert "*MARKETING-LOG.txt" in gi_text
 
 
 def test_readme_ascii_four_view_topology():

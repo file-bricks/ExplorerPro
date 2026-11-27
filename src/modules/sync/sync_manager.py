@@ -22,6 +22,7 @@ import json
 import os
 import shutil
 
+from core.atomic_io import atomic_write_json
 from translator import t
 
 
@@ -674,8 +675,7 @@ class SyncPanel(QWidget):
         } for p in self.sync_pairs]
 
         try:
-            with open(self.config_path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+            atomic_write_json(self.config_path, data, indent=2, ensure_ascii=False)
         except OSError as e:
             print(f"Fehler beim Speichern der Sync-Konfiguration: {e}")
 

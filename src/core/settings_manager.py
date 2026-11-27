@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Any, Dict
 from PySide6.QtCore import QSettings, QStandardPaths
 
+from core.atomic_io import atomic_write_json
+
 
 class SettingsManager:
     """
@@ -108,10 +110,9 @@ class SettingsManager:
                 target[key] = value
 
     def save(self):
-        """Speichert Einstellungen in JSON-Datei"""
+        """Speichert Einstellungen atomar in JSON-Datei"""
         try:
-            with open(self._config_path, 'w', encoding='utf-8') as f:
-                json.dump(self._settings, f, indent=2, ensure_ascii=False)
+            atomic_write_json(self._config_path, self._settings, indent=2, ensure_ascii=False)
         except Exception as e:
             print(f"Fehler beim Speichern: {e}")
 

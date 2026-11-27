@@ -4,9 +4,9 @@ type: project-docs
 profile: STANDARD
 version: 1.0.9
 created: 2026-07-22
-updated: 2026-09-26
-reason_last_change: "T-20260926-912169808: Kontextmenü-Tags/Metadaten, Editor-Dirty-Flag (modificationChanged), qtbase-Übersetzung, 359 Tests"
-last_verified: 2026-09-26
+updated: 2026-11-27
+reason_last_change: "GitHub-Sync, Privacy-Gate, PEP-639-Packaging & Policy P-022 (SKILL.md/llm.txt)"
+last_verified: 2026-11-27
 author: Lukas Geiger
 anthropic_compatible: true
 description: |
@@ -29,8 +29,8 @@ description: |
 
 **ExplorerPro Suite** — Lokaler, datenschutzorientierter Multi-Tab-Dateimanager und Power-User-Explorer mit integrierter FTS5-Suche, Duplikaterkennung, Datei-Vorschau, Prompt-Manager und Ordnersynchronisation.
 
-**Pfad:** `C:\_Local_DEV\repos\ExplorerPro`
-**OneDrive-Spiegel:** `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE\DATA\REL-PUB_ExplorerPro_SUITE`
+**Pfad:** `<LOCAL_DEV_REPOS>/ExplorerPro`
+**OneDrive-Spiegel:** `<OneDrive>/.TOPICS/.SOFTWARE/DATA/REL-PUB_ExplorerPro_SUITE`
 **Repository:** `https://github.com/file-bricks/ExplorerPro` (Branch: `master`)
 **Sprache/Stack:** Python 3.10–3.12, PySide6 (Qt 6), SQLite (FTS5), PyMuPDF (fitz)
 **Lizenz:** AGPL-3.0
@@ -67,7 +67,7 @@ python src/main.py
 ## Hard Rules (non-negotiable)
 
 - **100% Offline & Zero-Egress:** Keine Netzwerkzugriffe, Telemetrie oder externe Cloud-Uploads in der Laufzeitlogik.
-- **Plan-D-Repository-Disziplin:** Quellcode, Tests und Git-Operationen ausschließlich in `C:\_Local_DEV\repos\ExplorerPro`. Keine isolierten Codeänderungen im OneDrive-Spiegel ohne Synchronisation.
+- **Plan-D-Repository-Disziplin:** Quellcode, Tests und Git-Operationen ausschließlich im kanonischen Plan-D-Klon (`<LOCAL_DEV_REPOS>/ExplorerPro`). Keine isolierten Codeänderungen im OneDrive-Spiegel ohne Synchronisation.
 - **Non-Elevation:** Die Anwendung läuft strikt im User-Mode und verlangt niemals Administrator-Rechte.
 - **Destructive Safety:** Dateioperationen (Löschen, Verschieben, Umbenennen) erfordern Bestätigungsdialoge oder sicheres Recycling; kein blindes `shutil.rmtree` ohne Nutzerbestätigung.
 - **Thread-Safety in Qt:** Schwere Operationen (Dateisuche, Hashing für Duplikate, Ordnerscan, PDF-Rendering) laufen in dedizierten `QThread`-Workern und kommunizieren ausschließlich per Qt Signals/Slots mit der GUI.

@@ -4,7 +4,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from core.atomic_io import atomic_write_json
 from version import __version__
+
 SCHEMA = "explorerpro-workspace-v1"
 
 # Nur Muster die standardmäßig aktiv sind (default=True in privacy_monitor.py)
@@ -75,9 +77,7 @@ class WorkspaceExporter:
             include_absolute_paths=include_absolute_paths,
             include_sensitive_content=include_sensitive_content,
         )
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, "w", encoding="utf-8") as fh:
-            json.dump(data, fh, indent=2, ensure_ascii=False)
+        atomic_write_json(output_path, data, indent=2, ensure_ascii=False)
 
     # --- private helpers ---
 
