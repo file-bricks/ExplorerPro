@@ -1321,11 +1321,18 @@ def extract_single_file_compressed(
         raise FileNotFoundError(f"Komprimierte Datei nicht gefunden: {archive_path}")
 
     summary, entries = inspect_single_file_compressed(path_obj)
-    inner_name = entries[0].filename if entries else path_obj.stem
-    if not inner_name:
-        inner_name = "uncompressed_" + path_obj.stem
+    # Zielname wie bei ``gunzip`` ohne ``-N`` aus dem Archivnamen ableiten. Der
+    # GZIP-FNAME-Header ist vom Ersteller frei wählbar und könnte sonst das
+    # Archiv selbst oder beliebige Nachbardateien im Zielordner überschreiben.
+    inner_name = path_obj.stem
+    if not inner_name or inner_name.startswith("."):
+        inner_name = "uncompressed_" + path_obj.stem.lstrip(".")
 
     dest_path = sanitize_archive_member_path(inner_name, target_path)
+    if dest_path == path_obj:
+        raise ValueError(
+            f"Entpacken würde die Quelldatei selbst überschreiben: {path_obj.name}"
+        )
     dest_path.parent.mkdir(parents=True, exist_ok=True)
 
     if dest_path.exists() and not overwrite:

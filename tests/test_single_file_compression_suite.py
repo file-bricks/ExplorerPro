@@ -353,3 +353,37 @@ def test_gui_dialogs_with_single_file_gz(qtbot, tmp_path: Path, sample_payload: 
     qtbot.addWidget(comp_dlg)
     assert "sample_document.zip" in comp_dlg.dest_edit.text()
 
+
+
+def _raw_gzip_with_fname(fname: bytes, data: bytes) -> bytes:
+    import struct
+    import zlib
+
+    compressor = zlib.compressobj(9, zlib.DEFLATED, -15)
+    body = compressor.compress(data) + compressor.flush()
+    header = b"\x1f\x8b\x08\x08" + struct.pack("<I", 0) + b"\x02\xff" + fname + b"\x00"
+    return header + body + struct.pack("<II", zlib.crc32(data), len(data))
+
+
+def test_gzip_fname_header_cannot_overwrite_archive_itself(tmp_path: Path):
+    archive = tmp_path / "report.gz"
+    original = _raw_gzip_with_fname(b"report.gz", b"PAYLOAD")
+    archive.write_bytes(original)
+
+    count, size = extract_archive(archive, tmp_path)
+
+    assert (count, size) == (1, 7)
+    assert archive.read_bytes() == original
+    assert (tmp_path / "report").read_bytes() == b"PAYLOAD"
+
+
+def test_gzip_fname_header_cannot_redirect_to_sibling_file(tmp_path: Path):
+    notes = tmp_path / "notes.txt"
+    notes.write_text("wichtige Notizen", encoding="utf-8")
+    archive = tmp_path / "data.bin.gz"
+    archive.write_bytes(_raw_gzip_with_fname(b"notes.txt", b"overwritten"))
+
+    extract_single_file_compressed(archive, tmp_path, overwrite=True)
+
+    assert notes.read_text(encoding="utf-8") == "wichtige Notizen"
+    assert (tmp_path / "data.bin").read_bytes() == b"overwritten"
